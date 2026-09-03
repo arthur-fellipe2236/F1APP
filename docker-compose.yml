@@ -1,0 +1,35 @@
+services:
+  f1-api:
+    build: ./f1-api
+    container_name: f1-api
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: "5000"
+    volumes:
+      - ./f1-api/app:/app/app
+      - ./f1-api/run.py:/app/run.py
+      - ./f1-api/instance:/app/instance
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/api/v1/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  f1-app:
+    build: ./f1-app
+    container_name: f1-app
+    depends_on:
+      f1-api:
+        condition: service_healthy
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://f1-api:5000
+    volumes:
+      - ./f1-app:/app
+      - f1-app-node-modules:/app/node_modules
+
+volumes:
+  f1-app-node-modules:

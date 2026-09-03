@@ -1,0 +1,1514 @@
+{
+  "info": {
+    "_postman_id": "5aeb8d54-aca6-42c2-9c0b-6c7d5c691e72",
+    "name": "F1 API - Formula 1",
+    "description": "Colecao de validacao da API Flask de Formula 1 (padrao OpenAPI 3). Requisitos: servidor rodando em http://localhost:5000 com banco sincronizado com OpenF1/Jolpica (aguarde o sync terminar). Execute as pastas na ordem: Health > Teams > Drivers > Circuits > Races > Standings > OpenAPI.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "apiRoot",
+      "value": "http://localhost:5000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Servico ok', function () {",
+                  "  var body = pm.response.json();",
+                  "  pm.expect(body.status).to.eql('ok');",
+                  "  pm.expect(body.service).to.eql('f1-api');",
+                  "});",
+                  "pm.test('Resposta < 2s', function () { pm.expect(pm.response.responseTime).to.be.below(2000); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Teams",
+      "item": [
+        {
+          "name": "GET /teams (lista paginada)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/teams?per_page=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "teams"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Estrutura data + meta', function () {",
+                  "  var body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('data').that.is.an('array');",
+                  "  pm.expect(body).to.have.property('meta');",
+                  "  pm.expect(body.meta).to.have.property('total');",
+                  "});",
+                  "pm.test('Seed com 10 equipes', function () {",
+                  "  pm.expect(pm.response.json().meta.total).to.be.at.least(10);",
+                  "});",
+                  "pm.test('Primeira equipe salvo para referencia', function () {",
+                  "  var d = pm.response.json().data[0];",
+                  "  pm.collectionVariables.set('seedTeamId', d.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /teams/:id (seed)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/teams/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "teams",
+                "1"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Campos da equipe', function () {",
+                  "  var b = pm.response.json();",
+                  "  pm.expect(b).to.have.property('id');",
+                  "  pm.expect(b).to.have.property('name');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /teams (criar)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Test Team\",\n  \"base_country\": \"Testlandia\",\n  \"engine_manufacturer\": \"Mercedes\",\n  \"founded_year\": 2026\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/teams",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "teams"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', function () { pm.response.to.have.status(201); });",
+                  "pm.test('Retorna id e nome', function () {",
+                  "  var b = pm.response.json();",
+                  "  pm.expect(b.id).to.be.a('number');",
+                  "  pm.expect(b.name).to.eql('Postman Test Team');",
+                  "  pm.collectionVariables.set('createdTeamId', b.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /teams (duplicado -> 409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Test Team\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/teams",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "teams"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 409', function () { pm.response.to.have.status(409); });",
+                  "pm.test('Mensagem de erro', function () {",
+                  "  pm.expect(pm.response.json()).to.have.property('error');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /teams (sem name -> 400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"base_country\": \"Sem nome\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/teams",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "teams"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Detalha campo ausente', function () {",
+                  "  var b = pm.response.json();",
+                  "  pm.expect(b).to.have.property('error');",
+                  "  pm.expect(b.details.missing_fields).to.include('name');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /teams/999999 (nao existe -> 404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/teams/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "teams",
+                "999999"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 404', function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT /teams/:id (atualizar criado)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"base_country\": \"Austria\",\n  \"founded_year\": 2027\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/teams/{{createdTeamId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "teams",
+                "{{createdTeamId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Campos atualizados', function () {",
+                  "  var b = pm.response.json();",
+                  "  pm.expect(b.base_country).to.eql('Austria');",
+                  "  pm.expect(b.founded_year).to.eql(2027);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /teams/:id (remover criado)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/teams/{{createdTeamId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "teams",
+                "{{createdTeamId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Drivers",
+      "item": [
+        {
+          "name": "GET /drivers (lista paginada)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/drivers?per_page=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "drivers"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Paginacao aplicada', function () {",
+                  "  var b = pm.response.json();",
+                  "  pm.expect(b.data.length).to.be.at.most(5);",
+                  "  pm.expect(b.meta.per_page).to.eql(5);",
+                  "  pm.expect(b.meta.total).to.be.at.least(20);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /drivers?team_id=1 (filtro)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/drivers?team_id=1&per_page=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "drivers"
+              ],
+              "query": [
+                {
+                  "key": "team_id",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Filtro por equipe inclui pilotos da equipe', function () {",
+                  "  var b = pm.response.json();",
+                  "  var codes = b.data.map(function (d) { return d.code; });",
+                  "  pm.expect(b.meta.total).to.be.at.least(1);",
+                  "  pm.expect(codes.length).to.eql(Math.min(b.meta.total, 50));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /drivers/:id (seed)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/drivers/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "drivers",
+                "1"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Detalhe inclui equipe', function () {",
+                  "  var b = pm.response.json();",
+                  "  pm.expect(b).to.have.property('code');",
+                  "  pm.expect(b).to.have.property('team');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /drivers (criar)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Tester\",\n  \"last_name\": \"Piloto\",\n  \"code\": \"TST\",\n  \"permanent_number\": 999,\n  \"nationality\": \"Testelandes\",\n  \"team_id\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/drivers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "drivers"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', function () { pm.response.to.have.status(201); });",
+                  "pm.test('Piloto criado com id', function () {",
+                  "  var b = pm.response.json();",
+                  "  pm.expect(b.id).to.be.a('number');",
+                  "  pm.expect(b.code).to.eql('TST');",
+                  "  pm.collectionVariables.set('createdDriverId', b.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /drivers (code duplicado -> 409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Outro\",\n  \"last_name\": \"Piloto\",\n  \"code\": \"VER\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/drivers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "drivers"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 409', function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /drivers (faltando campos -> 400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"So nome\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/drivers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "drivers"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Detalha campo ausente', function () {",
+                  "  pm.expect(pm.response.json().details.missing_fields).to.include('last_name');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT /drivers/:id (atualizar criado)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nationality\": \"brasileiro\",\n  \"team_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/drivers/{{createdDriverId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "drivers",
+                "{{createdDriverId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Campos atualizados', function () {",
+                  "  var b = pm.response.json();",
+                  "  pm.expect(b.nationality).to.eql('brasileiro');",
+                  "  pm.expect(b.team_id).to.eql(1);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /drivers/:id (remover criado)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/drivers/{{createdDriverId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "drivers",
+                "{{createdDriverId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /drivers/:id (apos deletar -> 404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/drivers/{{createdDriverId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "drivers",
+                "{{createdDriverId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 404', function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Circuits",
+      "item": [
+        {
+          "name": "GET /circuits (lista)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/circuits?per_page=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "circuits"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Seed com 10 circuitos', function () {",
+                  "  pm.expect(pm.response.json().meta.total).to.be.at.least(10);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /circuits (criar)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Circuit Postman\",\n  \"city\": \"Valencia\",\n  \"country\": \"Spain\",\n  \"length_km\": 4.0,\n  \"laps\": 57\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/circuits",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "circuits"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', function () { pm.response.to.have.status(201); });",
+                  "pm.test('Id retornado', function () {",
+                  "  var b = pm.response.json();",
+                  "  pm.expect(b.id).to.be.a('number');",
+                  "  pm.collectionVariables.set('createdCircuitId', b.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /circuits (nome duplicado -> 409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Circuit Postman\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/circuits",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "circuits"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 409', function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT /circuits/:id (atualizar)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"laps\": 58\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/circuits/{{createdCircuitId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "circuits",
+                "{{createdCircuitId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('laps atualizado', function () { pm.expect(pm.response.json().laps).to.eql(58); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /circuits/:id (remover)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/circuits/{{createdCircuitId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "circuits",
+                "{{createdCircuitId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Races",
+      "item": [
+        {
+          "name": "GET /seasons (temporadas)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/seasons",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "seasons"
+              ],
+              "query": []
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Lista de temporadas', function () {",
+                  "  var d = pm.response.json().data;",
+                  "  pm.expect(d).to.be.an('array');",
+                  "  pm.expect(d.length).to.be.at.least(4);",
+                  "  pm.expect(d).to.include(2024);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /races (lista)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races?per_page=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Corridas de todas as temporadas', function () {",
+                  "  pm.expect(pm.response.json().meta.total).to.be.at.least(40);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /races?season=2024 (filtro)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races?season=2024&per_page=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races"
+              ],
+              "query": [
+                {
+                  "key": "season",
+                  "value": "2024"
+                },
+                {
+                  "key": "per_page",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Somente temporada 2024', function () {",
+                  "  pm.response.json().data.forEach(function (r) {",
+                  "    pm.expect(r.season).to.eql(2024);",
+                  "  });",
+                  "  pm.collectionVariables.set('seedRaceId', pm.response.json().data[0].id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /races?season=2025 (filtro)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races?season=2025",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races"
+              ],
+              "query": [
+                {
+                  "key": "season",
+                  "value": "2025"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Somente temporada 2025', function () {",
+                  "  var b = pm.response.json();",
+                  "  b.data.forEach(function (r) { pm.expect(r.season).to.eql(2025); });",
+                  "  pm.expect(b.meta.total).to.be.at.least(20);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /races?season=2021 (vazio)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races?season=2021",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races"
+              ],
+              "query": [
+                {
+                  "key": "season",
+                  "value": "2021"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Sem corridas', function () {",
+                  "  pm.expect(pm.response.json().meta.total).to.eql(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /races?season=abc (invalido -> 400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races?season=abc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races"
+              ],
+              "query": [
+                {
+                  "key": "season",
+                  "value": "abc"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /races/:id (detalhe seed)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races/{{seedRaceId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "{{seedRaceId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Corrida com circuito', function () {",
+                  "  var b = pm.response.json();",
+                  "  pm.expect(b).to.have.property('name');",
+                  "  pm.expect(b).to.have.property('circuit_name');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /races/:id/results (resultado da corrida)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races/{{seedRaceId}}/results?per_page=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "{{seedRaceId}}",
+                "results"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Grid completo ordenado', function () {",
+                  "  var d = pm.response.json().data;",
+                  "  pm.expect(d.length).to.be.at.least(18);",
+                  "  d.forEach(function (r, i) { pm.expect(r.position).to.eql(i + 1); });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /races/999999/results (nao existe -> 404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races/999999/results",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "999999",
+                "results"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 404', function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Standings",
+      "item": [
+        {
+          "name": "GET /standings/drivers?season=2024",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/standings/drivers?season=2024",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "standings",
+                "drivers"
+              ],
+              "query": [
+                {
+                  "key": "season",
+                  "value": "2024"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Ordenado por pontos desc', function () {",
+                  "  var pts = pm.response.json().data.map(function (d) { return d.points; });",
+                  "  var sorted = pts.slice().sort(function (a, b) { return b - a; });",
+                  "  pm.expect(pts).to.eql(sorted);",
+                  "});",
+                  "pm.test('Inclui vitorias e podiums', function () {",
+                  "  var top = pm.response.json().data[0];",
+                  "  pm.expect(top).to.have.property('wins');",
+                  "  pm.expect(top).to.have.property('podiums');",
+                  "  pm.expect(top.position).to.eql(1);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /standings/teams?season=2024",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/standings/teams?season=2024",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "standings",
+                "teams"
+              ],
+              "query": [
+                {
+                  "key": "season",
+                  "value": "2024"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Equipes ordenadas por pontos', function () {",
+                  "  var pts = pm.response.json().data.map(function (t) { return t.points; });",
+                  "  var sorted = pts.slice().sort(function (a, b) { return b - a; });",
+                  "  pm.expect(pts).to.eql(sorted);",
+                  "});",
+                  "pm.test('Todos os construtores pontuam', function () {",
+                  "  var d = pm.response.json().data;",
+                  "  pm.expect(d.length).to.be.at.least(9);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /standings/drivers?season=x (invalido -> 400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/standings/drivers?season=x",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "standings",
+                "drivers"
+              ],
+              "query": [
+                {
+                  "key": "season",
+                  "value": "x"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "OpenAPI",
+      "item": [
+        {
+          "name": "GET /apispec_1.json (spec OpenAPI)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{apiRoot}}/apispec_1.json",
+              "host": [
+                "{{apiRoot}}"
+              ],
+              "path": [
+                "apispec_1.json"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Spec e OpenAPI 3.x', function () {",
+                  "  var s = pm.response.json();",
+                  "  pm.expect(s.openapi).to.match(/^3\\./);",
+                  "  pm.expect(s.info.title).to.include('Formula 1');",
+                  "});",
+                  "pm.test('Paths documentados', function () {",
+                  "  var p = pm.response.json().paths;",
+                  "  pm.expect(p).to.have.property('/api/v1/drivers');",
+                  "  pm.expect(p).to.have.property('/api/v1/standings/teams');",
+                  "});",
+                  "pm.test('Components schemas presentes', function () {",
+                  "  var sc = pm.response.json().components.schemas;",
+                  "  pm.expect(sc).to.have.property('Driver');",
+                  "  pm.expect(sc).to.have.property('RaceResult');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /apidocs/ (Swagger UI)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{apiRoot}}/apidocs/",
+              "host": [
+                "{{apiRoot}}"
+              ],
+              "path": [
+                "apidocs",
+                ""
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Swagger UI renderizada', function () {",
+                  "  pm.expect(pm.response.text()).to.include('swagger');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "News",
+      "item": [
+        {
+          "name": "GET /news?upcoming=1 (noticias do GP)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/news?upcoming=1&limit=3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news"
+              ],
+              "query": [
+                {
+                  "key": "upcoming",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Noticias oficiais estruturadas', function () {",
+                  "  var d = pm.response.json().data;",
+                  "  pm.expect(d).to.be.an('array');",
+                  "  pm.expect(d.length).to.be.at.least(1);",
+                  "  d.forEach(function (n) {",
+                  "    pm.expect(n.title).to.be.a('string').that.is.not.empty;",
+                  "    pm.expect(n.url).to.include('formula1.com');",
+                  "    pm.expect(n.updated_at).to.be.a('string');",
+                  "  });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Live",
+      "item": [
+        {
+          "name": "GET /live/tower (torre de tempos)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/live/tower",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "live",
+                "tower"
+              ],
+              "query": []
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 ou 404', function () {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "  pm.test('Torre estruturada', function () {",
+                  "    var b = pm.response.json();",
+                  "    pm.expect(b.drivers).to.be.an('array');",
+                  "    pm.expect(b.session).to.have.property('meeting_name');",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
