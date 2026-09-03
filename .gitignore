@@ -19,3 +19,4 @@ instance/
 
 # pasta não relacionada
 outro-projeto/
+.vercel/

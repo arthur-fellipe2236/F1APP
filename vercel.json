@@ -1,0 +1,7 @@
+{
+  "installCommand": "cd f1-app && npm install",
+  "buildCommand": "cd f1-app && npm run build",
+  "outputDirectory": "f1-app/dist",
+  "framework": "vite",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
