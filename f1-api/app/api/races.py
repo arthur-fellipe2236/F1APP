@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta, timezone
-from time import time
 
 from flask import Blueprint, jsonify, request
 
@@ -8,12 +7,12 @@ from sqlalchemy import desc
 from .. import f1site, openf1
 from ..extensions import db
 from ..models import Race, RaceResult
+from .. import cache as app_cache
 from .helpers import ApiError, get_or_404, paginate, parse_int
 from .live import session_state
 
 bp = Blueprint("races", __name__)
 
-_NEXT_RACE_CACHE = {"ts": 0.0, "payload": None}
 NEXT_RACE_TTL = 300
 
 
@@ -193,9 +192,9 @@ def next_race():
             schema:
               $ref: '#/components/schemas/Error'
     """
-    cached = _NEXT_RACE_CACHE
-    if cached["payload"] is not None and time() - cached["ts"] < NEXT_RACE_TTL:
-        return jsonify(cached["payload"])
+    cached = app_cache.get("next-race")
+    if cached is not None:
+        return jsonify(cached)
     try:
         payload = _next_race_payload()
     except (f1site.F1SiteError, openf1.OpenF1Error) as exc:
@@ -204,8 +203,7 @@ def next_race():
         )
     if payload is None:
         raise ApiError("Nenhuma proxima corrida encontrada", 404)
-    cached["payload"] = payload
-    cached["ts"] = time()
+    app_cache.set("next-race", payload, NEXT_RACE_TTL)
     return jsonify(payload)
 
 

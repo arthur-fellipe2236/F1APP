@@ -293,9 +293,9 @@ class TestNextRace:
 
     def test_combines_site_and_openf1(self, client, monkeypatch):
         from app import f1site, openf1
-        from app.api import races as races_api
+        from app import cache as cache_mod
 
-        races_api._NEXT_RACE_CACHE["payload"] = None
+        cache_mod._memory.clear()
         future = date.today() + timedelta(days=20)
         entry = {
             "slug": "testland", "country": "Testland", "round": 99,
@@ -333,9 +333,9 @@ class TestNextRace:
 
     def test_weekend_only_when_openf1_down(self, client, monkeypatch):
         from app import f1site, openf1
-        from app.api import races as races_api
+        from app import cache as cache_mod
 
-        races_api._NEXT_RACE_CACHE["payload"] = None
+        cache_mod._memory.clear()
         future = date.today() + timedelta(days=20)
         entry = {
             "slug": "testland", "country": "Testland", "round": 99,
@@ -644,9 +644,10 @@ class TestLive:
         from app import openf1
         from app.api import live as live_mod
 
-        live_mod._meta_cache.clear()
-        live_mod._finished_towers.clear()
-        live_mod._scheduled_towers.clear()
+        from app import cache as cache_mod
+
+        cache_mod._memory.clear()
+        cache_mod._cache_state = getattr(cache_mod, "_cache_state", None)
 
         session = {
             "session_key": 4242,
@@ -772,9 +773,9 @@ class TestLive:
         from app import openf1
         from app.api import live
 
-        live._meta_cache.clear()
-        live._finished_towers.clear()
-        live._scheduled_towers.clear()
+        from app import cache as cache_mod
+
+        cache_mod._memory.clear()
         now = datetime(2026, 9, 3, 12, 0, 0, tzinfo=timezone.utc)
         monkeypatch.setattr(live, "_now_utc", lambda: now)
 
@@ -1338,3 +1339,63 @@ class TestPostSync:
 
             ferrari = Team.query.filter_by(name="Ferrari").first()
             assert ferrari.base_country == "Italia"  # seed nao e sobrescrito
+
+
+class TestMedia:
+    def _png(self, w=900, h=600):
+        import io
+
+        from PIL import Image
+
+        buf = io.BytesIO()
+        Image.new("RGB", (w, h), (10, 20, 30)).save(buf, "PNG")
+        return buf.getvalue()
+
+    def test_rejects_foreign_host(self, client):
+        resp = client.get(
+            "/api/v1/media/proxy?url=https://evil.example/a.png"
+        )
+        assert resp.status_code == 400
+
+    def test_optimizes_to_webp_and_serves(self, client, monkeypatch):
+        import io
+
+        from app.api import media as media_mod
+
+        media_mod._image_cache.clear()
+        png = self._png()
+
+        class FakeResponse:
+            status_code = 200
+            content = png
+
+        monkeypatch.setattr(media_mod.requests, "get", lambda *a, **k: FakeResponse())
+        monkeypatch.setattr(media_mod.blob, "enabled", lambda: False)
+        resp = client.get(
+            "/api/v1/media/proxy?url=https://flagcdn.com/w640/it.png&w=100"
+        )
+        assert resp.status_code == 200
+        assert resp.headers["Content-Type"] == "image/webp"
+        assert resp.data[:4] == b"RIFF"
+
+        from PIL import Image
+
+        shrunk = Image.open(io.BytesIO(resp.data))
+        assert shrunk.width == 100
+        assert len(resp.data) < len(png)
+
+    def test_redirects_to_original_on_source_failure(self, client, monkeypatch):
+        from app.api import media as media_mod
+
+        media_mod._image_cache.clear()
+
+        def boom(*a, **k):
+            raise media_mod.requests.RequestException("fora")
+
+        monkeypatch.setattr(media_mod.requests, "get", boom)
+        resp = client.get(
+            "/api/v1/media/proxy?url=https://media.formula1.com/x.png&w=64",
+            follow_redirects=False,
+        )
+        assert resp.status_code == 302
+        assert "media.formula1.com" in resp.headers["Location"]

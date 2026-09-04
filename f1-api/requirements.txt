@@ -5,4 +5,7 @@ requests>=2.32
 flasgger>=0.9.7
 apispec>=6.8
 PyYAML>=6.0
+psycopg2-binary>=2.9
+redis>=5.0
+Pillow>=10.0
 pytest>=8.0

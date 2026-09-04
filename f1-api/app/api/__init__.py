@@ -14,6 +14,7 @@ def register_api(app):
         sync,
         news,
         live,
+        media,
     )
 
     for module in (
@@ -26,6 +27,7 @@ def register_api(app):
         sync,
         news,
         live,
+        media,
     ):
         api_bp.register_blueprint(module.bp)
     app.register_blueprint(api_bp)

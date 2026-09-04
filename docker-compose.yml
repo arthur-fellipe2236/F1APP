@@ -6,6 +6,11 @@ services:
       - "5000:5000"
     environment:
       PORT: "5000"
+      # definidos em .env (Supabase Postgres / Vercel Redis / Vercel Blob);
+      # tudo degrada graciosamente se ausente
+      F1_DATABASE_URI: ${F1_DATABASE_URI:-sqlite:////app/instance/f1.db}
+      REDIS_URL: ${REDIS_URL:-}
+      BLOB_READ_WRITE_TOKEN: ${BLOB_READ_WRITE_TOKEN:-}
     volumes:
       - ./f1-api/app:/app/app
       - ./f1-api/run.py:/app/run.py
@@ -13,9 +18,9 @@ services:
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/api/v1/health')"]
       interval: 10s
-      timeout: 3s
-      retries: 5
-      start_period: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
 
   f1-app:
     build: ./f1-app

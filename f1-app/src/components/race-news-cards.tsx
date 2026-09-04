@@ -14,6 +14,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { useApi } from "@/hooks/use-api"
 import { api, type NewsItem } from "@/lib/api"
+import { mediaUrl } from "@/lib/media"
 
 const newsDate = new Intl.DateTimeFormat("pt-BR", {
   day: "2-digit",
@@ -32,7 +33,7 @@ function CardImage({
   if (item.image) {
     return (
       <img
-        src={item.image}
+        src={mediaUrl(item.image, 640) ?? item.image}
         alt=""
         aria-hidden
         loading="lazy"

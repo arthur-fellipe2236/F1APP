@@ -231,6 +231,7 @@ TEMPLATE = {
         {"name": "Sync", "description": "Sincronizacao de dados com a OpenF1"},
         {"name": "News", "description": "Noticias do site oficial formula1.com"},
         {"name": "Live", "description": "Live timing (torre de tempos da OpenF1)"},
+        {"name": "Media", "description": "Proxy de imagens otimizadas (WebP/Blob)"},
     ],
     "components": {"schemas": SCHEMAS},
 }

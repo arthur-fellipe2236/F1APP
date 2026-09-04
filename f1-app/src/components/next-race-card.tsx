@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useApi } from "@/hooks/use-api"
 import { api, type LiveSessionEntry, type NextRace } from "@/lib/api"
 import { flagFromCountry } from "@/lib/assets"
+import { mediaUrl } from "@/lib/media"
 import { cn } from "@/lib/utils"
 
 const SESSION_SHORT: Record<string, string> = {
@@ -146,7 +147,7 @@ export function NextRaceCard() {
     ) ?? null
   const target = nextSession?.date_start ?? data.race_start
   const targetIsRace = (nextSession?.name ?? "Race") === "Race"
-  const flag = flagFromCountry(data.country, 640)
+  const flag = mediaUrl(flagFromCountry(data.country, 640), 640)
 
   return (
     <Card className="relative overflow-hidden border-black/10 bg-card text-card-foreground shadow-md dark:bg-card">

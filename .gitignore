@@ -8,6 +8,13 @@ __pycache__/
 # Node / build
 node_modules/
 dist/
+
+# segredos / env locais / ferramentas
+.env
+.env.*
+!.env.example
+.vercel
+.vercel/
 *.local
 
 # gerados em runtime
@@ -19,4 +26,4 @@ instance/
 
 # pasta não relacionada
 outro-projeto/
-.vercel/
+.env*

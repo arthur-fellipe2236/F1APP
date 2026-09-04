@@ -5,11 +5,11 @@ tempos com intervalo, posicao, pneus, bandeira, clima e mensagens de
 race control. Janelas de data mantem as respostas pequenas durante live.
 """
 
-import time
 from datetime import datetime, timedelta, timezone
 
 from flask import Blueprint, jsonify, request
 
+from .. import cache as app_cache
 from .. import openf1
 from .helpers import ApiError, parse_int
 
@@ -18,26 +18,19 @@ bp = Blueprint("live", __name__)
 LIVE_BUFFER = timedelta(minutes=15)
 WINDOW = timedelta(minutes=7)
 
-# Torres de sessoes encerradas sao imutaveis: cache para trocar de etapa
-# instantaneamente. Live nunca e cacheado; agendadas tem cache curto.
-_finished_towers = {}
-_scheduled_towers = {}
-SCHEDULED_CACHE_SECONDS = 120
-
-# Metadados de sessoes/reunioes mudam raramente: cache de 5 min para nao
-# esgotar o rate limit da OpenF1 ao navegar entre praticas/qualys.
-_CACHE_TTL = 300
-_meta_cache = {}
+# Torres encerradas sao imutaveis (cache longa); ao vivo nunca e cacheado;
+# agendadas e metadados tem cache curto. Redis quando REDIS_URL existir.
+TOWER_FINISHED_TTL = 7 * 24 * 3600
+TOWER_SCHEDULED_TTL = 120
+META_TTL = 300
 
 
 def _cached(key, loader):
-    now = time.time()
-    hit = _meta_cache.get(key)
-    if hit and now - hit[0] < _CACHE_TTL:
-        return hit[1]
-    value = loader()
-    _meta_cache[key] = (now, value)
-    return value
+    return app_cache.cache_get_or_set(
+        f"live:{':'.join(map(str, key)) if isinstance(key, tuple) else key}",
+        META_TTL,
+        loader,
+    )
 
 
 def _parse_dt(value):
@@ -67,10 +60,9 @@ def _meetings_for_year(year):
 
 def _session_by_key(session_key):
     key = ("session", session_key)
-    now = time.time()
-    hit = _meta_cache.get(key)
-    if hit and now - hit[0] < _CACHE_TTL:
-        return hit[1]
+    hit = app_cache.get(f"live:{key[0]}:{key[1]}")
+    if hit is not None:
+        return hit
     for year in (_now_utc().year, _now_utc().year - 1):
         found = next(
             (
@@ -81,7 +73,7 @@ def _session_by_key(session_key):
             None,
         )
         if found:
-            _meta_cache[key] = (now, found)
+            app_cache.set(f"live:{key[0]}:{key[1]}", found, META_TTL)
             return found
     return None
 
@@ -416,26 +408,21 @@ def live_tower():
     if detected is None:
         raise ApiError("Nenhuma sessao disponivel no momento", 404)
     sk = detected["session_key"]
-    if state == "finished" and sk in _finished_towers:
-        return jsonify(_finished_towers[sk])
-    if state == "scheduled":
-        cached = _scheduled_towers.get(sk)
-        if cached and time.time() - cached[0] < SCHEDULED_CACHE_SECONDS:
-            return jsonify(cached[1])
+    tower_key = f"live:tower:{sk}"
+    if state in {"finished", "scheduled"}:
+        cached = app_cache.get(tower_key)
+        if cached is not None:
+            return jsonify(cached)
     try:
         if state == "scheduled":
             tower = _scheduled_tower(detected)
-            if len(_scheduled_towers) > 60:
-                _scheduled_towers.clear()
-            _scheduled_towers[sk] = (time.time(), tower)
+            app_cache.set(tower_key, tower, TOWER_SCHEDULED_TTL)
             return jsonify(tower)
         tower = _build_tower(detected, state)
     except openf1.OpenF1Error as exc:
         raise ApiError(f"OpenF1 indisponivel: {exc}", 503)
     if state == "finished":
-        if len(_finished_towers) > 60:
-            _finished_towers.clear()
-        _finished_towers[sk] = tower
+        app_cache.set(tower_key, tower, TOWER_FINISHED_TTL)
     return jsonify(tower)
 
 

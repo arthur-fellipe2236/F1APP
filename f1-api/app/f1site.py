@@ -6,12 +6,12 @@ corrida vem da OpenF1 (mesma base de todo o app).
 """
 
 import re
-import threading
-import time
 from datetime import date
 from html import unescape
 
 import requests
+
+from . import cache as app_cache
 
 SCHEDULE_URL = "https://www.formula1.com/en/racing/{year}"
 NEWS_URL = "https://www.formula1.com/en/latest"
@@ -48,9 +48,6 @@ MONTHS = {
     )
 }
 
-_cache = {"ts": 0.0, "payload": None}
-_news_cache = {}
-_lock = threading.Lock()
 CACHE_SECONDS = 300
 
 
@@ -146,33 +143,28 @@ def parse_news(html):
 def fetch_news(limit=20, deep=False):
     depth = "deep" if deep else "shallow"
     pages = range(1, 9) if deep else range(1, 4)
-    cache = _news_cache.setdefault(depth, {"ts": 0.0, "payload": None})
-    now = time.time()
-    with _lock:
-        if cache["payload"] and now - cache["ts"] < CACHE_SECONDS:
-            return [dict(a) for a in cache["payload"]][:limit]
 
-    articles = []
-    seen = set()
-    for page in pages:
-        url = NEWS_URL if page == 1 else f"{NEWS_URL}?page={page}"
-        try:
-            html = _fetch_html(url)
-        except F1SiteError:
-            if articles:
-                break
-            raise
-        for article in parse_news(html):
-            if article["id"] in seen:
-                continue
-            seen.add(article["id"])
-            articles.append(article)
+    def produce():
+        articles = []
+        seen = set()
+        for page in pages:
+            url = NEWS_URL if page == 1 else f"{NEWS_URL}?page={page}"
+            try:
+                html = _fetch_html(url)
+            except F1SiteError:
+                if articles:
+                    break
+                raise
+            for article in parse_news(html):
+                if article["id"] in seen:
+                    continue
+                seen.add(article["id"])
+                articles.append(article)
+        return articles
 
-    with _lock:
-        if len(cache["payload"] or []) < len(articles):
-            cache["ts"] = time.time()
-            cache["payload"] = articles
-    return articles[:limit]
+    return [dict(a) for a in app_cache.cache_get_or_set(
+        f"site:news:{depth}", CACHE_SECONDS, produce
+    )][:limit]
 
 
 def fetch_series_news(tag, limit=48, pages=3):
@@ -181,47 +173,38 @@ def fetch_series_news(tag, limit=48, pages=3):
     O href da tag (tags/f2.<id>) e resolvido dinamicamente na pagina de
     noticias para sobreviver a trocas de id.
     """
-    cache_key = f"tag:{tag}"
-    cache = _news_cache.setdefault(
-        cache_key, {"ts": 0.0, "payload": None}
-    )
-    now = time.time()
-    with _lock:
-        if cache["payload"] and now - cache["ts"] < CACHE_SECONDS:
-            return [dict(a) for a in cache["payload"]][:limit]
+    def produce():
+        home = _fetch_html(NEWS_URL)
+        match = re.search(
+            r"latest/tags/" + re.escape(tag) + r"\.([A-Za-z0-9_-]{16,40})",
+            home,
+        )
+        if match is None:
+            return []
+        base = (
+            "https://www.formula1.com/en/latest/tags/"
+            f"{tag}.{match.group(1)}"
+        )
+        articles = []
+        seen = set()
+        for page in range(1, pages + 1):
+            url = base if page == 1 else f"{base}?page={page}"
+            try:
+                html = _fetch_html(url)
+            except F1SiteError:
+                if articles:
+                    break
+                raise
+            for article in parse_news(html):
+                if article["id"] in seen:
+                    continue
+                seen.add(article["id"])
+                articles.append(article)
+        return articles
 
-    home = _fetch_html(NEWS_URL)
-    match = re.search(
-        r"latest/tags/" + re.escape(tag) + r"\.([A-Za-z0-9_-]{16,40})",
-        home,
-    )
-    if match is None:
-        return []
-    base = (
-        "https://www.formula1.com/en/latest/tags/"
-        f"{tag}.{match.group(1)}"
-    )
-
-    articles = []
-    seen = set()
-    for page in range(1, pages + 1):
-        url = base if page == 1 else f"{base}?page={page}"
-        try:
-            html = _fetch_html(url)
-        except F1SiteError:
-            if articles:
-                break
-            raise
-        for article in parse_news(html):
-            if article["id"] in seen:
-                continue
-            seen.add(article["id"])
-            articles.append(article)
-
-    with _lock:
-        cache["ts"] = time.time()
-        cache["payload"] = articles
-    return articles[:limit]
+    return [dict(a) for a in app_cache.cache_get_or_set(
+        f"site:tag:{tag}", CACHE_SECONDS, produce
+    )][:limit]
 
 
 ARTICLE_PARA_RE = re.compile(r"<p[^>]*>(.*?)</p>", re.S)
@@ -274,20 +257,30 @@ def fetch_article(url):
 def upcoming_rounds(ref=None):
     """Rodadas do calendario oficial com fim de semana em ou depois de hoje."""
     ref = ref or date.today()
-    with _lock:
-        cached = _cache.get("payload")
-        if cached and time.time() - _cache["ts"] < CACHE_SECONDS:
-            entries = cached
-        else:
-            entries = []
-            for year in (ref.year, ref.year + 1):
-                try:
-                    entries.extend(
-                        parse_schedule(_fetch_html(SCHEDULE_URL.format(year=year)))
+    entries = []
+    for year in (ref.year, ref.year + 1):
+        try:
+            raw = app_cache.cache_get_or_set(
+                f"site:schedule:{year}",
+                CACHE_SECONDS,
+                lambda y=year: [
+                    {
+                        **e,
+                        "weekend_start": e["weekend_start"].isoformat(),
+                        "weekend_end": e["weekend_end"].isoformat(),
+                    }
+                    for e in parse_schedule(
+                        _fetch_html(SCHEDULE_URL.format(year=y))
                     )
-                except F1SiteError:
-                    if not entries:
-                        raise
-            _cache["payload"] = entries
-            _cache["ts"] = time.time()
-    return [entry for entry in entries if entry["weekend_end"] >= ref]
+                ],
+            )
+        except F1SiteError:
+            if entries:
+                continue
+            raise
+        for e in raw:
+            entry = dict(e)
+            entry["weekend_start"] = date.fromisoformat(entry["weekend_start"])
+            entry["weekend_end"] = date.fromisoformat(entry["weekend_end"])
+            entries.append(entry)
+    return [e for e in entries if e["weekend_end"] >= ref]

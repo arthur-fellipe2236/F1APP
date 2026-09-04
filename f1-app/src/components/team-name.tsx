@@ -1,4 +1,6 @@
 import { teamLogo } from "@/lib/assets"
+import { mediaUrl } from "@/lib/media"
+import { cn } from "@/lib/utils"
 
 function initials(name: string): string {
   const words = name.split(/\s+/).filter(Boolean)
@@ -8,8 +10,6 @@ function initials(name: string): string {
       : name.slice(0, 2)
   return letters.toUpperCase().slice(0, 3)
 }
-
-import { cn } from "@/lib/utils"
 
 export function TeamInline({ name }: { name: string | null }) {
   if (!name) return <span>—</span>
@@ -56,7 +56,7 @@ export function TeamName({ name }: { name: string }) {
   return (
     <span className="relative flex min-h-9 items-center pl-11">
       <img
-        src={logo.url}
+        src={mediaUrl(logo.url, 160) ?? logo.url}
         alt=""
         aria-hidden
         loading="lazy"

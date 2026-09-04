@@ -26,6 +26,7 @@ import { useSeasons } from "@/hooks/use-seasons"
 import { api, type DriverStanding, type TeamStanding } from "@/lib/api"
 import { teamLogo } from "@/lib/assets"
 import { formatPoints } from "@/lib/format"
+import { mediaUrl } from "@/lib/media"
 import { cn } from "@/lib/utils"
 
 const driverColumns: TableColumn<DriverStanding>[] = [
@@ -109,7 +110,7 @@ function LeaderAvatar({ driver }: { driver: DriverStanding }) {
   }
   return (
     <img
-      src={driver.headshot_url}
+      src={mediaUrl(driver.headshot_url, 112) ?? driver.headshot_url}
       alt={driver.driver_name}
       loading="lazy"
       onError={() => setBroken(true)}
@@ -133,7 +134,7 @@ function TeamBadge({ name }: { name: string }) {
   }
   return (
     <img
-      src={logo.url}
+      src={mediaUrl(logo.url, 160) ?? logo.url}
       alt=""
       aria-hidden
       loading="lazy"
