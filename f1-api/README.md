@@ -58,6 +58,15 @@ Com **Docker** (sobe API + frontend juntos, a partir da raiz do repositório):
 docker compose up -d --build     # API em :5000, app React em :5173
 ```
 
+## Segredos
+
+- Credenciais (Supabase/Postgres, Vercel Redis e Vercel Blob) vivem em `.env`
+  na raiz do repositório — **gitignored**; copie de `.env.example`.
+- Na Vercel, todas as envs da `f1-app` estão como **Encrypted/Sensitive**;
+  `NEXT_PUBLIC_*` também (só precisam existir no build).
+- Nunca coloque chaves em código, commits ou issues; se um token vazar,
+  rotacione (GitHub PATs, Vercel Tokens, Supabase API Keys/DB password).
+
 Variáveis: `F1_DATABASE_URI` (URI do banco), `PORT`, `F1_SYNC_SEASONS`
 (padrão: `2022` até o ano corrente), `F1_DEMO_SEASONS` (força seed
 demonstrativo para temporadas listadas; padrão: nenhuma), `F1_SYNC_FASTEST_LAP`
