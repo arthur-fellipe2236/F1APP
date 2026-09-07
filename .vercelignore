@@ -1,0 +1,10 @@
+node_modules
+f1-app/node_modules
+f1-app/dist
+f1-api/.venv
+f1-api/instance
+f1-api/.pytest_cache
+__pycache__
+.vercel
+outro-projeto
+*.db
