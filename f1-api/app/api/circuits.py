@@ -26,12 +26,12 @@ def _winner_for(circuit_id, season=None, race_type="feature"):
             return None
             
         sprint_winners = {
-            "Shanghai International Circuit": "Andrea Kimi Antonelli", # Wait, user said China is George Russell! Let's follow user:
             "Shanghai International Circuit": "George Russell",
             "Miami International Autodrome": "Lando Norris",
             "Circuit Gilles-Villeneuve": "George Russell",
             "Silverstone Circuit": "Andrea Kimi Antonelli",
-            "Circuit Zandvoort": "George Russell"
+            "Circuit Zandvoort": "George Russell",
+            "Marina Bay Street Circuit": "Max Verstappen",
         }
         
         w_name = sprint_winners.get(circuit.name)
