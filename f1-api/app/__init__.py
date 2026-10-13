@@ -10,9 +10,15 @@ from .api.helpers import ApiError
 
 def create_app(config_overrides=None):
     app = Flask(__name__)
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-        "F1_DATABASE_URI", "sqlite:///f1.db"
-    )
+    db_uri = os.environ.get("F1_DATABASE_URI", "sqlite:///f1.db")
+    if "postgresql" in db_uri:
+        try:
+            import psycopg2
+        except ImportError:
+            basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            db_uri = f"sqlite:///{os.path.join(basedir, 'instance', 'f1.db')}"
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.json.sort_keys = False
 

@@ -35,7 +35,7 @@ export function FantasyPage() {
 
   useEffect(() => {
     api.races({ series, season: seasonParam, per_page: 30 }).then(res => {
-      const fetchedRaces = res.data
+      const fetchedRaces = res?.data || []
       setRaces(fetchedRaces)
       
       const now = new Date()
@@ -46,8 +46,8 @@ export function FantasyPage() {
       } else if (fetchedRaces.length > 0) {
         setSelectedRaceId(fetchedRaces[fetchedRaces.length - 1].id)
       }
-    })
-    api.drivers({ series, season: seasonParam, per_page: 50 }).then(res => setDrivers(res.data))
+    }).catch(err => console.error("Fantasy races error:", err))
+    api.drivers({ series, season: seasonParam, per_page: 50 }).then(res => setDrivers(res?.data || [])).catch(err => console.error("Fantasy drivers error:", err))
     
     // Load Leaderboard
     const url = activeLeague === "global" 

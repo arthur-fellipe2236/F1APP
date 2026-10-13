@@ -3,6 +3,7 @@ import { CalendarClock, CloudRain, Wind, Thermometer, Flag, MonitorPlay } from "
 
 import { PageHeader } from "@/components/page-header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { api } from "@/lib/api"
 
 export interface LiveData {
   session?: {
@@ -53,13 +54,12 @@ export function LiveTimingPage() {
   useEffect(() => {
     const fetchLiveData = async () => {
       try {
-        const response = await fetch("/api/v1/live/tower")
-        const data = await response.json()
-        setLiveData(data)
+        const data = await api.liveTower()
+        if (data && data.session) {
+          setLiveData(data as any)
+        }
       } catch (error) {
         console.error("Failed to fetch live data:", error)
-      } finally {
-        
       }
     }
 

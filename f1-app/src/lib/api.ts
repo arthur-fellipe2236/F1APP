@@ -237,8 +237,11 @@ async function request<T>(path: string): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`)
   const body = (await res.json().catch(() => null)) as
     (T & { error?: string }) | null
-  if (!res.ok) {
-    throw new ApiError(body?.error ?? `Erro HTTP ${res.status}`, res.status)
+  if (!res.ok || body === null) {
+    throw new ApiError(
+      body?.error ?? `Erro na resposta da API (${res.status})`,
+      res.status
+    )
   }
   return body as T
 }

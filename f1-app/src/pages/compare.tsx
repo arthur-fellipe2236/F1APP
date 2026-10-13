@@ -15,14 +15,17 @@ export function ComparePage() {
   const [statsB, setStatsB] = useState<any>(null)
 
   useEffect(() => {
-    api.drivers({ series, season: Number(season) || 2024, per_page: 50 }).then(res => setDrivers(res.data))
+    api.drivers({ series, season: Number(season) || 2024, per_page: 50 })
+      .then(res => setDrivers(res?.data || []))
+      .catch(err => console.error("Compare drivers error:", err))
   }, [series, season])
 
   useEffect(() => {
     if (driverA) {
       fetch(`/api/v1/drivers/${driverA}/stats`)
         .then(res => res.json())
-        .then(data => setStatsA(data))
+        .then(data => { if (data?.driver) setStatsA(data) })
+        .catch(err => console.error("Error fetching statsA:", err))
     }
   }, [driverA])
 
@@ -30,11 +33,12 @@ export function ComparePage() {
     if (driverB) {
       fetch(`/api/v1/drivers/${driverB}/stats`)
         .then(res => res.json())
-        .then(data => setStatsB(data))
+        .then(data => { if (data?.driver) setStatsB(data) })
+        .catch(err => console.error("Error fetching statsB:", err))
     }
   }, [driverB])
 
-  const chartData = statsA && statsB ? [
+  const chartData = (statsA?.driver?.name && statsB?.driver?.name) ? [
     {
       name: "Corridas",
       [statsA.driver.name]: statsA.total_races,

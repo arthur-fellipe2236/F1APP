@@ -29,15 +29,15 @@ function NextRaceHero({ season, series }: { season: number | undefined, series: 
 
   useEffect(() => {
     if (!season || series !== "f1") return
-    fetch(`/api/v1/live/sessions?year=${season}`)
-      .then(r => r.json())
+    api.liveSessions(season)
       .then(res => {
+         if (!res?.data) return
          const now = new Date()
          const upcoming = res.data.find((m: any) => new Date(m.date_end) > now)
          if (upcoming) {
            setNextMeeting(upcoming)
-           const nextS = upcoming.sessions.find((s: any) => new Date(s.date_start) > now)
-           setNextSession(nextS || upcoming.sessions[upcoming.sessions.length - 1])
+           const nextS = upcoming.sessions?.find((s: any) => new Date(s.date_start) > now)
+           setNextSession(nextS || upcoming.sessions?.[upcoming.sessions.length - 1] || null)
          }
       })
       .catch(err => console.error("Failed to fetch next race:", err))

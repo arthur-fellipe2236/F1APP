@@ -1,0 +1,200 @@
+[
+  {
+    "position": "1",
+    "driver": "VER",
+    "compound": "MEDIUM",
+    "gap": "\u2014",
+    "interval": "\u2014",
+    "laps": "62",
+    "in_pit": false
+  },
+  {
+    "position": "2",
+    "driver": "LEC",
+    "compound": "SOFT",
+    "gap": "+7.335",
+    "interval": "+7.335",
+    "laps": "62",
+    "in_pit": false
+  },
+  {
+    "position": "3",
+    "driver": "ANT\n1",
+    "compound": "SOFT",
+    "gap": "+24.573",
+    "interval": "+17.238",
+    "laps": "62",
+    "in_pit": false
+  },
+  {
+    "position": "4",
+    "driver": "NOR\n1",
+    "compound": "MEDIUM",
+    "gap": "+40.506",
+    "interval": "+15.933",
+    "laps": "62",
+    "in_pit": false
+  },
+  {
+    "position": "5",
+    "driver": "PIA\n1",
+    "compound": "SOFT",
+    "gap": "+49.644",
+    "interval": "+9.138",
+    "laps": "62",
+    "in_pit": false
+  },
+  {
+    "position": "6",
+    "driver": "HAM\n3",
+    "compound": "SOFT",
+    "gap": "+53.188",
+    "interval": "+3.544",
+    "laps": "62",
+    "in_pit": false
+  },
+  {
+    "position": "7",
+    "driver": "LAW\n1",
+    "compound": "MEDIUM",
+    "gap": "+81.666",
+    "interval": "+28.478",
+    "laps": "62",
+    "in_pit": false
+  },
+  {
+    "position": "8",
+    "driver": "HUL\n2",
+    "compound": "SOFT",
+    "gap": "+83.386",
+    "interval": "+1.720",
+    "laps": "62",
+    "in_pit": false
+  },
+  {
+    "position": "9",
+    "driver": "RUS\n10",
+    "compound": "SOFT",
+    "gap": "+84.677",
+    "interval": "+1.291",
+    "laps": "62",
+    "in_pit": false
+  },
+  {
+    "position": "10",
+    "driver": "HAD\n12",
+    "compound": "SOFT",
+    "gap": "+90.862",
+    "interval": "+6.185",
+    "laps": "62",
+    "in_pit": false
+  },
+  {
+    "position": "11",
+    "driver": "GAS\n4",
+    "compound": "SOFT",
+    "gap": "+1 lap",
+    "interval": "+12.066",
+    "laps": "61",
+    "in_pit": false
+  },
+  {
+    "position": "12",
+    "driver": "BEA\n1",
+    "compound": "MEDIUM",
+    "gap": "+1 lap",
+    "interval": "+2.835",
+    "laps": "61",
+    "in_pit": false
+  },
+  {
+    "position": "13",
+    "driver": "OCO\n1",
+    "compound": "MEDIUM",
+    "gap": "+1 lap",
+    "interval": "+20.641",
+    "laps": "61",
+    "in_pit": false
+  },
+  {
+    "position": "14",
+    "driver": "SAI\n1",
+    "compound": "MEDIUM",
+    "gap": "+1 lap",
+    "interval": "+32.492",
+    "laps": "61",
+    "in_pit": false
+  },
+  {
+    "position": "15",
+    "driver": "LIN\n6",
+    "compound": "SOFT",
+    "gap": "+1 lap",
+    "interval": "+2.811",
+    "laps": "61",
+    "in_pit": false
+  },
+  {
+    "position": "16",
+    "driver": "ALO\n4",
+    "compound": "MEDIUM",
+    "gap": "+1 lap",
+    "interval": "+13.504",
+    "laps": "61",
+    "in_pit": false
+  },
+  {
+    "position": "17",
+    "driver": "PER",
+    "compound": "SOFT",
+    "gap": "+2 laps",
+    "interval": "+47.680",
+    "laps": "60",
+    "in_pit": false
+  },
+  {
+    "position": "18",
+    "driver": "ALB\n2",
+    "compound": "SOFT",
+    "gap": "DNF",
+    "interval": "\u2014",
+    "laps": "59",
+    "in_pit": false
+  },
+  {
+    "position": "19",
+    "driver": "BOT\n1",
+    "compound": "SOFT",
+    "gap": "+3 laps",
+    "interval": "+95.962",
+    "laps": "59",
+    "in_pit": false
+  },
+  {
+    "position": "NC",
+    "driver": "STR\n1",
+    "compound": "MEDIUM",
+    "gap": "DNF",
+    "interval": "\u2014",
+    "laps": "36",
+    "in_pit": false
+  },
+  {
+    "position": "NC",
+    "driver": "COL\n6",
+    "compound": "MEDIUM",
+    "gap": "DNF",
+    "interval": "\u2014",
+    "laps": "29",
+    "in_pit": false
+  },
+  {
+    "position": "NC",
+    "driver": "BOR\n8",
+    "compound": "MEDIUM",
+    "gap": "DNF",
+    "interval": "\u2014",
+    "laps": "7",
+    "in_pit": false
+  }
+]

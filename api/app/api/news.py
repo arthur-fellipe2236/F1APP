@@ -1,0 +1,428 @@
+import urllib.request
+import xml.etree.ElementTree as ET
+from datetime import date
+
+from flask import Blueprint, jsonify, request
+
+from .. import f1site, series as series_module
+from ..extensions import db
+from ..models import Driver, Race, RaceResult
+from ..summarize import summarize
+from ..translate import translate_many
+from .helpers import ApiError, parse_int
+from .races import _next_race_payload
+
+
+import sqlite3
+import json
+import os
+
+def get_cache_db():
+    db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'instance', 'ai_cache.db')
+    conn = sqlite3.connect(db_path)
+    conn.execute('''CREATE TABLE IF NOT EXISTS article_cache (
+                        url TEXT,
+                        lang TEXT,
+                        count INTEGER,
+                        response_json TEXT,
+                        PRIMARY KEY (url, lang, count)
+                    )''')
+    conn.commit()
+    return conn
+
+bp = Blueprint("news", __name__)
+
+
+
+def _brazilian_driver_terms():
+    """Termos de busca: nomes de pilotos brasileiros com resultado na
+    temporada corrente (ex.: 'bortoleto')."""
+    season = date.today().year
+    drivers = (
+        db.session.query(Driver)
+        .join(RaceResult, RaceResult.driver_id == Driver.id)
+        .join(Race, RaceResult.race_id == Race.id)
+        .filter(
+            Race.season == season,
+            Driver.nationality.in_(["Brasileiro", "Brazilian", "BRA", "BR"]),
+        )
+        .distinct()
+        .all()
+    )
+    terms = set()
+    for driver in drivers:
+        if driver.last_name:
+            terms.add(driver.last_name.lower())
+        if driver.first_name and driver.last_name:
+            terms.add(
+                f"{driver.first_name} {driver.last_name}".lower()
+            )
+    return terms
+
+
+def _translate_items(items):
+    texts = []
+    for item in items:
+        texts.append(item.get("title") or "")
+        texts.append(item.get("meta_description") or "")
+    translated = translate_many(texts)
+    result = []
+    for index, item in enumerate(items):
+        copy = dict(item)
+        copy["title_en"] = item.get("title")
+        copy["title"] = (
+            translated[index * 2] or item.get("title")
+        )
+        copy["meta_description_en"] = item.get("meta_description")
+        copy["meta_description"] = (
+            translated[index * 2 + 1] or item.get("meta_description")
+        )
+        result.append(copy)
+    return result
+
+
+def _race_terms():
+    """Palavras-chave da proxima corrida para priorizar noticias do GP."""
+    try:
+        data = _next_race_payload()
+    except Exception:  # noqa: BLE001
+        return set()
+    if not data:
+        return set()
+    terms = set()
+    for value in (
+        data.get("country"),
+        data.get("circuit"),
+        data.get("location"),
+        (data.get("name") or "").replace(" Grand Prix", ""),
+    ):
+        if value and len(value) > 2:
+            terms.add(value.lower())
+    return terms
+
+
+def _matches(article, terms):
+    text = " ".join(
+        filter(
+            None,
+            [
+                article.get("title"),
+                article.get("meta_description"),
+                article.get("slug"),
+            ],
+        )
+    ).lower()
+    return any(term in text for term in terms)
+
+
+def _matches_brazilian(article, terms):
+    """Estricto: o piloto/nacionalidade precisa aparecer no titulo ou slug."""
+    text = " ".join(
+        filter(
+            None,
+            [article.get("title"), article.get("slug")],
+        )
+    ).lower()
+    if "brazilian" in text or "brasil" in text:
+        return True
+    return any(term in text for term in terms)
+
+
+
+def fetch_rss_news(series="f1", limit=3):
+    rss_slug = "fia-f2" if series == "f2" else series
+    feed_url = f"https://br.motorsport.com/rss/{rss_slug}/news/"
+    req = urllib.request.Request(
+        feed_url, 
+        headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+    )
+    try:
+        response = urllib.request.urlopen(req, timeout=5)
+        xml_data = response.read()
+    except Exception as e:
+        print(f"Error fetching RSS for {series}:", e)
+        return []
+
+    try:
+        root = ET.fromstring(xml_data)
+    except Exception as e:
+        print("XML Parse Error:", e)
+        return []
+    items = []
+    
+    for item in root.findall('./channel/item'):
+        title = item.find('title').text if item.find('title') is not None else ''
+        link = item.find('link').text if item.find('link') is not None else ''
+        desc = item.find('description').text if item.find('description') is not None else ''
+        pubDate = item.find('pubDate').text if item.find('pubDate') is not None else ''
+        guid = item.find('guid').text if item.find('guid') is not None else link
+        
+        enclosure = item.find('enclosure')
+        image = enclosure.get('url') if enclosure is not None else None
+        
+        desc_clean = desc.split('<br>')[0].replace('<![CDATA[', '').replace(']]>', '').strip()
+        if not desc_clean:
+            desc_clean = title
+            
+        items.append({
+            "id": str(guid),
+            "title": title.replace('<![CDATA[', '').replace(']]>', '').strip(),
+            "meta_description": desc_clean,
+            "url": link,
+            "image": image,
+            "article_type": "News",
+            "updated_at": pubDate,
+            "matched": True
+        })
+        
+        if len(items) >= limit:
+            break
+            
+    return items
+
+@bp.get("/news")
+def latest_news():
+    """
+    Ulitimas noticias do site oficial (formula1.com)
+    ---
+    tags:
+      - News
+    parameters:
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 3
+          maximum: 9
+      - in: query
+        name: upcoming
+        schema:
+          type: boolean
+          default: false
+        description: Prioriza noticias relacionadas a proxima corrida
+      - in: query
+        name: lang
+        schema:
+          type: string
+          example: pt-BR
+        description: "Idioma de saida (ex.: pt-BR traduz titulo e resumo)"
+      - in: query
+        name: br_drivers
+        schema:
+          type: boolean
+          default: false
+        description: Somente noticias que citam pilotos BR da temporada atual
+      - in: query
+        name: series
+        schema:
+          type: string
+          enum: [f1, f2, f3]
+          default: f1
+        description: Categoria dos pilotos BR (com br_drivers=1)
+    responses:
+      200:
+        description: Lista de noticias
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      title:
+                        type: string
+                      url:
+                        type: string
+                        example: https://www.formula1.com/en/latest/article/exemplo.5R0ZYizMM9sHZ2raSfLnRX
+                      image:
+                        type: string
+                        nullable: true
+                      article_type:
+                        type: string
+                        example: News
+                      updated_at:
+                        type: string
+                      matched:
+                        type: boolean
+      503:
+        description: Site oficial indisponivel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+    """
+    limit = parse_int(request.args.get("limit"), "limit") or 3
+    limit = max(1, min(limit, 9))
+    upcoming = request.args.get("upcoming", "").lower() in {"1", "true"}
+    br_drivers = request.args.get("br_drivers", "").lower() in {"1", "true"}
+    series = (request.args.get("series") or "f1").lower()
+    
+    if series not in {"f1", "f2", "f3"}:
+        raise ApiError("Parametro 'series' invalido", 400)
+        
+    if br_drivers or series in {"f2", "f3"}:
+        rss_items = fetch_rss_news(series, limit=limit)
+        return jsonify({"data": rss_items, "series": series})
+
+    try:
+        articles = f1site.fetch_news(limit=40)
+    except f1site.F1SiteError as exc:
+        raise ApiError(f"Site oficial indisponivel: {exc}", 503)
+
+    terms = _race_terms() if upcoming else set()
+    if terms:
+        articles.sort(key=lambda article: 0 if _matches(article, terms) else 1)
+
+    items = articles[:limit]
+    for article in items:
+        article["matched"] = bool(terms) and _matches(article, terms)
+        lang = (request.args.get("lang") or "").lower()
+    if lang.startswith("pt"):
+        items = _translate_items(items)
+    return jsonify({"data": items})
+
+
+@bp.get("/news/article")
+def article_summary():
+    """
+    Resumo da materia completa do site oficial
+    ---
+    tags:
+      - News
+    parameters:
+      - in: query
+        name: url
+        required: true
+        schema:
+          type: string
+        description: URL do artigo na formula1.com (obtida de /news)
+      - in: query
+        name: sentences
+        schema:
+          type: integer
+          default: 10
+          minimum: 3
+          maximum: 15
+      - in: query
+        name: lang
+        schema:
+          type: string
+          example: pt-BR
+        description: "Idioma do resumo (pt-BR traduz as frases)"
+    responses:
+      200:
+        description: Resumo extrativo da materia
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                url:
+                  type: string
+                sentences:
+                  type: integer
+                summary:
+                  type: array
+                  items:
+                    type: string
+                summary_en:
+                  type: array
+                  items:
+                    type: string
+      400:
+        description: URL ausente ou invalida
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      503:
+        description: Site oficial indisponivel ou artigo sem texto
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+    """
+    url = request.args.get("url") or ""
+    is_motorsport = "motorsport.uol.com.br" in url
+    if not url.startswith(f1site.ARTICLE_URL_PREFIX) and not is_motorsport:
+        raise ApiError(
+            "Parametro 'url' deve apontar para formula1.com ou motorsport.com",
+            400,
+        )
+    count = parse_int(request.args.get("sentences"), "sentences") or 10
+    count = max(3, min(count, 15))
+    lang = (request.args.get("lang") or "").lower()
+    
+    # Check Cache
+    conn = get_cache_db()
+    c = conn.cursor()
+    c.execute("SELECT response_json FROM article_cache WHERE url=? AND lang=? AND count=?", (url, lang, count))
+    cached = c.fetchone()
+    if cached:
+        conn.close()
+        return jsonify(json.loads(cached[0]))
+
+    if is_motorsport:
+        import requests
+        from bs4 import BeautifulSoup
+        try:
+            res = requests.get(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'}, timeout=10)
+            soup = BeautifulSoup(res.text, 'html.parser')
+            paragraphs = [p.get_text(strip=True) for p in soup.find_all('p') if len(p.get_text(strip=True)) > 20]
+            if not paragraphs:
+                raise ApiError("Nao foi possivel extrair o texto da materia", 503)
+            article = {"title": soup.title.string if soup.title else "News", "paragraphs": paragraphs}
+        except Exception as exc:
+            raise ApiError(str(exc), 503)
+    else:
+        try:
+            article = f1site.fetch_article(url)
+        except f1site.F1SiteError as exc:
+            raise ApiError(str(exc), 503)
+        
+    if not article["paragraphs"]:
+        raise ApiError("Nao foi possivel extrair o texto da materia", 503)
+
+    summary_raw = summarize(article["paragraphs"], max_sentences=count)
+    
+    if is_motorsport:
+        summary = summary_raw
+        summary_en = []
+    else:
+        summary_en = summary_raw
+        summary = translate_many(summary_en) if lang.startswith("pt") else summary_en
+
+    response_data = {
+        "title": article["title"],
+        "url": url,
+        "sentences": len(summary_en),
+        "summary": summary,
+        "summary_en": summary_en,
+    }
+
+    # Save to Cache
+    try:
+        c.execute("INSERT OR REPLACE INTO article_cache (url, lang, count, response_json) VALUES (?, ?, ?, ?)", 
+                  (url, lang, count, json.dumps(response_data)))
+        conn.commit()
+    except Exception as e:
+        print("Cache save error:", e)
+    finally:
+        conn.close()
+
+    return jsonify(
+        {
+            "title": article["title"],
+            "url": url,
+            "sentences": len(summary_en),
+            "summary": summary,
+            "summary_en": summary_en,
+        }
+    )
