@@ -1,7 +1,24 @@
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Radio, Play, Pause, Volume2, VolumeX, Loader2 } from "lucide-react"
+import {
+  Radio,
+  Music,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Loader2,
+  ExternalLink,
+  ChevronUp,
+  ChevronDown,
+  Sparkles,
+  Disc3,
+} from "lucide-react"
 import { useAppStore } from "@/store"
 import { cn } from "@/lib/utils"
+
+const SPOTIFY_PLAYLIST_ID = "1gH4FFUMWSI98MKPeBaa8x"
+const SPOTIFY_PLAYLIST_URL = `https://open.spotify.com/playlist/${SPOTIFY_PLAYLIST_ID}`
+const SPOTIFY_EMBED_URL = `https://open.spotify.com/embed/playlist/${SPOTIFY_PLAYLIST_ID}?utm_source=generator&theme=0`
 
 function playRadioChirp(type: "start" | "end" = "start") {
   try {
@@ -43,11 +60,14 @@ function playRadioChirp(type: "start" | "end" = "start") {
 
 export function RadioPlayer() {
   const { series, token } = useAppStore()
+  const [mode, setMode] = useState<"news" | "music">("news")
   const [isPlaying, setIsPlaying] = useState(false)
   const [isMuted, setIsMuted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [scriptSummary, setScriptSummary] = useState<string>("")
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [isMusicExpanded, setIsMusicExpanded] = useState(false)
+  const [isMinimized, setIsMinimized] = useState(false)
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
@@ -84,7 +104,7 @@ export function RadioPlayer() {
 
   const radioSubtitle =
     {
-      f1: "Boletim Diário: Paddock e Equipes",
+      f1: "Boletim Oficial do Paddock",
       f2: "Fórmula 2: O Caminho para a Glória",
       f3: "Fórmula 3: Os Talentos do Futuro",
     }[series] || "Notícias"
@@ -182,90 +202,231 @@ export function RadioPlayer() {
     }
   }
 
-  return (
-    <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2">
-      <div
-        className={cn(
-          "bg-black/85 backdrop-blur-md border rounded-xl shadow-2xl flex items-center p-3 gap-4 transition-all duration-500",
-          isPlaying
-            ? "border-[hsl(var(--primary))] shadow-[0_0_20px_var(--team-glow,rgba(225,6,0,0.4))]"
-            : "border-white/10 hover:border-white/20"
-        )}
-      >
-        <div className="relative flex items-center justify-center h-10 w-10 bg-white/5 rounded-full overflow-hidden shrink-0">
-          {isPlaying && !isMuted ? (
-            <div className="flex items-end gap-[3px] h-4">
-              <div className="w-1 bg-[hsl(var(--primary))] animate-[bounce_0.8s_infinite] h-full rounded-full" />
-              <div className="w-1 bg-[hsl(var(--primary))] animate-[bounce_1.2s_infinite] h-2/3 rounded-full" />
-              <div className="w-1 bg-[hsl(var(--primary))] animate-[bounce_0.9s_infinite] h-4/5 rounded-full" />
-              <div className="w-1 bg-[hsl(var(--primary))] animate-[bounce_1.5s_infinite] h-1/2 rounded-full" />
-            </div>
+  // Minimized pill button
+  if (isMinimized) {
+    return (
+      <div className="fixed bottom-4 right-4 z-50">
+        <button
+          onClick={() => setIsMinimized(false)}
+          className="flex items-center gap-2 px-3 py-2 bg-black/90 backdrop-blur-md border border-white/20 rounded-full shadow-2xl hover:scale-105 transition-all text-white hover:border-[hsl(var(--primary))]"
+          title="Abrir Rádio F1"
+        >
+          {mode === "music" ? (
+            <Disc3 className="h-4 w-4 text-[#1DB954] animate-spin" />
+          ) : isPlaying ? (
+            <Radio className="h-4 w-4 text-red-500 animate-pulse" />
           ) : (
-            <Radio
-              className={cn(
-                "h-5 w-5 transition-colors",
-                isLoading ? "animate-pulse text-white/50" : "text-white/70"
-              )}
-            />
+            <Radio className="h-4 w-4 text-white/80" />
           )}
-        </div>
-
-        <div className="flex flex-col min-w-[170px] max-w-[240px]">
-          <span className="font-f1 text-sm font-bold text-white tracking-wide flex items-center gap-2">
-            {radioName}
-            {isPlaying && (
-              <span className="flex items-center gap-1 text-[10px] uppercase font-mono tracking-wider text-red-400 bg-red-950/60 border border-red-500/40 px-1.5 py-0.5 rounded-full">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
-                No ar
-              </span>
-            )}
+          <span className="font-f1 text-xs font-bold tracking-wide">
+            {mode === "music" ? "F1 Tracks" : radioName}
           </span>
-          <span
-            className={cn(
-              "text-xs truncate transition-colors",
-              errorMessage
-                ? "text-red-400 font-medium"
-                : isPlaying
-                ? "text-white/90 italic"
-                : "text-white/50"
-            )}
-            title={scriptSummary || radioSubtitle}
-          >
-            {errorMessage
-              ? errorMessage
-              : isLoading
-              ? "Sintonizando transmissão..."
-              : isPlaying && scriptSummary
-              ? scriptSummary
-              : radioSubtitle}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2 border-l border-white/10 pl-3 shrink-0">
-          <button
-            onClick={toggleMute}
-            className="p-2 text-white/60 hover:text-[hsl(var(--primary))] transition-colors rounded-lg hover:bg-white/5"
-            title={isMuted ? "Ativar som" : "Mutar áudio"}
-          >
-            {isMuted ? <VolumeX className="h-4 w-4 text-red-400" /> : <Volume2 className="h-4 w-4" />}
-          </button>
-
-          <button
-            onClick={playAudio}
-            disabled={isLoading}
-            className="h-10 w-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-105 active:scale-95 transition-all shadow-md hover:bg-white/90 disabled:opacity-50"
-            title={isPlaying ? "Pausar rádio" : "Ouvir boletim da rádio"}
-          >
-            {isLoading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : isPlaying ? (
-              <Pause className="h-5 w-5 fill-current" />
-            ) : (
-              <Play className="h-5 w-5 fill-current ml-0.5" />
-            )}
-          </button>
-        </div>
+          {isPlaying && (
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+          )}
+        </button>
       </div>
+    );
+  }
+
+  return (
+    <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2 max-w-[95vw] sm:max-w-[420px]">
+      {/* Top Mode Switcher Bar */}
+      <div className="flex items-center justify-between w-full bg-black/90 backdrop-blur-md border border-white/10 px-2 py-1 rounded-xl shadow-lg gap-2">
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setMode("news")}
+            className={cn(
+              "px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5",
+              mode === "news"
+                ? "bg-white/15 text-white shadow-sm border border-white/15"
+                : "text-white/60 hover:text-white hover:bg-white/5"
+            )}
+          >
+            <Radio className="h-3 w-3" />
+            Boletim
+          </button>
+
+          <button
+            onClick={() => setMode("music")}
+            className={cn(
+              "px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5",
+              mode === "music"
+                ? "bg-[#1DB954]/20 text-[#1DB954] border border-[#1DB954]/40 shadow-sm font-semibold"
+                : "text-white/60 hover:text-[#1DB954] hover:bg-white/5"
+            )}
+          >
+            <Music className="h-3 w-3" />
+            F1 Tracks 2026
+          </button>
+        </div>
+
+        <button
+          onClick={() => setIsMinimized(true)}
+          className="text-white/40 hover:text-white p-1 rounded-md text-xs hover:bg-white/5 transition-colors"
+          title="Minimizar Rádio"
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* MODE 1: NOTÍCIAS / BOLETIM DA RÁDIO */}
+      {mode === "news" && (
+        <div
+          className={cn(
+            "bg-black/90 backdrop-blur-md border rounded-xl shadow-2xl flex items-center p-3 gap-3 sm:gap-4 transition-all duration-500 w-full",
+            isPlaying
+              ? "border-[hsl(var(--primary))] shadow-[0_0_20px_var(--team-glow,rgba(225,6,0,0.4))]"
+              : "border-white/10 hover:border-white/20"
+          )}
+        >
+          <div className="relative flex items-center justify-center h-10 w-10 bg-white/5 rounded-full overflow-hidden shrink-0">
+            {isPlaying && !isMuted ? (
+              <div className="flex items-end gap-[3px] h-4">
+                <div className="w-1 bg-[hsl(var(--primary))] animate-[bounce_0.8s_infinite] h-full rounded-full" />
+                <div className="w-1 bg-[hsl(var(--primary))] animate-[bounce_1.2s_infinite] h-2/3 rounded-full" />
+                <div className="w-1 bg-[hsl(var(--primary))] animate-[bounce_0.9s_infinite] h-4/5 rounded-full" />
+                <div className="w-1 bg-[hsl(var(--primary))] animate-[bounce_1.5s_infinite] h-1/2 rounded-full" />
+              </div>
+            ) : (
+              <Radio
+                className={cn(
+                  "h-5 w-5 transition-colors",
+                  isLoading ? "animate-pulse text-white/50" : "text-white/70"
+                )}
+              />
+            )}
+          </div>
+
+          <div className="flex flex-col min-w-0 flex-1">
+            <span className="font-f1 text-sm font-bold text-white tracking-wide flex items-center gap-2">
+              {radioName}
+              {isPlaying && (
+                <span className="flex items-center gap-1 text-[10px] uppercase font-mono tracking-wider text-red-400 bg-red-950/60 border border-red-500/40 px-1.5 py-0.5 rounded-full shrink-0">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
+                  No ar
+                </span>
+              )}
+            </span>
+            <span
+              className={cn(
+                "text-xs truncate transition-colors",
+                errorMessage
+                  ? "text-red-400 font-medium"
+                  : isPlaying
+                  ? "text-white/90 italic"
+                  : "text-white/50"
+              )}
+              title={scriptSummary || radioSubtitle}
+            >
+              {errorMessage
+                ? errorMessage
+                : isLoading
+                ? "Sintonizando transmissão..."
+                : isPlaying && scriptSummary
+                ? scriptSummary
+                : radioSubtitle}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 border-l border-white/10 pl-3 shrink-0">
+            <button
+              onClick={toggleMute}
+              className="p-2 text-white/60 hover:text-[hsl(var(--primary))] transition-colors rounded-lg hover:bg-white/5"
+              title={isMuted ? "Ativar som" : "Mutar áudio"}
+            >
+              {isMuted ? <VolumeX className="h-4 w-4 text-red-400" /> : <Volume2 className="h-4 w-4" />}
+            </button>
+
+            <button
+              onClick={playAudio}
+              disabled={isLoading}
+              className="h-10 w-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-105 active:scale-95 transition-all shadow-md hover:bg-white/90 disabled:opacity-50"
+              title={isPlaying ? "Pausar rádio" : "Ouvir boletim completo"}
+            >
+              {isLoading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : isPlaying ? (
+                <Pause className="h-5 w-5 fill-current" />
+              ) : (
+                <Play className="h-5 w-5 fill-current ml-0.5" />
+              )}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* MODE 2: MÚSICAS MAIS TOCADAS (SPOTIFY F1 TRACKS) */}
+      {mode === "music" && (
+        <div className="w-full bg-black/95 backdrop-blur-md border border-[#1DB954]/30 rounded-2xl shadow-2xl p-3 flex flex-col gap-3 transition-all duration-300">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-full bg-[#1DB954]/20 border border-[#1DB954]/40 flex items-center justify-center">
+                <Music className="w-4 h-4 text-[#1DB954]" />
+              </div>
+              <div>
+                <h4 className="font-f1 text-xs font-bold text-white flex items-center gap-1.5">
+                  F1 Tracks 2026
+                  <span className="text-[10px] text-[#1DB954] bg-[#1DB954]/10 px-1.5 py-0.2 rounded font-sans font-semibold">
+                    Spotify
+                  </span>
+                </h4>
+                <p className="text-[11px] text-white/50">
+                  As músicas mais tocadas do ano no paddock
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setIsMusicExpanded(!isMusicExpanded)}
+                className="p-1.5 text-white/60 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
+                title={isMusicExpanded ? "Modo compacto" : "Expandir playlist"}
+              >
+                {isMusicExpanded ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronUp className="h-4 w-4" />
+                )}
+              </button>
+
+              <a
+                href={SPOTIFY_PLAYLIST_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1.5 text-white/60 hover:text-[#1DB954] rounded-lg hover:bg-white/10 transition-colors"
+                title="Abrir no Spotify"
+              >
+                <ExternalLink className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+
+          {/* Spotify Official Embed Player */}
+          <div className="w-full rounded-xl overflow-hidden bg-black/60 border border-white/5 shadow-inner">
+            <iframe
+              title="Spotify F1 Tracks"
+              src={SPOTIFY_EMBED_URL}
+              width="100%"
+              height={isMusicExpanded ? "352" : "152"}
+              frameBorder="0"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+              className="w-full transition-all duration-300"
+            />
+          </div>
+
+          {/* Footer note */}
+          <div className="flex items-center justify-between text-[10px] text-white/40 pt-1 border-t border-white/5">
+            <span className="flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-[#1DB954]" />
+              Playlist oficial da Fórmula 1
+            </span>
+            <span>100+ faixas</span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
