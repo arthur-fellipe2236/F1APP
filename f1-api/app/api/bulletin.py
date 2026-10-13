@@ -1,66 +1,104 @@
-from flask import Blueprint, jsonify, request
-from .auth import token_required
+import hashlib
+import re
+import urllib.parse
+import urllib.request
+from flask import Blueprint, jsonify, request, Response
+from .auth import optional_token
 from .news import f1site, _translate_items
 from ..models import Team, Driver
 
 bp = Blueprint('bulletin', __name__)
+_audio_cache: dict[str, bytes] = {}
 
-@bp.get('/news/bulletin')
-@token_required
-def get_daily_bulletin(current_user):
-    series = request.args.get('series', 'f1')
-    
+def text_to_mp3(text: str) -> bytes:
+    cache_key = "tts:" + hashlib.md5(text.encode("utf-8")).hexdigest()
+    if cache_key in _audio_cache:
+        return _audio_cache[cache_key]
+
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    chunks = []
+    current = ""
+    for s in sentences:
+        s = s.strip()
+        if not s:
+            continue
+        if len(current) + len(s) + 1 < 170:
+            current = (current + " " + s).strip()
+        else:
+            if current:
+                chunks.append(current)
+            current = s
+    if current:
+        chunks.append(current)
+
+    audio_bytes = bytearray()
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+    for chunk in chunks:
+        q = urllib.parse.quote(chunk)
+        url = f"https://translate.google.com/translate_tts?ie=UTF-8&tl=pt-BR&client=tw-ob&q={q}"
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            audio_bytes.extend(resp.read())
+
+    res = bytes(audio_bytes)
+    _audio_cache[cache_key] = res
+    return res
+
+def generate_bulletin_script(series: str, current_user) -> str:
+    username = current_user.username if current_user else "fã de velocidade"
+
     if series == 'f2':
-        script = f"Olá {current_user.username}, bem-vindo à Rádio Fórmula 2. A estrada para a glória. "
+        script = f"Olá {username}, bem-vindo à Rádio Fórmula 2. A estrada para a glória. "
         script += "No momento, as equipes e as academias de pilotos estão focadas nos preparativos aerodinâmicos para a próxima rodada. "
         script += "Fique ligado no painel para acompanhar os talentos que em breve subirão para a categoria principal. Acelere fundo e até a próxima!"
-        return jsonify({'script': script})
-        
+        return script
+
     elif series == 'f3':
-        script = f"Olá {current_user.username}, você está na Rádio Fórmula 3. O berço do automobilismo. "
+        script = f"Olá {username}, você está na Rádio Fórmula 3. O berço do automobilismo. "
         script += "O paddock da F3 amanheceu agitado com os testes dos novatos e o ajuste fino dos motores Mechachrome. "
         script += "Não deixe de conferir a aba de Classificação para ver quem lidera o campeonato. Acelere fundo e até a próxima!"
-        return jsonify({'script': script})
-        
+        return script
+
     # Fetch latest F1 news
     try:
         articles = f1site.fetch_news(limit=15)
     except Exception:
         articles = []
-        
+
     team_name = None
-    if current_user.favorite_team_id:
-        team = Team.query.get(current_user.favorite_team_id)
-        if team:
-            team_name = team.name
-            
     driver_name = None
-    if current_user.favorite_driver_id:
-        driver = Driver.query.get(current_user.favorite_driver_id)
-        if driver:
-            driver_name = driver.last_name
-            
+    if current_user:
+        if current_user.favorite_team_id:
+            team = Team.query.get(current_user.favorite_team_id)
+            if team:
+                team_name = team.name
+
+        if current_user.favorite_driver_id:
+            driver = Driver.query.get(current_user.favorite_driver_id)
+            if driver:
+                driver_name = driver.last_name
+
     # Filter news based on favorites
     priority_news = []
     other_news = []
-    
+
     for a in articles:
         text = (a['title'] + ' ' + a.get('meta_description', '')).lower()
         if (team_name and team_name.lower() in text) or (driver_name and driver_name.lower() in text):
             priority_news.append(a)
         else:
             other_news.append(a)
-            
+
     # Select top 3 news to read
     selected = priority_news[:2] + other_news[:(3 - min(2, len(priority_news)))]
-    
+
     if not selected:
-        return jsonify({'script': 'Olá! No momento não temos novidades frescas no paddock da Fórmula 1. Volte mais tarde para novas atualizações.'})
-        
+        return 'Olá! No momento não temos novidades frescas no paddock da Fórmula 1. Volte mais tarde para novas atualizações.'
+
     # Translate selected news
     translated = _translate_items(selected)
-    
-    script = f"Olá {current_user.username}, aqui é a sua Rádio F1. "
+
+    script = f"Olá {username}, aqui é a sua Rádio F1. "
     if priority_news:
         if team_name:
             script += f"Temos atualizações quentes da {team_name} para você! "
@@ -68,7 +106,7 @@ def get_daily_bulletin(current_user):
             script += "Temos atualizações sobre os seus favoritos! "
     else:
         script += "Aqui está o resumo do dia no paddock. "
-        
+
     for i, a in enumerate(translated):
         if i == 0:
             script += f"O principal destaque: {a['title']}. "
@@ -76,7 +114,35 @@ def get_daily_bulletin(current_user):
             script += f"Outra novidade é que {a['title']}. "
         else:
             script += f"Por fim, {a['title']}. "
-            
+
     script += "Essas foram as notícias do momento. Acelere fundo e até a próxima!"
-    
-    return jsonify({'script': script})
+    return script
+
+@bp.get('/news/bulletin')
+@optional_token
+def get_daily_bulletin(current_user):
+    series = request.args.get('series', 'f1')
+    script = generate_bulletin_script(series, current_user)
+    return jsonify({
+        'script': script,
+        'audio_url': f'/api/v1/news/bulletin/audio?series={series}'
+    })
+
+@bp.get('/news/bulletin/audio')
+@optional_token
+def get_daily_bulletin_audio(current_user):
+    series = request.args.get('series', 'f1')
+    script = generate_bulletin_script(series, current_user)
+    try:
+        audio_data = text_to_mp3(script)
+        return Response(
+            audio_data,
+            mimetype="audio/mpeg",
+            headers={
+                "Content-Type": "audio/mpeg",
+                "Content-Length": str(len(audio_data)),
+                "Cache-Control": "public, max-age=180",
+            }
+        )
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

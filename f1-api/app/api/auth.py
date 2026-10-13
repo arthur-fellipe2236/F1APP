@@ -30,6 +30,22 @@ def token_required(f):
         return f(current_user, *args, **kwargs)
     return decorated
 
+def optional_token(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        current_user = None
+        if "Authorization" in request.headers:
+            parts = request.headers["Authorization"].split()
+            if len(parts) == 2 and parts[0] == "Bearer":
+                token = parts[1]
+                try:
+                    data = jwt.decode(token, current_app.config.get("SECRET_KEY") or "f1-secret-key-123", algorithms=["HS256"])
+                    current_user = User.query.get(data.get("user_id"))
+                except Exception:
+                    current_user = None
+        return f(current_user, *args, **kwargs)
+    return decorated
+
 @bp.post("/auth/register")
 def register():
     data = request.get_json()
