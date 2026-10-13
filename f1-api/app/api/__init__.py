@@ -6,6 +6,10 @@ api_bp = Blueprint("api", __name__, url_prefix="/api/v1")
 def register_api(app):
     from . import (
         health,
+        auth,
+        admin,
+        bulletin,
+        fantasy,
         drivers,
         teams,
         circuits,
@@ -19,6 +23,10 @@ def register_api(app):
 
     for module in (
         health,
+        auth,
+        admin,
+        bulletin,
+        fantasy,
         drivers,
         teams,
         circuits,
@@ -30,4 +38,5 @@ def register_api(app):
         media,
     ):
         api_bp.register_blueprint(module.bp)
+        
     app.register_blueprint(api_bp)

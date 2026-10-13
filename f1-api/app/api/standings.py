@@ -5,11 +5,12 @@ from sqlalchemy import case, desc, func
 from ..extensions import db
 from ..models import Driver, Race, RaceResult, Team
 from .helpers import parse_int
+from ..scraper import get_standings
 
 bp = Blueprint("standings", __name__)
 
 
-def _driver_aggregates_sq(season):
+def _driver_aggregates_sq(season, series=None):
     query = db.session.query(
         RaceResult.driver_id.label("driver_id"),
         func.sum(
@@ -19,19 +20,25 @@ def _driver_aggregates_sq(season):
         func.sum(case((RaceResult.position <= 3, 1), else_=0)).label("podiums"),
         func.count(RaceResult.id).label("races"),
     ).join(Race, RaceResult.race_id == Race.id)
+    query = query.filter(RaceResult.status != 'Dummy')
     if season:
         query = query.filter(Race.season == season)
+    if series:
+        query = query.filter(Race.series == series)
     return query.group_by(RaceResult.driver_id).subquery()
 
 
-def _latest_results_sq(season):
+def _latest_results_sq(season, series=None):
     """Ultimo resultado de cada piloto na temporada (equipe vigente na epoca)."""
     query = db.session.query(
         RaceResult.driver_id.label("driver_id"),
         func.max(RaceResult.id).label("result_id"),
     ).join(Race, RaceResult.race_id == Race.id)
+    query = query.filter(RaceResult.status != 'Dummy')
     if season:
         query = query.filter(Race.season == season)
+    if series:
+        query = query.filter(Race.series == series)
     return query.group_by(RaceResult.driver_id).subquery()
 
 
@@ -72,11 +79,17 @@ def driver_standings():
               $ref: '#/components/schemas/Error'
     """
     season = parse_int(request.args.get("season"), "season")
-    aggregates = _driver_aggregates_sq(season)
-    latest = _latest_results_sq(season)
+    series = request.args.get("series")
+    
+    if series in ['f2', 'f3']:
+        scraped_data = get_standings(series, 'driver')
+        if scraped_data:
+            return jsonify({"season": season, "data": scraped_data})
 
-    rows = (
-        db.session.query(
+    aggregates = _driver_aggregates_sq(season, series)
+    latest = _latest_results_sq(season, series)
+
+    query = db.session.query(
             Driver,
             func.coalesce(aggregates.c.points, 0),
             func.coalesce(aggregates.c.wins, 0),
@@ -84,7 +97,20 @@ def driver_standings():
             func.coalesce(aggregates.c.races, 0),
             Team.name,
         )
-        .outerjoin(aggregates, aggregates.c.driver_id == Driver.id)
+    if season == 2026 and series == "f1":
+        query = query.outerjoin(aggregates, aggregates.c.driver_id == Driver.id)
+        driver_ids = [34, 39, 36, 238, 13, 46, 32, 1, 35, 9, 20, 29, 31, 49, 27, 43, 236, 47, 45, 48, 237, 18]
+        query = query.filter(Driver.id.in_(driver_ids))
+    elif season:
+        query = query.join(aggregates, aggregates.c.driver_id == Driver.id)
+    else:
+        query = query.outerjoin(aggregates, aggregates.c.driver_id == Driver.id)
+        
+    if series and not (season == 2026 and series == "f1"):
+        query = query.filter(Driver.series == series)
+    
+    rows = (
+        query
         .outerjoin(latest, latest.c.driver_id == Driver.id)
         .outerjoin(RaceResult, RaceResult.id == latest.c.result_id)
         .outerjoin(Team, Team.id == RaceResult.team_id)
@@ -109,6 +135,34 @@ def driver_standings():
                 "races": int(races_count or 0),
             }
         )
+    # Apply historical dropped scores rules for F1 drivers
+    if series == 'f1' or series is None:
+        if season and 1981 <= season <= 1990:
+            # Re-calculate using "Best 11 results"
+            raw_points = db.session.query(
+                RaceResult.driver_id, RaceResult.points
+            ).join(Race, RaceResult.race_id == Race.id).filter(
+                Race.season == season,
+                Race.series == 'f1',
+                RaceResult.status != 'Dummy',
+                RaceResult.points > 0
+            ).all()
+            
+            from collections import defaultdict
+            dp = defaultdict(list)
+            for d_id, pts in raw_points:
+                dp[d_id].append(float(pts))
+                
+            for row in standing:
+                d_id = row["driver_id"]
+                if d_id in dp:
+                    # Sum best 11
+                    best_11 = sum(sorted(dp[d_id], reverse=True)[:11])
+                    row["points"] = best_11
+
+        # Re-sort standing after adjusting points
+        standing.sort(key=lambda x: (-x["points"], x["driver_name"]))
+
     for position, row in enumerate(standing, start=1):
         row["position"] = position
     return jsonify({"season": season, "data": standing})
@@ -151,6 +205,13 @@ def team_standings():
               $ref: '#/components/schemas/Error'
     """
     season = parse_int(request.args.get("season"), "season")
+    series = request.args.get("series")
+    
+    if series in ['f2', 'f3']:
+        scraped_data = get_standings(series, 'team')
+        if scraped_data:
+            return jsonify({"season": season, "data": scraped_data})
+
     team_id_expr = func.coalesce(RaceResult.team_id, Driver.team_id).label(
         "team_id"
     )
@@ -167,16 +228,22 @@ def team_standings():
         )
         .join(Driver, RaceResult.driver_id == Driver.id)
         .join(Race, RaceResult.race_id == Race.id)
+        .filter(RaceResult.status != 'Dummy')
         .group_by(team_id_expr)
     )
     if season:
         query = query.filter(Race.season == season)
+    series = request.args.get("series")
+    if series:
+        query = query.filter(Race.series == series)
 
     team_names = {team.id: team.name for team in Team.query.all()}
     standing = []
+    found_team_ids = set()
     for team_id, points, wins, podiums, races_count in query.all():
         if team_id is None:
             continue
+        found_team_ids.add(team_id)
         standing.append(
             {
                 "team_id": team_id,
@@ -187,8 +254,28 @@ def team_standings():
                 "races": int(races_count or 0),
             }
         )
+        
+    # Inject teams with 0 points for 2026 grid
+    if season == 2026 and series == "f1":
+        active_teams = ["McLaren", "Mercedes", "Red Bull Racing", "Ferrari", "Williams", "Aston Martin", "Alpine", "Haas", "Audi", "Racing Bulls", "Cadillac"]
+        # Filter standing to ONLY include active_teams
+        standing = [r for r in standing if r["team_name"] in active_teams]
+        # Recalculate found_team_ids after filtering
+        found_team_ids = {r["team_id"] for r in standing}
+        for t_id, t_name in team_names.items():
+            if t_name in active_teams and t_id not in found_team_ids:
+                standing.append({
+                    "team_id": t_id,
+                    "team_name": t_name,
+                    "points": 0.0,
+                    "wins": 0,
+                    "podiums": 0,
+                    "races": 0
+                })
 
     standing.sort(key=lambda row: (-row["points"], row["team_name"] or ""))
+
+
     for position, row in enumerate(standing, start=1):
         row["position"] = position
     return jsonify({"season": season, "data": standing})

@@ -1,7 +1,9 @@
+import { useAppStore } from "@/store"
+import { SeasonSelector } from "@/components/season-selector"
 import { useMemo, useState } from "react"
 import type { TableColumn } from "react-data-table-component"
 
-import { F1DataTable } from "@/components/data-table"
+import { VirtualDataTable } from "@/components/virtual-table"
 import { ErrorState } from "@/components/error-state"
 import { Flag } from "@/components/flag"
 import { PageHeader } from "@/components/page-header"
@@ -17,12 +19,9 @@ import {
 import { useApi } from "@/hooks/use-api"
 import { useSeasons } from "@/hooks/use-seasons"
 import { api, type Driver } from "@/lib/api"
-import { flagFromNationality } from "@/lib/assets"
+import { flagFromNationality, formatNationality, teamLogo } from "@/lib/assets"
 
-async function fetchAllDrivers(params: {
-  team_id?: number
-  season?: number
-}) {
+async function fetchAllDrivers(params: { team_id?: number; season?: number; series?: string }) {
   const first = await api.drivers({ ...params, page: 1, per_page: 50 })
   const all = [...first.data]
   for (let page = 2; page <= first.meta.pages; page += 1) {
@@ -33,8 +32,9 @@ async function fetchAllDrivers(params: {
 }
 
 export function DriversPage() {
+  const { series, season, setSeason } = useAppStore()
   const [teamId, setTeamId] = useState("all")
-  const [season, setSeason] = useState("")
+  
 
   const seasons = useSeasons()
   const defaultSeason = String(seasons[0] ?? "")
@@ -43,15 +43,27 @@ export function DriversPage() {
     undefined
 
   const teams = useApi(
-    () => api.teams({ page: 1, per_page: 50, season: seasonParam }),
-    [seasonParam],
+    () => api.teams({ page: 1, per_page: 50, season: seasonParam, series }),
+    [seasonParam, series],
   )
 
-  const teamFilter = teamId === "all" ? undefined : Number(teamId)
   const drivers = useApi(
-    () => fetchAllDrivers({ team_id: teamFilter, season: seasonParam }),
-    [teamFilter, seasonParam],
+    () =>
+      fetchAllDrivers({
+        series,
+        team_id: teamId === "all" ? undefined : Number(teamId),
+        season: seasonParam,
+      }),
+    [teamId, seasonParam, series],
   )
+
+  const driversData = useMemo(() => {
+    let d = drivers.data?.data ?? []
+    if ((series === "f2" || series === "f3") && seasonParam === 2026) {
+      d = [...d].sort((a, b) => (a.permanent_number ?? 0) - (b.permanent_number ?? 0))
+    }
+    return d
+  }, [drivers.data, series, seasonParam])
 
   const teamNames = useMemo(() => {
     const map = new Map<number, string>()
@@ -67,10 +79,10 @@ export function DriversPage() {
         name: "Nº",
         width: "80px",
         center: true,
-        selector: (row) => row.permanent_number ?? 0,
+        selector: (row) => row.permanent_number ?? row.season_number ?? 0,
         cell: (row) => (
-          <span className="font-semibold tabular-nums">
-            {row.permanent_number ?? "—"}
+          <span className="font-semibold font-mono tracking-tight tabular-nums">
+            {row.permanent_number ?? row.season_number ?? "—"}
           </span>
         ),
       },
@@ -87,7 +99,7 @@ export function DriversPage() {
         cell: (row) => (
           <Flag
             src={flagFromNationality(row.nationality)}
-            label={row.nationality}
+            label={formatNationality(row.nationality)}
           />
         ),
       },
@@ -95,13 +107,14 @@ export function DriversPage() {
         name: "Equipe",
         sortable: true,
         selector: (row) =>
-          row.team_name
-          ?? (row.team_id ? (teamNames.get(row.team_id) ?? "") : ""),
+          row.team_name ??
+          (row.team_id ? (teamNames.get(row.team_id) ?? "") : ""),
         cell: (row) => (
           <TeamInline
+            season={seasonParam}
             name={
-              row.team_name
-              ?? (row.team_id ? (teamNames.get(row.team_id) ?? null) : null)
+              row.team_name ??
+              (row.team_id ? (teamNames.get(row.team_id) ?? null) : null)
             }
           />
         ),
@@ -112,36 +125,16 @@ export function DriversPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Pilotos"
-        description="Todos os pilotos que participaram da temporada, em uma única lista — sem paginação"
-      >
+      
+      <PageHeader title="Tabelas de Pilotos">
         <div className="flex items-center gap-2">
-          <Label
-            htmlFor="season-filter"
-            className="text-muted-foreground"
-          >
+          <Label htmlFor="season-filter" className="text-muted-foreground">
             Temporada
           </Label>
-          <Select
-            value={season || defaultSeason || "all"}
-            onValueChange={(value) => {
+          <SeasonSelector value={String(season || defaultSeason)} onValueChange={(value) => {
               setSeason(value)
               setTeamId("all")
-            }}
-          >
-            <SelectTrigger id="season-filter">
-              <SelectValue placeholder="Temporada" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas as temporadas</SelectItem>
-              {seasons.map((year) => (
-                <SelectItem key={year} value={String(year)}>
-                  {year}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            }} className="w-[180px]" />
         </div>
         <div className="flex items-center gap-2">
           <Label htmlFor="team-filter" className="text-muted-foreground">
@@ -171,13 +164,44 @@ export function DriversPage() {
       {drivers.error ? (
         <ErrorState message={drivers.error} onRetry={drivers.reload} />
       ) : (
-        <F1DataTable
+        <VirtualDataTable
           columns={columns}
-          data={drivers.data?.data ?? []}
-          keyField="id"
-          progressPending={drivers.loading}
-          progressSkeleton
-          pagination={false}
+          data={driversData}
+          getRowColor={(row) => {
+            const tName = row.team_name ?? (row.team_id ? (teamNames.get(row.team_id) ?? null) : null);
+            if (tName) {
+              const logo = teamLogo(tName, seasonParam);
+              return logo?.color || undefined;
+            }
+            return undefined;
+          }}
+          renderMobileCard={(row) => (
+            <>
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-3xl font-black text-muted-foreground/30 tabular-nums leading-none tracking-tighter">
+                    {row.permanent_number ?? row.season_number ?? "0"}
+                  </span>
+                  <span className="text-lg font-bold leading-none">{row.name}</span>
+                </div>
+                {row.nationality && (
+                  <Flag
+                    src={flagFromNationality(row.nationality)}
+                    label={formatNationality(row.nationality)}
+                  />
+                )}
+              </div>
+              <div className="flex items-center justify-between mt-2 pt-3 border-t border-border/50">
+                <TeamInline
+                  season={seasonParam}
+                  name={
+                    row.team_name ??
+                    (row.team_id ? (teamNames.get(row.team_id) ?? null) : null)
+                  }
+                />
+              </div>
+            </>
+          )}
         />
       )}
     </div>

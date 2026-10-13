@@ -64,6 +64,8 @@ def get(path, **params):
 
         if response.status_code == 404:
             return None
+        if response.status_code == 401:
+            raise OpenF1Error("Uma sessão da F1 está acontecendo agora! A OpenF1 (nossa fonte de dados comunitária) bloqueia o acesso gratuito durante sessões ao vivo para evitar sobrecarga nos servidores deles. Tente novamente mais tarde, quando os carros saírem da pista!")
         if response.status_code != 200:
             raise OpenF1Error(f"OpenF1 respondeu {response.status_code} em /{path}")
         try:

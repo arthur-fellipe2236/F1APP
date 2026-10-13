@@ -10,6 +10,7 @@ export interface ApiState<T> {
 export function useApi<T>(
   fetcher: () => Promise<T>,
   deps: readonly unknown[],
+  pollingInterval?: number,
 ): ApiState<T> {
   const [data, setData] = useState<T>()
   const [loading, setLoading] = useState(true)
@@ -21,7 +22,7 @@ export function useApi<T>(
 
   useEffect(() => {
     let active = true
-    setLoading(true)
+    if (tick === 0) setLoading(true)
     setError(undefined)
     fetcherRef
       .current()
@@ -41,6 +42,12 @@ export function useApi<T>(
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...deps, tick])
+
+  useEffect(() => {
+    if (!pollingInterval) return
+    const timer = setInterval(() => setTick((t) => t + 1), pollingInterval)
+    return () => clearInterval(timer)
+  }, [pollingInterval])
 
   const reload = useCallback(() => setTick((current) => current + 1), [])
 

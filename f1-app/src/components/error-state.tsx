@@ -18,12 +18,7 @@ export function ErrorState({
         {message ?? "Não foi possível comunicar com a API."}
       </AlertDescription>
       {onRetry ? (
-        <Button
-          variant="outline"
-          size="sm"
-          className="mt-3"
-          onClick={onRetry}
-        >
+        <Button variant="outline" size="sm" className="mt-3" onClick={onRetry}>
           Tentar novamente
         </Button>
       ) : null}

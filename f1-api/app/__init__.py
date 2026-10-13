@@ -3,21 +3,9 @@ import os
 from flask import Flask, jsonify
 from sqlalchemy import text
 
-from .extensions import db
+from .extensions import db, migrate
 from .api.helpers import ApiError
 
-MIGRATIONS = (
-    "ALTER TABLE drivers ADD COLUMN headshot_url VARCHAR(300)",
-)
-
-
-def run_migrations():
-    for statement in MIGRATIONS:
-        try:
-            with db.engine.begin() as connection:
-                connection.execute(text(statement))
-        except Exception:  # noqa: BLE001 - coluna ja existe
-            pass
 
 
 def create_app(config_overrides=None):
@@ -34,14 +22,15 @@ def create_app(config_overrides=None):
     from . import models  # noqa: F401  (registra tabelas no metadata)
 
     db.init_app(app)
+    migrate.init_app(app, db)
     with app.app_context():
         db.create_all()
-        run_migrations()
+        
         if app.config.get("TESTING"):
             from .seed import seed
 
             seed()
-        else:
+        elif not os.environ.get('NO_BACKGROUND_SYNC'):
             from .sync import start_background_sync
 
             start_background_sync(app)

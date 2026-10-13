@@ -1,28 +1,137 @@
-import { useState } from "react"
+import { useAppStore } from "@/store"
+import { SeasonSelector } from "@/components/season-selector"
+import { useState, useMemo, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import type { TableColumn } from "react-data-table-component"
-import { CalendarDays } from "lucide-react"
+import { CalendarDays, Clock, MapPin, Flag } from "lucide-react"
 
-import { F1DataTable } from "@/components/data-table"
+import { VirtualDataTable } from "@/components/virtual-table"
 import { ErrorState } from "@/components/error-state"
 import { PageHeader } from "@/components/page-header"
 import { Label } from "@/components/ui/label"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { useApi } from "@/hooks/use-api"
 import { useSeasons } from "@/hooks/use-seasons"
 import { api, fetchAll, type Race } from "@/lib/api"
 import { flagFromCountry } from "@/lib/assets"
 import { formatDate } from "@/lib/format"
 
+function NextRaceHero({ season, series }: { season: number | undefined, series: string }) {
+  const [nextMeeting, setNextMeeting] = useState<any>(null)
+  const [nextSession, setNextSession] = useState<any>(null)
+  const [countdown, setCountdown] = useState<string>("")
+
+  useEffect(() => {
+    if (!season || series !== "f1") return
+    fetch(`/api/v1/live/sessions?year=${season}`)
+      .then(r => r.json())
+      .then(res => {
+         const now = new Date()
+         const upcoming = res.data.find((m: any) => new Date(m.date_end) > now)
+         if (upcoming) {
+           setNextMeeting(upcoming)
+           const nextS = upcoming.sessions.find((s: any) => new Date(s.date_start) > now)
+           setNextSession(nextS || upcoming.sessions[upcoming.sessions.length - 1])
+         }
+      })
+      .catch(err => console.error("Failed to fetch next race:", err))
+  }, [season, series])
+
+  useEffect(() => {
+    if (!nextSession) return;
+    
+    const target = new Date(nextSession.date_start).getTime()
+    
+    const timer = setInterval(() => {
+      const distance = target - new Date().getTime()
+      if (distance < 0) {
+        setCountdown("Sessão em andamento!")
+        return
+      }
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24))
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000)
+      
+      const d = days > 0 ? `${days}d ` : ""
+      const h = hours.toString().padStart(2, "0")
+      const m = minutes.toString().padStart(2, "0")
+      const s = seconds.toString().padStart(2, "0")
+      setCountdown(`${d}${h}:${m}:${s}`)
+    }, 1000)
+    
+    return () => clearInterval(timer)
+  }, [nextSession])
+
+  if (!nextMeeting || series !== "f1") return null
+
+  const flag = flagFromCountry(nextMeeting.country)
+
+  return (
+    <Card className="mb-6 border-red-500/20 bg-gradient-to-br from-red-950/40 to-black/40 overflow-hidden relative">
+      <div className="absolute right-0 top-0 opacity-10 pointer-events-none translate-x-1/4 -translate-y-1/4">
+        <Flag className="size-64" />
+      </div>
+      <CardHeader className="pb-2">
+        <CardDescription className="text-red-400 font-bold tracking-widest uppercase text-xs">
+          Próxima Etapa
+        </CardDescription>
+        <CardTitle className="text-3xl font-black flex items-center gap-3">
+          {flag && <img src={flag} alt="" className="h-6 w-9 rounded-sm object-cover shadow-sm" />}
+          {nextMeeting.meeting_name}
+        </CardTitle>
+        <div className="flex items-center gap-2 text-muted-foreground mt-1 text-sm">
+          <MapPin className="size-4" />
+          {nextMeeting.circuit}, {nextMeeting.country}
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mt-4">
+          <div className="flex-1">
+            <h4 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
+              <CalendarDays className="size-4" /> 
+              Horários (Seu Fuso Local)
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {nextMeeting.sessions.map((s: any) => (
+                <div key={s.key} className={`text-xs p-2 rounded border ${s.key === nextSession?.key ? 'bg-red-500/20 border-red-500/50 text-white' : 'bg-white/5 border-white/10 text-muted-foreground'}`}>
+                  <div className="font-bold mb-1">{s.name}</div>
+                  <div>
+                    {new Date(s.date_start).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' })}
+                  </div>
+                  <div>
+                    {new Date(s.date_start).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="bg-black/60 border border-white/10 rounded-lg p-4 min-w-[220px] text-center flex flex-col justify-center items-center backdrop-blur-md">
+            <span className="text-xs text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1">
+              <Clock className="size-3" /> Faltam para {nextSession?.name}
+            </span>
+            <span className="text-3xl font-mono font-bold text-red-500">
+              {countdown || "..."}
+            </span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
 export function RacesPage() {
   const navigate = useNavigate()
-  const [season, setSeason] = useState("")
+  
+  const { series, season, setSeason } = useAppStore()
+  
   const seasons = useSeasons()
   const defaultSeason = String(seasons[0] ?? "")
   const seasonParam =
@@ -30,9 +139,21 @@ export function RacesPage() {
     undefined
 
   const races = useApi(
-    () => fetchAll((params) => api.races({ ...params, season: seasonParam })),
-    [seasonParam],
+    () => fetchAll((params) => api.races({ ...params, season: seasonParam, series })),
+    [seasonParam, series],
   )
+  
+  const displayData = useMemo(() => {
+    if (!races.data) return []
+    // Se estiver filtrado por uma temporada específica, numera sequencialmente
+    if (seasonParam) {
+      return races.data.map((race, index) => ({
+        ...race,
+        round: index + 1
+      }))
+    }
+    return races.data
+  }, [races.data, seasonParam])
 
   const columns: TableColumn<Race>[] = [
     {
@@ -42,7 +163,7 @@ export function RacesPage() {
       sortable: true,
       selector: (row) => row.round,
       cell: (row) => (
-        <span className="font-semibold tabular-nums">{row.round}</span>
+        <span className="font-semibold font-mono tracking-tight tabular-nums">{row.round}</span>
       ),
     },
     {
@@ -89,46 +210,56 @@ export function RacesPage() {
 
   return (
     <div className="space-y-6">
+      
       <PageHeader
         title="Calendário"
-        description="Calendário por temporada, em ordem de rodada e sem paginação — clique em uma linha para ver o resultado"
       >
         <div className="flex items-center gap-2">
           <Label htmlFor="season-filter" className="text-muted-foreground">
             Temporada
           </Label>
-          <Select
-            value={season || defaultSeason || "all"}
-            onValueChange={setSeason}
-          >
-            <SelectTrigger id="season-filter">
-              <SelectValue placeholder="Temporada" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas as temporadas</SelectItem>
-              {seasons.map((year) => (
-                <SelectItem key={year} value={String(year)}>
-                  {year}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <SeasonSelector value={String(season || defaultSeason)} onValueChange={setSeason} className="w-[180px]" />
         </div>
       </PageHeader>
+
+      {/* Hero Card da Próxima Corrida com Countdown */}
+      <NextRaceHero season={seasonParam} series={series} />
 
       {races.error ? (
         <ErrorState message={races.error} onRetry={races.reload} />
       ) : (
-        <F1DataTable
+        <div className="cursor-pointer">
+        <VirtualDataTable
           columns={columns}
-          data={races.data ?? []}
-          keyField="id"
-          progressPending={races.loading}
-          progressSkeleton
-          pointerOnHover
-          onRowClicked={(row) => navigate(`/calendario/${row.id}`)}
-          pagination={false}
+          data={displayData}
+          renderMobileCard={(row) => (
+            <div onClick={() => navigate(`/calendario/${row.id}`)} className="flex flex-col gap-2 cursor-pointer">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-muted-foreground tracking-wider uppercase">Rodada {row.round}</span>
+                <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <CalendarDays className="size-3.5" />
+                  {formatDate(row.date)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-lg font-bold">{row.name}</span>
+                {row.circuit_country && (
+                  <img
+                    src={flagFromCountry(row.circuit_country) || ""}
+                    alt=""
+                    aria-hidden
+                    title={row.circuit_country}
+                    className="h-5 w-7 shrink-0 rounded-[2px] object-cover shadow-sm"
+                  />
+                )}
+              </div>
+              <div className="text-sm text-muted-foreground mt-1">
+                {row.circuit_name ?? "—"}
+              </div>
+            </div>
+          )}
         />
+        </div>
       )}
     </div>
   )

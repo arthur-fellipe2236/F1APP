@@ -89,7 +89,23 @@ def list_drivers():
                 meta:
                   $ref: '#/components/schemas/Meta'
     """
+
+    series = request.args.get("series")
+    season = parse_int(request.args.get("season"), "season")
+
+    if series == 'f2' and season == 2026:
+        from app.mock_data import F2_2026_DRIVERS
+        data = [dict(d, name=f"{d['first_name']} {d['last_name']}") for d in F2_2026_DRIVERS]
+        return jsonify({"data": data, "meta": {"pages": 1, "total": len(F2_2026_DRIVERS)}})
+    if series == 'f3' and season == 2026:
+        from app.mock_data import F3_2026_DRIVERS
+        data = [dict(d, name=f"{d['first_name']} {d['last_name']}") for d in F3_2026_DRIVERS]
+        return jsonify({"data": data, "meta": {"pages": 1, "total": len(F3_2026_DRIVERS)}})
+
     query = Driver.query
+    series = request.args.get("series")
+    if series:
+        query = query.filter_by(series=series)
     team_id = parse_int(request.args.get("team_id"), "team_id")
     if team_id:
         raced_sq = db.session.query(RaceResult.driver_id).filter(
@@ -103,13 +119,18 @@ def list_drivers():
         )
     season = parse_int(request.args.get("season"), "season")
     if season:
-        season_sq = (
-            db.session.query(RaceResult.driver_id)
-            .join(Race, RaceResult.race_id == Race.id)
-            .filter(Race.season == season)
-            .distinct()
-        )
-        query = query.filter(Driver.id.in_(season_sq))
+        if series == "f1" and season == 2026:
+            query = query.filter(Driver.id.in_([34,39,36,238,13,46,32,1,35,9,20,29,31,49,27,43,236,47,45,48,237,18]))
+        else:
+            season_sq_query = (
+                db.session.query(RaceResult.driver_id)
+                .join(Race, RaceResult.race_id == Race.id)
+                .filter(Race.season == season)
+            )
+            if series:
+                season_sq_query = season_sq_query.filter(Race.series == series)
+            season_sq = season_sq_query.distinct()
+            query = query.filter(Driver.id.in_(season_sq))
     query = query.order_by(Driver.last_name, Driver.first_name)
     result = paginate(query, Driver.to_dict)
     if season:
@@ -131,7 +152,12 @@ def list_drivers():
         )
         team_by_driver = {driver_id: name for driver_id, name in team_rows}
         for row in result["data"]:
-            row["team_name"] = team_by_driver.get(row["id"])
+            if season == 2026 and series == "f1":
+                d = Driver.query.get(row["id"])
+                row["team_name"] = d.team.name if d.team else None
+                row["team"] = d.team.to_dict() if d.team else None
+            else:
+                row["team_name"] = team_by_driver.get(row["id"])
     return jsonify(result)
 
 
@@ -315,3 +341,26 @@ def delete_driver(driver_id):
     db.session.delete(driver)
     db.session.commit()
     return "", 204
+
+@bp.get('/drivers/<int:driver_id>/stats')
+def get_driver_stats(driver_id):
+    from sqlalchemy import func, case
+    from ..models import RaceResult
+    driver = get_or_404(Driver, driver_id, 'Piloto nao encontrado')
+    
+    stats = db.session.query(
+        func.count(RaceResult.id).label('total_races'),
+        func.sum(RaceResult.points + func.coalesce(RaceResult.sprint_points, 0)).label('total_points'),
+        func.sum(case((RaceResult.position == 1, 1), else_=0)).label('total_wins'),
+        func.sum(case((RaceResult.position <= 3, 1), else_=0)).label('total_podiums'),
+        func.sum(case((RaceResult.grid == 1, 1), else_=0)).label('total_poles')
+    ).filter(RaceResult.driver_id == driver_id, RaceResult.status != 'Dummy').first()
+    
+    return jsonify({
+        'driver': driver.to_dict(),
+        'total_races': int(stats.total_races or 0),
+        'total_points': float(stats.total_points or 0),
+        'total_wins': int(stats.total_wins or 0),
+        'total_podiums': int(stats.total_podiums or 0),
+        'total_poles': int(stats.total_poles or 0)
+    })

@@ -1,71 +1,104 @@
-import { teamLogo } from "@/lib/assets"
-import { mediaUrl } from "@/lib/media"
+import { useState } from "react"
+import { teamLogo, displayTeamName } from "@/lib/assets"
 import { cn } from "@/lib/utils"
 
 function initials(name: string): string {
   const words = name.split(/\s+/).filter(Boolean)
   const letters =
-    words.length > 1
-      ? words.map((w) => w[0]).join("")
-      : name.slice(0, 2)
+    words.length > 1 ? words.map((w) => w[0]).join("") : name.slice(0, 2)
   return letters.toUpperCase().slice(0, 3)
 }
 
-export function TeamInline({ name }: { name: string | null }) {
+function getContrastColor(hexColor: string) {
+  if (!hexColor) return "#ffffff"
+  const hex = hexColor.replace("#", "")
+  const r = parseInt(hex.substr(0, 2), 16)
+  const g = parseInt(hex.substr(2, 2), 16)
+  const b = parseInt(hex.substr(4, 2), 16)
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000
+  return yiq >= 128 ? "#000000" : "#ffffff"
+}
+
+export function TeamInline({ name, season }: { name: string | null; season?: number }) {
+  const [broken, setBroken] = useState(false)
   if (!name) return <span>—</span>
-  const logo = teamLogo(name)
-  if (!logo) {
+  const logo = teamLogo(name, season)
+  
+  if (!logo || broken || !logo.url) {
+    const bgColor = logo?.color || "var(--secondary)"
+    const textColor = logo?.color ? getContrastColor(logo.color) : "var(--secondary-foreground)"
+    
     return (
       <span className="flex items-center gap-1.5">
-        <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-secondary text-[7px] font-bold text-secondary-foreground">
-          {initials(name).slice(0, 2)}
+        <span 
+          className="flex h-6 w-12 shrink-0 items-center justify-center rounded-md text-[9px] font-bold shadow-xs ring-1 ring-black/10 dark:ring-white/10"
+          style={{ backgroundColor: bgColor, color: textColor }}
+        >
+          {initials(name).slice(0, 3)}
         </span>
-        {name}
+        {displayTeamName(name, season)}
       </span>
     )
   }
   return (
     <span className="flex items-center gap-1.5">
-      <img
-        src={logo.url}
-        alt=""
-        aria-hidden
-        loading="lazy"
-        className={cn(
-          "h-4 w-8 shrink-0 object-contain",
-          logo.className,
-        )}
-      />
-      {name}
+      <span 
+        className={cn("flex h-6 w-12 shrink-0 items-center justify-center rounded-md px-1.5 shadow-xs ring-1 ring-black/10 dark:ring-white/10", !logo.color && "bg-white dark:bg-zinc-800")}
+        style={logo.color ? { backgroundColor: logo.color } : undefined}
+      >
+        <img
+          src={logo.url}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          onError={() => setBroken(true)}
+          className={cn("h-full w-full object-contain", logo.className, logo.invertDark && "dark:dark-invert")}
+        />
+      </span>
+      {displayTeamName(name, season)}
     </span>
   )
 }
 
-export function TeamName({ name }: { name: string }) {
-  const logo = teamLogo(name)
-  if (!logo) {
+export function TeamName({ name, season }: { name: string; season?: number }) {
+  const [broken, setBroken] = useState(false)
+  const logo = teamLogo(name, season)
+  
+  if (!logo || broken || !logo.url) {
+    const bgColor = logo?.color || "var(--secondary)"
+    const textColor = logo?.color ? getContrastColor(logo.color) : "var(--secondary-foreground)"
+    
     return (
-      <span className="flex items-center gap-2">
-        <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary text-[9px] font-bold text-secondary-foreground">
+      <span className="flex items-center gap-3 min-h-9 group">
+        <span 
+          className="flex h-8 w-14 shrink-0 items-center justify-center rounded-md text-[11px] font-bold shadow-xs ring-1 ring-black/10 transition-transform duration-300 group-hover:scale-110"
+          style={{ backgroundColor: bgColor, color: textColor }}
+        >
           {initials(name)}
         </span>
-        <span className="font-medium">{name}</span>
+        <span className="font-medium text-foreground">{displayTeamName(name, season)}</span>
       </span>
     )
   }
+  
   return (
-    <span className="relative flex min-h-9 items-center pl-11">
-      <img
-        src={mediaUrl(logo.url, 160) ?? logo.url}
-        alt=""
-        aria-hidden
-        loading="lazy"
-        className={cn(
-          "pointer-events-none absolute left-0 top-1/2 size-10 -translate-y-1/2 object-contain opacity-30 dark:opacity-45",
-          logo.className,
-        )}
-      />
-      <span className="relative z-10 font-medium">{name}</span>
+    <span className="flex items-center gap-3 min-h-9 group">
+      <span 
+        className={cn("flex h-8 w-14 shrink-0 items-center justify-center rounded-md px-1.5 shadow-xs ring-1 ring-black/10 transition-transform duration-300 group-hover:scale-110", !logo.color && "bg-white dark:bg-zinc-800")}
+        style={logo.color ? { backgroundColor: logo.color } : undefined}
+      >
+        <img
+          src={logo.url}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          onError={() => setBroken(true)}
+          className={cn("h-full w-full object-contain", logo.className, logo.invertDark && "dark:dark-invert")}
+        />
+      </span>
+      <span className="font-medium text-foreground">
+        {displayTeamName(name, season)}
+      </span>
     </span>
   )
 }

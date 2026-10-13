@@ -1,3 +1,4 @@
+import { useAppStore } from "@/store"
 import { Newspaper } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -23,13 +24,7 @@ const newsDate = new Intl.DateTimeFormat("pt-BR", {
   minute: "2-digit",
 })
 
-function CardImage({
-  item,
-  className,
-}: {
-  item: NewsItem
-  className: string
-}) {
+function CardImage({ item, className }: { item: NewsItem; className: string }) {
   if (item.image) {
     return (
       <img
@@ -38,22 +33,23 @@ function CardImage({
         aria-hidden
         loading="lazy"
         className={className}
+        onError={(e) => {
+          e.currentTarget.src = "/multi-series-logo.png"
+        }}
       />
     )
   }
   return (
-    <div
-      className={`${className} flex items-center justify-center bg-muted`}
-    >
+    <div className={`${className} flex items-center justify-center bg-muted`}>
       <Newspaper className="size-6 text-muted-foreground" />
     </div>
   )
 }
 
-function ArticleSummary({ url }: { url: string }) {
+function ArticleSummary({ url, fallbackText }: { url: string; fallbackText?: string }) {
   const query = useApi(() => api.newsArticle(url), [url])
 
-  if (query.loading || !query.data) {
+  if (query.loading) {
     return (
       <div className="space-y-2">
         <p className="text-xs text-muted-foreground">
@@ -65,13 +61,18 @@ function ArticleSummary({ url }: { url: string }) {
       </div>
     )
   }
-  if (query.error) {
+
+  if (query.error || !query.data) {
+    if (fallbackText) {
+      return <p className="text-sm leading-relaxed text-card-foreground">{fallbackText}</p>
+    }
     return (
       <p className="text-xs text-muted-foreground">
         Não foi possível carregar o resumo da matéria.
       </p>
     )
   }
+
   return (
     <ul className="max-h-64 space-y-2 overflow-y-auto pr-1">
       {query.data.summary.map((line, index) => (
@@ -97,10 +98,7 @@ export function NewsCard({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button
-          type="button"
-          className="block w-full text-left outline-none"
-        >
+        <button type="button" className="block w-full text-left outline-none">
           <Card
             size="sm"
             className="h-full overflow-hidden transition hover:-translate-y-0.5 hover:shadow-md"
@@ -111,8 +109,8 @@ export function NewsCard({
                 <Badge
                   variant={badgeLabel || item.matched ? "default" : "secondary"}
                 >
-                  {badgeLabel
-                    || (item.matched ? "GP do fim de semana" : item.article_type)}
+                  {badgeLabel ||
+                    (item.matched ? "GP do fim de semana" : item.article_type)}
                 </Badge>
                 <span className="text-xs text-muted-foreground">
                   {newsDate.format(new Date(item.updated_at))}
@@ -131,10 +129,7 @@ export function NewsCard({
         </button>
       </DialogTrigger>
       <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-xl">
-        <CardImage
-          item={item}
-          className="h-56 w-full shrink-0 object-cover"
-        />
+        <CardImage item={item} className="h-56 w-full shrink-0 object-cover" />
         <div className="flex flex-col gap-4 p-6">
           <DialogHeader className="gap-2 text-left">
             <div className="flex items-center gap-2">
@@ -148,7 +143,7 @@ export function NewsCard({
             <DialogTitle className="text-lg leading-snug">
               {item.title}
             </DialogTitle>
-            <ArticleSummary url={item.url} />
+            <ArticleSummary url={item.url} fallbackText={item.meta_description ?? undefined} />
             {item.title_en && item.title_en !== item.title ? (
               <p className="text-xs text-muted-foreground/80 italic">
                 Original: {item.title_en}
@@ -157,7 +152,7 @@ export function NewsCard({
           </DialogHeader>
           <DialogFooter className="sm:justify-between">
             <span className="text-xs text-muted-foreground">
-              Fonte: formula1.com — tradução automática para pt-BR
+              Tradução automática para pt-BR
             </span>
             <Button asChild size="sm" variant="outline">
               <a href={item.url} target="_blank" rel="noopener noreferrer">
@@ -171,16 +166,20 @@ export function NewsCard({
   )
 }
 
-export function RaceNewsCards() {
-  const query = useApi(() => api.latestNews(), [])
+export function RaceNewsCards({ series }: { series?: string }) {
+  const { user } = useAppStore()
+
+  const query = useApi(() => api.latestNews(series), [series])
   if (query.error) return null
 
   return (
     <section className="space-y-3">
-      <h2 className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+      <div className="flex items-center justify-between">
+        <h2 className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
         <Newspaper className="size-4" />
-        Últimas notícias — fonte: formula1.com
+        Últimas notícias
       </h2>
+      </div>
       <div className="grid gap-4 sm:grid-cols-3">
         {query.loading || !query.data
           ? [0, 1, 2].map((i) => (
@@ -193,9 +192,27 @@ export function RaceNewsCards() {
                 </div>
               </Card>
             ))
-          : query.data.data.map((item) => (
-              <NewsCard key={item.id} item={item} />
-            ))}
+          : (() => {
+            let newsItems = query.data.data;
+            if (user && (user.favorite_driver || user.favorite_team)) {
+              const terms = [user.favorite_driver?.toLowerCase(), user.favorite_team?.toLowerCase()].filter(Boolean) as string[];
+              const matched = [];
+              const others = [];
+              for (const item of newsItems) {
+                const title = item.title.toLowerCase();
+                const desc = (item.meta_description || '').toLowerCase();
+                if (terms.some(t => title.includes(t) || desc.includes(t))) {
+                  matched.push({...item, badgeLabel: "⭐️ Favorito"});
+                } else {
+                  others.push(item);
+                }
+              }
+              newsItems = [...matched, ...others];
+            }
+            return newsItems.slice(0, 3).map((item: any) => (
+              <NewsCard key={item.id} item={item} badgeLabel={item.badgeLabel} />
+            ))
+          })()}
       </div>
     </section>
   )

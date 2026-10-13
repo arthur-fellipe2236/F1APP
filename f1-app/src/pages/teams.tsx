@@ -1,39 +1,34 @@
-import { useState } from "react"
-import type { TableColumn } from "react-data-table-component"
+import { useAppStore } from "@/store"
+import { SeasonSelector } from "@/components/season-selector"
+import { TeamInline } from "@/components/team-name"
 
-import { F1DataTable } from "@/components/data-table"
+import { VirtualDataTable } from "@/components/virtual-table"
 import { ErrorState } from "@/components/error-state"
+import type { TableColumn } from "react-data-table-component"
 import { Flag } from "@/components/flag"
-import { PageHeader } from "@/components/page-header"
 import { TeamName } from "@/components/team-name"
+import { PageHeader } from "@/components/page-header"
 import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { useApi } from "@/hooks/use-api"
 import { useSeasons } from "@/hooks/use-seasons"
 import { api, fetchAll, type Team } from "@/lib/api"
-import { engineLogo, flagFromCountry } from "@/lib/assets"
+import { engineLogo, flagFromCountry, formatCountry , teamLogo, flagFromNationality, formatNationality } from "@/lib/assets"
 import { formatNumber } from "@/lib/format"
 
-const columns: TableColumn<Team>[] = [
+const getColumns = (seasonParam?: number): TableColumn<Team>[] => [
   {
     name: "Equipe",
     sortable: true,
     selector: (row) => row.name,
     minWidth: "220px",
-    cell: (row) => <TeamName name={row.name} />,
+    cell: (row) => <TeamName name={row.name} season={seasonParam} />,
   },
   {
     name: "Sede",
     sortable: true,
     selector: (row) => row.base_country ?? "",
     cell: (row) => (
-      <Flag src={flagFromCountry(row.base_country)} label={row.base_country} />
+      <Flag src={flagFromCountry(row.base_country)} label={formatCountry(row.base_country)} />
     ),
   },
   {
@@ -72,7 +67,8 @@ const columns: TableColumn<Team>[] = [
 ]
 
 export function TeamsPage() {
-  const [season, setSeason] = useState("")
+  const { series, season, setSeason } = useAppStore()
+  
 
   const seasons = useSeasons()
   const defaultSeason = String(seasons[0] ?? "")
@@ -81,52 +77,54 @@ export function TeamsPage() {
     undefined
 
   const teams = useApi(
-    () => fetchAll((params) => api.teams({ ...params, season: seasonParam })),
-    [seasonParam],
+    () => fetchAll((params) => api.teams({ ...params, season: seasonParam, series })),
+    [seasonParam, series],
   )
 
   return (
     <div className="space-y-6">
+      
       <PageHeader
         title="Equipes"
-        description="Todas as construtoras da temporada selecionada, em uma única lista — sem paginação"
       >
         <div className="flex items-center gap-2">
-          <Label
-            htmlFor="season-filter"
-            className="text-muted-foreground"
-          >
+          <Label htmlFor="season-filter" className="text-muted-foreground">
             Temporada
           </Label>
-          <Select
-            value={season || defaultSeason || "all"}
-            onValueChange={(value) => setSeason(value)}
-          >
-            <SelectTrigger id="season-filter">
-              <SelectValue placeholder="Temporada" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas as temporadas</SelectItem>
-              {seasons.map((year) => (
-                <SelectItem key={year} value={String(year)}>
-                  {year}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <SeasonSelector value={String(season || defaultSeason)} onValueChange={(value) => setSeason(value)} className="w-[180px]" />
         </div>
       </PageHeader>
 
       {teams.error ? (
         <ErrorState message={teams.error} onRetry={teams.reload} />
       ) : (
-        <F1DataTable
-          columns={columns}
+        <VirtualDataTable
+          columns={getColumns(seasonParam)}
           data={teams.data ?? []}
-          keyField="id"
-          progressPending={teams.loading}
-          progressSkeleton
-          pagination={false}
+          getRowColor={(row) => teamLogo(row.name, seasonParam)?.color || undefined}
+          renderMobileCard={(row) => (
+            <>
+              <div className="flex items-center justify-between mb-2">
+                <TeamInline season={seasonParam} name={row.name} />
+                {row.base_country && (
+                  <Flag
+                    src={flagFromNationality(row.base_country)}
+                    label={formatNationality(row.base_country)}
+                  />
+                )}
+              </div>
+              <div className="flex flex-col gap-1 mt-2 text-sm text-muted-foreground">
+                <div className="flex justify-between">
+                  <span>Motor:</span>
+                  <span className="font-medium text-foreground">{row.engine_manufacturer || "—"}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Fundação:</span>
+                  <span className="font-medium text-foreground">{row.founded_year || "—"}</span>
+                </div>
+              </div>
+            </>
+          )}
         />
       )}
     </div>

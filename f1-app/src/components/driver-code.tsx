@@ -8,8 +8,10 @@ export function CodeBadge({
   code: string | null
   nationality?: string | null
 }) {
-  if (!code) return null
   const flag = flagFromNationality(nationality ?? null)
+  
+  if (!code && !flag) return null
+  
   return (
     <Badge variant="outline" className="gap-1">
       {flag ? (
@@ -21,7 +23,7 @@ export function CodeBadge({
           className="h-3 w-[18px] rounded-[1px] object-cover"
         />
       ) : null}
-      {code}
+      {code && <span>{code}</span>}
     </Badge>
   )
 }

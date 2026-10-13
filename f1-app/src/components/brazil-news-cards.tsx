@@ -41,7 +41,7 @@ export function BrazilNewsRow() {
       f2: f2.data[0] ?? null,
       f3: f3.data[0] ?? null,
     }
-  }, [])
+  }, [], 30000)
 
   if (query.error) return null
   const flag = flagFromCountry("Brazil", 40)
@@ -59,30 +59,35 @@ export function BrazilNewsRow() {
             className="h-3.5 w-5 rounded-[2px] object-cover"
           />
         ) : null}
-        Pilotos brasileiros — F1, F2 e F3 — fonte: formula1.com
+        Pilotos brasileiros — F1, F2 e F3
       </h2>
       <div className="grid gap-4 sm:grid-cols-3">
-        {!data ? (
-          SLOTS.map((slot) => (
-            <Card key={slot.series} size="sm" className="overflow-hidden">
-              <Skeleton className="h-28 w-full rounded-none" />
-              <div className="space-y-2 px-3 pb-3 pt-2">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-2/3" />
-              </div>
-            </Card>
-          ))
-        ) : (
-          SLOTS.map((slot) => {
-            const item = data[slot.series]
-            return item ? (
-              <NewsCard key={slot.series} item={item} badgeLabel={slot.label} />
-            ) : (
-              <EmptySlot key={slot.series} label={slot.series.toUpperCase()} />
-            )
-          })
-        )}
+        {!data
+          ? SLOTS.map((slot) => (
+              <Card key={slot.series} size="sm" className="overflow-hidden">
+                <Skeleton className="h-28 w-full rounded-none" />
+                <div className="space-y-2 px-3 pb-3 pt-2">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-2/3" />
+                </div>
+              </Card>
+            ))
+          : SLOTS.map((slot) => {
+              const item = data[slot.series]
+              return item ? (
+                <NewsCard
+                  key={slot.series}
+                  item={item}
+                  badgeLabel={slot.label}
+                />
+              ) : (
+                <EmptySlot
+                  key={slot.series}
+                  label={slot.series.toUpperCase()}
+                />
+              )
+            })}
       </div>
     </section>
   )

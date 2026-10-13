@@ -1,471 +1,289 @@
 import { useEffect, useState } from "react"
-import {
-  CalendarClock,
-  CircleStop,
-  Droplets,
-  Flag,
-  Pause,
-  Play,
-  RefreshCw,
-  Thermometer,
-  Wind,
-} from "lucide-react"
+import { CalendarClock, CloudRain, Wind, Thermometer, Flag, MonitorPlay } from "lucide-react"
 
-import { ErrorState } from "@/components/error-state"
 import { PageHeader } from "@/components/page-header"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Skeleton } from "@/components/ui/skeleton"
-import { useApi } from "@/hooks/use-api"
-import {
-  api,
-  type LiveDriverRow,
-  type LiveMeetingEntry,
-  type LiveTower,
-} from "@/lib/api"
 
-const FLAG_BADGES: Record<string, string> = {
-  GREEN: "bg-emerald-500/15 text-emerald-600 border-emerald-500/30",
-  CLEAR: "bg-emerald-500/15 text-emerald-600 border-emerald-500/30",
-  YELLOW: "bg-yellow-400/15 text-yellow-600 border-yellow-400/40",
-  "DOUBLE YELLOW": "bg-yellow-400/15 text-yellow-600 border-yellow-400/40",
-  RED: "bg-red-500/15 text-red-600 border-red-500/30",
-  BLUE: "bg-sky-500/15 text-sky-600 border-sky-500/30",
-  WHITE: "bg-zinc-500/15 text-zinc-500 border-zinc-500/30",
-  CHEQUERED:
-    "bg-zinc-900 text-white border-zinc-900 dark:bg-white dark:text-zinc-900 dark:border-white",
-}
-
-const COMPOUND_BADGES: Record<string, string> = {
-  SOFT: "bg-[#DA2F36] text-white",
-  MEDIUM: "bg-[#F5C518] text-black",
-  HARD: "bg-white text-black ring-1 ring-zinc-400",
-  INTERMEDIATES: "bg-[#3F9E00] text-white",
-  HEAVYINTERMEDIATES: "bg-[#006E7B] text-white",
-}
-
-const timeFmt = new Intl.DateTimeFormat("pt-BR", {
-  hour: "2-digit",
-  minute: "2-digit",
-  second: "2-digit",
-})
-
-function gapText(row: LiveDriverRow): string {
-  if (row.gap_to_leader === null || row.gap_to_leader === undefined) {
-    return "—"
+export interface LiveData {
+  session?: {
+    name: string
+    state: string
+    date_start?: string
+    date_end?: string
   }
-  if (typeof row.gap_to_leader === "string") return row.gap_to_leader
-  if (row.position === 1) return "Líder"
-  return `+${row.gap_to_leader.toFixed(3)}`
+  flag?: string | null
+  weather?: {
+    air_temperature?: number | null
+    track_temperature?: number | null
+    wind_speed?: number | null
+    humidity?: number | null
+  }
+  messages?: Array<{
+    message: string
+    flag?: string | null
+  }>
+  drivers?: Array<{
+    driver_number: number
+    name: string
+    code: string
+    team: string
+    team_colour: string
+    position: number | null
+    gap_to_leader: number | null
+    interval: number | null
+    lap_number: number | null
+    compound: string | null
+    in_pit?: boolean
+  }>
 }
 
-function intervalText(row: LiveDriverRow): string {
-  if (row.interval === null || row.interval === undefined) return "—"
-  if (typeof row.interval === "string") return row.interval
-  if (row.position === 1) return "—"
-  return `+${row.interval.toFixed(3)}`
-}
-
-function TowerRow({
-  row,
-  state,
-}: {
-  row: LiveDriverRow
-  state?: string
-}) {
-  const compound = row.compound
-    ? COMPOUND_BADGES[row.compound.toUpperCase()]
-    : undefined
-  return (
-    <div
-      className="flex items-center gap-3 border-b border-l-4 px-3 py-1.5 text-sm last:border-b-0"
-      style={{
-        borderLeftColor: row.team_colour
-          ? `#${row.team_colour}`
-          : "var(--border)",
-      }}
-    >
-      <span className="w-8 shrink-0 text-right">
-        {row.position != null ? (
-          <span className="font-semibold tabular-nums">{row.position}</span>
-        ) : state && state !== "live" ? (
-          <span className="rounded bg-destructive/10 px-1 text-[10px] font-bold text-destructive">
-            OUT
-          </span>
-        ) : (
-          "—"
-        )}
-      </span>
-      <span className="w-8 shrink-0 tabular-nums text-muted-foreground">
-        {row.driver_number}
-      </span>
-      <span className="flex min-w-0 flex-1 items-center gap-2">
-        <span className="truncate font-medium">{row.name}</span>
-        {row.code ? (
-          <span className="shrink-0 rounded border border-border px-1 text-[10px] text-muted-foreground">
-            {row.code}
-          </span>
-        ) : null}
-      </span>
-      <span className="w-20 shrink-0 text-right tabular-nums">
-        {gapText(row)}
-      </span>
-      <span className="w-20 shrink-0 text-right tabular-nums text-muted-foreground">
-        {intervalText(row)}
-      </span>
-      <span className="w-12 shrink-0 text-right tabular-nums text-muted-foreground">
-        {row.lap_number ?? "—"}
-      </span>
-      <span className="w-9 shrink-0">
-        {compound ? (
-          <span
-            className={`inline-block size-5 rounded-full text-center text-[9px] font-bold leading-5 ${compound}`}
-            title={row.compound ?? undefined}
-          >
-            {(row.compound ?? "")[0]}
-          </span>
-        ) : null}
-      </span>
-      <span className="w-8 shrink-0 text-right tabular-nums text-muted-foreground">
-        {row.stops}
-      </span>
-    </div>
-  )
-}
-
-function pickDefaultMeeting(meetings: LiveMeetingEntry[]): LiveMeetingEntry | undefined {
-  return [...meetings]
-    .reverse()
-    .find((meeting) =>
-      meeting.sessions.some((session) => session.state !== "scheduled"),
-    )
-}
-
-function pickDefaultSession(
-  meeting: LiveMeetingEntry,
-): LiveMeetingEntry["sessions"][number] | undefined {
-  const available = meeting.sessions.filter(
-    (session) => session.state !== "scheduled",
-  )
-  const race = [...available]
-    .reverse()
-    .find((s) => s.name === "Race")
-  return race ?? [...available].pop() ?? meeting.sessions[0]
+const COMPOUND_COLORS: Record<string, string> = {
+  SOFT: "bg-red-500 text-white",
+  MEDIUM: "bg-yellow-400 text-black",
+  HARD: "bg-white text-black",
+  INTERMEDIATE: "bg-green-500 text-white",
+  WET: "bg-blue-500 text-white"
 }
 
 export function LiveTimingPage() {
-  const year = new Date().getFullYear()
-  const meta = useApi(() => api.liveSessions(year), [year])
-
-  const [meetingKey, setMeetingKey] = useState<number | null>(null)
-  const [sessionKey, setSessionKey] = useState<number | null>(null)
-  const [data, setData] = useState<LiveTower>()
-  const [error, setError] = useState<string>()
-  const [loading, setLoading] = useState(true)
-  const [auto, setAuto] = useState(true)
-  const [reloadTick, setReloadTick] = useState(0)
-
-  const meetings = meta.data?.data ?? []
-  const meeting = meetings.find((m) => m.meeting_key === meetingKey)
-  const noSessions = Boolean(meeting && meeting.sessions.length === 0)
+  const [liveData, setLiveData] = useState<LiveData | null>(null)
+  const [timeLeft, setTimeLeft] = useState<{ hours: number; minutes: number; seconds: number } | null>(null)
+  
 
   useEffect(() => {
-    if (meetingKey !== null || !meta.data?.data.length) return
-    const meeting =
-      pickDefaultMeeting(meta.data.data) ??
-      meta.data.data[meta.data.data.length - 1]
-    if (!meeting) return
-    setMeetingKey(meeting.meeting_key)
-    setSessionKey(pickDefaultSession(meeting)?.key ?? null)
-  }, [meta.data, meetingKey])
-
-  useEffect(() => {
-    if (noSessions) {
-      setData(undefined)
-      setError(undefined)
-      setLoading(false)
-      return
+    const fetchLiveData = async () => {
+      try {
+        const response = await fetch("/api/v1/live/tower")
+        const data = await response.json()
+        setLiveData(data)
+      } catch (error) {
+        console.error("Failed to fetch live data:", error)
+      } finally {
+        
+      }
     }
-    let active = true
-    setLoading(true)
-    api
-      .liveTower(sessionKey)
-      .then((next) => {
-        if (active) {
-          setData(next)
-          setError(undefined)
-        }
-      })
-      .catch((err: unknown) => {
-        if (active) {
-          setError(err instanceof Error ? err.message : "Erro inesperado")
-        }
-      })
-      .finally(() => {
-        if (active) setLoading(false)
-      })
-    return () => {
-      active = false
-    }
-  }, [sessionKey, meetingKey, noSessions, reloadTick])
+
+    fetchLiveData()
+    const interval = setInterval(fetchLiveData, 15000) // Poll faster for dynamic telemetry
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
-    if (!auto || data?.session.state !== "live") return
-    const timer = setInterval(() => setReloadTick((tick) => tick + 1), 15_000)
-    return () => clearInterval(timer)
-  }, [auto, data?.session.state])
+    if (!liveData?.session) return;
+    
+    const targetDate = liveData.session.state === "scheduled" ? liveData.session.date_start : 
+                       liveData.session.state === "live" ? liveData.session.date_end : null;
+                       
+    if (targetDate) {
+      const interval = setInterval(() => {
+        const target = new Date(targetDate).getTime()
+        const now = new Date().getTime()
+        const distance = target - now
 
-  const state = data?.session.state
+        if (distance < 0) {
+          setTimeLeft(null)
+          clearInterval(interval)
+        } else {
+          setTimeLeft({
+            hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+            minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+            seconds: Math.floor((distance % (1000 * 60)) / 1000)
+          })
+        }
+      }, 1000)
+      return () => clearInterval(interval)
+    } else {
+      setTimeLeft(null)
+    }
+  }, [liveData])
 
-  const handleMeetingChange = (value: string) => {
-    const next = meetings.find((m) => String(m.meeting_key) === value)
-    if (!next) return
-    setMeetingKey(next.meeting_key)
-    const preferred =
-      next.sessions.find((s) => s.name === "Race" && s.state !== "scheduled") ??
-      next.sessions.find((s) => s.state !== "scheduled") ??
-      next.sessions[0]
-    setSessionKey(preferred?.key ?? null)
+  const getFlagColor = (flag?: string | null) => {
+    if (!flag) return "bg-gray-500/20 text-gray-400 border-gray-500/50"
+    const f = flag.toUpperCase()
+    if (f === "CLEAR" || f === "GREEN") return "bg-green-500/20 text-green-400 border-green-500/50"
+    if (f.includes("YELLOW")) return "bg-yellow-500/20 text-yellow-400 border-yellow-500/50"
+    if (f.includes("RED")) return "bg-red-500/20 text-red-400 border-red-500/50"
+    return "bg-blue-500/20 text-blue-400 border-blue-500/50"
   }
 
+  const isLive = liveData?.session?.state === "live"
+
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6 p-6">
       <PageHeader
-        title="Live timing"
-        description={`Torre de tempos por corrida — temporada ${year} — fonte: OpenF1 (sem mapa)`}
-      >
-        {data ? (
-          <div className="flex flex-wrap items-center gap-2">
-            {state === "live" ? (
-              <Badge variant="destructive" className="gap-1.5">
-                <span className="size-1.5 animate-pulse rounded-full bg-current" />
-                AO VIVO
-              </Badge>
-            ) : state === "scheduled" ? (
-              <Badge variant="outline" className="gap-1.5">
-                <CalendarClock className="size-3" />
-                AGENDADA
-              </Badge>
-            ) : (
-              <Badge variant="outline">SESSÃO ENCERRADA</Badge>
-            )}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setAuto((value) => !value)}
-              disabled={state !== "live"}
-            >
-              {auto && state === "live" ? <Pause /> : <Play />}
-              {auto && state === "live" ? "Pausar" : "Auto"}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setReloadTick((tick) => tick + 1)}
-            >
-              <RefreshCw className={loading ? "animate-spin" : undefined} />
-              Atualizar
-            </Button>
-          </div>
-        ) : null}
-      </PageHeader>
+        title="Ao Vivo"
+        description="Central de telemetria integrada e dados do circuito em tempo real."
+      />
 
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="flex items-center gap-2">
-          <Label htmlFor="meeting-filter" className="text-muted-foreground">
-            Etapa
-          </Label>
-          <Select
-            value={meetingKey !== null ? String(meetingKey) : undefined}
-            onValueChange={handleMeetingChange}
-          >
-            <SelectTrigger id="meeting-filter" className="min-w-64">
-              <SelectValue
-                placeholder={
-                  meta.loading ? "Carregando…" : "Escolher corrida"
-                }
-              />
-            </SelectTrigger>
-            <SelectContent>
-              {meetings.map((item) => (
-                <SelectItem
-                  key={item.meeting_key}
-                  value={String(item.meeting_key)}
-                >
-                  R{item.round} — {item.meeting_name} ({item.circuit})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex items-center gap-2">
-          <Label htmlFor="session-filter" className="text-muted-foreground">
-            Sessão
-          </Label>
-          <Select
-            value={sessionKey !== null ? String(sessionKey) : undefined}
-            onValueChange={(value) => setSessionKey(Number(value))}
-            disabled={!meeting?.sessions.length}
-          >
-            <SelectTrigger id="session-filter" className="min-w-44">
-              <SelectValue placeholder="Escolher sessão" />
-            </SelectTrigger>
-            <SelectContent>
-              {meeting?.sessions.map((session) => (
-                <SelectItem key={session.key} value={String(session.key)}>
-                  {session.name}
-                  {session.state === "live" ? " • ao vivo" : ""}
-                  {session.state === "scheduled" ? " • agendada" : ""}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      {meta.error ? (
-        <ErrorState message={meta.error} onRetry={meta.reload} />
-      ) : error && !data ? (
-        /Nenhuma sess/i.test(error) ? (
-          <Card>
-            <CardContent className="flex items-center gap-3 py-8 text-sm text-muted-foreground">
-              <CircleStop className="size-5" />
-              {error}
+      {/* CLOCK SECTION */}
+      {timeLeft && (
+        <div className="mx-auto w-full max-w-6xl mb-4">
+          <Card className={`border-border/50 backdrop-blur-md animate-in fade-in slide-in-from-bottom-4 duration-700 ${isLive ? "bg-red-950/20 shadow-[0_0_30px_-5px_rgba(239,68,68,0.3)] border-red-500/30" : "bg-blue-950/20 shadow-[0_0_30px_-5px_rgba(59,130,246,0.3)] border-blue-500/50"}`}>
+            <CardHeader className="text-center pb-2">
+              <CardTitle className={`text-2xl flex justify-center items-center gap-2 ${isLive ? "text-red-400" : "text-blue-400"}`}>
+                <CalendarClock className="size-6 animate-pulse" />
+                {isLive ? "Sessão Termina Em:" : "Sessão Começa Em:"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-center items-center gap-4 md:gap-8">
+                <div className="flex flex-col">
+                  <span className="text-5xl md:text-7xl font-black tabular-nums tracking-tighter text-white drop-shadow-md">
+                    {timeLeft.hours.toString().padStart(2, '0')}
+                  </span>
+                  <span className={`text-sm ${isLive ? "text-red-400" : "text-blue-400"} font-medium uppercase tracking-widest mt-2`}>Horas</span>
+                </div>
+                <span className={`text-5xl md:text-7xl font-black mb-6 ${isLive ? "text-red-500/50" : "text-blue-500/50"}`}>:</span>
+                <div className="flex flex-col">
+                  <span className="text-5xl md:text-7xl font-black tabular-nums tracking-tighter text-white drop-shadow-md">
+                    {timeLeft.minutes.toString().padStart(2, '0')}
+                  </span>
+                  <span className={`text-sm ${isLive ? "text-red-400" : "text-blue-400"} font-medium uppercase tracking-widest mt-2`}>Minutos</span>
+                </div>
+                <span className={`text-5xl md:text-7xl font-black mb-6 ${isLive ? "text-red-500/50" : "text-blue-500/50"}`}>:</span>
+                <div className="flex flex-col">
+                  <span className="text-5xl md:text-7xl font-black tabular-nums tracking-tighter text-white drop-shadow-md">
+                    {timeLeft.seconds.toString().padStart(2, '0')}
+                  </span>
+                  <span className={`text-sm ${isLive ? "text-red-400" : "text-blue-400"} font-medium uppercase tracking-widest mt-2`}>Segundos</span>
+                </div>
+              </div>
             </CardContent>
           </Card>
-        ) : (
-          <ErrorState
-            message={error}
-            onRetry={() => setReloadTick((tick) => tick + 1)}
-          />
-        )
-      ) : noSessions ? (
-        <Card>
-          <CardContent className="flex items-center gap-3 py-8 text-sm text-muted-foreground">
-            <CalendarClock className="size-5" />
-            As sessões desta etapa ainda não foram publicadas pela OpenF1.
+        </div>
+      )}
+
+      {/* NATIVE WIDGETS SECTION */}
+      <div className="mx-auto mt-4 grid w-full max-w-6xl grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
+        
+        <Card className="border-border/50 bg-card/40 backdrop-blur-sm shadow-xl flex flex-col h-full">
+          <CardHeader className="pb-3 border-b border-border/50 bg-muted/20">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Flag className="size-5 text-muted-foreground" />
+              Status da Pista
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 flex flex-col justify-center items-center py-8">
+            <div className={`px-8 py-3 rounded-xl border-2 font-black text-2xl tracking-widest shadow-lg ${getFlagColor(liveData?.flag)}`}>
+              {liveData?.flag || "CLEAR"}
+            </div>
           </CardContent>
         </Card>
-      ) : !data ? (
-        <div className="space-y-2">
-          {Array.from({ length: 10 }).map((_, index) => (
-            <Skeleton key={index} className="h-9 w-full" />
-          ))}
-        </div>
-      ) : (
-        <>
-          <Card>
-            <CardHeader className="flex-row items-center justify-between gap-4">
-              <div>
-                <CardTitle className="text-base">
-                  {data.session.meeting_name ?? "Sessão"} ·{" "}
-                  {data.session.name ?? data.session.type}
-                </CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  {[data.session.circuit, data.session.country]
-                    .filter(Boolean)
-                    .join(" · ")}{" "}
-                  — atualizado às {timeFmt.format(new Date(data.updated_at))}
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center gap-2 text-sm">
-                {data.flag ? (
-                  <span
-                    className={`rounded-md border px-2 py-1 text-xs font-semibold ${FLAG_BADGES[data.flag] ?? FLAG_BADGES.WHITE}`}
-                  >
-                    <Flag className="mr-1 inline size-3" />
-                    {data.flag}
-                  </span>
-                ) : null}
-                {data.current_lap ? (
-                  <span className="rounded-md bg-secondary px-2 py-1 text-xs font-semibold tabular-nums">
-                    Volta {data.current_lap}
-                  </span>
-                ) : null}
-                <span className="flex items-center gap-1 rounded-md bg-secondary px-2 py-1 text-xs tabular-nums">
-                  <Thermometer className="size-3 text-muted-foreground" />
-                  Ar {data.weather.air_temperature ?? "—"}° · Pista{" "}
-                  {data.weather.track_temperature ?? "—"}°
-                </span>
-                <span className="flex items-center gap-1 rounded-md bg-secondary px-2 py-1 text-xs tabular-nums">
-                  <Wind className="size-3 text-muted-foreground" />
-                  {data.weather.wind_speed ?? "—"} km/h
-                </span>
-                <span className="flex items-center gap-1 rounded-md bg-secondary px-2 py-1 text-xs tabular-nums">
-                  <Droplets className="size-3 text-muted-foreground" />
-                  {data.weather.humidity ?? "—"}%
-                </span>
-              </div>
-            </CardHeader>
-            <CardContent className="p-0">
-              {state === "scheduled" ? (
-                <p className="px-3 py-8 text-center text-sm text-muted-foreground">
-                  <CalendarClock className="mr-2 inline size-4" />
-                  Esta sessão ainda não começou — os tempos aparecem aqui
-                  durante o fim de semana do GP.
-                </p>
-              ) : (
-                <>
-                  <div className="flex items-center gap-3 border-y border-l-4 border-l-transparent bg-muted/60 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    <span className="w-8 text-right">P</span>
-                    <span className="w-8">#</span>
-                    <span className="flex-1">Piloto</span>
-                    <span className="w-20 text-right">Gap</span>
-                    <span className="w-20 text-right">Intervalo</span>
-                    <span className="w-12 text-right">Volta</span>
-                    <span className="w-9 text-center">Pneu</span>
-                    <span className="w-8 text-right">Box</span>
-                  </div>
-                  {error ? (
-                    <p className="border-b bg-destructive/5 px-3 py-2 text-xs text-destructive">
-                      Não foi possível atualizar ({error}) — exibindo o último
-                      resultado.
-                    </p>
-                  ) : null}
-                  {data.drivers.map((row) => (
-                    <TowerRow key={row.driver_number} row={row} state={state} />
-                  ))}
-                  {data.drivers.length === 0 ? (
-                    <p className="px-3 py-6 text-center text-sm text-muted-foreground">
-                      Nenhum tempo registrado nesta sessão ainda.
-                    </p>
-                  ) : null}
-                </>
-              )}
-            </CardContent>
-          </Card>
 
-          {data.messages.length > 0 && state !== "scheduled" ? (
-            <Card size="sm">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  Race control
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-1.5">
-                {[...data.messages].reverse().map((message, index) => (
-                  <p key={index} className="text-sm text-muted-foreground">
-                    <span className="mr-2 text-xs tabular-nums">
-                      {message.date
-                        ? timeFmt.format(new Date(message.date))
-                        : ""}
-                    </span>
-                    {message.message}
-                  </p>
-                ))}
-              </CardContent>
-            </Card>
-          ) : null}
-        </>
+        <Card className="border-border/50 bg-card/40 backdrop-blur-sm shadow-xl flex flex-col h-full">
+          <CardHeader className="pb-3 border-b border-border/50 bg-muted/20">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <CloudRain className="size-5 text-muted-foreground" />
+              Condições Climáticas
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 py-6">
+            <div className="grid grid-cols-2 gap-y-6 gap-x-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-500/10 rounded-lg"><Thermometer className="size-5 text-blue-400" /></div>
+                <div>
+                  <div className="text-sm text-muted-foreground font-medium">Ar</div>
+                  <div className="text-lg font-bold tabular-nums">{liveData?.weather?.air_temperature ?? "--"}°C</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-orange-500/10 rounded-lg"><Thermometer className="size-5 text-orange-400" /></div>
+                <div>
+                  <div className="text-sm text-muted-foreground font-medium">Pista</div>
+                  <div className="text-lg font-bold tabular-nums">{liveData?.weather?.track_temperature ?? "--"}°C</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-slate-500/10 rounded-lg"><Wind className="size-5 text-slate-400" /></div>
+                <div>
+                  <div className="text-sm text-muted-foreground font-medium">Vento</div>
+                  <div className="text-lg font-bold tabular-nums">{liveData?.weather?.wind_speed ?? "--"} km/h</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-cyan-500/10 rounded-lg"><CloudRain className="size-5 text-cyan-400" /></div>
+                <div>
+                  <div className="text-sm text-muted-foreground font-medium">Umidade</div>
+                  <div className="text-lg font-bold tabular-nums">{liveData?.weather?.humidity ?? "--"}%</div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border/50 bg-card/40 backdrop-blur-sm shadow-xl flex flex-col h-full">
+          <CardHeader className="pb-3 border-b border-border/50 bg-muted/20">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <MonitorPlay className="size-5 text-muted-foreground" />
+              Race Control
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 overflow-y-auto max-h-[220px] py-4 pr-2 custom-scrollbar">
+            <div className="flex flex-col gap-3">
+              {(!liveData?.messages || liveData.messages.length === 0) && (
+                <div className="text-center text-muted-foreground text-sm italic mt-8">Nenhuma mensagem oficial da Direção de Prova ainda.</div>
+              )}
+              {liveData?.messages?.map((msg, idx) => (
+                <div key={idx} className={`p-3 rounded-lg text-sm font-medium border-l-4 ${msg.flag === 'RED' ? 'bg-red-500/10 border-red-500 text-red-200' : msg.flag === 'YELLOW' ? 'bg-yellow-500/10 border-yellow-500 text-yellow-200' : 'bg-muted/50 border-blue-500 text-zinc-300'}`}>
+                  {msg.message}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* TIMING TOWER */}
+      {liveData && liveData.drivers && liveData.drivers.length > 0 && (
+         <div className="mx-auto w-full max-w-6xl mt-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <Card className="border-border/50 bg-card/40 backdrop-blur-md shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900 p-3 text-center text-sm font-bold border-b border-border/50 tracking-widest text-zinc-300">
+              TORRE DE TEMPOS OFICIAL
+            </div>
+            <div className="w-full overflow-x-auto">
+              <table className="w-full text-sm text-left whitespace-nowrap">
+                <thead className="text-xs uppercase bg-white/5 text-muted-foreground">
+                  <tr>
+                    <th className="px-4 py-3 font-semibold w-12 text-center">Pos</th>
+                    <th className="px-4 py-3 font-semibold">Piloto</th>
+                    <th className="px-4 py-3 font-semibold text-center">Pneu</th>
+                    <th className="px-4 py-3 font-semibold text-right">Gap</th>
+                    <th className="px-4 py-3 font-semibold text-right">Intervalo</th>
+                    <th className="px-4 py-3 font-semibold text-center w-16">Volta</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/30">
+                  {liveData.drivers.map((driver) => (
+                    <tr key={driver.driver_number} className="hover:bg-white/5 transition-colors">
+                      <td className="px-4 py-2 text-center font-bold">{driver.position || "-"}</td>
+                      <td className="px-4 py-2 font-medium flex items-center gap-3">
+                        <span className="w-1 h-4 rounded-full" style={{ backgroundColor: `#${driver.team_colour}` }}></span>
+                        <span className="w-6 text-muted-foreground font-mono">{driver.driver_number}</span>
+                        <span className="font-bold flex items-center gap-2">
+                          {driver.name}
+                          {driver.in_pit && <span className="bg-white text-black px-1.5 rounded-sm text-[10px] font-black tracking-widest leading-none py-0.5" title="No Pitlane">P</span>}
+                        </span>
+                        <span className="text-xs text-muted-foreground uppercase">{driver.team}</span>
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        {driver.compound ? (
+                           <span className={`px-2 py-0.5 rounded-sm text-[10px] font-black tracking-widest uppercase ${COMPOUND_COLORS[driver.compound] || "bg-zinc-700 text-white"}`}>
+                             {driver.compound}
+                           </span>
+                        ) : (
+                          <span className="text-muted-foreground">-</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-2 text-right font-mono tabular-nums">{driver.gap_to_leader !== null ? `+${driver.gap_to_leader.toFixed(3)}s` : "PIT"}</td>
+                      <td className="px-4 py-2 text-right font-mono tabular-nums text-muted-foreground">{driver.interval !== null ? `+${driver.interval.toFixed(3)}s` : "-"}</td>
+                      <td className="px-4 py-2 text-center font-mono tabular-nums">{driver.lap_number || "-"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+         </div>
       )}
     </div>
   )

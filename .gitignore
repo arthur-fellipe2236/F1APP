@@ -20,10 +20,50 @@ dist/
 # gerados em runtime
 instance/
 *.db
+*.log
 
 # SO
 .DS_Store
 
-# pasta não relacionada
+# Projetos e extensões separadas
 outro-projeto/
-.env*
+book-translator/
+f1-iframe-extension/
+
+# Scratch & temporary scripts
+scratch/
+f1-app/scratch/
+f1-api/scratch/
+f1-api/cache/
+f1-api/*.log
+f1-api/test_data.txt
+f1-api/app/api/row_html.txt
+f1-api/app/api/intercepted.json
+f1-app/temp.json
+f1-app/]*live[^
+f1-app/implementation_plan.md
+f1-app/*.py
+f1-app/test_*.*
+f1-api/check_*.py
+f1-api/crop_*.py
+f1-api/find_*.py
+f1-api/fix_*.py
+f1-api/list_*.py
+f1-api/adjust_f1.py
+f1-api/custom_baku.py
+f1-api/update_*.py
+f1-api/sync_*.py
+f1-api/seed_temporal_logos.py
+f1-app/clean_*.py
+f1-app/inject_*.py
+f1-app/master_inject.py
+f1-app/update_*.py
+f1-app/add_*.py
+f1-app/apply_*.py
+f1-app/fix_*.py
+f1-app/get_*.py
+f1-app/refactor_*.py
+f1-app/remove_*.py
+f1-app/scrape_*.py
+f1-app/search_*.py
+f1-app/print_*.py

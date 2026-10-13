@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
-import { CalendarDays, Flag, Timer } from "lucide-react"
+import { CalendarDays, Timer, CalendarOff } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useApi } from "@/hooks/use-api"
-import { api, type LiveSessionEntry, type NextRace } from "@/lib/api"
+import { api, type LiveSessionEntry } from "@/lib/api"
 import { flagFromCountry } from "@/lib/assets"
 import { mediaUrl } from "@/lib/media"
 import { cn } from "@/lib/utils"
@@ -13,10 +13,17 @@ const SESSION_SHORT: Record<string, string> = {
   "Practice 1": "P1",
   "Practice 2": "P2",
   "Practice 3": "P3",
+  "Free Practice": "FP",
   "Sprint Qualifying": "SQ",
   "Sprint Shootout": "SQ",
   Sprint: "SP",
   Qualifying: "Q",
+  "Qualifying 1": "Q1",
+  "Qualifying 2": "Q2",
+  "Sprint Race": "SR",
+  "Feature Race": "FR",
+  "Feature Race 1": "FR1",
+  "Feature Race 2": "FR2",
   Race: "R",
 }
 
@@ -58,7 +65,7 @@ function remainingUntil(target: string): Remaining {
 function CountdownBlock({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex min-w-14 flex-col items-center rounded-lg bg-secondary px-2 py-1.5">
-      <span className="text-xl font-bold tabular-nums">
+      <span className="text-xl font-bold font-mono tracking-tight tabular-nums">
         {String(value).padStart(2, "0")}
       </span>
       <span className="text-[10px] tracking-wide text-muted-foreground uppercase">
@@ -68,14 +75,17 @@ function CountdownBlock({ value, label }: { value: number; label: string }) {
   )
 }
 
-function Countdown({ target, doneLabel }: { target: string; doneLabel: string }) {
+function Countdown({
+  target,
+  doneLabel,
+}: {
+  target: string
+  doneLabel: string
+}) {
   const [remaining, setRemaining] = useState(() => remainingUntil(target))
 
   useEffect(() => {
-    const timer = setInterval(
-      () => setRemaining(remainingUntil(target)),
-      1000,
-    )
+    const timer = setInterval(() => setRemaining(remainingUntil(target)), 1000)
     return () => clearInterval(timer)
   }, [target])
 
@@ -116,31 +126,74 @@ function SessionPill({
         new Date(session.date_start),
       )}${live ? " · ao vivo" : ""}`}
       className={cn(
-        "flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-semibold tabular-nums",
+        "flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-semibold font-mono tracking-tight tabular-nums",
         finished &&
           "border-transparent bg-secondary text-muted-foreground line-through opacity-60",
         live && "border-emerald-500/40 bg-emerald-500/10 text-emerald-600",
-        !finished && !live && next &&
+        !finished &&
+          !live &&
+          next &&
           "border-primary/40 bg-primary/[0.07] ring-1 ring-primary/25",
         !finished && !live && !next && "border-border text-muted-foreground",
       )}
     >
       {sessionLabel(session)}
-      <span className="font-normal">{timeFmt.format(new Date(session.date_start))}</span>
+      <span className="font-normal">
+        {timeFmt.format(new Date(session.date_start))}
+      </span>
     </span>
   )
 }
 
-export function NextRaceCard() {
-  const query = useApi(() => api.nextRace(), [])
-  const data: NextRace | undefined = query.data
+export function NextRaceCard({
+  series = "f1",
+}: {
+  series?: "f1" | "f2" | "f3"
+}) {
+  const query = useApi(() => {
+    if (series === "f2") return api.nextF2Race()
+    if (series === "f3") return api.nextF3Race()
+    return api.nextRace()
+  }, [series])
+  const data: any = query.data
   if (query.error || !data) return null
+
+  if (data.offseason) {
+    return (
+      <Card className="next-race-light group relative overflow-hidden border-black/10 bg-gradient-to-br from-card to-muted/50 text-card-foreground shadow-md h-full flex flex-col transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:border-primary/20">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.02] dark:opacity-[0.04] transition-transform duration-700 group-hover:scale-125 group-hover:opacity-[0.06] dark:group-hover:opacity-[0.08] group-hover:rotate-3">
+          <CalendarDays className="size-64" />
+        </div>
+        <CardHeader className="relative z-10">
+          <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors duration-500 group-hover:text-foreground">
+            <img
+              loading="lazy"
+              src={`/logos/${series}-logo.png`}
+              alt={`${series.toUpperCase()} Logo`}
+              className="h-5 w-auto object-contain rounded-sm"
+            />
+            <span className="ml-1 font-semibold">
+              Fórmula {series === "f1" ? "1" : series === "f2" ? "2" : "3"} — Temporada {data.season}
+            </span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="relative z-10 flex flex-col items-center justify-center flex-1 py-8 px-6 text-center gap-4">
+          <div className="rounded-full bg-secondary/80 p-4 shadow-sm ring-1 ring-border/50 transition-all duration-500 group-hover:bg-primary/10 group-hover:ring-primary/30 group-hover:scale-110">
+            <CalendarOff className="size-8 text-muted-foreground transition-colors duration-500 group-hover:text-primary" />
+          </div>
+          <div className="text-sm font-medium text-muted-foreground leading-relaxed max-w-[90%] transition-colors duration-500 group-hover:text-foreground">
+            {data.message || `Aguardando homologação do calendário oficial de ${data.season} pela FIA.`}
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   const sessions = data.sessions ?? []
   const now = Date.now()
   const nextSession =
     sessions.find(
-      (session) =>
+      (session: LiveSessionEntry) =>
         session.state === "live" ||
         (session.state !== "finished" &&
           new Date(session.date_start).getTime() > now),
@@ -150,33 +203,35 @@ export function NextRaceCard() {
   const flag = mediaUrl(flagFromCountry(data.country, 640), 640)
 
   return (
-    <Card className="relative overflow-hidden border-black/10 bg-card text-card-foreground shadow-md dark:bg-card">
+    <Card className="dark relative overflow-hidden border-white/10 bg-card text-card-foreground shadow-md h-full flex flex-col">
       {flag ? (
         <>
           <img
             src={flag}
             alt=""
             aria-hidden
-            className="pointer-events-none absolute inset-0 size-full object-cover opacity-[0.55] dark:opacity-15 dark:brightness-75"
+            className="pointer-events-none absolute inset-0 size-full object-cover opacity-30 dark:opacity-40"
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-card/95 via-card/70 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-card via-card/90 to-card/10 dark:to-transparent" />
         </>
       ) : null}
       <CardHeader className="relative z-10">
         <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-          <Flag className="size-4" />
-          Próxima corrida
+          <img
+            loading="lazy"
+            src={`/logos/${series}-logo.png`}
+            alt={`${series.toUpperCase()} Logo`}
+            className="h-5 w-auto object-contain rounded-sm"
+          />
           {data.round ? (
             <Badge variant="outline" className="ml-1">
               Etapa {data.round}
             </Badge>
           ) : null}
-          <Badge variant="ghost" className="ml-auto text-[10px]">
-            fonte: {data.source}
-          </Badge>
+
         </CardTitle>
       </CardHeader>
-      <CardContent className="relative z-10 flex flex-wrap items-center justify-between gap-4">
+      <CardContent className="relative z-10 flex flex-wrap items-stretch justify-between gap-4 flex-1">
         <div>
           <div className="text-xl font-semibold tracking-tight">
             {data.name ?? data.circuit ?? "—"}
@@ -196,7 +251,7 @@ export function NextRaceCard() {
           ) : null}
           {sessions.length > 0 ? (
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {sessions.map((session) => (
+              {sessions.map((session: LiveSessionEntry) => (
                 <SessionPill
                   key={session.key}
                   session={session}
@@ -207,7 +262,7 @@ export function NextRaceCard() {
           ) : null}
         </div>
         {target ? (
-          <div className="flex flex-col items-end gap-1">
+          <div className="flex flex-col items-end justify-end mt-auto ml-auto gap-1">
             <span className="flex items-center gap-1 text-xs text-muted-foreground">
               <Timer className="size-3" />
               {targetIsRace ? "largada em" : "próxima sessão em"}

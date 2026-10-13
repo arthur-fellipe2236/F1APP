@@ -28,6 +28,7 @@ export interface Driver {
   nationality: string | null
   team_id: number | null
   team_name?: string | null
+  season_number?: number | null
 }
 
 export interface DriverDetail extends Driver {
@@ -38,6 +39,7 @@ export interface RaceWinner {
   name: string
   code: string | null
   nationality: string | null
+  headshot_url?: string | null
 }
 
 export interface Circuit {
@@ -49,6 +51,7 @@ export interface Circuit {
   laps: number | null
   round?: number | null
   winner?: RaceWinner | null
+  sprint_winner?: RaceWinner | null
 }
 
 export interface Race {
@@ -233,8 +236,7 @@ const BASE_URL = `${import.meta.env.VITE_API_URL ?? ""}/api/v1`
 async function request<T>(path: string): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`)
   const body = (await res.json().catch(() => null)) as
-    | (T & { error?: string })
-    | null
+    (T & { error?: string }) | null
   if (!res.ok) {
     throw new ApiError(body?.error ?? `Erro HTTP ${res.status}`, res.status)
   }
@@ -274,25 +276,26 @@ export const api = {
 
   seasons: () => request<{ data: number[] }>("/seasons"),
 
-  drivers: (
-    params: ListParams & { team_id?: number; season?: number } = {},
-  ) => request<Paginated<Driver>>(`/drivers${qs(params)}`),
+  drivers: (params: ListParams & { team_id?: number; season?: number; series?: string } = {}) =>
+    request<Paginated<Driver>>(`/drivers${qs(params)}`),
 
-  teams: (params: ListParams & { season?: number } = {}) =>
+  teams: (params: ListParams & { season?: number; series?: string } = {}) =>
     request<Paginated<Team>>(`/teams${qs(params)}`),
 
-  circuits: (params: ListParams & { season?: number } = {}) =>
+  circuits: (params: ListParams & { season?: number; series?: string; race_type?: string } = {}) =>
     request<Paginated<Circuit>>(`/circuits${qs(params)}`),
 
-  races: (params: ListParams & { season?: number } = {}) =>
+  races: (params: ListParams & { season?: number; series?: string } = {}) =>
     request<Paginated<Race>>(`/races${qs(params)}`),
 
   race: (raceId: number) => request<Race>(`/races/${raceId}`),
 
   nextRace: () => request<NextRace>("/next-race"),
+  nextF2Race: () => request<NextRace>("/f2/next-race"),
+  nextF3Race: () => request<NextRace>("/f3/next-race"),
 
-  latestNews: () =>
-    request<{ data: NewsItem[] }>("/news?upcoming=1&limit=3&lang=pt-BR"),
+  latestNews: (series?: string) =>
+    request<{ data: NewsItem[] }>(`/news?upcoming=1&limit=3&lang=pt-BR${series ? `&series=${series}` : ''}`),
 
   brazilianNews: (series: "f1" | "f2" | "f3" = "f1", limit = 3) =>
     request<{ data: NewsItem[] }>(
@@ -317,9 +320,9 @@ export const api = {
   raceResults: (raceId: number, params: ListParams = {}) =>
     request<Paginated<RaceResult>>(`/races/${raceId}/results${qs(params)}`),
 
-  driverStandings: (season?: number) =>
-    request<Standings<DriverStanding>>(`/standings/drivers${qs({ season })}`),
+  driverStandings: (season?: number, series?: string) =>
+    request<Standings<DriverStanding>>(`/standings/drivers${qs({ season, series })}`),
 
-  teamStandings: (season?: number) =>
-    request<Standings<TeamStanding>>(`/standings/teams${qs({ season })}`),
+  teamStandings: (season?: number, series?: string) =>
+    request<Standings<TeamStanding>>(`/standings/teams${qs({ season, series })}`),
 }

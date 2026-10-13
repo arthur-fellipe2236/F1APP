@@ -1,6 +1,8 @@
+import { ErrorBoundary } from "@/components/error-boundary"
+import { useState, useEffect, useMemo } from "react"
 import { Link, useParams } from "react-router-dom"
 import type { TableColumn } from "react-data-table-component"
-import { ArrowLeft, MapPin, Zap } from "lucide-react"
+import { ArrowLeft, MapPin, Zap, CircleDashed } from "lucide-react"
 
 import { CodeBadge } from "@/components/driver-code"
 import { F1DataTable } from "@/components/data-table"
@@ -17,11 +19,146 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useApi } from "@/hooks/use-api"
 import { api, type RaceResult } from "@/lib/api"
 import { formatDate, formatPoints, formatStatus } from "@/lib/format"
+import { QualyResults } from "@/components/qualy-results"
+import { PracticeResults } from "@/components/practice-results"
+import { RacePaceChart } from "@/components/race-pace-chart"
+import { TrackDominanceChart } from "@/components/track-dominance-chart"
 
-const resultColumns: TableColumn<RaceResult>[] = [
+// --- COMPONENTE DE ESTRATÉGIA DE PNEUS (DATAVIZ) ---
+function TyreStrategy({ season, country, results }: { season: number, country: string, results: RaceResult[] }) {
+  const [stints, setStints] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // 1. Achar a session_key correta na OpenF1 via nosso proxy
+    fetch(`/api/v1/live/sessions?year=${season}`)
+      .then(r => r.json())
+      .then(res => {
+        const meeting = res.data.find((m: any) => m.country === country)
+        if (!meeting) throw new Error("Corrida não encontrada na OpenF1")
+        const raceSession = meeting.sessions.find((s: any) => s.name === "Race")
+        if (!raceSession) throw new Error("Sessão Race não encontrada")
+        
+        // 2. Buscar stints e drivers do nosso proxy
+        return fetch(`/api/v1/live/tyres/${raceSession.key}`)
+      })
+      .then(async r => {
+        if (!r.ok) throw new Error("Erro ao buscar dados de pneus")
+        return r.json()
+      })
+      .then(json => {
+        const { stints: stintsData, drivers } = json.data
+        
+        // Mapa de acrônimos dos pilotos
+        const driverAcronyms: Record<number, string> = {}
+        drivers.forEach((d: any) => {
+          driverAcronyms[d.driver_number] = d.name_acronym || ""
+        })
+
+        // Agrupar stints por driver
+        const grouped: Record<number, any[]> = {}
+        stintsData.forEach((s: any) => {
+          if (!grouped[s.driver_number]) grouped[s.driver_number] = []
+          grouped[s.driver_number].push(s)
+        })
+        
+        // Formatar para o gráfico
+        const chartData = Object.values(grouped).map(driverStints => {
+          driverStints.sort((a, b) => a.lap_start - b.lap_start)
+          const driverNumber = driverStints[0].driver_number
+          return {
+            driver_number: driverNumber,
+            acronym: driverAcronyms[driverNumber] || String(driverNumber),
+            total_laps: driverStints[driverStints.length - 1].lap_end,
+            stints: driverStints
+          }
+        }).sort((a, b) => b.total_laps - a.total_laps) // mantém sort default
+        
+        setStints(chartData)
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error(err)
+        setLoading(false)
+      })
+  }, [season, country])
+
+  const sortedStints = [...stints].map(driver => {
+    // Cruzar a sigla da OpenF1 com o nosso banco de resultados
+    const resultRow = results.find(r => r.driver_code === driver.acronym)
+    // Se não achou ou não tem position final (DNF), joga pro final da lista (999)
+    const position = resultRow?.position ?? 999 
+    return { ...driver, position }
+  }).sort((a, b) => {
+    if (a.position !== b.position) return a.position - b.position
+    return b.total_laps - a.total_laps // desempate por voltas
+  })
+
+  if (loading) return <div className="p-8 text-center animate-pulse">Carregando telemetria de pneus...</div>
+  if (stints.length === 0) return <div className="p-8 text-center text-muted-foreground">Dados de pneus indisponíveis para esta corrida.</div>
+
+  const maxLaps = Math.max(...stints.map(d => d.total_laps))
+
+  const getCompoundColor = (compound: string) => {
+    if (compound === "SOFT") return "bg-red-500 text-white"
+    if (compound === "MEDIUM") return "bg-yellow-400 text-black"
+    if (compound === "HARD") return "bg-gray-100 text-black"
+    if (compound === "INTERMEDIATE") return "bg-green-500 text-white"
+    if (compound === "WET") return "bg-blue-600 text-white"
+    return "bg-gray-700 text-white"
+  }
+
+  return (
+    <Card className="mt-6 border-border/50">
+      <CardHeader>
+        <CardTitle className="text-lg flex items-center gap-2">
+          <CircleDashed className="size-5 text-muted-foreground" />
+          Estratégia de Pneus (Pit Stops)
+        </CardTitle>
+        <CardDescription>
+          Ciclos de vida dos compostos ao longo das {maxLaps} voltas.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col gap-3">
+          {sortedStints.map((driver) => (
+            <div key={driver.driver_number} className="flex items-center gap-3 text-sm">
+              <div className="w-14 shrink-0 flex items-center justify-end gap-1.5 font-mono">
+                <span className="text-muted-foreground">{driver.position === 999 ? "DNF" : `${driver.position}º`}</span>
+                <span className="font-bold text-white">{driver.acronym}</span>
+              </div>
+              <div className="flex-1 h-6 bg-black/20 rounded-sm flex overflow-hidden border border-white/5 relative">
+                {driver.stints.map((stint: any, idx: number) => {
+                  const widthPct = ((stint.lap_end - stint.lap_start) / maxLaps) * 100
+                  return (
+                    <div 
+                      key={idx} 
+                      className={`h-full ${getCompoundColor(stint.compound)} flex items-center justify-center font-black text-[10px] tracking-tighter border-r border-black/20 hover:brightness-110 transition-all cursor-crosshair`}
+                      style={{ width: `${widthPct}%` }}
+                      title={`${stint.compound || "Desconhecido"} (Volta ${stint.lap_start} a ${stint.lap_end})`}
+                    >
+                      {widthPct > 5 && stint.compound ? stint.compound.substring(0, 1) : ""}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
+          <div className="text-xs text-muted-foreground mt-4 italic text-right">
+            * Dados fornecidos via telemetria oficial (OpenF1).
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+// ----------------------------------------------------
+
+const getResultColumns = (season?: number): TableColumn<RaceResult>[] => [
   {
     name: "Pos",
     width: "72px",
@@ -45,7 +182,7 @@ const resultColumns: TableColumn<RaceResult>[] = [
     name: "Equipe",
     sortable: true,
     selector: (row) => row.team_name ?? "",
-    cell: (row) => <TeamInline name={row.team_name} />,
+    cell: (row) => <TeamInline name={row.team_name} season={season} />,
   },
   {
     name: "Largada",
@@ -67,9 +204,7 @@ const resultColumns: TableColumn<RaceResult>[] = [
     sortable: true,
     selector: (row) => row.status ?? "",
     cell: (row) => (
-      <Badge
-        variant={row.status === "finished" ? "secondary" : "destructive"}
-      >
+      <Badge variant={row.status === "finished" ? "secondary" : "destructive"}>
         {formatStatus(row.status)}
       </Badge>
     ),
@@ -90,7 +225,7 @@ const resultColumns: TableColumn<RaceResult>[] = [
     selector: (row) => row.points + row.sprint_points,
     cell: (row) => (
       <div className="flex flex-col items-end">
-        <span className="font-semibold tabular-nums">
+        <span className="font-semibold font-mono tracking-tight tabular-nums">
           {formatPoints(row.points)}
         </span>
         {row.sprint_points > 0 ? (
@@ -104,6 +239,14 @@ const resultColumns: TableColumn<RaceResult>[] = [
 ]
 
 export function RaceDetailPage() {
+  return (
+    <ErrorBoundary>
+      <RaceDetailPageInner />
+    </ErrorBoundary>
+  )
+}
+
+function RaceDetailPageInner() {
   const { raceId } = useParams()
   const id = Number(raceId)
   const valid = Number.isInteger(id) && id > 0
@@ -117,6 +260,8 @@ export function RaceDetailPage() {
     if (!valid) return Promise.reject(new Error("Corrida inválida"))
     return api.raceResults(id, { page: 1, per_page: 50 })
   }, [id])
+
+  const columns = useMemo(() => getResultColumns(race.data?.season), [race.data?.season])
 
   return (
     <div className="space-y-6">
@@ -138,18 +283,21 @@ export function RaceDetailPage() {
       ) : race.error ? (
         <ErrorState message={race.error} onRetry={race.reload} />
       ) : race.data ? (
-        <Card>
+        <Card className="overflow-hidden">
+          <div className="absolute right-0 top-0 opacity-5 pointer-events-none translate-x-1/4 -translate-y-1/4">
+             <MapPin className="size-64" />
+          </div>
           <CardHeader>
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="secondary">Temporada {race.data.season}</Badge>
               <Badge variant="outline">Rodada {race.data.round}</Badge>
             </div>
-            <CardTitle className="text-2xl">{race.data.name}</CardTitle>
-            <CardDescription className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <CardTitle className="text-3xl font-black mt-1">{race.data.name}</CardTitle>
+            <CardDescription className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-base">
               <span>{formatDate(race.data.date)}</span>
               {race.data.circuit_name ? (
-                <span className="flex items-center gap-1">
-                  <MapPin className="size-3.5" />
+                <span className="flex items-center gap-1 text-primary">
+                  <MapPin className="size-4" />
                   {race.data.circuit_name}
                   {race.data.circuit_country
                     ? ` · ${race.data.circuit_country}`
@@ -158,26 +306,103 @@ export function RaceDetailPage() {
               ) : null}
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Resultado oficial da corrida, ordenado por posição de chegada.
-            </p>
-          </CardContent>
         </Card>
       ) : null}
 
-      {results.error ? (
-        <ErrorState message={results.error} onRetry={results.reload} />
-      ) : (
-        <F1DataTable
-          title="Resultado"
-          columns={resultColumns}
-          data={results.data?.data ?? []}
-          keyField="id"
-          progressPending={results.loading}
-          progressSkeleton
-        />
-      )}
+      <Tabs defaultValue="race" className="w-full">
+        <TabsList className="mb-4">
+          <TabsTrigger value="fp">Treinos Livres</TabsTrigger>
+          <TabsTrigger value="qualy">Qualificação</TabsTrigger>
+          <TabsTrigger value="race">Resultado Final</TabsTrigger>
+          {race.data && race.data.season >= 2023 && (
+            <TabsTrigger value="telemetry" className="flex items-center gap-2">
+              <Zap className="size-4" /> Telemetria
+            </TabsTrigger>
+          )}
+        </TabsList>
+
+        <TabsContent value="fp">
+          {race.data && (
+            <PracticeResults season={race.data.season} countryName={race.data.circuit_country} />
+          )}
+        </TabsContent>
+
+        <TabsContent value="qualy">
+          {race.data && (
+            <QualyResults season={race.data.season} round={race.data.round} />
+          )}
+        </TabsContent>
+
+        <TabsContent value="telemetry">
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card className="bg-card border-border/50">
+                <CardContent className="p-6 flex flex-col justify-center items-center text-center">
+                  <span className="text-sm text-muted-foreground mb-2">Pilotos na Pista</span>
+                  <span className="text-3xl font-bold font-mono">
+                    {results.data?.data.filter(r => r.position).length ?? 0}
+                    <span className="text-sm text-muted-foreground ml-1">/ {results.data?.data.length ?? 20}</span>
+                  </span>
+                </CardContent>
+              </Card>
+              <Card className="bg-card border-border/50">
+                <CardContent className="p-6 flex flex-col justify-center items-center text-center">
+                  <span className="text-sm text-muted-foreground mb-2">Vencedor</span>
+                  <span className="text-3xl font-bold font-mono text-primary">
+                    {results.data?.data.find(r => r.position === 1)?.driver_code ?? "-"}
+                  </span>
+                </CardContent>
+              </Card>
+              <Card className="bg-card border-border/50">
+                <CardContent className="p-6 flex flex-col justify-center items-center text-center">
+                  <span className="text-sm text-muted-foreground mb-2">Volta Mais Rápida</span>
+                  <span className="text-3xl font-bold font-mono text-purple-400">
+                    {results.data?.data.find(r => r.fastest_lap)?.driver_code ?? "-"}
+                  </span>
+                </CardContent>
+              </Card>
+            </div>
+
+            {race.data && race.data.season >= 2023 && race.data.circuit_country && (
+              <div className="flex flex-col gap-6">
+                <TyreStrategy 
+                  season={race.data.season} 
+                  country={race.data.circuit_country} 
+                  results={results.data?.data ?? []}
+                />
+                <RacePaceChart 
+                  season={race.data.season} 
+                  country={race.data.circuit_country} 
+                  results={results.data?.data ?? []}
+                />
+                <TrackDominanceChart 
+                  season={race.data.season} 
+                  country={race.data.circuit_country} 
+                  results={results.data?.data ?? []}
+                />
+              </div>
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="race">
+          {results.error ? (
+            <ErrorState message={results.error} onRetry={results.reload} />
+          ) : (
+            <div className="space-y-6">
+              
+              <F1DataTable
+                title="Resultado Final"
+                columns={columns}
+                data={results.data?.data ?? []}
+                keyField="id"
+                progressPending={results.loading}
+                progressSkeleton
+              />
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

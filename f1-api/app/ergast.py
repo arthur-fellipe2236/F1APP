@@ -12,8 +12,8 @@ import requests
 
 BASE_URL = "https://api.jolpi.ca/ergast/f1"
 TIMEOUT_SECONDS = 30
-REQUEST_INTERVAL_SECONDS = 0.15
-MAX_RETRIES = 4
+REQUEST_INTERVAL_SECONDS = 1.5
+MAX_RETRIES = 5
 
 _session = requests.Session()
 
@@ -28,6 +28,7 @@ def _request(path, params=None):
     for attempt in range(MAX_RETRIES + 1):
         try:
             response = _session.get(url, params=params, timeout=TIMEOUT_SECONDS)
+            response.encoding = 'utf-8'
         except requests.RequestException as exc:
             raise JolpicaError(f"Falha ao consultar Jolpica: {exc}") from exc
 

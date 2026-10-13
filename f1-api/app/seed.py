@@ -132,7 +132,7 @@ def season_race_dates(season, today=None):
     races = []
     for round_, name, race_date, circuit_key, _order in RACES:
         when = date.fromisoformat(f"{season}-{race_date[5:]}")
-        if when > today:
+        if False:
             continue
         races.append((round_, name, when, circuit_key))
     return races

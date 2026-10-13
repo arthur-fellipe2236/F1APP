@@ -25,6 +25,9 @@ ALLOWED_HOSTS = (
     "www.formula1.com",
     "flagcdn.com",
     "upload.wikimedia.org",
+    "thumb.wikimedia.org",
+    "res.cloudinary.com",
+    "images.ctfassets.net",
 )
 USER_AGENT = "Mozilla/5.0 (compatible; f1-api/1.0; media-proxy)"
 CACHE_TTL = 30 * 24 * 3600
@@ -90,7 +93,8 @@ def media_proxy():
     """
     url = request.args.get("url") or ""
     parsed = urlparse(url)
-    if parsed.scheme != "https" or parsed.hostname not in ALLOWED_HOSTS:
+    is_motorsport = parsed.hostname and parsed.hostname.endswith('.motorsport.com')
+    if parsed.scheme != "https" or (parsed.hostname not in ALLOWED_HOSTS and not is_motorsport):
         raise ApiError(
             "Somente imagens de formula1.com, flagcdn.com e wikimedia.org",
             400,

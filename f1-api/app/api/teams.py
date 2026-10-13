@@ -57,7 +57,21 @@ def list_teams():
                 meta:
                   $ref: '#/components/schemas/Meta'
     """
+
+    series = request.args.get("series")
+    season = parse_int(request.args.get("season"), "season")
+
+    if series == 'f2' and season == 2026:
+        from app.mock_data import F2_2026_TEAMS
+        return jsonify({"data": F2_2026_TEAMS, "meta": {"pages": 1, "total": len(F2_2026_TEAMS)}})
+    if series == 'f3' and season == 2026:
+        from app.mock_data import F3_2026_TEAMS
+        return jsonify({"data": F3_2026_TEAMS, "meta": {"pages": 1, "total": len(F3_2026_TEAMS)}})
+
     query = Team.query
+    series = request.args.get("series")
+    if series:
+        query = query.filter_by(series=series)
     season = parse_int(request.args.get("season"), "season")
 
     def serialize(team):
@@ -69,16 +83,21 @@ def list_teams():
         return data
 
     if season:
-        raced_sq = (
-            db.session.query(RaceResult.team_id)
-            .join(Race, RaceResult.race_id == Race.id)
-            .filter(
-                Race.season == season,
-                RaceResult.team_id.isnot(None),
+        if series == "f1" and season == 2026:
+            f1_2026_grid = ["McLaren", "Mercedes", "Red Bull Racing", "Ferrari", "Williams", "Aston Martin", "Alpine", "Haas", "Audi", "Racing Bulls", "Cadillac"]
+            query = query.filter(Team.name.in_(f1_2026_grid))
+        else:
+            raced_sq = (
+                db.session.query(RaceResult.team_id)
+                .join(Race, RaceResult.race_id == Race.id)
+                .filter(
+                    Race.season == season,
+                    RaceResult.team_id.isnot(None),
+                )
+                .distinct()
             )
-            .distinct()
-        )
-        query = query.filter(Team.id.in_(raced_sq))
+            query = query.filter(Team.id.in_(raced_sq))
+            
     query = query.order_by(Team.name)
     return jsonify(paginate(query, serialize))
 

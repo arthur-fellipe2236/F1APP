@@ -22,7 +22,7 @@ export function PositionBadge({ position }: { position: number | null }) {
   return (
     <Badge
       variant={style ? "secondary" : "outline"}
-      className={cn("w-8 justify-center tabular-nums", style)}
+      className={cn("w-8 justify-center font-mono tracking-tight tabular-nums", style)}
     >
       {position}
     </Badge>

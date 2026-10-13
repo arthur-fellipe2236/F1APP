@@ -1,3 +1,5 @@
+import urllib.request
+import xml.etree.ElementTree as ET
 from datetime import date
 
 from flask import Blueprint, jsonify, request
@@ -10,7 +12,26 @@ from ..translate import translate_many
 from .helpers import ApiError, parse_int
 from .races import _next_race_payload
 
+
+import sqlite3
+import json
+import os
+
+def get_cache_db():
+    db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'instance', 'ai_cache.db')
+    conn = sqlite3.connect(db_path)
+    conn.execute('''CREATE TABLE IF NOT EXISTS article_cache (
+                        url TEXT,
+                        lang TEXT,
+                        count INTEGER,
+                        response_json TEXT,
+                        PRIMARY KEY (url, lang, count)
+                    )''')
+    conn.commit()
+    return conn
+
 bp = Blueprint("news", __name__)
+
 
 
 def _brazilian_driver_terms():
@@ -107,6 +128,58 @@ def _matches_brazilian(article, terms):
     return any(term in text for term in terms)
 
 
+
+def fetch_rss_news(series="f1", limit=3):
+    rss_slug = "fia-f2" if series == "f2" else series
+    feed_url = f"https://br.motorsport.com/rss/{rss_slug}/news/"
+    req = urllib.request.Request(
+        feed_url, 
+        headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+    )
+    try:
+        response = urllib.request.urlopen(req, timeout=5)
+        xml_data = response.read()
+    except Exception as e:
+        print(f"Error fetching RSS for {series}:", e)
+        return []
+
+    try:
+        root = ET.fromstring(xml_data)
+    except Exception as e:
+        print("XML Parse Error:", e)
+        return []
+    items = []
+    
+    for item in root.findall('./channel/item'):
+        title = item.find('title').text if item.find('title') is not None else ''
+        link = item.find('link').text if item.find('link') is not None else ''
+        desc = item.find('description').text if item.find('description') is not None else ''
+        pubDate = item.find('pubDate').text if item.find('pubDate') is not None else ''
+        guid = item.find('guid').text if item.find('guid') is not None else link
+        
+        enclosure = item.find('enclosure')
+        image = enclosure.get('url') if enclosure is not None else None
+        
+        desc_clean = desc.split('<br>')[0].replace('<![CDATA[', '').replace(']]>', '').strip()
+        if not desc_clean:
+            desc_clean = title
+            
+        items.append({
+            "id": str(guid),
+            "title": title.replace('<![CDATA[', '').replace(']]>', '').strip(),
+            "meta_description": desc_clean,
+            "url": link,
+            "image": image,
+            "article_type": "News",
+            "updated_at": pubDate,
+            "matched": True
+        })
+        
+        if len(items) >= limit:
+            break
+            
+    return items
+
 @bp.get("/news")
 def latest_news():
     """
@@ -187,45 +260,19 @@ def latest_news():
     limit = max(1, min(limit, 9))
     upcoming = request.args.get("upcoming", "").lower() in {"1", "true"}
     br_drivers = request.args.get("br_drivers", "").lower() in {"1", "true"}
+    series = (request.args.get("series") or "f1").lower()
+    
+    if series not in {"f1", "f2", "f3"}:
+        raise ApiError("Parametro 'series' invalido", 400)
+        
+    if br_drivers or series in {"f2", "f3"}:
+        rss_items = fetch_rss_news(series, limit=limit)
+        return jsonify({"data": rss_items, "series": series})
+
     try:
         articles = f1site.fetch_news(limit=40)
     except f1site.F1SiteError as exc:
         raise ApiError(f"Site oficial indisponivel: {exc}", 503)
-
-    if br_drivers:
-        series = (request.args.get("series") or "f1").lower()
-        if series not in {"f1", "f2", "f3"}:
-            raise ApiError("Parametro 'series' invalido", 400)
-        if series == "f1":
-            br_terms = _brazilian_driver_terms()
-            pool = articles
-        else:
-            br_terms = series_module.brazilian_terms(
-                f"formula-{series[-1]}"
-            )
-            try:
-                pool = f1site.fetch_series_news(
-                    f"f{series[-1]}", limit=48
-                )
-            except f1site.F1SiteError as exc:
-                raise ApiError(f"Site oficial indisponivel: {exc}", 503)
-        matched = (
-            [a for a in pool if _matches_brazilian(a, br_terms)]
-            if br_terms
-            else []
-        )
-        if not matched and br_terms and series == "f1":
-            articles = f1site.fetch_news(limit=240, deep=True)
-            matched = [
-                a for a in articles if _matches_brazilian(a, br_terms)
-            ]
-        items = matched[:limit]
-        for article in items:
-            article["matched"] = True
-        lang = (request.args.get("lang") or "").lower()
-        if lang.startswith("pt"):
-            items = _translate_items(items)
-        return jsonify({"data": items, "series": series})
 
     terms = _race_terms() if upcoming else set()
     if terms:
@@ -234,7 +281,7 @@ def latest_news():
     items = articles[:limit]
     for article in items:
         article["matched"] = bool(terms) and _matches(article, terms)
-    lang = (request.args.get("lang") or "").lower()
+        lang = (request.args.get("lang") or "").lower()
     if lang.startswith("pt"):
         items = _translate_items(items)
     return jsonify({"data": items})
@@ -303,26 +350,73 @@ def article_summary():
               $ref: '#/components/schemas/Error'
     """
     url = request.args.get("url") or ""
-    if not url.startswith(f1site.ARTICLE_URL_PREFIX):
+    is_motorsport = "motorsport.uol.com.br" in url
+    if not url.startswith(f1site.ARTICLE_URL_PREFIX) and not is_motorsport:
         raise ApiError(
-            "Parametro 'url' deve apontar para um artigo de formula1.com",
+            "Parametro 'url' deve apontar para formula1.com ou motorsport.com",
             400,
         )
     count = parse_int(request.args.get("sentences"), "sentences") or 10
     count = max(3, min(count, 15))
+    lang = (request.args.get("lang") or "").lower()
+    
+    # Check Cache
+    conn = get_cache_db()
+    c = conn.cursor()
+    c.execute("SELECT response_json FROM article_cache WHERE url=? AND lang=? AND count=?", (url, lang, count))
+    cached = c.fetchone()
+    if cached:
+        conn.close()
+        return jsonify(json.loads(cached[0]))
 
-    try:
-        article = f1site.fetch_article(url)
-    except f1site.F1SiteError as exc:
-        raise ApiError(str(exc), 503)
+    if is_motorsport:
+        import requests
+        from bs4 import BeautifulSoup
+        try:
+            res = requests.get(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'}, timeout=10)
+            soup = BeautifulSoup(res.text, 'html.parser')
+            paragraphs = [p.get_text(strip=True) for p in soup.find_all('p') if len(p.get_text(strip=True)) > 20]
+            if not paragraphs:
+                raise ApiError("Nao foi possivel extrair o texto da materia", 503)
+            article = {"title": soup.title.string if soup.title else "News", "paragraphs": paragraphs}
+        except Exception as exc:
+            raise ApiError(str(exc), 503)
+    else:
+        try:
+            article = f1site.fetch_article(url)
+        except f1site.F1SiteError as exc:
+            raise ApiError(str(exc), 503)
+        
     if not article["paragraphs"]:
         raise ApiError("Nao foi possivel extrair o texto da materia", 503)
 
-    summary_en = summarize(article["paragraphs"], max_sentences=count)
-    lang = (request.args.get("lang") or "").lower()
-    summary = (
-        translate_many(summary_en) if lang.startswith("pt") else summary_en
-    )
+    summary_raw = summarize(article["paragraphs"], max_sentences=count)
+    
+    if is_motorsport:
+        summary = summary_raw
+        summary_en = []
+    else:
+        summary_en = summary_raw
+        summary = translate_many(summary_en) if lang.startswith("pt") else summary_en
+
+    response_data = {
+        "title": article["title"],
+        "url": url,
+        "sentences": len(summary_en),
+        "summary": summary,
+        "summary_en": summary_en,
+    }
+
+    # Save to Cache
+    try:
+        c.execute("INSERT OR REPLACE INTO article_cache (url, lang, count, response_json) VALUES (?, ?, ?, ?)", 
+                  (url, lang, count, json.dumps(response_data)))
+        conn.commit()
+    except Exception as e:
+        print("Cache save error:", e)
+    finally:
+        conn.close()
+
     return jsonify(
         {
             "title": article["title"],

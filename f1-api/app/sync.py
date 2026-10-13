@@ -21,7 +21,7 @@ from .models import Circuit, Driver, Race, RaceResult, Team
 from .seed import ensure_demo_season, seed
 
 MIN_OPENF1_SEASON = 2023
-MIN_JOLPICA_SEASON = 2022
+MIN_JOLPICA_SEASON = 1985
 
 TEAM_ALIASES = {
     "Red Bull": "Red Bull Racing",
@@ -130,7 +130,7 @@ def configured_seasons():
     env = os.environ.get("F1_SYNC_SEASONS")
     if env:
         return [int(part) for part in env.split(",") if part.strip()]
-    return list(range(MIN_JOLPICA_SEASON, date.today().year + 1))
+    return list(range(2026, 1984, -1))
 
 
 def demo_seasons():
@@ -160,11 +160,11 @@ def _to_nationality(raw):
 
 def _upsert_team(name):
     name = TEAM_ALIASES.get(name, name)
-    team = Team.query.filter_by(name=name).first()
+    team = Team.query.filter_by(name=name, series="f1").first()
     if team is None:
         team = Team(name=name)
         db.session.add(team)
-        db.session.flush()
+        db.session.commit()
     return team
 
 
@@ -178,31 +178,37 @@ def _upsert_circuit(meeting, laps):
     circuit.country = meeting.get("country_name")
     if laps:
         circuit.laps = laps
-    db.session.flush()
+    db.session.commit()
     return circuit
 
 
 def _upsert_driver(info):
     code = info.get("name_acronym") or None
-    driver = Driver.query.filter_by(code=code).first() if code else None
-    if driver is None:
-        driver = Driver.query.filter_by(
-            first_name=info.get("first_name"),
-            last_name=info.get("last_name"),
-        ).first()
+    driver = Driver.query.filter_by(
+        first_name=info.get("first_name"),
+        last_name=info.get("last_name"),
+        series="f1"
+    ).first()
+    if driver is None and code:
+        # Fallback para o codigo APENAS se o nome nao for passado corretamente
+        # e verificando para nao sobrescrever alguem com nome completamente diferente
+        candidate = Driver.query.filter_by(code=code, series="f1").first()
+        if candidate and (not info.get("first_name") or candidate.last_name == info.get("last_name")):
+            driver = candidate
+
     if driver is None:
         driver = Driver(
             first_name=info.get("first_name") or "?",
             last_name=info.get("last_name") or "?",
         )
-        if code and Driver.query.filter_by(code=code).first() is None:
+        if code and Driver.query.filter_by(code=code, series="f1").first() is None:
             driver.code = code
         db.session.add(driver)
     else:
         driver.first_name = info.get("first_name") or driver.first_name
         driver.last_name = info.get("last_name") or driver.last_name
         if code and driver.code is None:
-            if Driver.query.filter_by(code=code).first() is None:
+            if Driver.query.filter_by(code=code, series="f1").first() is None:
                 driver.code = code
 
     driver.nationality = _to_nationality(info.get("country_code")) or driver.nationality
@@ -218,7 +224,7 @@ def _upsert_driver(info):
     team_name = info.get("team_name")
     if team_name:
         driver.team = _upsert_team(team_name)
-    db.session.flush()
+    db.session.commit()
     return driver
 
 
@@ -279,7 +285,7 @@ def _store_sprint_points(race_id, entries):
             db.session.add(result)
             existing[driver.id] = result
         result.sprint_points = points
-    db.session.flush()
+    db.session.commit()
 
 
 def _attach_sprint_points(race_id, sprint_session):
@@ -311,7 +317,7 @@ def _attach_sprint_points(race_id, sprint_session):
 def _sync_race(session, meeting, season, round_, force, sessions, now):
     session_key = session["session_key"]
 
-    race = Race.query.filter_by(season=season, round=round_).first()
+    race = Race.query.filter_by(season=season, round=round_, series="f1").first()
     if race is not None and race.results and not force:
         return False
 
@@ -335,13 +341,14 @@ def _sync_race(session, meeting, season, round_, force, sessions, now):
     )
 
     if race is None:
-        race = Race(season=season, round=round_)
+        race = Race(season=season, round=round_, series="f1")
         db.session.add(race)
     race.name = meeting["meeting_name"]
     race.date = _parse_dt(meeting["date_start"]).date()
-    db.session.flush()
+    db.session.commit()
 
     RaceResult.query.filter_by(race_id=race.id).delete()
+    db.session.commit()
 
     winner_laps = None
     for row in results:
@@ -365,7 +372,7 @@ def _sync_race(session, meeting, season, round_, force, sessions, now):
             )
         )
     race.circuit = _upsert_circuit(meeting, winner_laps)
-    db.session.flush()
+    db.session.commit()
 
     sprint_session = next(
         (s for s in sessions if s.get("session_name") == "Sprint"), None
@@ -469,14 +476,14 @@ def _upsert_ergast_row(row):
     if nationality:
         driver.nationality = nationality
     team = _upsert_team(constructor_name) if constructor_name else None
-    db.session.flush()
+    db.session.commit()
     return driver, team
 
 
 def _sync_jolpica_race(entry, season, round_):
-    race = Race.query.filter_by(season=season, round=round_).first()
+    race = Race.query.filter_by(season=season, round=round_, series="f1").first()
     if race is None:
-        race = Race(season=season, round=round_)
+        race = Race(season=season, round=round_, series="f1")
         db.session.add(race)
     race.name = entry["raceName"]
     race.date = date.fromisoformat(entry["date"])
@@ -491,9 +498,10 @@ def _sync_jolpica_race(entry, season, round_):
         db.session.add(circuit)
     circuit.city = location.get("locality") or circuit.city
     circuit.country = location.get("country") or circuit.country
-    db.session.flush()
+    db.session.commit()
 
     RaceResult.query.filter_by(race_id=race.id).delete()
+    db.session.commit()
     winner_laps = None
     for row in entry.get("Results", []):
         driver, team = _upsert_ergast_row(row)
@@ -517,27 +525,27 @@ def _sync_jolpica_race(entry, season, round_):
     if winner_laps:
         circuit.laps = winner_laps
     race.circuit = circuit
-    db.session.flush()
+    db.session.commit()
 
 
 def _sync_season_jolpica(season, force=False):
-    today = date.today()
-    if not force and season < today.year and Race.query.filter_by(
-        season=season
-    ).first() is not None:
-        return Race.query.filter_by(season=season).count()
-
-    if force:
-        for race in Race.query.filter_by(season=season).all():
-            db.session.delete(race)
-        db.session.commit()
-
     calendar = ergast.get(str(season))
     if not calendar:
         return 0
+        
+    today = date.today()
+    if not force and season < today.year:
+        count = Race.query.filter_by(season=season).count()
+        if count >= len(calendar):
+            return count
+        else:
+            force = True
 
     imported = 0
     for round_ in sorted(int(r["round"]) for r in calendar):
+        if Race.query.filter_by(season=season, round=round_).first():
+            continue
+            
         race_rows = ergast.get(f"{season}/{round_}/results")
         if not race_rows:
             continue
@@ -554,7 +562,7 @@ def _sync_season_jolpica(season, force=False):
                 entries.append(
                     (driver, points, _int_or_none(row.get("laps")))
                 )
-            race = Race.query.filter_by(season=season, round=round_).first()
+            race = Race.query.filter_by(season=season, round=round_, series="f1").first()
             if race is not None:
                 _store_sprint_points(race.id, entries)
         imported += 1
@@ -566,10 +574,10 @@ def normalize_teams():
     """Mescla linhas duplicadas de equipe que diferem apenas pelo alias."""
     changed = False
     for alias, canonical in TEAM_ALIASES.items():
-        dup = Team.query.filter_by(name=alias).first()
+        dup = Team.query.filter_by(name=alias, series="f1").first()
         if dup is None:
             continue
-        target = Team.query.filter_by(name=canonical).first()
+        target = Team.query.filter_by(name=canonical, series="f1").first()
         if target is None:
             dup.name = canonical
             changed = True
@@ -580,7 +588,7 @@ def normalize_teams():
             driver.team_id = target.id
         db.session.delete(dup)
         changed = True
-    db.session.flush()
+    db.session.commit()
     if changed:
         db.session.commit()
 
@@ -605,7 +613,7 @@ def backfill_nationalities():
             if all(key):
                 by_name[key] = nationality
 
-    for driver in Driver.query.all():
+    for driver in Driver.query.filter_by(series="f1").all():
         nationality = by_code.get(driver.code) or by_name.get(
             (driver.first_name, driver.last_name)
         )
@@ -646,7 +654,7 @@ def refresh_driver_current_teams():
 def apply_team_metadata():
     """Preenche sede/motor/fundacao das equipes (so campos vazios)."""
     changed = False
-    for team in Team.query.all():
+    for team in Team.query.filter_by(series="f1").all():
         meta = TEAM_METADATA.get(team.name)
         if meta is None:
             continue
@@ -799,13 +807,15 @@ def backfill_headshots():
         rows = openf1.get("drivers", session_key=latest["session_key"]) or []
     except openf1.OpenF1Error:
         return
-    by_number = {r["driver_number"]: r.get("headshot_url") for r in rows}
+        
+    by_name = {}
+    for r in rows:
+        if r.get("headshot_url") and r.get("last_name"):
+            by_name[(r.get("first_name", ""), r.get("last_name"))] = r["headshot_url"]
+            
     updated = False
-    for driver in Driver.query.filter(
-        Driver.headshot_url.is_(None),
-        Driver.permanent_number.isnot(None),
-    ).all():
-        url = by_number.get(driver.permanent_number)
+    for driver in Driver.query.filter(Driver.headshot_url.is_(None)).all():
+        url = by_name.get((driver.first_name, driver.last_name))
         if url:
             driver.headshot_url = url
             updated = True
@@ -814,6 +824,11 @@ def backfill_headshots():
 
 
 def run_fixups():
+    try:
+        from .api.fantasy_engine import calculate_fantasy_points_internal
+        calculate_fantasy_points_internal()
+    except Exception as e:
+        pass
     normalize_teams()
     normalize_circuits()
     refresh_driver_current_teams()
@@ -827,7 +842,10 @@ def sync_configured():
     for season in configured_seasons():
         try:
             sync_season(season)
-        except (openf1.OpenF1Error, ergast.JolpicaError) as exc:
+        except Exception as exc:
+            db.session.rollback()
+            import logging
+            logging.error(f'Sync error: {exc}')
             error = str(exc)
             break
     if error is None:

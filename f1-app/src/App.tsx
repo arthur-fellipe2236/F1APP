@@ -1,15 +1,40 @@
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom"
+import { lazy, Suspense } from "react"
+import { BrowserRouter, Link, Outlet, Route, Routes } from "react-router-dom"
 import { Flag } from "lucide-react"
 
 import { Layout } from "@/components/layout"
 import { Button } from "@/components/ui/button"
-import { CircuitsPage } from "@/pages/circuits"
-import { DashboardPage } from "@/pages/dashboard"
-import { DriversPage } from "@/pages/drivers"
-import { LiveTimingPage } from "@/pages/live-timing"
-import { RaceDetailPage } from "@/pages/race-detail"
-import { RacesPage } from "@/pages/races"
-import { TeamsPage } from "@/pages/teams"
+
+const CircuitsPage = lazy(() =>
+  import("@/pages/circuits").then((m) => ({ default: m.CircuitsPage })),
+)
+const DashboardPage = lazy(() =>
+  import("@/pages/dashboard").then((m) => ({ default: m.DashboardPage })),
+)
+const DriversPage = lazy(() =>
+  import("@/pages/drivers").then((m) => ({ default: m.DriversPage })),
+)
+const LiveTimingPage = lazy(() =>
+  import("@/pages/live-timing").then((m) => ({ default: m.LiveTimingPage })),
+)
+const RaceDetailPage = lazy(() =>
+  import("@/pages/race-detail").then((m) => ({ default: m.RaceDetailPage })),
+)
+const RacesPage = lazy(() =>
+  import("@/pages/races").then((m) => ({ default: m.RacesPage })),
+)
+const TeamsPage = lazy(() =>
+  import("@/pages/teams").then((m) => ({ default: m.TeamsPage })),
+)
+const FantasyPage = lazy(() =>
+  import("@/pages/fantasy").then((m) => ({ default: m.FantasyPage })),
+)
+const AdminPage = lazy(() =>
+  import("@/pages/admin").then((m) => ({ default: m.AdminPage })),
+)
+const ComparePage = lazy(() =>
+  import("@/pages/compare").then((m) => ({ default: m.ComparePage })),
+)
 
 function NotFoundPage() {
   return (
@@ -30,19 +55,38 @@ function NotFoundPage() {
   )
 }
 
+function SuspenseLayout() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center py-24 text-sm text-muted-foreground">
+          Carregando…
+        </div>
+      }
+    >
+      <Outlet />
+    </Suspense>
+  )
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<Layout />}>
-          <Route index element={<DashboardPage />} />
-          <Route path="pilotos" element={<DriversPage />} />
-          <Route path="equipes" element={<TeamsPage />} />
-          <Route path="circuitos" element={<CircuitsPage />} />
-          <Route path="calendario" element={<RacesPage />} />
-          <Route path="calendario/:raceId" element={<RaceDetailPage />} />
-          <Route path="live" element={<LiveTimingPage />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route element={<SuspenseLayout />}>
+            <Route index element={<DashboardPage />} />
+            <Route path="pilotos" element={<DriversPage />} />
+            <Route path="equipes" element={<TeamsPage />} />
+            <Route path="circuitos" element={<CircuitsPage />} />
+            <Route path="calendario" element={<RacesPage />} />
+            <Route path="calendario/:raceId" element={<RaceDetailPage />} />
+            <Route path="live" element={<LiveTimingPage />} />
+            <Route path="bolao" element={<FantasyPage />} />
+            <Route path="comparar" element={<ComparePage />} />
+            <Route path="admin" element={<AdminPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

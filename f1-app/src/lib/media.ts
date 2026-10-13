@@ -11,6 +11,7 @@ export function mediaUrl(
   width: number,
 ): string | null {
   if (!url) return null
+  if (url.startsWith("/")) return url
   const origin = apiOrigin()
   if (origin === null) return url
   return `${origin}/api/v1/media/proxy?url=${encodeURIComponent(url)}&w=${width}`
