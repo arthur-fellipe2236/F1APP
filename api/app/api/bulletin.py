@@ -10,27 +10,67 @@ from ..models import Team, Driver
 bp = Blueprint('bulletin', __name__)
 _audio_cache: dict[str, bytes] = {}
 
+def chunk_text(text: str, max_chars: int = 150) -> list[str]:
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    chunks = []
+    current_acc = ""
+
+    for s in sentences:
+        s = s.strip()
+        if not s:
+            continue
+
+        if len(current_acc) + len(s) + 1 <= max_chars:
+            current_acc = (current_acc + " " + s).strip()
+            continue
+
+        if current_acc:
+            chunks.append(current_acc)
+            current_acc = ""
+
+        if len(s) <= max_chars:
+            current_acc = s
+            continue
+
+        parts = re.split(r'(?<=[,;:\-–—])\s+', s)
+        p_acc = ""
+        for p in parts:
+            p = p.strip()
+            if not p:
+                continue
+            if len(p_acc) + len(p) + 1 <= max_chars:
+                p_acc = (p_acc + " " + p).strip()
+            else:
+                if p_acc:
+                    chunks.append(p_acc)
+                    p_acc = ""
+                if len(p) <= max_chars:
+                    p_acc = p
+                else:
+                    words = p.split()
+                    w_acc = ""
+                    for w in words:
+                        if len(w_acc) + len(w) + 1 <= max_chars:
+                            w_acc = (w_acc + " " + w).strip()
+                        else:
+                            if w_acc:
+                                chunks.append(w_acc)
+                            w_acc = w
+                    p_acc = w_acc
+        if p_acc:
+            current_acc = p_acc
+
+    if current_acc:
+        chunks.append(current_acc)
+
+    return chunks
+
 def text_to_mp3(text: str) -> bytes:
     cache_key = "tts:" + hashlib.md5(text.encode("utf-8")).hexdigest()
     if cache_key in _audio_cache:
         return _audio_cache[cache_key]
 
-    sentences = re.split(r'(?<=[.!?])\s+', text)
-    chunks = []
-    current = ""
-    for s in sentences:
-        s = s.strip()
-        if not s:
-            continue
-        if len(current) + len(s) + 1 < 170:
-            current = (current + " " + s).strip()
-        else:
-            if current:
-                chunks.append(current)
-            current = s
-    if current:
-        chunks.append(current)
-
+    chunks = chunk_text(text, 150)
     audio_bytes = bytearray()
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
     for chunk in chunks:
@@ -47,17 +87,40 @@ def text_to_mp3(text: str) -> bytes:
 def generate_bulletin_script(series: str, current_user) -> str:
     username = current_user.username if current_user else "fã de velocidade"
 
-    if series == 'f2':
-        script = f"Olá {username}, bem-vindo à Rádio Fórmula 2. A estrada para a glória. "
-        script += "No momento, as equipes e as academias de pilotos estão focadas nos preparativos aerodinâmicos para a próxima rodada. "
-        script += "Fique ligado no painel para acompanhar os talentos que em breve subirão para a categoria principal. Acelere fundo e até a próxima!"
-        return script
+    if series in ('f2', 'f3'):
+        try:
+            from .news import fetch_rss_news
+            rss_items = fetch_rss_news(series, limit=2)
+        except Exception:
+            rss_items = []
 
-    elif series == 'f3':
-        script = f"Olá {username}, você está na Rádio Fórmula 3. O berço do automobilismo. "
-        script += "O paddock da F3 amanheceu agitado com os testes dos novatos e o ajuste fino dos motores Mechachrome. "
-        script += "Não deixe de conferir a aba de Classificação para ver quem lidera o campeonato. Acelere fundo e até a próxima!"
-        return script
+        series_name = "Fórmula 2" if series == "f2" else "Fórmula 3"
+        script = f"Olá {username}, bem-vindo à Rádio {series_name}. "
+
+        if rss_items:
+            script += "Aqui estão as principais notícias da categoria. "
+            for i, it in enumerate(rss_items):
+                title = (it.get('title') or '').strip().rstrip('.')
+                desc = (it.get('meta_description') or '').strip().rstrip('.')
+                desc = re.sub(r'[\.…]+$', '', desc).strip()
+                if desc.lower() == title.lower():
+                    desc = ""
+
+                if i == 0:
+                    script += f"Primeiro destaque: {title}. "
+                    if desc:
+                        script += f"{desc}. "
+                else:
+                    script += f"Outra novidade: {title}. "
+                    if desc:
+                        script += f"{desc}. "
+            script += "Acelere fundo e até a próxima!"
+            return script
+        else:
+            if series == 'f2':
+                return f"Olá {username}, bem-vindo à Rádio Fórmula 2. A estrada para a glória. No momento, as equipes e as academias de pilotos estão focadas nos preparativos aerodinâmicos para a próxima rodada. Fique ligado no painel para acompanhar os talentos que em breve subirão para a categoria principal. Acelere fundo e até a próxima!"
+            else:
+                return f"Olá {username}, você está na Rádio Fórmula 3. O berço do automobilismo. O paddock da F3 amanheceu agitado com os testes dos novatos e o ajuste fino dos motores Mechachrome. Não deixe de conferir a aba de Classificação para ver quem lidera o campeonato. Acelere fundo e até a próxima!"
 
     # Fetch latest F1 news
     try:
@@ -108,12 +171,24 @@ def generate_bulletin_script(series: str, current_user) -> str:
         script += "Aqui está o resumo do dia no paddock. "
 
     for i, a in enumerate(translated):
+        title = (a.get('title') or '').strip().rstrip('.')
+        desc = (a.get('meta_description') or '').strip().rstrip('.')
+        desc = re.sub(r'[\.…]+$', '', desc).strip()
+        if desc.lower() == title.lower():
+            desc = ""
+
         if i == 0:
-            script += f"O principal destaque: {a['title']}. "
+            script += f"O principal destaque do dia: {title}. "
+            if desc:
+                script += f"{desc}. "
         elif i == 1:
-            script += f"Outra novidade é que {a['title']}. "
+            script += f"Outra novidade importante: {title}. "
+            if desc:
+                script += f"{desc}. "
         else:
-            script += f"Por fim, {a['title']}. "
+            script += f"E fechando o boletim: {title}. "
+            if desc:
+                script += f"{desc}. "
 
     script += "Essas foram as notícias do momento. Acelere fundo e até a próxima!"
     return script
