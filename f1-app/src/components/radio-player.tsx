@@ -69,9 +69,17 @@ export function RadioPlayer() {
   const [isMusicExpanded, setIsMusicExpanded] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
   const [bgMusicEnabled, setBgMusicEnabled] = useState(true)
+  const [bgMusicVolume, setBgMusicVolume] = useState(0.035) // Discreet volume (~3.5%) so voice is dominant
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const bgAudioRef = useRef<HTMLAudioElement | null>(null)
+
+  const handleBgVolumeChange = (newVolume: number) => {
+    setBgMusicVolume(newVolume)
+    if (bgAudioRef.current && !isMuted) {
+      bgAudioRef.current.volume = newVolume
+    }
+  }
 
   const stopAudio = useCallback(() => {
     if (audioRef.current) {
@@ -155,7 +163,7 @@ export function RadioPlayer() {
           bgAudio.src = "/f1-theme.webm"
           bgAudio.loop = true
           bgAudio.muted = isMuted
-          bgAudio.volume = isMuted ? 0 : 0.14 // Background music level so narration is loud and clear
+          bgAudio.volume = isMuted ? 0 : bgMusicVolume // Discreet level so narrator voice is prominent
           bgAudio.currentTime = 0
           bgAudioRef.current = bgAudio
           bgAudio.play().catch(() => {
@@ -245,7 +253,7 @@ export function RadioPlayer() {
     }
     if (bgAudioRef.current) {
       bgAudioRef.current.muted = nextMuted
-      bgAudioRef.current.volume = nextMuted ? 0 : 0.14
+      bgAudioRef.current.volume = nextMuted ? 0 : bgMusicVolume
     }
   }
 
@@ -254,6 +262,7 @@ export function RadioPlayer() {
     setBgMusicEnabled(next)
     if (bgAudioRef.current) {
       if (next && isPlaying) {
+        bgAudioRef.current.volume = isMuted ? 0 : bgMusicVolume
         bgAudioRef.current.play().catch(() => {})
       } else {
         bgAudioRef.current.pause()
@@ -389,28 +398,50 @@ export function RadioPlayer() {
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2 border-l border-white/10 pl-3 shrink-0">
-            {/* Background F1 Theme Music Toggle */}
-            <button
-              onClick={toggleBgMusic}
-              className={cn(
-                "p-1.5 sm:p-2 transition-colors rounded-lg hover:bg-white/5",
-                bgMusicEnabled
-                  ? "text-red-500 hover:text-red-400"
-                  : "text-white/30 hover:text-white/60"
-              )}
-              title={
-                bgMusicEnabled
-                  ? "Tema oficial da F1 ativado no fundo"
-                  : "Tema oficial da F1 desativado"
-              }
-            >
-              <Disc3
+            {/* Background F1 Theme Music Toggle & Volume */}
+            <div className="relative flex items-center group/theme">
+              <button
+                onClick={toggleBgMusic}
                 className={cn(
-                  "h-4 w-4",
-                  bgMusicEnabled && isPlaying ? "animate-spin" : ""
+                  "p-1.5 sm:p-2 transition-colors rounded-lg hover:bg-white/5",
+                  bgMusicEnabled
+                    ? "text-red-500 hover:text-red-400"
+                    : "text-white/30 hover:text-white/60"
                 )}
-              />
-            </button>
+                title={
+                  bgMusicEnabled
+                    ? `Tema oficial da F1 ativado (${Math.round(bgMusicVolume * 100)}% de volume). Clique para desativar.`
+                    : "Tema oficial da F1 desativado. Clique para ativar."
+                }
+              >
+                <Disc3
+                  className={cn(
+                    "h-4 w-4",
+                    bgMusicEnabled && isPlaying ? "animate-spin" : ""
+                  )}
+                />
+              </button>
+
+              {bgMusicEnabled && (
+                <div className="hidden group-hover/theme:flex pointer-events-auto absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-black/95 backdrop-blur-md border border-white/20 p-2 rounded-xl shadow-2xl flex-col items-center gap-1.5 z-50 min-w-[110px]">
+                  <div className="flex items-center justify-between w-full text-[10px] text-white/70 font-mono">
+                    <span>Trilha F1</span>
+                    <span className="text-red-400 font-semibold">{Math.round(bgMusicVolume * 100)}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0.01"
+                    max="0.10"
+                    step="0.005"
+                    value={bgMusicVolume}
+                    onChange={(e) => handleBgVolumeChange(parseFloat(e.target.value))}
+                    className="w-20 h-1.5 accent-red-500 cursor-pointer bg-white/20 rounded-lg appearance-none"
+                    title={`Volume da trilha: ${Math.round(bgMusicVolume * 100)}%`}
+                  />
+                  <span className="text-[9px] text-white/40">Fundo suave</span>
+                </div>
+              )}
+            </div>
 
             <button
               onClick={toggleMute}
