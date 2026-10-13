@@ -6,6 +6,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid } from "recharts"
 
+
+function getDriverPhotoClass(url?: string | null) {
+  if (!url || url.includes("multi-series-logo.png")) {
+    return "object-contain p-2 bg-muted"
+  }
+  if (url.includes("wikimedia")) {
+    return "object-cover object-center bg-muted"
+  }
+  return "object-cover object-top bg-muted"
+}
+
 export function ComparePage() {
   const { series, season } = useAppStore()
   const [drivers, setDrivers] = useState<any[]>([])
@@ -86,8 +97,11 @@ export function ComparePage() {
                 <img 
                   src={statsA.driver.headshot_url || "/multi-series-logo.png"} 
                   alt={statsA.driver.name}
-                  className="w-32 h-32 object-cover rounded-full border-4 border-primary/20 shadow-md mb-4"
-                  onError={(e) => { e.currentTarget.src = "/multi-series-logo.png" }}
+                  className={`w-32 h-32 rounded-full border-4 border-primary/20 shadow-md mb-4 ${getDriverPhotoClass(statsA.driver.headshot_url)}`}
+                  onError={(e) => { 
+                    e.currentTarget.src = "/multi-series-logo.png"
+                    e.currentTarget.className = "w-32 h-32 rounded-full border-4 border-primary/20 shadow-md mb-4 object-contain p-2 bg-muted"
+                  }}
                 />
                 <h3 className="text-xl font-bold">{statsA.driver.name}</h3>
                 <p className="text-muted-foreground">{statsA.driver.nationality}</p>
@@ -123,8 +137,11 @@ export function ComparePage() {
                 <img 
                   src={statsB.driver.headshot_url || "/multi-series-logo.png"} 
                   alt={statsB.driver.name}
-                  className="w-32 h-32 object-cover rounded-full border-4 border-primary/20 shadow-md mb-4"
-                  onError={(e) => { e.currentTarget.src = "/multi-series-logo.png" }}
+                  className={`w-32 h-32 rounded-full border-4 border-primary/20 shadow-md mb-4 ${getDriverPhotoClass(statsB.driver.headshot_url)}`}
+                  onError={(e) => { 
+                    e.currentTarget.src = "/multi-series-logo.png"
+                    e.currentTarget.className = "w-32 h-32 rounded-full border-4 border-primary/20 shadow-md mb-4 object-contain p-2 bg-muted"
+                  }}
                 />
                 <h3 className="text-xl font-bold">{statsB.driver.name}</h3>
                 <p className="text-muted-foreground">{statsB.driver.nationality}</p>
