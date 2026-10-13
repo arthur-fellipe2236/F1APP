@@ -68,13 +68,19 @@ export function RadioPlayer() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isMusicExpanded, setIsMusicExpanded] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
+  const [bgMusicEnabled, setBgMusicEnabled] = useState(true)
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const bgAudioRef = useRef<HTMLAudioElement | null>(null)
 
   const stopAudio = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause()
       audioRef.current.currentTime = 0
+    }
+    if (bgAudioRef.current) {
+      bgAudioRef.current.pause()
+      bgAudioRef.current.currentTime = 0
     }
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel()
@@ -142,7 +148,27 @@ export function RadioPlayer() {
         console.warn("Não foi possível pré-carregar texto:", err)
       }
 
-      // 2. Play high-quality MP3 stream via HTML5 Audio element
+      // 2. Start background official F1 theme music
+      if (bgMusicEnabled) {
+        try {
+          const bgAudio = bgAudioRef.current || new Audio()
+          bgAudio.src = "/f1-theme.webm"
+          bgAudio.loop = true
+          bgAudio.muted = isMuted
+          bgAudio.volume = isMuted ? 0 : 0.14 // Background music level so narration is loud and clear
+          bgAudio.currentTime = 0
+          bgAudioRef.current = bgAudio
+          bgAudio.play().catch(() => {
+            // Fallback to m4a if browser does not prefer webm
+            bgAudio.src = "/f1-theme.m4a"
+            bgAudio.play().catch((e) => console.warn("Background music autoplay prevented:", e))
+          })
+        } catch (e) {
+          console.warn("Erro ao iniciar trilha de fundo:", e)
+        }
+      }
+
+      // 3. Play high-quality MP3 voice stream via HTML5 Audio element
       const audioUrl = `/api/v1/news/bulletin/audio?series=${series}${token ? `&token=${token}` : ""}`
       const audio = new Audio(audioUrl)
       audioRef.current = audio
@@ -155,6 +181,10 @@ export function RadioPlayer() {
       }
 
       audio.onended = () => {
+        if (bgAudioRef.current) {
+          bgAudioRef.current.pause()
+          bgAudioRef.current.currentTime = 0
+        }
         playRadioChirp("end")
         setIsPlaying(false)
       }
@@ -166,16 +196,26 @@ export function RadioPlayer() {
           utterance.lang = "pt-BR"
           utterance.volume = isMuted ? 0 : 1
           utterance.onend = () => {
+            if (bgAudioRef.current) {
+              bgAudioRef.current.pause()
+              bgAudioRef.current.currentTime = 0
+            }
             playRadioChirp("end")
             setIsPlaying(false)
           }
           utterance.onerror = () => {
+            if (bgAudioRef.current) {
+              bgAudioRef.current.pause()
+            }
             setIsPlaying(false)
           }
           window.speechSynthesis.speak(utterance)
           setIsLoading(false)
           setIsPlaying(true)
         } else {
+          if (bgAudioRef.current) {
+            bgAudioRef.current.pause()
+          }
           setErrorMessage("Erro ao reproduzir áudio")
           setTimeout(() => setErrorMessage(null), 4000)
           setIsLoading(false)
@@ -186,6 +226,9 @@ export function RadioPlayer() {
       await audio.play()
     } catch (err) {
       console.error("Erro na Rádio F1:", err)
+      if (bgAudioRef.current) {
+        bgAudioRef.current.pause()
+      }
       setErrorMessage("Erro ao reproduzir rádio")
       setTimeout(() => setErrorMessage(null), 4000)
       setIsLoading(false)
@@ -199,6 +242,22 @@ export function RadioPlayer() {
     if (audioRef.current) {
       audioRef.current.muted = nextMuted
       audioRef.current.volume = nextMuted ? 0 : 1
+    }
+    if (bgAudioRef.current) {
+      bgAudioRef.current.muted = nextMuted
+      bgAudioRef.current.volume = nextMuted ? 0 : 0.14
+    }
+  }
+
+  const toggleBgMusic = () => {
+    const next = !bgMusicEnabled
+    setBgMusicEnabled(next)
+    if (bgAudioRef.current) {
+      if (next && isPlaying) {
+        bgAudioRef.current.play().catch(() => {})
+      } else {
+        bgAudioRef.current.pause()
+      }
     }
   }
 
@@ -226,7 +285,7 @@ export function RadioPlayer() {
           )}
         </button>
       </div>
-    );
+    )
   }
 
   return (
@@ -329,13 +388,40 @@ export function RadioPlayer() {
             </span>
           </div>
 
-          <div className="flex items-center gap-2 border-l border-white/10 pl-3 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 border-l border-white/10 pl-3 shrink-0">
+            {/* Background F1 Theme Music Toggle */}
+            <button
+              onClick={toggleBgMusic}
+              className={cn(
+                "p-1.5 sm:p-2 transition-colors rounded-lg hover:bg-white/5",
+                bgMusicEnabled
+                  ? "text-red-500 hover:text-red-400"
+                  : "text-white/30 hover:text-white/60"
+              )}
+              title={
+                bgMusicEnabled
+                  ? "Tema oficial da F1 ativado no fundo"
+                  : "Tema oficial da F1 desativado"
+              }
+            >
+              <Disc3
+                className={cn(
+                  "h-4 w-4",
+                  bgMusicEnabled && isPlaying ? "animate-spin" : ""
+                )}
+              />
+            </button>
+
             <button
               onClick={toggleMute}
-              className="p-2 text-white/60 hover:text-[hsl(var(--primary))] transition-colors rounded-lg hover:bg-white/5"
+              className="p-1.5 sm:p-2 text-white/60 hover:text-[hsl(var(--primary))] transition-colors rounded-lg hover:bg-white/5"
               title={isMuted ? "Ativar som" : "Mutar áudio"}
             >
-              {isMuted ? <VolumeX className="h-4 w-4 text-red-400" /> : <Volume2 className="h-4 w-4" />}
+              {isMuted ? (
+                <VolumeX className="h-4 w-4 text-red-400" />
+              ) : (
+                <Volume2 className="h-4 w-4" />
+              )}
             </button>
 
             <button
