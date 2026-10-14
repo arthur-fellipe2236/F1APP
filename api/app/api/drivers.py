@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 
-from sqlalchemy import func, or_
+from sqlalchemy import case, func, or_
 
 from ..extensions import db
 from ..models import Driver, Race, RaceResult, Team
@@ -120,7 +120,10 @@ def list_drivers():
     season = parse_int(request.args.get("season"), "season")
     if season:
         if series == "f1" and season == 2026:
-            query = query.filter(Driver.id.in_([34,39,36,238,13,46,32,1,35,9,20,29,31,49,27,43,236,47,45,48,237,18]))
+            f1_2026_ids = [34, 39, 36, 238, 13, 46, 32, 1, 35, 9, 20, 29, 31, 49, 27, 43, 236, 47, 45, 48, 237, 18]
+            query = query.filter(Driver.id.in_(f1_2026_ids))
+            order_case = case(*[(Driver.id == d_id, idx) for idx, d_id in enumerate(f1_2026_ids)], else_=99)
+            query = query.order_by(order_case)
         else:
             season_sq_query = (
                 db.session.query(RaceResult.driver_id)
@@ -131,7 +134,9 @@ def list_drivers():
                 season_sq_query = season_sq_query.filter(Race.series == series)
             season_sq = season_sq_query.distinct()
             query = query.filter(Driver.id.in_(season_sq))
-    query = query.order_by(Driver.last_name, Driver.first_name)
+            query = query.order_by(Driver.last_name, Driver.first_name)
+    else:
+        query = query.order_by(Driver.last_name, Driver.first_name)
     result = paginate(query, Driver.to_dict)
     if season:
         latest = (

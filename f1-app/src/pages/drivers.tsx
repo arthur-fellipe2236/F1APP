@@ -31,6 +31,34 @@ async function fetchAllDrivers(params: { team_id?: number; season?: number; seri
   return { data: all, meta: first.meta }
 }
 
+const F1_2026_GRID_DRIVER_ORDER: Record<number, number> = {
+  34: 1, 39: 2,     // McLaren: Norris, Piastri
+  36: 3, 238: 4,    // Mercedes: Russell, Antonelli
+  13: 5, 46: 6,     // Red Bull Racing: Verstappen, Hadjar
+  32: 7, 1: 8,      // Ferrari: Leclerc, Hamilton
+  35: 9, 9: 10,     // Williams: Albon, Sainz
+  20: 11, 29: 12,   // Aston Martin: Alonso, Stroll
+  31: 13, 49: 14,   // Alpine: Gasly, Colapinto
+  27: 15, 43: 16,   // Haas: Ocon, Bearman
+  236: 17, 47: 18,  // Audi: Hulkenberg, Bortoleto
+  45: 19, 48: 20,   // Racing Bulls: Lawson, Lindblad
+  237: 21, 18: 22,  // Cadillac: Perez, Bottas
+}
+
+const F1_2026_TEAM_ORDER: Record<string, number> = {
+  "McLaren": 1,
+  "Mercedes": 2,
+  "Red Bull Racing": 3,
+  "Ferrari": 4,
+  "Williams": 5,
+  "Aston Martin": 6,
+  "Alpine": 7,
+  "Haas": 8,
+  "Audi": 9,
+  "Racing Bulls": 10,
+  "Cadillac": 11,
+}
+
 export function DriversPage() {
   const { series, season, setSeason } = useAppStore()
   const [teamId, setTeamId] = useState("all")
@@ -57,14 +85,6 @@ export function DriversPage() {
     [teamId, seasonParam, series],
   )
 
-  const driversData = useMemo(() => {
-    let d = drivers.data?.data ?? []
-    if ((series === "f2" || series === "f3") && seasonParam === 2026) {
-      d = [...d].sort((a, b) => (a.permanent_number ?? 0) - (b.permanent_number ?? 0))
-    }
-    return d
-  }, [drivers.data, series, seasonParam])
-
   const teamNames = useMemo(() => {
     const map = new Map<number, string>()
     for (const team of teams.data?.data ?? []) {
@@ -72,6 +92,32 @@ export function DriversPage() {
     }
     return map
   }, [teams.data])
+
+  const driversData = useMemo(() => {
+    let d = drivers.data?.data ?? []
+    if (series === "f1" && seasonParam === 2026) {
+      d = [...d].sort((a, b) => {
+        const orderA = F1_2026_GRID_DRIVER_ORDER[a.id]
+        const orderB = F1_2026_GRID_DRIVER_ORDER[b.id]
+        if (orderA !== undefined && orderB !== undefined) {
+          return orderA - orderB
+        }
+        if (orderA !== undefined) return -1
+        if (orderB !== undefined) return 1
+
+        const teamA = a.team_name ?? (a.team_id ? (teamNames.get(a.team_id) ?? "") : "")
+        const teamB = b.team_name ?? (b.team_id ? (teamNames.get(b.team_id) ?? "") : "")
+        const tOrderA = F1_2026_TEAM_ORDER[teamA] ?? 999
+        const tOrderB = F1_2026_TEAM_ORDER[teamB] ?? 999
+        if (tOrderA !== tOrderB) return tOrderA - tOrderB
+
+        return (a.permanent_number ?? a.season_number ?? 0) - (b.permanent_number ?? b.season_number ?? 0)
+      })
+    } else if ((series === "f2" || series === "f3") && seasonParam === 2026) {
+      d = [...d].sort((a, b) => (a.permanent_number ?? 0) - (b.permanent_number ?? 0))
+    }
+    return d
+  }, [drivers.data, series, seasonParam, teamNames])
 
   const columns = useMemo<TableColumn<Driver>[]>(
     () => [
