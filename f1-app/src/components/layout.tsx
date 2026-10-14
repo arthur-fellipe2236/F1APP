@@ -169,9 +169,9 @@ export function Layout() {
             <ModeToggle />
           </div>
         </div>
-        <div className="bg-black/60 backdrop-blur-sm px-4 py-2 flex items-center justify-center relative z-10 border-t border-white/5">
+        <div className="bg-transparent px-4 pb-3 pt-1 flex items-center justify-center relative z-10">
           <Tabs value={series} onValueChange={setSeries} className="w-[400px]">
-            <TabsList className="h-14 grid w-full grid-cols-3 bg-black/50 text-white/70 border border-white/10 shadow-inner">
+            <TabsList className="h-14 grid w-full grid-cols-3 bg-black/40 text-white/70 border border-white/10 shadow-inner backdrop-blur-xs">
               <TabsTrigger value="f1" className="group data-[state=active]:bg-[#E10600] h-12 flex justify-center items-center rounded-sm transition-all duration-300">
                 <div className="h-5 w-20 transition-colors duration-300 bg-[#E10600] group-data-[state=active]:bg-white" style={{ maskImage: "url('https://upload.wikimedia.org/wikipedia/commons/3/33/F1.svg')", WebkitMaskImage: "url('https://upload.wikimedia.org/wikipedia/commons/3/33/F1.svg')", maskSize: "contain", WebkitMaskSize: "contain", maskRepeat: "no-repeat", WebkitMaskRepeat: "no-repeat", maskPosition: "center", WebkitMaskPosition: "center" }}></div>
               </TabsTrigger>
