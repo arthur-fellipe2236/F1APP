@@ -67,7 +67,12 @@ export function RadioPlayer() {
   const [scriptSummary, setScriptSummary] = useState<string>("")
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isMusicExpanded, setIsMusicExpanded] = useState(false)
-  const [isMinimized, setIsMinimized] = useState(false)
+  const [isMinimized, setIsMinimized] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768
+    }
+    return false
+  })
   const [bgMusicEnabled, setBgMusicEnabled] = useState(true)
   const [bgMusicVolume, setBgMusicVolume] = useState(0.035) // Discreet volume (~3.5%) so voice is dominant
 

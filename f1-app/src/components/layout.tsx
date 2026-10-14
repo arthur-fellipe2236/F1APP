@@ -1,6 +1,18 @@
 import { useEffect, useState } from "react"
-import { Link, NavLink, Outlet } from "react-router-dom"
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom"
 import { useTheme } from "next-themes"
+import {
+  Menu,
+  X,
+  Users,
+  Trophy,
+  Flag,
+  Calendar,
+  Radio,
+  Sparkles,
+  GitCompare,
+  ShieldAlert,
+} from "lucide-react"
 
 import { api } from "@/lib/api"
 import { Badge } from "@/components/ui/badge"
@@ -13,13 +25,13 @@ import { useAppStore } from "@/store"
 import { RadioPlayer } from "@/components/radio-player"
 
 const navItems = [
-  { to: "/pilotos", label: "Pilotos" },
-  { to: "/equipes", label: "Equipes" },
-  { to: "/circuitos", label: "Resultados" },
-  { to: "/calendario", label: "Calendário" },
-  { to: "/live", label: "Ao Vivo" },
-  { to: "/bolao", label: "Bolão" },
-  { to: "/comparar", label: "Comparar" },
+  { to: "/pilotos", label: "Pilotos", icon: Users },
+  { to: "/equipes", label: "Equipes", icon: Trophy },
+  { to: "/circuitos", label: "Resultados", icon: Flag },
+  { to: "/calendario", label: "Calendário", icon: Calendar },
+  { to: "/live", label: "Ao Vivo", icon: Radio, isLive: true },
+  { to: "/bolao", label: "Bolão", icon: Sparkles },
+  { to: "/comparar", label: "Comparar", icon: GitCompare },
 ]
 
 
@@ -54,6 +66,36 @@ function HealthBadge() {
   )
 }
 
+function HealthDot() {
+  const [status, setStatus] = useState<"checking" | "online" | "offline">(
+    "checking",
+  )
+
+  useEffect(() => {
+    api
+      .health()
+      .then(() => setStatus("online"))
+      .catch(() => setStatus("offline"))
+  }, [])
+
+  return (
+    <div
+      className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/10 border border-white/10 text-xs"
+      title={`Status da API: ${status}`}
+    >
+      <span
+        className={cn(
+          "size-2 rounded-full",
+          status === "online" && "bg-emerald-500 animate-pulse",
+          status === "checking" && "bg-amber-500 animate-ping",
+          status === "offline" && "bg-rose-500",
+        )}
+      />
+      <span className="text-[10px] uppercase font-bold text-white/70">API</span>
+    </div>
+  )
+}
+
 function F1Logo({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 320 80" className={className} fill="currentColor">
@@ -81,6 +123,13 @@ function F3Logo({ className }: { className?: string }) {
 export function Layout() {
   const { series, setSeries, teamTheme, user } = useAppStore()
   const { resolvedTheme } = useTheme()
+  const location = useLocation()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  // Close mobile menu on page navigation
+  useEffect(() => {
+    setIsMobileMenuOpen(false)
+  }, [location.pathname])
 
   useEffect(() => {
     const html = document.documentElement
@@ -148,23 +197,27 @@ export function Layout() {
           boxShadow: isThemed ? "0 4px 30px var(--team-glow)" : "none"
         }}
       >
-        <div className="mx-auto flex h-16 max-w-6xl items-center gap-8 px-4 relative z-10">
-          <Link to="/" className="flex items-center gap-2">
+        {/* DESKTOP HEADER (MD+) */}
+        <div className="mx-auto hidden md:flex h-16 max-w-6xl items-center gap-6 lg:gap-8 px-4 relative z-10">
+          <Link to="/" className="flex items-center gap-2.5 shrink-0">
             <img
               src="/multi-series-logo.png"
               alt="F1 Multi-Series Logo"
-              className="h-14 w-auto object-contain drop-shadow-md rounded-full"
+              className="h-12 lg:h-14 w-auto object-contain drop-shadow-md rounded-full shrink-0"
             />
+            <span className="font-f1 text-lg font-black tracking-widest text-white hidden lg:inline">
+              F1 APP
+            </span>
           </Link>
-          <nav className="flex items-center gap-4 overflow-x-auto">
+          <nav className="flex items-center gap-1.5 lg:gap-3 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 className={({ isActive }) =>
                   cn(
-                    "flex items-center px-2 py-4 font-f1 uppercase text-sm tracking-widest font-semibold text-white/70 transition-all hover:text-white",
-                    isActive && "text-base font-bold text-white tracking-widest"
+                    "flex items-center px-2 py-4 font-f1 uppercase text-xs lg:text-sm tracking-wider lg:tracking-widest font-semibold text-white/70 transition-all hover:text-white shrink-0",
+                    isActive && "text-sm lg:text-base font-bold text-white tracking-wider lg:tracking-widest"
                   )
                 }
               >
@@ -177,8 +230,8 @@ export function Layout() {
                 to="/admin"
                 className={({ isActive }) =>
                   cn(
-                    "flex items-center px-2 py-4 font-f1 uppercase text-sm tracking-widest font-semibold text-amber-500/70 transition-all hover:text-amber-500",
-                    isActive && "text-base font-bold text-amber-500 tracking-widest"
+                    "flex items-center px-2 py-4 font-f1 uppercase text-xs lg:text-sm tracking-wider lg:tracking-widest font-semibold text-amber-500/70 transition-all hover:text-amber-500 shrink-0",
+                    isActive && "text-sm lg:text-base font-bold text-amber-500 tracking-wider lg:tracking-widest"
                   )
                 }
               >
@@ -186,16 +239,140 @@ export function Layout() {
               </NavLink>
             )}
           </nav>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-2 shrink-0">
             <HealthBadge />
             <UserProfile />
             <TeamThemeSelector />
             <ModeToggle />
           </div>
         </div>
-        <div className="bg-transparent px-4 pb-3.5 pt-1 flex items-center justify-center relative z-10">
-          <TabsPrimitive.Root value={series} onValueChange={setSeries} className="w-full max-w-[360px] sm:max-w-[390px]">
-            <TabsPrimitive.List className="h-11 grid w-full grid-cols-3 p-1 rounded-xl bg-black/50 border border-white/10 shadow-inner backdrop-blur-md">
+
+        {/* MOBILE HEADER BAR (< MD) */}
+        <div className="mx-auto flex md:hidden h-14 w-full items-center justify-between px-3.5 relative z-10">
+          <Link 
+            to="/" 
+            className="flex items-center gap-2 shrink-0"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <img
+              src="/multi-series-logo.png"
+              alt="F1 Multi-Series Logo"
+              className="h-10 w-auto object-contain drop-shadow-md rounded-full shrink-0"
+            />
+            <span className="font-f1 text-base font-black tracking-wider text-white">
+              F1 APP
+            </span>
+          </Link>
+
+          <div className="flex items-center gap-1.5 shrink-0">
+            <HealthDot />
+            <ModeToggle />
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className={cn(
+                "flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200 border cursor-pointer shrink-0",
+                isMobileMenuOpen
+                  ? "bg-white/20 border-white/40 text-white shadow-inner"
+                  : "bg-black/40 border-white/10 text-white/80 hover:text-white hover:bg-white/10 active:scale-95"
+              )}
+              aria-label={isMobileMenuOpen ? "Fechar menu" : "Abrir menu"}
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* MOBILE DRAWER / SHEET OVERLAY */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden fixed inset-x-0 top-14 bottom-0 z-50 bg-black/95 backdrop-blur-xl border-t border-white/10 flex flex-col overflow-y-auto animate-in slide-in-from-top-2 duration-200">
+            <div className="p-4 flex flex-col gap-2 flex-1 pb-16">
+              <span className="text-[11px] font-f1 font-bold uppercase tracking-widest text-white/40 px-2 pb-1">
+                Navegação
+              </span>
+              <div className="grid grid-cols-1 gap-1.5">
+                {navItems.map((item) => {
+                  const Icon = item.icon
+                  return (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={({ isActive }) =>
+                        cn(
+                          "flex items-center justify-between px-4 py-3.5 rounded-xl text-base font-semibold transition-all duration-200",
+                          isActive
+                            ? "bg-white/15 text-white font-bold border-l-4 border-[hsl(var(--primary))] shadow-sm"
+                            : "text-white/70 hover:text-white hover:bg-white/5 active:bg-white/10"
+                        )
+                      }
+                    >
+                      <div className="flex items-center gap-3">
+                        {Icon && <Icon className="h-5 w-5 opacity-80" />}
+                        <span className="font-f1 uppercase tracking-wider text-sm">{item.label}</span>
+                      </div>
+                      {item.isLive && (
+                        <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-600/30 text-red-400 border border-red-500/40 text-[10px] font-bold uppercase tracking-widest animate-pulse">
+                          <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                          Live
+                        </span>
+                      )}
+                    </NavLink>
+                  )
+                })}
+
+                {user?.is_admin && (
+                  <NavLink
+                    to="/admin"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={({ isActive }) =>
+                      cn(
+                        "flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-f1 uppercase tracking-wider font-semibold transition-all duration-200 text-amber-400",
+                        isActive
+                          ? "bg-amber-500/20 text-amber-300 font-bold border-l-4 border-amber-400"
+                          : "hover:bg-amber-500/10 active:bg-amber-500/15"
+                      )
+                    }
+                  >
+                    <ShieldAlert className="h-5 w-5 opacity-90" />
+                    <span>Painel Admin</span>
+                  </NavLink>
+                )}
+              </div>
+
+              {/* SEPARATOR */}
+              <div className="my-3 border-t border-white/10" />
+
+              {/* MOBILE SETTINGS & CUSTOMIZATION */}
+              <span className="text-[11px] font-f1 font-bold uppercase tracking-widest text-white/40 px-2 pb-1">
+                Personalização & Conta
+              </span>
+
+              <div className="flex flex-col gap-3 p-3.5 bg-white/5 rounded-2xl border border-white/10">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-white/70 font-medium">Tema da Equipe:</span>
+                  <TeamThemeSelector />
+                </div>
+                <div className="flex items-center justify-between border-t border-white/10 pt-2.5">
+                  <span className="text-xs text-white/70 font-medium">Sua Conta:</span>
+                  <UserProfile />
+                </div>
+                <div className="flex items-center justify-between border-t border-white/10 pt-2.5">
+                  <span className="text-xs text-white/70 font-medium">Status do Servidor:</span>
+                  <HealthBadge />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="w-full bg-transparent px-3 sm:px-4 pb-3 sm:pb-3.5 pt-1 flex items-center justify-center relative z-10">
+          <TabsPrimitive.Root value={series} onValueChange={setSeries} className="w-full max-w-[340px] sm:max-w-[390px]">
+            <TabsPrimitive.List className="h-10 sm:h-11 grid w-full grid-cols-3 p-1 rounded-xl bg-black/50 border border-white/10 shadow-inner backdrop-blur-md">
               <TabsPrimitive.Trigger
                 value="f1"
                 className={cn(
@@ -205,7 +382,7 @@ export function Layout() {
                 )}
                 title="Formula 1"
               >
-                <F1Logo className="h-4 sm:h-4.5 w-auto" />
+                <F1Logo className="h-3.5 sm:h-4.5 w-auto" />
               </TabsPrimitive.Trigger>
               <TabsPrimitive.Trigger
                 value="f2"
@@ -216,7 +393,7 @@ export function Layout() {
                 )}
                 title="FIA Formula 2"
               >
-                <F2Logo className="h-4 sm:h-4.5 w-auto" />
+                <F2Logo className="h-3.5 sm:h-4.5 w-auto" />
               </TabsPrimitive.Trigger>
               <TabsPrimitive.Trigger
                 value="f3"
@@ -227,13 +404,13 @@ export function Layout() {
                 )}
                 title="FIA Formula 3"
               >
-                <F3Logo className="h-4 sm:h-4.5 w-auto" />
+                <F3Logo className="h-3.5 sm:h-4.5 w-auto" />
               </TabsPrimitive.Trigger>
             </TabsPrimitive.List>
           </TabsPrimitive.Root>
         </div>
       </header>
-      <main className="mx-auto max-w-6xl w-full px-3 sm:px-4 py-4 sm:py-8 relative z-10 flex-1">
+      <main className="mx-auto max-w-6xl w-full px-3 sm:px-4 py-4 sm:py-8 relative z-10 flex-1 pb-24 md:pb-8">
         <Outlet />
       </main>
       <RadioPlayer />
