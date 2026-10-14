@@ -122,7 +122,7 @@ export function LiveTimingPage() {
   const isLive = liveData?.session?.state === "live"
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-col gap-4 sm:gap-6">
       <PageHeader
         title="Ao Vivo"
         description="Central de telemetria integrada e dados do circuito em tempo real."
@@ -192,7 +192,7 @@ export function LiveTimingPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex justify-center items-center gap-3 sm:gap-4 md:gap-8 flex-wrap">
+              <div className="flex justify-center items-center gap-1.5 sm:gap-4 md:gap-8 flex-nowrap">
                 {timeLeft.days > 0 && (
                   <>
                     <div className="flex flex-col items-center">
@@ -389,12 +389,16 @@ export function LiveTimingPage() {
             <div className="bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900 p-3 text-center text-sm font-bold border-b border-border/50 tracking-widest text-zinc-300">
               TORRE DE TEMPOS OFICIAL
             </div>
-            <div className="w-full overflow-x-auto">
+            <div className="w-full overflow-x-auto scrollbar-thin">
               <table className="w-full text-sm text-left whitespace-nowrap">
                 <thead className="text-xs uppercase bg-white/5 text-muted-foreground">
                   <tr>
-                    <th className="px-4 py-3 font-semibold w-12 text-center">Pos</th>
-                    <th className="px-4 py-3 font-semibold">Piloto</th>
+                    <th className="px-3 sm:px-4 py-3 font-semibold w-12 text-center sticky left-0 z-20 bg-zinc-900 border-r border-border/40">
+                      Pos
+                    </th>
+                    <th className="px-3 sm:px-4 py-3 font-semibold sticky left-12 z-20 bg-zinc-900 border-r border-border/40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
+                      Piloto
+                    </th>
                     <th className="px-4 py-3 font-semibold text-center">Pneu</th>
                     <th className="px-4 py-3 font-semibold text-right">Gap</th>
                     <th className="px-4 py-3 font-semibold text-right">Intervalo</th>
@@ -403,28 +407,32 @@ export function LiveTimingPage() {
                 </thead>
                 <tbody className="divide-y divide-border/30">
                   {liveData.drivers.map((driver) => (
-                    <tr key={driver.driver_number} className="hover:bg-white/5 transition-colors">
-                      <td className="px-4 py-2 text-center font-bold">{driver.position || "-"}</td>
-                      <td className="px-4 py-2 font-medium flex items-center gap-3">
+                    <tr key={driver.driver_number} className="hover:bg-white/5 transition-colors group">
+                      <td className="px-3 sm:px-4 py-2 text-center font-bold sticky left-0 z-10 bg-zinc-950 group-hover:bg-zinc-900 border-r border-border/40">
+                        {driver.position || "-"}
+                      </td>
+                      <td className="px-3 sm:px-4 py-2 font-medium flex items-center gap-2 sm:gap-3 sticky left-12 z-10 bg-zinc-950 group-hover:bg-zinc-900 border-r border-border/40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
                         <span
-                          className="w-1 h-4 rounded-full"
+                          className="w-1 h-4 rounded-full shrink-0"
                           style={{ backgroundColor: `#${driver.team_colour}` }}
                         ></span>
-                        <span className="w-6 text-muted-foreground font-mono">
+                        <span className="w-5 sm:w-6 text-muted-foreground font-mono text-xs sm:text-sm shrink-0">
                           {driver.driver_number}
                         </span>
-                        <span className="font-bold flex items-center gap-2">
+                        <span className="font-bold flex items-center gap-1.5 truncate max-w-[130px] sm:max-w-none">
                           {driver.name}
                           {driver.in_pit && (
                             <span
-                              className="bg-white text-black px-1.5 rounded-sm text-[10px] font-black tracking-widest leading-none py-0.5"
+                              className="bg-white text-black px-1 rounded-sm text-[9px] font-black tracking-widest leading-none py-0.5"
                               title="No Pitlane"
                             >
                               P
                             </span>
                           )}
                         </span>
-                        <span className="text-xs text-muted-foreground uppercase">{driver.team}</span>
+                        <span className="text-[11px] sm:text-xs text-muted-foreground uppercase hidden sm:inline">
+                          {driver.team}
+                        </span>
                       </td>
                       <td className="px-4 py-2 text-center">
                         {driver.compound ? (

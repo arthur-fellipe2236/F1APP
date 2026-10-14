@@ -193,7 +193,7 @@ export function Layout() {
           </Tabs>
         </div>
       </header>
-      <main className="mx-auto max-w-6xl w-full px-4 py-8 relative z-10 flex-1">
+      <main className="mx-auto max-w-6xl w-full px-3 sm:px-4 py-4 sm:py-8 relative z-10 flex-1">
         <Outlet />
       </main>
       <RadioPlayer />
