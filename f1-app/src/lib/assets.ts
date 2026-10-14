@@ -376,130 +376,130 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1999 + i, { url: "/bar/bar-1.jpg", className: "bg-white rounded-sm" }])),
   },
   "Jaguar": {
-    2000: { url: "/jaguar/jaguar-1.jpg", className: "bg-white rounded-sm object-contain p-1" },
-    2001: { url: "/jaguar/jaguar-2.jpg", className: "bg-white rounded-sm object-contain p-1" },
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2002 + i, { url: "/jaguar/jaguar-3.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
+    2000: { url: "/jaguar/jaguar-1.jpg", className: "bg-white rounded-sm object-contain" },
+    2001: { url: "/jaguar/jaguar-2.jpg", className: "bg-white rounded-sm object-contain" },
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2002 + i, { url: "/jaguar/jaguar-3.jpg", className: "bg-white rounded-sm object-contain" }])),
   },
   "Arrows": {
-    ...Object.fromEntries(Array.from({ length: 13 }, (_, i) => [1978 + i, { url: "/arrows/arrows-1.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
-    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1997 + i, { url: "/arrows/arrows-3.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
+    ...Object.fromEntries(Array.from({ length: 13 }, (_, i) => [1978 + i, { url: "/arrows/arrows-1.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1997 + i, { url: "/arrows/arrows-3.jpg", className: "bg-white rounded-sm object-contain" }])),
   },
   "Footwork": {
-    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1991 + i, { url: "/arrows/arrows-2.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
+    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1991 + i, { url: "/arrows/arrows-2.jpg", className: "bg-white rounded-sm object-contain" }])),
   },
   "Benetton": {
-    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1986 + i, { url: "/benetton/benetton-1.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1991 + i, { url: "/benetton/benetton-2.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
-    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1994 + i, { url: "/benetton/benetton-3.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1986 + i, { url: "/benetton/benetton-1.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1991 + i, { url: "/benetton/benetton-2.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1994 + i, { url: "/benetton/benetton-3.jpg", className: "bg-white rounded-sm object-contain" }])),
   },
   "Prost": {
-    1997: { url: "/prost/prost-1.jpg", className: "bg-white rounded-sm object-contain p-1" },
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1998 + i, { url: "/prost/prost-2.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
-    2001: { url: "/prost/prost-3.jpg", className: "bg-white rounded-sm object-contain p-1" },
+    1997: { url: "/prost/prost-1.jpg", className: "bg-white rounded-sm object-contain" },
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1998 + i, { url: "/prost/prost-2.jpg", className: "bg-white rounded-sm object-contain" }])),
+    2001: { url: "/prost/prost-3.jpg", className: "bg-white rounded-sm object-contain" },
   },
   "Stewart": {
-    1997: { url: "/stewart/stewart-1.jpg", className: "bg-white rounded-sm object-contain p-1" },
-    1998: { url: "/stewart/stewart-2.jpg", className: "bg-white rounded-sm object-contain p-1" },
-    1999: { url: "/stewart/stewart-3.jpg", className: "bg-white rounded-sm object-contain p-1" },
+    1997: { url: "/stewart/stewart-1.jpg", className: "bg-white rounded-sm object-contain" },
+    1998: { url: "/stewart/stewart-2.jpg", className: "bg-white rounded-sm object-contain" },
+    1999: { url: "/stewart/stewart-3.jpg", className: "bg-white rounded-sm object-contain" },
   },
   "Tyrrell": {
-    ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [1970 + i, { url: "/tyrrell/tyrrell-1.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
-    ...Object.fromEntries(Array.from({ length: 13 }, (_, i) => [1980 + i, { url: "/tyrrell/tyrrell-2.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
-    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1993 + i, { url: "/tyrrell/tyrrell-3.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
+    ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [1970 + i, { url: "/tyrrell/tyrrell-1.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 13 }, (_, i) => [1980 + i, { url: "/tyrrell/tyrrell-2.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1993 + i, { url: "/tyrrell/tyrrell-3.jpg", className: "bg-white rounded-sm object-contain" }])),
   },
   "Ligier": {
-    ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [1976 + i, { url: "/ligier/ligier-1.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
-    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1986 + i, { url: "/ligier/ligier-2.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
-    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1993 + i, { url: "/ligier/ligier-3.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
+    ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [1976 + i, { url: "/ligier/ligier-1.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1986 + i, { url: "/ligier/ligier-2.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1993 + i, { url: "/ligier/ligier-3.jpg", className: "bg-white rounded-sm object-contain" }])),
   },
   "Forti": {
-    1995: { url: "/forti/forti.jpg", className: "bg-white rounded-sm object-contain p-1" },
-    1996: { url: "/forti/forti.jpg", className: "bg-white rounded-sm object-contain p-1" },
+    1995: { url: "/forti/forti.jpg", className: "bg-white rounded-sm object-contain" },
+    1996: { url: "/forti/forti.jpg", className: "bg-white rounded-sm object-contain" },
   },
   "Pacific": {
-    1994: { url: "/pacific/pacific.png", className: "bg-[#000000] rounded-sm object-contain p-1" },
-    1995: { url: "/pacific/pacific.png", className: "bg-[#000000] rounded-sm object-contain p-1" },
+    1994: { url: "/pacific/pacific.png", className: "bg-[#000000] rounded-sm object-contain" },
+    1995: { url: "/pacific/pacific.png", className: "bg-[#000000] rounded-sm object-contain" },
   },
   "Simtek": {
-    1994: { url: "/simtek/simtek.jpg", className: "bg-white rounded-sm object-contain p-1" },
-    1995: { url: "/simtek/simtek.jpg", className: "bg-white rounded-sm object-contain p-1" },
+    1994: { url: "/simtek/simtek.jpg", className: "bg-white rounded-sm object-contain" },
+    1995: { url: "/simtek/simtek.jpg", className: "bg-white rounded-sm object-contain" },
   },
   "Minardi": {
-    ...Object.fromEntries(Array.from({ length: 12 }, (_, i) => [1985 + i, { url: "/minardi/minardi-1.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
-    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1997 + i, { url: "/minardi/minardi-2.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
-    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2001 + i, { url: "/minardi/minardi-3.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
+    ...Object.fromEntries(Array.from({ length: 12 }, (_, i) => [1985 + i, { url: "/minardi/minardi-1.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1997 + i, { url: "/minardi/minardi-2.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2001 + i, { url: "/minardi/minardi-3.jpg", className: "bg-white rounded-sm object-contain" }])),
   },
   "Jordan": {
-    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1991 + i, { url: "/jordan/jordan-1.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
-    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1996 + i, { url: "/jordan/jordan-2.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2003 + i, { url: "/jordan/jordan-3.jpg", className: "bg-white rounded-sm object-contain p-1" }])),
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1991 + i, { url: "/jordan/jordan-1.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1996 + i, { url: "/jordan/jordan-2.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2003 + i, { url: "/jordan/jordan-3.jpg", className: "bg-white rounded-sm object-contain" }])),
   },
 } 
 
 const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
-  // F1 2026 Official Vector WebP Assets
+  // F1 2026 Official Vector SVG Assets
   Ferrari: {
-    url: `${F1_2026_BASE}/ferrari/2026ferrarilogowhite.webp`,
+    url: `${F1_2026_BASE}/ferrari/2026ferrarilogowhite.svg`,
     color: "#E8002D",
   },
   Mercedes: {
-    url: `${F1_2026_BASE}/mercedes/2026mercedeslogowhite.webp`,
-    color: "#1B1D1E",
+    url: `${F1_2026_BASE}/mercedes/2026mercedeslogowhite.svg`,
+    color: "#00A19B",
   },
   "Red Bull Racing": {
-    url: `${F1_2026_BASE}/redbullracing/2026redbullracinglogowhite.webp`,
+    url: `${F1_2026_BASE}/redbullracing/2026redbullracinglogowhite.svg`,
     color: "#3671C6",
   },
   "Red Bull": {
-    url: `${F1_2026_BASE}/redbullracing/2026redbullracinglogowhite.webp`,
+    url: `${F1_2026_BASE}/redbullracing/2026redbullracinglogowhite.svg`,
     color: "#3671C6",
   },
   McLaren: {
-    url: `${F1_2026_BASE}/mclaren/2026mclarenlogowhite.webp`,
+    url: `${F1_2026_BASE}/mclaren/2026mclarenlogowhite.svg`,
     color: "#FF8000",
   },
   "Aston Martin": {
-    url: `${F1_2026_BASE}/astonmartin/2026astonmartinlogowhite.webp`,
+    url: `${F1_2026_BASE}/astonmartin/2026astonmartinlogowhite.svg`,
     color: "#229971",
   },
   Alpine: {
-    url: `${F1_2026_BASE}/alpine/2026alpinelogowhite.webp`,
+    url: `${F1_2026_BASE}/alpine/2026alpinelogowhite.svg`,
     color: "#0093CC",
   },
   Williams: {
-    url: `${F1_2026_BASE}/williams/2026williamslogowhite.webp`,
+    url: `${F1_2026_BASE}/williams/2026williamslogowhite.svg`,
     color: "#005AFF",
   },
   RB: {
-    url: `${F1_2026_BASE}/racingbulls/2026racingbullslogowhite.webp`,
+    url: `${F1_2026_BASE}/racingbulls/2026racingbullslogowhite.svg`,
     color: "#1021C7",
   },
   "Racing Bulls": {
-    url: `${F1_2026_BASE}/racingbulls/2026racingbullslogowhite.webp`,
+    url: `${F1_2026_BASE}/racingbulls/2026racingbullslogowhite.svg`,
     color: "#1021C7",
   },
   Haas: {
-    url: `${F1_2026_BASE}/haas/2026haaslogowhite.webp`,
+    url: `${F1_2026_BASE}/haas/2026haaslogowhite.svg`,
     color: "#1F1F1F",
   },
   "Haas F1 Team": {
-    url: `${F1_2026_BASE}/haas/2026haaslogowhite.webp`,
+    url: `${F1_2026_BASE}/haas/2026haaslogowhite.svg`,
     color: "#1F1F1F",
   },
   Audi: {
-    url: `${F1_2026_BASE}/audi/2026audilogowhite.webp`,
+    url: `${F1_2026_BASE}/audi/2026audilogowhite.svg`,
     color: "#1A1A1A",
   },
   Cadillac: {
-    url: `${F1_2026_BASE}/cadillac/2026cadillaclogowhite.webp`,
+    url: `${F1_2026_BASE}/cadillac/2026cadillaclogowhite.svg`,
     color: "#111111",
   },
   "Kick Sauber": {
-    url: "https://media.formula1.com/image/upload/c_fit,h_160/q_auto/v1740000001/common/f1/2024/kicksauber/2024kicksauberlogowhite.webp",
+    url: "https://media.formula1.com/image/upload/c_fit,h_160/q_auto/v1740000001/common/f1/2024/kicksauber/2024kicksauberlogowhite.svg",
     color: "#52E252",
   },
   Sauber: {
-    url: "https://media.formula1.com/image/upload/c_fit,h_160/q_auto/v1740000001/common/f1/2024/kicksauber/2024kicksauberlogowhite.webp",
+    url: "https://media.formula1.com/image/upload/c_fit,h_160/q_auto/v1740000001/common/f1/2024/kicksauber/2024kicksauberlogowhite.svg",
     color: "#52E252",
   },
   "Alfa Romeo": {
@@ -509,63 +509,63 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
 
   // F2 & F3 Teams
   "Campos Racing": {
-    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/camposracing/2026camposracinglogowhite.webp",
+    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/camposracing/2026camposracinglogowhite.svg",
     color: "#F58220",
   },
   "Invicta Racing": {
-    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/invictaracing/2026invictaracinglogowhite.webp",
+    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/invictaracing/2026invictaracinglogowhite.svg",
     color: "#FFD700",
   },
   "Rodin Motorsport": {
-    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/rodinmotorsport/2026rodinmotorsportlogowhite.webp",
+    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/rodinmotorsport/2026rodinmotorsportlogowhite.svg",
     color: "#111111",
   },
   "MP Motorsport": {
-    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/mpmotorsport/2026mpmotorsportlogowhite.webp",
+    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/mpmotorsport/2026mpmotorsportlogowhite.svg",
     color: "#F37320",
   },
   "DAMS Lucas Oil": {
-    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/damslucasoil/2026damslucasoillogowhite.webp",
+    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/damslucasoil/2026damslucasoillogowhite.svg",
     color: "#00A0E3",
   },
   "ART Grand Prix": {
-    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/artgrandprix/2026artgrandprixlogowhite.webp",
+    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/artgrandprix/2026artgrandprixlogowhite.svg",
     color: "#111111",
   },
   TRIDENT: {
-    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/trident/2026tridentlogowhite.webp",
+    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/trident/2026tridentlogowhite.svg",
     color: "#0033A0",
   },
   Trident: {
-    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/trident/2026tridentlogowhite.webp",
+    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/trident/2026tridentlogowhite.svg",
     color: "#0033A0",
   },
   "Hitech Pulse-Eight": {
-    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/hitech/2026hitechlogowhite.webp",
+    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/hitech/2026hitechlogowhite.svg",
     color: "#1E1E1E",
   },
   Hitech: {
-    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/hitech/2026hitechlogowhite.webp",
+    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/hitech/2026hitechlogowhite.svg",
     color: "#1E1E1E",
   },
   "Van Amersfoort Racing": {
-    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/vanamersfoortracing/2026vanamersfoortracinglogowhite.webp",
+    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/vanamersfoortracing/2026vanamersfoortracinglogowhite.svg",
     color: "#F58220",
   },
   "PREMA Racing": {
-    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/premaracing/2026premaracinglogowhite.webp",
+    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/premaracing/2026premaracinglogowhite.svg",
     color: "#E30613",
   },
   "Prema Racing": {
-    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/premaracing/2026premaracinglogowhite.webp",
+    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/premaracing/2026premaracinglogowhite.svg",
     color: "#E30613",
   },
   "AIX Racing": {
-    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/aixracing/2026aixracinglogowhite.webp",
+    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/aixracing/2026aixracinglogowhite.svg",
     color: "#C4D600",
   },
   "PHM AIX Racing": {
-    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/aixracing/2026aixracinglogowhite.webp",
+    url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/aixracing/2026aixracinglogowhite.svg",
     color: "#C4D600",
   },
   "Jenzer Motorsport": {

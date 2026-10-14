@@ -53,7 +53,7 @@ export function TeamInline({ name, season }: { name: string | null; season?: num
     <span className="flex items-center gap-1.5">
       <span 
         className={cn(
-          "flex h-6 w-11 shrink-0 items-center justify-center rounded-md p-1 shadow-xs border border-border/50 transition-all",
+          "flex h-6 w-11 shrink-0 items-center justify-center rounded-md px-1 py-0.5 shadow-xs border border-border/50 transition-all",
           isDarkBg && "ring-1 ring-white/20 dark:border-white/25",
           isHistorical ? "bg-white text-zinc-900 border-border/70" : (!logo.color && "bg-white dark:bg-zinc-800")
         )}
@@ -106,7 +106,7 @@ export function TeamName({ name, season }: { name: string; season?: number }) {
     <span className="flex items-center gap-3 min-h-9 group">
       <span 
         className={cn(
-          "flex h-8 w-14 shrink-0 items-center justify-center rounded-md p-1 shadow-xs border border-border/50 transition-transform duration-300 group-hover:scale-105",
+          "flex h-8 w-14 shrink-0 items-center justify-center rounded-md px-1 py-0.5 shadow-xs border border-border/50 transition-transform duration-300 group-hover:scale-105",
           isDarkBg && "ring-1 ring-white/20 dark:border-white/25",
           isHistorical ? "bg-white text-zinc-900 border-border/70" : (!logo.color && "bg-white dark:bg-zinc-800")
         )}
