@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 70">
+  <rect width="160" height="70" rx="8" fill="#A6192E"/>
+  <path d="M20 22 H36 C46 22 52 28 52 35 C52 42 46 48 36 48 H20 Z M28 30 V40 H35 C39 40 43 38 43 35 C43 32 39 30 35 30 Z" fill="#ffffff"/>
+  <text x="104" y="42" fill="#ffffff" font-family="Arial, sans-serif" font-weight="900" font-size="18" letter-spacing="2" text-anchor="middle">DALLARA</text>
+</svg>

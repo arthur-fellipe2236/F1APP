@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 70">
+  <rect width="160" height="70" rx="8" fill="#D40000"/>
+  <polygon points="32,20 48,35 32,50 16,35" fill="#FFD700"/>
+  <polygon points="32,25 42,35 32,45 22,35" fill="#D40000"/>
+  <text x="98" y="44" fill="#ffffff" font-family="Impact, Arial Black, sans-serif" font-size="24" letter-spacing="3" text-anchor="middle">LOLA</text>
+</svg>

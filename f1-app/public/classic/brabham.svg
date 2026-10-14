@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 70">
+  <rect width="160" height="70" rx="8" fill="#002B49"/>
+  <circle cx="36" cy="35" r="22" fill="#001B30" stroke="#E5A823" stroke-width="2"/>
+  <path d="M26 35 L33 26 L42 26 L36 35 L44 44 L35 44 Z" fill="#E5A823"/>
+  <text x="96" y="42" fill="#ffffff" font-family="Arial, sans-serif" font-weight="900" font-size="18" letter-spacing="2.5" text-anchor="middle">BRABHAM</text>
+</svg>

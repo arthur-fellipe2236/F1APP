@@ -19,7 +19,7 @@ import {
 import { useApi } from "@/hooks/use-api"
 import { useSeasons } from "@/hooks/use-seasons"
 import { api, type Driver } from "@/lib/api"
-import { flagFromNationality, formatNationality, teamLogo } from "@/lib/assets"
+import { flagFromNationality, formatNationality, getTeamStandingsOrder, teamLogo } from "@/lib/assets"
 
 async function fetchAllDrivers(params: { team_id?: number; season?: number; series?: string }) {
   const first = await api.drivers({ ...params, page: 1, per_page: 50 })
@@ -118,6 +118,9 @@ export function DriversPage() {
         const teamA = a.team_name ?? (a.team_id ? (teamNames.get(a.team_id) ?? "") : "")
         const teamB = b.team_name ?? (b.team_id ? (teamNames.get(b.team_id) ?? "") : "")
         if (teamA !== teamB) {
+          const tOrderA = getTeamStandingsOrder(teamA, seasonParam)
+          const tOrderB = getTeamStandingsOrder(teamB, seasonParam)
+          if (tOrderA !== tOrderB) return tOrderA - tOrderB
           return teamA.localeCompare(teamB)
         }
         return (a.permanent_number ?? a.season_number ?? 0) - (b.permanent_number ?? b.season_number ?? 0)

@@ -1,3 +1,4 @@
+import { useMemo } from "react"
 import { useAppStore } from "@/store"
 import { SeasonSelector } from "@/components/season-selector"
 import { TeamInline } from "@/components/team-name"
@@ -12,7 +13,7 @@ import { Label } from "@/components/ui/label"
 import { useApi } from "@/hooks/use-api"
 import { useSeasons } from "@/hooks/use-seasons"
 import { api, fetchAll, type Team } from "@/lib/api"
-import { engineLogo, flagFromCountry, formatCountry , teamLogo, flagFromNationality, formatNationality } from "@/lib/assets"
+import { engineLogo, flagFromCountry, formatCountry, getTeamStandingsOrder, teamLogo } from "@/lib/assets"
 import { formatNumber } from "@/lib/format"
 
 const getColumns = (seasonParam?: number): TableColumn<Team>[] => [
@@ -82,6 +83,16 @@ export function TeamsPage() {
     [seasonParam, series],
   )
 
+  const sortedTeams = useMemo(() => {
+    const list = teams.data ?? []
+    return [...list].sort((a, b) => {
+      const orderA = getTeamStandingsOrder(a.name, seasonParam)
+      const orderB = getTeamStandingsOrder(b.name, seasonParam)
+      if (orderA !== orderB) return orderA - orderB
+      return a.name.localeCompare(b.name)
+    })
+  }, [teams.data, seasonParam])
+
   return (
     <div className="space-y-6">
       
@@ -101,7 +112,7 @@ export function TeamsPage() {
       ) : (
         <VirtualDataTable
           columns={getColumns(seasonParam)}
-          data={teams.data ?? []}
+          data={sortedTeams}
           getRowColor={(row) => teamLogo(row.name, seasonParam)?.color || undefined}
           renderMobileCard={(row) => (
             <>
@@ -109,8 +120,8 @@ export function TeamsPage() {
                 <TeamInline season={seasonParam} name={row.name} />
                 {row.base_country && (
                   <Flag
-                    src={flagFromNationality(row.base_country)}
-                    label={formatNationality(row.base_country)}
+                    src={flagFromCountry(row.base_country)}
+                    label={formatCountry(row.base_country)}
                   />
                 )}
               </div>

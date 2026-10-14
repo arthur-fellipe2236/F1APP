@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 70">
+  <rect width="160" height="70" rx="8" fill="#0038A8"/>
+  <polygon points="20,24 46,24 38,46 12,46" fill="#FF1493"/>
+  <text x="98" y="43" fill="#ffffff" font-family="Arial, sans-serif" font-weight="900" font-size="22" letter-spacing="3" text-anchor="middle">ONYX</text>
+</svg>

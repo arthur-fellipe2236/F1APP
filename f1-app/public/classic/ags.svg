@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 70">
+  <rect width="160" height="70" rx="8" fill="#2A52BE"/>
+  <rect x="18" y="22" width="7" height="26" fill="#002395"/>
+  <rect x="25" y="22" width="7" height="26" fill="#ffffff"/>
+  <rect x="32" y="22" width="7" height="26" fill="#ED2939"/>
+  <text x="96" y="43" fill="#ffffff" font-family="Arial Black, Impact, sans-serif" font-size="24" letter-spacing="3" text-anchor="middle">AGS</text>
+</svg>

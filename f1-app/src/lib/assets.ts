@@ -574,36 +574,56 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   },
 
   // Historical / Classic Teams
-  Jaguar: { url: "/jaguar/jaguar-3.jpg", className: "object-contain" },
-  Arrows: { url: "/arrows/arrows-1.jpg", className: "object-contain" },
-  Footwork: { url: "/arrows/arrows-2.jpg", className: "object-contain" },
-  Benetton: { url: "/benetton/benetton-3.jpg", className: "object-contain" },
-  Prost: { url: "/prost/prost-1.jpg", className: "object-contain" },
-  Stewart: { url: "/stewart/stewart-1.jpg", className: "object-contain" },
-  Tyrrell: { url: "/tyrrell/tyrrell-2.jpg", className: "object-contain" },
-  Ligier: { url: "/ligier/ligier-1.jpg", className: "object-contain" },
-  Forti: { url: "/forti/forti.jpg", className: "object-contain" },
-  Pacific: { url: "/pacific/pacific.png", className: "object-contain" },
-  Simtek: { url: "/simtek/simtek.jpg", className: "object-contain" },
-  Minardi: { url: "/minardi/minardi-2.jpg", className: "object-contain" },
-  Jordan: { url: "/jordan/jordan-2.jpg", className: "object-contain" },
-  "Super Aguri": { url: "/aguri/aguri-2.jpg", className: "object-contain" },
-  Honda: { url: "/honda/honda-3.jpg", className: "object-contain" },
-  Toyota: { url: "/toyota/toyota-2.jpg", className: "object-contain" },
-  Brawn: { url: "/brawn/brawn-1.jpg", className: "object-contain" },
-  HRT: { url: "/hrt/hrt-3.jpg", className: "object-contain" },
-  Lotus: { url: "/caterham/caterham-2.jpg", className: "object-contain" },
-  Caterham: { url: "/caterham/caterham-3.jpg", className: "object-contain" },
-  Virgin: { url: "/manor/manor-1.jpg", className: "object-contain" },
-  Marussia: { url: "/manor/manor-3.jpg", className: "object-contain" },
-  "Manor Marussia": { url: "/manor/manor-5.jpg", className: "object-contain" },
-  "Sauber Clássica": { url: "/sauber/sauber-3.jpg", className: "object-contain" },
-  "BMW Sauber": { url: "/sauber/sauber-2.jpg", className: "object-contain" },
-  "Force India": { url: "/aston/aston-1.jpg", className: "object-contain" },
-  "Racing Point": { url: "/aston/aston-2.jpg", className: "object-contain" },
-  "Toro Rosso": { url: "/racingbulls/toro-rosso.jpg", className: "object-contain" },
-  AlphaTauri: { url: "/racingbulls/alphatauri.jpg", className: "object-contain" },
-  "Lotus F1": { url: "/alpine/lotus.jpg", className: "object-contain" },
+  Jaguar: { url: "/jaguar/jaguar-3.jpg", color: "#004225", className: "object-contain" },
+  Arrows: { url: "/arrows/arrows-1.jpg", color: "#E56717", className: "object-contain" },
+  Footwork: { url: "/arrows/arrows-2.jpg", color: "#E56717", className: "object-contain" },
+  Benetton: { url: "/benetton/benetton-3.jpg", color: "#008751", className: "object-contain" },
+  Prost: { url: "/prost/prost-1.jpg", color: "#002B7F", className: "object-contain" },
+  Stewart: { url: "/stewart/stewart-1.jpg", color: "#FFFFFF", className: "object-contain" },
+  Tyrrell: { url: "/tyrrell/tyrrell-2.jpg", color: "#002B7F", className: "object-contain" },
+  Ligier: { url: "/ligier/ligier-1.jpg", color: "#0055A5", className: "object-contain" },
+  Forti: { url: "/forti/forti.jpg", color: "#FFD700", className: "object-contain" },
+  Pacific: { url: "/pacific/pacific.png", color: "#009384", className: "object-contain" },
+  Simtek: { url: "/simtek/simtek.jpg", color: "#48286A", className: "object-contain" },
+  Minardi: { url: "/minardi/minardi-2.jpg", color: "#FFCC00", className: "object-contain" },
+  Jordan: { url: "/jordan/jordan-2.jpg", color: "#FFDE00", className: "object-contain" },
+  "Super Aguri": { url: "/aguri/aguri-2.jpg", color: "#E10600", className: "object-contain" },
+  Honda: { url: "/honda/honda-3.jpg", color: "#E10600", className: "object-contain" },
+  Toyota: { url: "/toyota/toyota-2.jpg", color: "#E10600", className: "object-contain" },
+  Brawn: { url: "/brawn/brawn-1.jpg", color: "#B8FD00", className: "object-contain" },
+  HRT: { url: "/hrt/hrt-3.jpg", color: "#C09040", className: "object-contain" },
+  Lotus: { url: "/caterham/caterham-2.jpg", color: "#004225", className: "object-contain" },
+  "Team Lotus": { url: "/caterham/caterham-2.jpg", color: "#004225", className: "object-contain" },
+  Caterham: { url: "/caterham/caterham-3.jpg", color: "#005030", className: "object-contain" },
+  Virgin: { url: "/manor/manor-1.jpg", color: "#E10600", className: "object-contain" },
+  Marussia: { url: "/manor/manor-3.jpg", color: "#E10600", className: "object-contain" },
+  "Manor Marussia": { url: "/manor/manor-5.jpg", color: "#E10600", className: "object-contain" },
+  "Sauber Clássica": { url: "/sauber/sauber-3.jpg", color: "#002B49", className: "object-contain" },
+  "BMW Sauber": { url: "/sauber/sauber-2.jpg", color: "#002B49", className: "object-contain" },
+  "Force India": { url: "/aston/aston-1.jpg", color: "#F58020", className: "object-contain" },
+  "Racing Point": { url: "/aston/aston-2.jpg", color: "#F596C8", className: "object-contain" },
+  "Toro Rosso": { url: "/racingbulls/toro-rosso.jpg", color: "#001A30", className: "object-contain" },
+  AlphaTauri: { url: "/racingbulls/alphatauri.jpg", color: "#00293F", className: "object-contain" },
+  "Lotus F1": { url: "/alpine/lotus.jpg", color: "#D1B26F", className: "object-contain" },
+  Renault: { url: "/alpine/renault-1.jpg", color: "#FFF500", className: "object-contain" },
+
+  // Classic Era Teams (1985-1989)
+  Brabham: { url: "/classic/brabham.svg", color: "#002B49", className: "object-contain" },
+  March: { url: "/classic/march.svg", color: "#009384", className: "object-contain" },
+  Toleman: { url: "/classic/toleman.svg", color: "#002244", className: "object-contain" },
+  Larrousse: { url: "/classic/larrousse.svg", color: "#1B4D3E", className: "object-contain" },
+  Osella: { url: "/classic/osella.svg", color: "#181818", className: "object-contain" },
+  Zakspeed: { url: "/classic/zakspeed.svg", color: "#C00000", className: "object-contain" },
+  Lola: { url: "/classic/lola.svg", color: "#D40000", className: "object-contain" },
+  Dallara: { url: "/classic/dallara.svg", color: "#A6192E", className: "object-contain" },
+  AGS: { url: "/classic/ags.svg", color: "#2A52BE", className: "object-contain" },
+  Coloni: { url: "/classic/coloni.svg", color: "#F7D117", className: "object-contain" },
+  Rial: { url: "/classic/rial.svg", color: "#003399", className: "object-contain" },
+  Onyx: { url: "/classic/onyx.svg", color: "#0038A8", className: "object-contain" },
+  "Euro Brun": { url: "/classic/eurobrun.svg", color: "#FF5F00", className: "object-contain" },
+  EuroBrun: { url: "/classic/eurobrun.svg", color: "#FF5F00", className: "object-contain" },
+  Spirit: { url: "/classic/spirit.svg", color: "#C8102E", className: "object-contain" },
+  RAM: { url: "/classic/ram.svg", color: "#007A3D", className: "object-contain" },
 }
 
 const TEAM_ALIASES: Record<string, string> = {
@@ -707,6 +727,23 @@ const TEAM_ALIASES: Record<string, string> = {
   "phm racing": "AIX Racing",
   jenzer: "Jenzer Motorsport",
   "jenzer motorsport": "Jenzer Motorsport",
+  "team lotus": "Team Lotus",
+  "euro brun": "Euro Brun",
+  eurobrun: "Euro Brun",
+  brabham: "Brabham",
+  march: "March",
+  toleman: "Toleman",
+  larrousse: "Larrousse",
+  osella: "Osella",
+  zakspeed: "Zakspeed",
+  lola: "Lola",
+  dallara: "Dallara",
+  ags: "AGS",
+  coloni: "Coloni",
+  rial: "Rial",
+  onyx: "Onyx",
+  spirit: "Spirit",
+  ram: "RAM",
 }
 
 export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
@@ -725,11 +762,13 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
 
   // Check historical season logo database
   if (season) {
-    if (TEAM_SEASON_LOGOS[canonical]?.[season]) {
-      return TEAM_SEASON_LOGOS[canonical][season]
-    }
-    if (TEAM_SEASON_LOGOS[name]?.[season]) {
-      return TEAM_SEASON_LOGOS[name][season]
+    const seasonLogo = TEAM_SEASON_LOGOS[canonical]?.[season] ?? TEAM_SEASON_LOGOS[name]?.[season]
+    if (seasonLogo) {
+      const fallbackColor = TEAM_LOGO_BY_NAME[canonical]?.color ?? TEAM_LOGO_BY_NAME[name]?.color
+      return {
+        ...seasonLogo,
+        color: seasonLogo.color ?? fallbackColor,
+      }
     }
   }
 
@@ -746,6 +785,17 @@ const ENGINE_LOGOS: Record<string, string> = {
   "Red Bull Ford": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Ford_Motor_Company_Logo.svg",
   Audi: "https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg",
   Mecachrome: "https://upload.wikimedia.org/wikipedia/commons/d/da/Nouveau_logo_Mecachrome.png",
+  BMW: "/engines/bmw.svg",
+  Ford: "/engines/ford.svg",
+  "Ford Cosworth": "/engines/ford.svg",
+  Cosworth: "/engines/cosworth.svg",
+  Porsche: "/engines/porsche.svg",
+  Lamborghini: "/engines/lamborghini.svg",
+  Toyota: "/engines/toyota.svg",
+  Peugeot: "/engines/peugeot.svg",
+  Judd: "/engines/judd.svg",
+  Hart: "/engines/hart.svg",
+  Zakspeed: "/engines/zakspeed.svg",
 }
 
 export function engineLogo(name: string | null): string | null {
@@ -926,3 +976,123 @@ export function formatCountry(country: string | null): string {
   if (!country) return ""
   return country
 }
+
+export const HISTORICAL_CONSTRUCTOR_ORDERS: Record<number, Record<string, number>> = {
+  1985: {
+    McLaren: 1,
+    Ferrari: 2,
+    Williams: 3,
+    "Team Lotus": 4,
+    Brabham: 5,
+    Ligier: 6,
+    Renault: 7,
+    Arrows: 8,
+    Tyrrell: 9,
+    Osella: 10,
+    Minardi: 11,
+    "Alfa Romeo": 12,
+    RAM: 13,
+    Zakspeed: 14,
+    Toleman: 15,
+    Spirit: 16,
+    Lola: 17,
+  },
+  1986: {
+    Williams: 1,
+    McLaren: 2,
+    "Team Lotus": 3,
+    Ferrari: 4,
+    Benetton: 5,
+    Ligier: 6,
+    Tyrrell: 7,
+    Lola: 8,
+    Brabham: 9,
+    Arrows: 10,
+    Zakspeed: 11,
+    Osella: 12,
+    Minardi: 13,
+    AGS: 14,
+  },
+  1987: {
+    Williams: 1,
+    McLaren: 2,
+    "Team Lotus": 3,
+    Ferrari: 4,
+    Benetton: 5,
+    Tyrrell: 6,
+    Arrows: 7,
+    Brabham: 8,
+    Lola: 9,
+    Zakspeed: 10,
+    Ligier: 11,
+    AGS: 12,
+    March: 13,
+    Osella: 14,
+    Minardi: 15,
+    Coloni: 16,
+  },
+  1988: {
+    McLaren: 1,
+    Ferrari: 2,
+    Benetton: 3,
+    "Team Lotus": 4,
+    Arrows: 5,
+    March: 6,
+    Williams: 7,
+    Tyrrell: 8,
+    Rial: 9,
+    Minardi: 10,
+    Dallara: 11,
+    AGS: 12,
+    Coloni: 13,
+    Larrousse: 14,
+    Osella: 15,
+    "Euro Brun": 16,
+    Zakspeed: 17,
+    Ligier: 18,
+  },
+  1989: {
+    McLaren: 1,
+    Williams: 2,
+    Ferrari: 3,
+    Benetton: 4,
+    Tyrrell: 5,
+    "Team Lotus": 6,
+    Arrows: 7,
+    Dallara: 8,
+    Brabham: 9,
+    Onyx: 10,
+    March: 11,
+    Larrousse: 12,
+    Ligier: 13,
+    Rial: 14,
+    AGS: 15,
+    Minardi: 16,
+    Osella: 17,
+    "Euro Brun": 18,
+    Coloni: 19,
+    Zakspeed: 20,
+  },
+  2026: {
+    McLaren: 1,
+    Mercedes: 2,
+    "Red Bull Racing": 3,
+    Ferrari: 4,
+    Williams: 5,
+    "Aston Martin": 6,
+    Alpine: 7,
+    Haas: 8,
+    Audi: 9,
+    "Racing Bulls": 10,
+    Cadillac: 11,
+  },
+}
+
+export function getTeamStandingsOrder(name: string | null | undefined, season?: number): number {
+  if (!name || !season) return 999
+  const seasonTable = HISTORICAL_CONSTRUCTOR_ORDERS[season]
+  if (!seasonTable) return 999
+  const canonical = TEAM_ALIASES[name.trim().toLowerCase()] || name
+  return seasonTable[canonical] ?? seasonTable[name] ?? 999
+}
+
