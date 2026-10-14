@@ -181,6 +181,13 @@ export function Layout() {
     ? `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h24v24H0V0zm12 12h12v12H12V12zM0 12h12v12H0V12zm12-12h12v12H12V0z' fill='%23000000' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E"), radial-gradient(circle at 50% 0%, var(--team-glow, transparent) 0%, transparent 70%)` 
     : "none";
 
+  const wingImageSrc =
+    teamTheme === "ferrari"
+      ? "/f1-front-wing-ferrari.png"
+      : teamTheme === "mercedes"
+      ? "/f1-front-wing-mercedes.png"
+      : "/f1-front-wing.png";
+
   return (
     <div className="min-h-screen bg-background relative transition-colors duration-700 overflow-hidden flex flex-col">
       {/* Carbon Fiber + Radial Glow Background Overlay */}
@@ -380,9 +387,10 @@ export function Layout() {
         <div className="hidden md:flex w-full max-w-5xl mx-auto relative px-2 items-center justify-center -mt-1 select-none">
           <div className="w-full relative flex items-center justify-center">
             <img
-              src="/f1-front-wing.png"
+              key={wingImageSrc}
+              src={wingImageSrc}
               alt="F1 Front Wing 3D"
-              className="w-full h-auto max-h-[120px] lg:max-h-[134px] object-contain select-none pointer-events-none drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)]"
+              className="w-full h-auto max-h-[120px] lg:max-h-[134px] object-contain select-none pointer-events-none drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)] transition-all duration-300"
             />
             {/* LIVERY OFICIAL DA EQUIPE (OPÇÃO 01: FERRARI / OPÇÃO 02: MERCEDES-AMG) */}
             <TeamWingLivery theme={teamTheme} />
