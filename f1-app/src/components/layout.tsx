@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 import { UserProfile } from "@/components/user-profile"
 import { ModeToggle } from "@/components/mode-toggle"
 import { TeamThemeSelector, THEMES } from "@/components/team-theme-selector"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs as TabsPrimitive } from "radix-ui"
 import { useAppStore } from "@/store"
 import { RadioPlayer } from "@/components/radio-player"
 
@@ -51,6 +51,30 @@ function HealthBadge() {
       <span className="size-1.5 rounded-full bg-current" />
       API offline
     </Badge>
+  )
+}
+
+function F1Logo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 320 80" className={className} fill="currentColor">
+      <path d="M45.2583 80L80.7417 45.575H80.7333C94.7167 32.0167 100.392 29.9583 127.058 29.9583H233.408L264.008 0H123.025C87.3333 0 77.2417 3.4 56.3083 24.1167L0 80H45.2583ZM127.7 34.7417H228.842L200.792 62.7917H128.225C114.925 62.7917 111.983 63.4167 105.383 70.0167L95.4 80H53.4333L84.4583 48.975C96.6417 36.8 100.842 34.7417 127.7 34.7417ZM320 0L239.783 80H190.175L270.175 0H320Z" />
+    </svg>
+  )
+}
+
+function F2Logo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="25 0 475 160" className={className} fill="currentColor">
+      <path d="m380.29 156.2c12.981-0.16226 23.042-3.9755 30.506-8.5839 11.213-6.9288 16.389-15.496 17.07-16.535l13.403-20.738h-124.59l5.7118-8.8435h94.585c24.778 0 37.873-12.365 43.195-20.608 3.3264-5.1601 35.098-54.359 35.098-54.359 3.6348-5.6469 7.4967-14.198 1.9472-21.03-1.6551-2.1744-5.1276-5.0952-12.316-5.0952h-136.13c-24.778 0-37.873 12.365-43.195 20.608-3.3265 5.1601-16.34 25.249-16.34 25.249h124.41l-5.7118 8.8435h-93.125c-12.981 0.16227-23.042 3.9755-30.506 8.5839-11.213 6.9288-16.389 15.496-17.07 16.535l-0.0487 0.08113c-0.95735 1.4442-48.923 75.876-48.923 75.876h162.04zm-108.2-109.92 29.597-45.856h-131.26c-41.183 0-61.84 33.622-61.84 33.622l-78.845 122.15h68.882l35.65-55.219h72.565c24.778 0 37.873-12.365 43.195-20.608 3.3265-5.1601 16.34-25.249 16.34-25.249h-102.5l5.7118-8.8435z" />
+    </svg>
+  )
+}
+
+function F3Logo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="25 0 375 160" className={className} fill="currentColor">
+      <path d="m272.09 46.273 29.597-45.856h-131.26c-41.183 0-61.84 33.622-61.84 33.622l-78.845 122.15h68.882l35.65-55.219h72.565c24.778 0 37.873-12.365 43.195-20.608 3.3265-5.1601 16.34-25.249 16.34-25.249h-102.5l5.7118-8.8435zm155.84 84.719c2.1581-3.2615 67.34-104.45 67.34-104.45 3.6348-5.6469 7.4967-14.198 1.9472-21.03-1.6551-2.1744-5.1276-5.0952-12.316-5.0952h-136.13c-24.778 0-37.873 12.365-43.195 20.608-3.3264 5.1601-16.34 25.249-16.34 25.249h124.41l-5.7118 8.8435h-124.41l-29.938 46.392h124.41l-5.7118 8.8435h-124.41l-29.614 45.856h162.02c12.981-0.16226 23.042-3.9755 30.506-8.5839 11.213-6.9288 16.389-15.496 17.07-16.535l0.0487-0.0811z" />
+    </svg>
   )
 }
 
@@ -169,20 +193,44 @@ export function Layout() {
             <ModeToggle />
           </div>
         </div>
-        <div className="bg-transparent px-4 pb-3 pt-1 flex items-center justify-center relative z-10">
-          <Tabs value={series} onValueChange={setSeries} className="w-[400px]">
-            <TabsList className="h-14 grid w-full grid-cols-3 bg-black/40 text-white/70 border border-white/10 shadow-inner backdrop-blur-xs">
-              <TabsTrigger value="f1" className="group data-[state=active]:bg-[#E10600] h-12 flex justify-center items-center rounded-sm transition-all duration-300">
-                <div className="h-5 w-20 transition-colors duration-300 bg-[#E10600] group-data-[state=active]:bg-white" style={{ maskImage: "url('https://upload.wikimedia.org/wikipedia/commons/3/33/F1.svg')", WebkitMaskImage: "url('https://upload.wikimedia.org/wikipedia/commons/3/33/F1.svg')", maskSize: "contain", WebkitMaskSize: "contain", maskRepeat: "no-repeat", WebkitMaskRepeat: "no-repeat", maskPosition: "center", WebkitMaskPosition: "center" }}></div>
-              </TabsTrigger>
-              <TabsTrigger value="f2" className="group data-[state=active]:bg-[#0090D0] h-12 flex justify-center items-center rounded-sm transition-all duration-300">
-                <div className="h-6 w-20 mb-1 transition-colors duration-300 bg-[#0090D0] group-data-[state=active]:bg-white" style={{ maskImage: "url('https://upload.wikimedia.org/wikipedia/commons/6/64/FIA_Formula_2_Championship_logo_%282026%29.svg')", WebkitMaskImage: "url('https://upload.wikimedia.org/wikipedia/commons/6/64/FIA_Formula_2_Championship_logo_%282026%29.svg')", maskSize: "contain", WebkitMaskSize: "contain", maskRepeat: "no-repeat", WebkitMaskRepeat: "no-repeat", maskPosition: "center", WebkitMaskPosition: "center" }}></div>
-              </TabsTrigger>
-              <TabsTrigger value="f3" className="group data-[state=active]:bg-[#F9A01B] h-12 flex justify-center items-center rounded-sm transition-all duration-300">
-                <div className="h-6 w-20 mb-1 transition-colors duration-300 bg-[#F9A01B] group-data-[state=active]:bg-white" style={{ maskImage: "url('https://upload.wikimedia.org/wikipedia/commons/d/d9/FIA_Formula_3_Championship_logo_%282026%29.svg')", WebkitMaskImage: "url('https://upload.wikimedia.org/wikipedia/commons/d/d9/FIA_Formula_3_Championship_logo_%282026%29.svg')", maskSize: "contain", WebkitMaskSize: "contain", maskRepeat: "no-repeat", WebkitMaskRepeat: "no-repeat", maskPosition: "center", WebkitMaskPosition: "center" }}></div>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+        <div className="bg-transparent px-4 pb-3.5 pt-1 flex items-center justify-center relative z-10">
+          <TabsPrimitive.Root value={series} onValueChange={setSeries} className="w-full max-w-[360px] sm:max-w-[390px]">
+            <TabsPrimitive.List className="h-11 grid w-full grid-cols-3 p-1 rounded-xl bg-black/50 border border-white/10 shadow-inner backdrop-blur-md">
+              <TabsPrimitive.Trigger
+                value="f1"
+                className={cn(
+                  "h-full flex items-center justify-center rounded-lg transition-all duration-300 font-bold outline-none cursor-pointer",
+                  "text-white/50 hover:text-white hover:bg-white/5",
+                  "data-[state=active]:bg-[#E10600] data-[state=active]:text-white data-[state=active]:shadow-[0_2px_12px_rgba(225,6,0,0.45)]"
+                )}
+                title="Formula 1"
+              >
+                <F1Logo className="h-4 sm:h-4.5 w-auto" />
+              </TabsPrimitive.Trigger>
+              <TabsPrimitive.Trigger
+                value="f2"
+                className={cn(
+                  "h-full flex items-center justify-center rounded-lg transition-all duration-300 font-bold outline-none cursor-pointer",
+                  "text-white/50 hover:text-white hover:bg-white/5",
+                  "data-[state=active]:bg-[#0090D0] data-[state=active]:text-white data-[state=active]:shadow-[0_2px_12px_rgba(0,144,208,0.45)]"
+                )}
+                title="FIA Formula 2"
+              >
+                <F2Logo className="h-4 sm:h-4.5 w-auto" />
+              </TabsPrimitive.Trigger>
+              <TabsPrimitive.Trigger
+                value="f3"
+                className={cn(
+                  "h-full flex items-center justify-center rounded-lg transition-all duration-300 font-bold outline-none cursor-pointer",
+                  "text-white/50 hover:text-white hover:bg-white/5",
+                  "data-[state=active]:bg-[#F9A01B] data-[state=active]:text-white data-[state=active]:shadow-[0_2px_12px_rgba(249,160,27,0.45)]"
+                )}
+                title="FIA Formula 3"
+              >
+                <F3Logo className="h-4 sm:h-4.5 w-auto" />
+              </TabsPrimitive.Trigger>
+            </TabsPrimitive.List>
+          </TabsPrimitive.Root>
         </div>
       </header>
       <main className="mx-auto max-w-6xl w-full px-3 sm:px-4 py-4 sm:py-8 relative z-10 flex-1">
