@@ -190,6 +190,8 @@ export function Layout() {
       ? "/f1-front-wing-mclaren.png"
       : teamTheme === "redbull"
       ? "/f1-front-wing-redbull.png"
+      : teamTheme === "racingbulls"
+      ? "/f1-front-wing-racingbulls.png"
       : "/f1-front-wing.png";
 
   return (
