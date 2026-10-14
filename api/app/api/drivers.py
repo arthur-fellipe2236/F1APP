@@ -107,21 +107,14 @@ def list_drivers():
     if series:
         query = query.filter_by(series=series)
     team_id = parse_int(request.args.get("team_id"), "team_id")
-    if team_id:
-        raced_sq = db.session.query(RaceResult.driver_id).filter(
-            RaceResult.team_id == team_id
-        )
-        query = query.filter(
-            or_(
-                Driver.team_id == team_id,
-                Driver.id.in_(raced_sq),
-            )
-        )
     season = parse_int(request.args.get("season"), "season")
+
     if season:
         if series == "f1" and season == 2026:
             f1_2026_ids = [34, 39, 36, 238, 13, 46, 32, 1, 35, 9, 20, 29, 31, 49, 27, 43, 236, 47, 45, 48, 237, 18]
             query = query.filter(Driver.id.in_(f1_2026_ids))
+            if team_id:
+                query = query.filter(Driver.team_id == team_id)
             order_case = case(*[(Driver.id == d_id, idx) for idx, d_id in enumerate(f1_2026_ids)], else_=99)
             query = query.order_by(order_case)
         else:
@@ -132,11 +125,24 @@ def list_drivers():
             )
             if series:
                 season_sq_query = season_sq_query.filter(Race.series == series)
+            if team_id:
+                season_sq_query = season_sq_query.filter(RaceResult.team_id == team_id)
             season_sq = season_sq_query.distinct()
             query = query.filter(Driver.id.in_(season_sq))
             query = query.order_by(Driver.last_name, Driver.first_name)
     else:
+        if team_id:
+            raced_sq = db.session.query(RaceResult.driver_id).filter(
+                RaceResult.team_id == team_id
+            )
+            query = query.filter(
+                or_(
+                    Driver.team_id == team_id,
+                    Driver.id.in_(raced_sq),
+                )
+            )
         query = query.order_by(Driver.last_name, Driver.first_name)
+
     result = paginate(query, Driver.to_dict)
     if season:
         latest = (
@@ -150,19 +156,24 @@ def list_drivers():
             .subquery()
         )
         team_rows = (
-            db.session.query(RaceResult.driver_id, Team.name)
+            db.session.query(RaceResult.driver_id, RaceResult.team_id, Team.name)
             .join(latest, latest.c.result_id == RaceResult.id)
             .outerjoin(Team, Team.id == RaceResult.team_id)
             .all()
         )
-        team_by_driver = {driver_id: name for driver_id, name in team_rows}
+        team_by_driver = {driver_id: (t_id, name) for driver_id, t_id, name in team_rows}
         for row in result["data"]:
             if season == 2026 and series == "f1":
                 d = Driver.query.get(row["id"])
-                row["team_name"] = d.team.name if d.team else None
-                row["team"] = d.team.to_dict() if d.team else None
+                row["team_id"] = d.team_id if d else None
+                row["team_name"] = d.team.name if (d and d.team) else None
+                row["team"] = d.team.to_dict() if (d and d.team) else None
             else:
-                row["team_name"] = team_by_driver.get(row["id"])
+                t_id, t_name = team_by_driver.get(row["id"], (None, None))
+                row["team_id"] = t_id
+                row["team_name"] = t_name
+                t_obj = db.session.get(Team, t_id) if t_id else None
+                row["team"] = t_obj.to_dict() if t_obj else None
     return jsonify(result)
 
 

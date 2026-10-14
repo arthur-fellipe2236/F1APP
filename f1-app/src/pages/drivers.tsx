@@ -113,6 +113,15 @@ export function DriversPage() {
 
         return (a.permanent_number ?? a.season_number ?? 0) - (b.permanent_number ?? b.season_number ?? 0)
       })
+    } else if (series === "f1") {
+      d = [...d].sort((a, b) => {
+        const teamA = a.team_name ?? (a.team_id ? (teamNames.get(a.team_id) ?? "") : "")
+        const teamB = b.team_name ?? (b.team_id ? (teamNames.get(b.team_id) ?? "") : "")
+        if (teamA !== teamB) {
+          return teamA.localeCompare(teamB)
+        }
+        return (a.permanent_number ?? a.season_number ?? 0) - (b.permanent_number ?? b.season_number ?? 0)
+      })
     } else if ((series === "f2" || series === "f3") && seasonParam === 2026) {
       d = [...d].sort((a, b) => (a.permanent_number ?? 0) - (b.permanent_number ?? 0))
     }

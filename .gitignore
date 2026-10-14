@@ -67,5 +67,6 @@ f1-app/remove_*.py
 f1-app/scrape_*.py
 f1-app/search_*.py
 f1-app/print_*.py
+!api/instance/
 !api/instance/f1.db
 f1-app/scripts/
