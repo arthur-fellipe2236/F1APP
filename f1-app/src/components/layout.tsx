@@ -192,6 +192,8 @@ export function Layout() {
       ? "/f1-front-wing-redbull.png"
       : teamTheme === "racingbulls"
       ? "/f1-front-wing-racingbulls.png"
+      : teamTheme === "alpine"
+      ? "/f1-front-wing-alpine.png"
       : "/f1-front-wing.png";
 
   return (
