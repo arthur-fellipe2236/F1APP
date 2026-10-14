@@ -1,4 +1,4 @@
-import { Paintbrush } from "lucide-react"
+import { Rocket } from "lucide-react"
 import { useAppStore } from "@/store"
 import { teamLogo } from "@/lib/assets"
 import { cn } from "@/lib/utils"
@@ -33,7 +33,7 @@ export function TeamThemeSelector() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" title="Tema da Equipe">
-          <Paintbrush className="h-[1.2rem] w-[1.2rem]" />
+          <Rocket className="h-[1.2rem] w-[1.2rem]" />
           <span className="sr-only">Tema da Equipe</span>
         </Button>
       </DropdownMenuTrigger>
