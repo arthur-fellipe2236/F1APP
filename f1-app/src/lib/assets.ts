@@ -239,7 +239,7 @@ const F1_LOGO_BASE =
 const F1_2026_BASE =
   "https://media.formula1.com/image/upload/c_fit,h_160/q_auto/v1740000001/common/f1/2026"
 
-function f1Logo(name: string) {
+export function f1Logo(name: string) {
   return `${F1_LOGO_BASE}/${encodeURIComponent(name)}.png.transform/1col/image.png`
 }
 
@@ -505,8 +505,12 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
     className: "brightness-100 filter-none",
   },
   "Alfa Romeo": {
-    url: f1Logo("Alfa Romeo"),
+    url: "/teams/alfaromeo.svg",
     color: "#900000",
+  },
+  AlphaTauri: {
+    url: "/teams/alphatauri.svg",
+    color: "#00293F",
   },
 
   // F2 & F3 Teams
@@ -605,7 +609,6 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   "Force India": { url: "/aston/aston-1.jpg", color: "#F58020", className: "object-contain" },
   "Racing Point": { url: "/aston/aston-2.jpg", color: "#F596C8", className: "object-contain" },
   "Toro Rosso": { url: "/racingbulls/toro-rosso.jpg", color: "#001A30", className: "object-contain" },
-  AlphaTauri: { url: "/racingbulls/alphatauri.jpg", color: "#00293F", className: "object-contain" },
   "Lotus F1": { url: "/alpine/lotus.jpg", color: "#D1B26F", className: "object-contain" },
   Renault: { url: "/alpine/renault-1.jpg", color: "#FFF500", className: "object-contain" },
 
@@ -669,6 +672,12 @@ const TEAM_ALIASES: Record<string, string> = {
   "cadillac f1 team": "Cadillac",
   "cadillac formula 1 team": "Cadillac",
 
+  // AlphaTauri
+  alphatauri: "AlphaTauri",
+  "alphatauri f1 team": "AlphaTauri",
+  "scuderia alphatauri": "AlphaTauri",
+  "scuderia alphatauri f1 team": "AlphaTauri",
+
   // Racing Bulls / RB
   rb: "Racing Bulls",
   "racing bulls": "Racing Bulls",
@@ -698,6 +707,7 @@ const TEAM_ALIASES: Record<string, string> = {
   "alfa romeo": "Alfa Romeo",
   "alfa romeo racing": "Alfa Romeo",
   "alfa romeo f1 team": "Alfa Romeo",
+  "alfa romeo f1 team stake": "Alfa Romeo",
 
   // F2 & F3 Aliases
   prema: "PREMA Racing",
@@ -752,8 +762,8 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   if (!name) return null
   const canonical = TEAM_ALIASES[name.trim().toLowerCase()] || name
 
-  // For modern and future seasons (2024+), prioritize the official vector logo
-  if (!season || season >= 2024) {
+  // For modern and future seasons (2023+), prioritize the official vector logo
+  if (!season || season >= 2023) {
     if (TEAM_LOGO_BY_NAME[canonical]) {
       return TEAM_LOGO_BY_NAME[canonical]
     }
@@ -966,6 +976,14 @@ export function displayTeamName(name: string | null, season?: number): string {
   }
 
   
+  if (name === "Alfa Romeo" || name === "Alfa Romeo F1 Team") {
+    if (season === 2019) return "ALFA ROMEO RACING"
+    if (season && season >= 2020 && season <= 2021) return "ALFA ROMEO RACING ORLEN"
+    if (season === 2022) return "ALFA ROMEO F1 TEAM ORLEN"
+    if (season === 2023) return "ALFA ROMEO F1 TEAM STAKE"
+    return "ALFA ROMEO F1 TEAM"
+  }
+
   return name
 }
 
@@ -1074,6 +1092,18 @@ export const HISTORICAL_CONSTRUCTOR_ORDERS: Record<number, Record<string, number
     "Euro Brun": 18,
     Coloni: 19,
     Zakspeed: 20,
+  },
+  2023: {
+    "Red Bull Racing": 1,
+    Mercedes: 2,
+    Ferrari: 3,
+    McLaren: 4,
+    "Aston Martin": 5,
+    Alpine: 6,
+    Williams: 7,
+    AlphaTauri: 8,
+    "Alfa Romeo": 9,
+    Haas: 10,
   },
   2026: {
     McLaren: 1,
