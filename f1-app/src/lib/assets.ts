@@ -439,31 +439,35 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
 const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
 
     "Ferrari": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/ferrari.png", color: "#E8002D" },
-  "Mercedes": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/mercedes.png", color: "#27F4D2", invertDark: true },
+  "Mercedes": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/mercedes.png", color: "#27F4D2" },
   "Red Bull Racing": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/red%20bull.png", color: "#3671C6" },
+  "Red Bull": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/red%20bull.png", color: "#3671C6" },
   "McLaren": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/mclaren.png", color: "#FF8000" },
   "Aston Martin": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/aston%20martin.png", color: "#229971" },
   "Alpine": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/alpine.png", color: "#0093CC" },
   "Williams": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/williams.png", color: "#64C4FF" },
   "RB": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/rb.png", color: "#6692FF" },
+  "Racing Bulls": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/rb.png", color: "#6692FF" },
   "Kick Sauber": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/kick%20sauber.png", color: "#52E252" },
-  "Haas F1 Team": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/haas.png", color: "#B6BABD", invertDark: true },
+  "Sauber": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/kick%20sauber.png", color: "#52E252" },
+  "Haas": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/haas.png", color: "#B6BABD" },
+  "Haas F1 Team": { url: "https://media.formula1.com/content/dam/fom-website/2018-redesign-assets/team%20logos/haas.png", color: "#B6BABD" },
 
-  "Campos Racing": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/camposracing/2026camposracinglogowhite.webp", color: "#F58220", className: "scale-150 invert" },
-  "Invicta Racing": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/invictaracing/2026invictaracinglogowhite.webp", color: "#FFD700", className: "scale-150 invert" },
-  "Rodin Motorsport": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/rodinmotorsport/2026rodinmotorsportlogowhite.webp", color: "#000000" },
-  "MP Motorsport": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/mpmotorsport/2026mpmotorsportlogowhite.webp", color: "#F37320" },
-  "DAMS Lucas Oil": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/damslucasoil/2026damslucasoillogowhite.webp", color: "#00A0E3", className: "scale-150 invert" },
-  "ART Grand Prix": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/artgrandprix/2026artgrandprixlogowhite.webp", color: "#000000" },
-  "TRIDENT": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/trident/2026tridentlogowhite.webp", color: "#0033A0", className: "scale-150 invert" },
-  "Trident": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/trident/2026tridentlogowhite.webp", color: "#0033A0", className: "scale-150 invert" },
-  "Hitech Pulse-Eight": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/hitech/2026hitechlogowhite.webp", color: "#E5E5E5", className: "scale-150" },
-  "Hitech": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/hitech/2026hitechlogowhite.webp", color: "#E5E5E5", className: "scale-150" },
-  "Van Amersfoort Racing": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/vanamersfoortracing/2026vanamersfoortracinglogowhite.webp", color: "#F58220", className: "scale-150 invert" },
-  "PREMA Racing": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/premaracing/2026premaracinglogowhite.webp", color: "#E30613", className: "scale-150 invert" },
-  "Prema Racing": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/premaracing/2026premaracinglogowhite.webp", color: "#E30613", className: "scale-150 invert" },
-  "AIX Racing": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/aixracing/2026aixracinglogowhite.webp", color: "#C4D600", className: "scale-150 invert" },
-  "PHM AIX Racing": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/aixracing/2026aixracinglogowhite.webp", color: "#C4D600", className: "scale-150 invert" },
+  "Campos Racing": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/camposracing/2026camposracinglogowhite.webp", color: "#F58220", className: "scale-125" },
+  "Invicta Racing": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/invictaracing/2026invictaracinglogowhite.webp", color: "#FFD700", className: "scale-125 brightness-0" },
+  "Rodin Motorsport": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/rodinmotorsport/2026rodinmotorsportlogowhite.webp", color: "#111111", className: "scale-125" },
+  "MP Motorsport": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/mpmotorsport/2026mpmotorsportlogowhite.webp", color: "#F37320", className: "scale-125" },
+  "DAMS Lucas Oil": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/damslucasoil/2026damslucasoillogowhite.webp", color: "#00A0E3", className: "scale-125" },
+  "ART Grand Prix": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/artgrandprix/2026artgrandprixlogowhite.webp", color: "#111111", className: "scale-125" },
+  "TRIDENT": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/trident/2026tridentlogowhite.webp", color: "#0033A0", className: "scale-125" },
+  "Trident": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/trident/2026tridentlogowhite.webp", color: "#0033A0", className: "scale-125" },
+  "Hitech Pulse-Eight": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/hitech/2026hitechlogowhite.webp", color: "#1E1E1E", className: "scale-125" },
+  "Hitech": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/hitech/2026hitechlogowhite.webp", color: "#1E1E1E", className: "scale-125" },
+  "Van Amersfoort Racing": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/vanamersfoortracing/2026vanamersfoortracinglogowhite.webp", color: "#F58220", className: "scale-125" },
+  "PREMA Racing": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/premaracing/2026premaracinglogowhite.webp", color: "#E30613", className: "scale-125" },
+  "Prema Racing": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/premaracing/2026premaracinglogowhite.webp", color: "#E30613", className: "scale-125" },
+  "AIX Racing": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/aixracing/2026aixracinglogowhite.webp", color: "#C4D600", className: "scale-125 brightness-0" },
+  "PHM AIX Racing": { url: "https://res.cloudinary.com/prod-f2f3/d_common:f2:fallback.webp/c_lfill,w_96/q_auto/v1770000000/common/f2/2026/aixracing/2026aixracinglogowhite.webp", color: "#C4D600", className: "scale-125 brightness-0" },
   "Jenzer Motorsport": { url: "https://upload.wikimedia.org/wikipedia/en/d/dd/Jenzer_Motorsport.png", color: "#0033A0" },
 
   "Jaguar": { url: "/jaguar/jaguar-3.jpg", className: "bg-white rounded-sm object-contain p-1" },
@@ -489,31 +493,82 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   "Virgin": { url: "/manor/manor-1.jpg", className: "bg-white rounded-sm" },
   "Marussia": { url: "/manor/manor-3.jpg", className: "bg-white rounded-sm" },
   "Manor Marussia": { url: "/manor/manor-5.jpg", className: "bg-white rounded-sm" },
-  "Sauber": { url: "/sauber/sauber-3.jpg", className: "bg-white rounded-sm" },
+  "Sauber Clássica": { url: "/sauber/sauber-3.jpg", className: "bg-white rounded-sm" },
   "BMW Sauber": { url: "/sauber/sauber-2.jpg", className: "bg-white rounded-sm" },
   "Force India": { url: "/aston/aston-1.jpg", className: "bg-white rounded-sm" },
   "Racing Point": { url: "/aston/aston-2.jpg", className: "bg-white rounded-sm" },
   "Toro Rosso": { url: "/racingbulls/toro-rosso.jpg", className: "bg-white rounded-sm" },
   "AlphaTauri": { url: "/racingbulls/alphatauri.jpg", className: "bg-white rounded-sm" },
-  "Racing Bulls": { url: "/racingbulls/racing-bulls.jpg", className: "bg-white rounded-sm" },
   "Lotus F1": { url: "/alpine/lotus.jpg", className: "bg-white rounded-sm" },
 
-
-  Haas: { url: f1Logo("Haas") },
-  "Alfa Romeo": { url: f1Logo("Alfa Romeo") },
+  "Alfa Romeo": { url: f1Logo("Alfa Romeo"), color: "#900000" },
   Audi: {
     url: `${F1_2026_BASE}/audi/2026audilogowhite.webp`,
-    className: "brightness-0 dark:brightness-100",
+    color: "#1A1A1A",
   },
-
   Cadillac: {
     url: `${F1_2026_BASE}/cadillac/2026cadillaclogo.webp`,
+    color: "#111111",
   },
 }
 
+const TEAM_ALIASES: Record<string, string> = {
+  "haas": "Haas",
+  "haas f1 team": "Haas",
+  "moneygram haas f1 team": "Haas",
+  "red bull": "Red Bull Racing",
+  "red bull racing": "Red Bull Racing",
+  "oracle red bull racing": "Red Bull Racing",
+  "aston martin": "Aston Martin",
+  "aston martin f1 team": "Aston Martin",
+  "aston martin aramco": "Aston Martin",
+  "aston martin aramco f1 team": "Aston Martin",
+  "aston martin aramco cognac f1 team": "Aston Martin",
+  "alpine": "Alpine",
+  "alpine f1 team": "Alpine",
+  "bwt alpine f1 team": "Alpine",
+  "williams": "Williams",
+  "williams racing": "Williams",
+  "kick sauber": "Kick Sauber",
+  "stake f1 team kick sauber": "Kick Sauber",
+  "sauber": "Kick Sauber",
+  "sauber f1 team": "Kick Sauber",
+  "rb": "RB",
+  "racing bulls": "RB",
+  "visa cash app rb": "RB",
+  "visa cash app rb formula one team": "RB",
+  "vcarb": "RB",
+  "ferrari": "Ferrari",
+  "scuderia ferrari": "Ferrari",
+  "scuderia ferrari hp": "Ferrari",
+  "mclaren": "McLaren",
+  "mclaren f1 team": "McLaren",
+  "mercedes": "Mercedes",
+  "mercedes-amg petronas": "Mercedes",
+  "mercedes-amg petronas f1 team": "Mercedes",
+  "mercedes amg": "Mercedes",
+  "alfa romeo": "Alfa Romeo",
+  "alfa romeo racing": "Alfa Romeo",
+  "alfa romeo f1 team": "Alfa Romeo",
+  "audi": "Audi",
+  "audi f1 team": "Audi",
+  "cadillac": "Cadillac",
+  "cadillac f1 team": "Cadillac",
+}
+
 export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
+  if (!name) return null
   if (season && TEAM_SEASON_LOGOS[name] && TEAM_SEASON_LOGOS[name][season]) {
     return TEAM_SEASON_LOGOS[name][season]
+  }
+  const canonical = TEAM_ALIASES[name.trim().toLowerCase()]
+  if (canonical) {
+    if (season && TEAM_SEASON_LOGOS[canonical] && TEAM_SEASON_LOGOS[canonical][season]) {
+      return TEAM_SEASON_LOGOS[canonical][season]
+    }
+    if (TEAM_LOGO_BY_NAME[canonical]) {
+      return TEAM_LOGO_BY_NAME[canonical]
+    }
   }
   return TEAM_LOGO_BY_NAME[name] ?? null
 }

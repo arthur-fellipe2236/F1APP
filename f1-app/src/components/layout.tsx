@@ -10,7 +10,6 @@ import { ModeToggle } from "@/components/mode-toggle"
 import { TeamThemeSelector, THEMES } from "@/components/team-theme-selector"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useAppStore } from "@/store"
-import { hexToHslString } from "@/lib/color-utils"
 import { RadioPlayer } from "@/components/radio-player"
 
 const navItems = [
@@ -71,10 +70,9 @@ export function Layout() {
     if (themeObj && themeObj.id !== "default" && themeObj.color) {
       // Accent color powers the primary UI elements (buttons, active states)
       const activeAccent = themeObj.accent || themeObj.color;
-      const hslValue = hexToHslString(activeAccent);
       
-      html.style.setProperty("--primary", hslValue);
-      html.style.setProperty("--ring", hslValue);
+      html.style.setProperty("--primary", activeAccent);
+      html.style.setProperty("--ring", activeAccent);
       
       // Base color powers the ambient background and glowing borders
       const activeBase = resolvedTheme === "dark" ? themeObj.darkColor : themeObj.color;
@@ -86,12 +84,6 @@ export function Layout() {
       html.style.setProperty("--team-bg-color", `rgba(${r}, ${g}, ${b}, ${bgOpacity})`);
       html.style.setProperty("--team-border-color", activeAccent);
       html.style.setProperty("--team-glow", `rgba(${parseInt(activeAccent.slice(1,3),16)}, ${parseInt(activeAccent.slice(3,5),16)}, ${parseInt(activeAccent.slice(5,7),16)}, 0.4)`);
-      
-      // Tint the global text color (30% team accent, 70% white/black)
-      const textTint = resolvedTheme === "dark" 
-        ? `color-mix(in srgb, ${activeAccent} 25%, white)`
-        : `color-mix(in srgb, ${activeAccent} 40%, black)`;
-      html.style.setProperty("--team-text", textTint);
 
       html.classList.add("theme-active"); // Flag to activate deep CSS rules
     } else {

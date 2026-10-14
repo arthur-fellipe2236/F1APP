@@ -43,7 +43,10 @@ export function TeamInline({ name, season }: { name: string | null; season?: num
   return (
     <span className="flex items-center gap-1.5">
       <span 
-        className={cn("flex h-6 w-12 shrink-0 items-center justify-center rounded-md px-1.5 shadow-xs ring-1 ring-black/10 dark:ring-white/10", !logo.color && "bg-white dark:bg-zinc-800")}
+        className={cn(
+          "flex h-6 w-12 shrink-0 items-center justify-center rounded-md px-1.5 shadow-xs border border-border/40 overflow-hidden",
+          !logo.color && "bg-white dark:bg-zinc-800"
+        )}
         style={logo.color ? { backgroundColor: logo.color } : undefined}
       >
         <img
@@ -52,7 +55,7 @@ export function TeamInline({ name, season }: { name: string | null; season?: num
           aria-hidden
           loading="lazy"
           onError={() => setBroken(true)}
-          className={cn("h-full w-full object-contain", logo.className, logo.invertDark && "dark:dark-invert")}
+          className={cn("h-full w-full object-contain drop-shadow-xs", logo.className)}
         />
       </span>
       {displayTeamName(name, season)}
@@ -71,7 +74,7 @@ export function TeamName({ name, season }: { name: string; season?: number }) {
     return (
       <span className="flex items-center gap-3 min-h-9 group">
         <span 
-          className="flex h-8 w-14 shrink-0 items-center justify-center rounded-md text-[11px] font-bold shadow-xs ring-1 ring-black/10 transition-transform duration-300 group-hover:scale-110"
+          className="flex h-8 w-14 shrink-0 items-center justify-center rounded-md text-[11px] font-bold shadow-xs border border-border/40 transition-transform duration-300 group-hover:scale-110"
           style={{ backgroundColor: bgColor, color: textColor }}
         >
           {initials(name)}
@@ -84,7 +87,10 @@ export function TeamName({ name, season }: { name: string; season?: number }) {
   return (
     <span className="flex items-center gap-3 min-h-9 group">
       <span 
-        className={cn("flex h-8 w-14 shrink-0 items-center justify-center rounded-md px-1.5 shadow-xs ring-1 ring-black/10 transition-transform duration-300 group-hover:scale-110", !logo.color && "bg-white dark:bg-zinc-800")}
+        className={cn(
+          "flex h-8 w-14 shrink-0 items-center justify-center rounded-md px-1.5 shadow-xs border border-border/40 transition-transform duration-300 group-hover:scale-110 overflow-hidden",
+          !logo.color && "bg-white dark:bg-zinc-800"
+        )}
         style={logo.color ? { backgroundColor: logo.color } : undefined}
       >
         <img
@@ -93,7 +99,7 @@ export function TeamName({ name, season }: { name: string; season?: number }) {
           aria-hidden
           loading="lazy"
           onError={() => setBroken(true)}
-          className={cn("h-full w-full object-contain", logo.className, logo.invertDark && "dark:dark-invert")}
+          className={cn("h-full w-full object-contain drop-shadow-xs", logo.className)}
         />
       </span>
       <span className="font-medium text-foreground">

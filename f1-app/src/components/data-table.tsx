@@ -4,6 +4,7 @@ import DataTable, {
   type TableProps,
 } from "react-data-table-component"
 import { ptBR } from "react-data-table-component/locales"
+import { useTheme } from "next-themes"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
@@ -29,6 +30,28 @@ createTheme(
   "dark",
 )
 
+createTheme(
+  "f1-light",
+  {
+    text: {
+      primary: "#09090b",
+      secondary: "#71717a",
+      disabled: "#a1a1aa",
+    },
+    background: {
+      default: "#ffffff",
+    },
+    context: {
+      background: "#e11d48",
+      text: "#ffffff",
+    },
+    divider: {
+      default: "#e4e4e7",
+    },
+  },
+  "light",
+)
+
 const paginationComponentOptions = {
   rowsPerPageText: "Linhas por página:",
   rangeSeparatorText: "de",
@@ -50,6 +73,8 @@ export interface F1DataTableProps<T> extends TableProps<T> {
 
 export function F1DataTable<T>(props: F1DataTableProps<T>) {
   const { renderMobileCard, data, ...tableProps } = props
+  const { resolvedTheme } = useTheme()
+  const activeTableTheme = resolvedTheme === "light" ? "f1-light" : "f1-dark"
   
   return (
     <>
@@ -96,7 +121,7 @@ export function F1DataTable<T>(props: F1DataTableProps<T>) {
         )}
       >
         <DataTable
-          theme="f1-dark"
+          theme={activeTableTheme}
           localization={ptBR}
           paginationComponentOptions={paginationComponentOptions}
           highlightOnHover

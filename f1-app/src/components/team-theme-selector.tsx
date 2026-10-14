@@ -47,11 +47,18 @@ export function TeamThemeSelector() {
               className="flex items-center gap-3 cursor-pointer py-2"
             >
               {logoObj ? (
-                <div className="w-5 flex justify-center items-center">
-                  <img src={logoObj.url} alt={theme.name} className={`max-h-4 object-contain ${logoObj.className || ""}`} />
+                <div 
+                  className="h-6 w-9 shrink-0 flex items-center justify-center rounded-md px-1 shadow-xs border border-border/40 overflow-hidden"
+                  style={{ backgroundColor: theme.color || logoObj.color || "var(--muted)" }}
+                >
+                  <img 
+                    src={logoObj.url} 
+                    alt={theme.name} 
+                    className="max-h-4 max-w-full object-contain drop-shadow-xs" 
+                  />
                 </div>
               ) : (
-                <div className="w-5 flex justify-center items-center">
+                <div className="h-6 w-9 shrink-0 flex items-center justify-center rounded-md bg-muted border border-border/40">
                   <div className="h-3 w-3 rounded-full border border-border" style={{ backgroundColor: theme.color || "transparent" }} />
                 </div>
               )}

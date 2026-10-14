@@ -184,7 +184,10 @@ function TeamBadge({ name, season }: { name: string; season?: number }) {
   
   return (
     <span 
-      className={cn("flex h-16 w-32 md:h-20 md:w-40 shrink-0 items-center justify-center rounded-xl overflow-hidden ring-2 ring-border shadow-md px-2", !logo.color && "bg-white")}
+      className={cn(
+        "flex h-16 w-32 md:h-20 md:w-40 shrink-0 items-center justify-center rounded-xl overflow-hidden ring-2 ring-border shadow-md px-2",
+        !logo.color && "bg-white dark:bg-zinc-800"
+      )}
       style={logo.color ? { backgroundColor: logo.color } : undefined}
     >
       <img
@@ -193,7 +196,7 @@ function TeamBadge({ name, season }: { name: string; season?: number }) {
         aria-hidden
         loading="lazy"
         onError={() => setBroken(true)}
-        className={cn("h-full w-full object-contain", logo.className, logo.invertDark && "dark:dark-invert")}
+        className={cn("h-full w-full object-contain drop-shadow-xs", logo.className)}
       />
     </span>
   )
@@ -222,7 +225,7 @@ function SummaryCard({
             aria-hidden
             loading="lazy"
             className={cn(
-              "size-full object-contain p-3 opacity-15 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-30 dark:brightness-0 dark:invert dark:opacity-20 dark:group-hover:opacity-40",
+              "size-full object-contain p-3 opacity-20 dark:opacity-25 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-35",
               background.className,
             )}
           />

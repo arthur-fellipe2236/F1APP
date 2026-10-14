@@ -169,12 +169,11 @@
       );
   }
 }
-.dark .dark-invert { filter: brightness(0) invert(1) !important; }
-
+.dark .dark-invert { filter: brightness(0) invert(1); }
 
 /* Maximum Immersion: Scrollbars & Text Selection when Theme is Active */
 html.theme-active ::selection {
-  background-color: hsl(var(--primary));
+  background-color: var(--primary);
   color: #fff;
 }
 
@@ -188,53 +187,18 @@ html.theme-active *::-webkit-scrollbar-track {
 }
 
 html.theme-active *::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--primary) / 0.5);
+  background-color: color-mix(in srgb, var(--primary) 50%, transparent);
   border-radius: 5px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 
 html.theme-active *::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--primary) / 0.8);
+  background-color: var(--primary);
 }
 
-
-/* Text Tinting for Immersion */
-html.theme-active body {
-  color: hsl(var(--primary)); text-shadow: 0 0 5px var(--team-glow, transparent);
+/* Subtle Team Accent Highlights on key numbers / headers without breaking contrast */
+html.theme-active [data-theme-accent] {
+  color: var(--primary);
 }
 
-/* Force headings and emphasized numbers to take the pure team accent color */
-html.theme-active h1, 
-html.theme-active h2, 
-html.theme-active h3,
-html.theme-active .font-f1,
-html.theme-active .font-mono,
-html.theme-active [data-number] {
-  color: hsl(var(--primary));
-  text-shadow: 0 0 10px var(--team-glow, transparent);
-}
-
-html.theme-active th {
-  color: hsl(var(--primary));
-}
-
-
-/* Force generic text utility classes to obey the theme color */
-html.theme-active {
-  --foreground: var(--primary);
-  --muted-foreground: var(--primary);
-  --card-foreground: var(--primary);
-  --popover-foreground: var(--primary);
-  --secondary-foreground: var(--primary);
-}
-
-html.theme-active .text-white,
-html.theme-active .text-white\/70,
-html.theme-active .text-muted-foreground {
-  color: hsl(var(--primary)) !important;
-}
-
-html.theme-active td {
-  color: hsl(var(--primary)) !important;
-}
