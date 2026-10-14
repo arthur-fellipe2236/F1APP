@@ -191,59 +191,62 @@ export function Layout() {
       />
 
       <header 
-        className="sticky top-0 z-50 border-b-2 bg-f1-pattern text-white shadow-lg transition-colors duration-700 team-header-layer"
+        className="sticky top-0 z-50 bg-f1-pattern text-white shadow-lg transition-colors duration-700 team-header-layer"
         style={{ 
-          borderBottomColor: isThemed ? "var(--team-border-color)" : "hsl(var(--primary)/0.5)",
           boxShadow: isThemed ? "0 4px 30px var(--team-glow)" : "none"
         }}
       >
         {/* DESKTOP HEADER (MD+) */}
-        <div className="mx-auto hidden md:flex h-16 max-w-6xl items-center gap-6 lg:gap-8 px-4 relative z-10">
-          <Link to="/" className="flex items-center gap-2.5 shrink-0">
+        <div className="mx-auto hidden md:flex flex-col items-center pt-3 pb-2 px-4 relative z-10 w-full">
+          {/* LOGO MULTI-SERIES CIRCULAR CENTRALIZADO */}
+          <Link to="/" className="mb-2.5 hover:scale-105 transition-transform shrink-0" title="Início">
             <img
               src="/multi-series-logo.png"
               alt="F1 Multi-Series Logo"
-              className="h-12 lg:h-14 w-auto object-contain drop-shadow-md rounded-full shrink-0"
+              className="h-12 w-12 object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)] rounded-full border border-white/20"
             />
-            <span className="font-f1 text-lg font-black tracking-widest text-white hidden lg:inline">
-              F1 APP
-            </span>
           </Link>
-          <nav className="flex items-center gap-1.5 lg:gap-3 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  cn(
-                    "flex items-center px-2 py-4 font-f1 uppercase text-xs lg:text-sm tracking-wider lg:tracking-widest font-semibold text-white/70 transition-all hover:text-white shrink-0",
-                    isActive && "text-sm lg:text-base font-bold text-white tracking-wider lg:tracking-widest"
-                  )
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))}
-            
-            {user?.is_admin && (
-              <NavLink
-                to="/admin"
-                className={({ isActive }) =>
-                  cn(
-                    "flex items-center px-2 py-4 font-f1 uppercase text-xs lg:text-sm tracking-wider lg:tracking-widest font-semibold text-amber-500/70 transition-all hover:text-amber-500 shrink-0",
-                    isActive && "text-sm lg:text-base font-bold text-amber-500 tracking-wider lg:tracking-widest"
-                  )
-                }
-              >
-                Admin
-              </NavLink>
-            )}
-          </nav>
-          <div className="ml-auto flex items-center gap-2 shrink-0">
-            <HealthBadge />
-            <UserProfile />
-            <TeamThemeSelector />
-            <ModeToggle />
+
+          {/* CÁPSULA PILL DE NAVEGAÇÃO FLUTUANTE */}
+          <div className="w-full max-w-5xl">
+            <nav className="w-full h-12 rounded-full bg-[#101015]/85 border border-white/15 backdrop-blur-xl px-5 lg:px-6 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+              <div className="flex items-center gap-4 lg:gap-6 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                {navItems.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    className={({ isActive }) =>
+                      cn(
+                        "flex items-center font-f1 uppercase text-xs lg:text-sm tracking-wider font-semibold transition-all hover:text-white shrink-0",
+                        isActive ? "text-white font-bold" : "text-white/70"
+                      )
+                    }
+                  >
+                    {item.label}
+                  </NavLink>
+                ))}
+                {user?.is_admin && (
+                  <NavLink
+                    to="/admin"
+                    className={({ isActive }) =>
+                      cn(
+                        "flex items-center font-f1 uppercase text-xs lg:text-sm tracking-wider font-semibold transition-all hover:text-amber-500 shrink-0",
+                        isActive ? "text-amber-500 font-bold" : "text-amber-500/70"
+                      )
+                    }
+                  >
+                    Admin
+                  </NavLink>
+                )}
+              </div>
+
+              <div className="ml-auto flex items-center gap-2.5 shrink-0 pl-3">
+                <HealthBadge />
+                <UserProfile />
+                <TeamThemeSelector />
+                <ModeToggle />
+              </div>
+            </nav>
           </div>
         </div>
 
@@ -370,9 +373,65 @@ export function Layout() {
           </div>
         )}
 
-        <div className="w-full bg-transparent px-3 sm:px-4 pb-3 sm:pb-3.5 pt-1 flex items-center justify-center relative z-10">
-          <TabsPrimitive.Root value={series} onValueChange={setSeries} className="w-full max-w-[340px] sm:max-w-[390px]">
-            <TabsPrimitive.List className="h-10 sm:h-11 grid w-full grid-cols-3 p-1 rounded-xl bg-black/50 border border-white/10 shadow-inner backdrop-blur-md">
+        {/* DESKTOP (MD+): ASA DIANTEIRA 3D COM SELETOR EMBUTIDO NO CHASSIS */}
+        <div className="hidden md:flex w-full max-w-5xl mx-auto relative px-2 items-center justify-center -mt-1 select-none">
+          <div className="w-full relative flex items-center justify-center">
+            <img
+              src="/f1-front-wing.png"
+              alt="F1 Front Wing 3D"
+              className="w-full h-auto max-h-[120px] lg:max-h-[134px] object-contain select-none pointer-events-none drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)]"
+            />
+            {/* CÁPSULA FLUTUANTE CENTRAL F1 / F2 / F3 */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ top: "-2px" }}>
+              <TabsPrimitive.Root 
+                value={series} 
+                onValueChange={setSeries} 
+                className="w-[430px] sm:w-[460px] pointer-events-auto"
+              >
+                <TabsPrimitive.List className="h-10 sm:h-11 grid w-full grid-cols-3 p-1 rounded-xl bg-black/60 border border-white/15 shadow-2xl backdrop-blur-md">
+                  <TabsPrimitive.Trigger
+                    value="f1"
+                    className={cn(
+                      "h-full flex items-center justify-center rounded-lg transition-all duration-300 font-bold outline-none cursor-pointer",
+                      "text-white/50 hover:text-white hover:bg-white/5",
+                      "data-[state=active]:bg-[#E10600] data-[state=active]:text-white data-[state=active]:shadow-[0_0_20px_rgba(225,6,0,0.8)]"
+                    )}
+                    title="Formula 1"
+                  >
+                    <F1Logo className="h-3.5 sm:h-4.5 w-auto" />
+                  </TabsPrimitive.Trigger>
+                  <TabsPrimitive.Trigger
+                    value="f2"
+                    className={cn(
+                      "h-full flex items-center justify-center rounded-lg transition-all duration-300 font-bold outline-none cursor-pointer",
+                      "text-white/50 hover:text-white hover:bg-white/5",
+                      "data-[state=active]:bg-[#0090D0] data-[state=active]:text-white data-[state=active]:shadow-[0_0_20px_rgba(0,144,208,0.8)]"
+                    )}
+                    title="FIA Formula 2"
+                  >
+                    <F2Logo className="h-3.5 sm:h-4.5 w-auto" />
+                  </TabsPrimitive.Trigger>
+                  <TabsPrimitive.Trigger
+                    value="f3"
+                    className={cn(
+                      "h-full flex items-center justify-center rounded-lg transition-all duration-300 font-bold outline-none cursor-pointer",
+                      "text-white/50 hover:text-white hover:bg-white/5",
+                      "data-[state=active]:bg-[#F9A01B] data-[state=active]:text-white data-[state=active]:shadow-[0_0_20px_rgba(249,160,27,0.8)]"
+                    )}
+                    title="FIA Formula 3"
+                  >
+                    <F3Logo className="h-3.5 sm:h-4.5 w-auto" />
+                  </TabsPrimitive.Trigger>
+                </TabsPrimitive.List>
+              </TabsPrimitive.Root>
+            </div>
+          </div>
+        </div>
+
+        {/* MOBILE (< MD): SELETOR COMPACTO ADAPTADO PARA SMARTPHONES */}
+        <div className="flex md:hidden w-full bg-transparent px-3 pb-3 pt-1 items-center justify-center relative z-10">
+          <TabsPrimitive.Root value={series} onValueChange={setSeries} className="w-full max-w-[340px]">
+            <TabsPrimitive.List className="h-10 grid w-full grid-cols-3 p-1 rounded-xl bg-black/50 border border-white/10 shadow-inner backdrop-blur-md">
               <TabsPrimitive.Trigger
                 value="f1"
                 className={cn(
@@ -382,7 +441,7 @@ export function Layout() {
                 )}
                 title="Formula 1"
               >
-                <F1Logo className="h-3.5 sm:h-4.5 w-auto" />
+                <F1Logo className="h-3.5 w-auto" />
               </TabsPrimitive.Trigger>
               <TabsPrimitive.Trigger
                 value="f2"
@@ -393,7 +452,7 @@ export function Layout() {
                 )}
                 title="FIA Formula 2"
               >
-                <F2Logo className="h-3.5 sm:h-4.5 w-auto" />
+                <F2Logo className="h-3.5 w-auto" />
               </TabsPrimitive.Trigger>
               <TabsPrimitive.Trigger
                 value="f3"
@@ -404,7 +463,7 @@ export function Layout() {
                 )}
                 title="FIA Formula 3"
               >
-                <F3Logo className="h-3.5 sm:h-4.5 w-auto" />
+                <F3Logo className="h-3.5 w-auto" />
               </TabsPrimitive.Trigger>
             </TabsPrimitive.List>
           </TabsPrimitive.Root>
