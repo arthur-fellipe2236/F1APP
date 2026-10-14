@@ -51,7 +51,8 @@ const getColumns = (seasonParam?: number): TableColumn<Team>[] => [
             src={logo}
             alt={row.engine_manufacturer ?? "motor"}
             loading="lazy"
-            className="h-7 w-7 rounded bg-white/95 p-0.5 object-contain shadow-sm ring-1 ring-black/5"
+            referrerPolicy="no-referrer"
+            className="h-7 w-7 rounded bg-white p-0.5 object-contain shadow-xs border border-border/50"
           />
         </span>
       )

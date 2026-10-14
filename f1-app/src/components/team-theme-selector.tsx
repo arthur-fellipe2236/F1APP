@@ -1,6 +1,7 @@
 import { Paintbrush } from "lucide-react"
 import { useAppStore } from "@/store"
 import { teamLogo } from "@/lib/assets"
+import { cn } from "@/lib/utils"
 
 import {
   DropdownMenu,
@@ -48,13 +49,16 @@ export function TeamThemeSelector() {
             >
               {logoObj ? (
                 <div 
-                  className="h-6 w-9 shrink-0 flex items-center justify-center rounded-md px-1 shadow-xs border border-border/40 overflow-hidden"
+                  className={cn(
+                    "h-6 w-9 shrink-0 flex items-center justify-center rounded-md p-0.5 shadow-xs border border-border/50 transition-all",
+                    (theme.color === "#111111" || theme.color === "#1A1A1A" || theme.color === "#1F1F1F") && "ring-1 ring-white/20 dark:border-white/25"
+                  )}
                   style={{ backgroundColor: theme.color || logoObj.color || "var(--muted)" }}
                 >
                   <img 
                     src={logoObj.url} 
                     alt={theme.name} 
-                    className="max-h-4 max-w-full object-contain drop-shadow-xs" 
+                    className="h-full w-full object-contain drop-shadow-xs" 
                   />
                 </div>
               ) : (

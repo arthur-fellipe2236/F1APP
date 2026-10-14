@@ -168,7 +168,7 @@ function TeamBadge({ name, season }: { name: string; season?: number }) {
         const g = parseInt(hex.substr(2, 2), 16)
         const b = parseInt(hex.substr(4, 2), 16)
         const yiq = (r * 299 + g * 587 + b * 114) / 1000
-        textColor = yiq >= 128 ? "#000000" : "#ffffff"
+        textColor = yiq >= 140 ? "#000000" : "#ffffff"
       }
     }
     
@@ -182,11 +182,26 @@ function TeamBadge({ name, season }: { name: string; season?: number }) {
     )
   }
   
+  let isLightBg = false
+  let isDarkBg = false
+  if (logo.color) {
+    const hex = logo.color.replace("#", "")
+    if (hex.length === 6) {
+      const r = parseInt(hex.substr(0, 2), 16)
+      const g = parseInt(hex.substr(2, 2), 16)
+      const b = parseInt(hex.substr(4, 2), 16)
+      const yiq = (r * 299 + g * 587 + b * 114) / 1000
+      isLightBg = yiq >= 155
+      isDarkBg = yiq <= 40
+    }
+  }
+
   return (
     <span 
       className={cn(
-        "flex h-16 w-32 md:h-20 md:w-40 shrink-0 items-center justify-center rounded-xl overflow-hidden ring-2 ring-border shadow-md px-2",
-        !logo.color && "bg-white dark:bg-zinc-800"
+        "flex h-16 w-32 md:h-20 md:w-40 shrink-0 items-center justify-center rounded-xl p-2.5 shadow-md border border-border/50 transition-all",
+        isDarkBg && "ring-1 ring-white/20 dark:border-white/25",
+        !logo.color ? "bg-white text-zinc-900 border-border/70" : undefined
       )}
       style={logo.color ? { backgroundColor: logo.color } : undefined}
     >
@@ -196,7 +211,11 @@ function TeamBadge({ name, season }: { name: string; season?: number }) {
         aria-hidden
         loading="lazy"
         onError={() => setBroken(true)}
-        className={cn("h-full w-full object-contain drop-shadow-xs", logo.className)}
+        className={cn(
+          "h-full w-full object-contain drop-shadow-xs",
+          isLightBg && "brightness-0",
+          logo.className
+        )}
       />
     </span>
   )
