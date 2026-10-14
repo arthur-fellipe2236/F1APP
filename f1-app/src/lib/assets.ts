@@ -459,7 +459,7 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
     color: "#FF8000",
   },
   "Aston Martin": {
-    url: `${F1_2026_BASE}/astonmartin/2026astonmartinlogowhite.svg`,
+    url: "/teams/astonmartin.svg",
     color: "#229971",
   },
   Alpine: {
@@ -491,7 +491,7 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
     color: "#1A1A1A",
   },
   Cadillac: {
-    url: `${F1_2026_BASE}/cadillac/2026cadillaclogowhite.svg`,
+    url: "/teams/cadillac.svg",
     color: "#111111",
   },
   "Kick Sauber": {
