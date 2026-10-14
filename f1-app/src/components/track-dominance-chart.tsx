@@ -58,7 +58,7 @@ export function TrackDominanceChart({ season, country, results }: TrackDominance
         })
 
         const chartData = []
-        let cumulativeTimes: Record<number, number> = {}
+        const cumulativeTimes: Record<number, number> = {}
         driverNumbers.forEach(n => cumulativeTimes[n] = 0)
         
         const activeDrivers = new Set(driverNumbers)

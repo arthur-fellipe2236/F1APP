@@ -38,9 +38,9 @@ function TyreStrategy({ season, country, results }: { season: number, country: s
     fetch(`/api/v1/live/sessions?year=${season}`)
       .then(r => r.json())
       .then(res => {
-        const meeting = res.data.find((m: any) => m.country === country)
+        const meeting = res?.data?.find((m: any) => m.country === country)
         if (!meeting) throw new Error("Corrida não encontrada na OpenF1")
-        const raceSession = meeting.sessions.find((s: any) => s.name === "Race")
+        const raceSession = meeting.sessions?.find((s: any) => s.name === "Race")
         if (!raceSession) throw new Error("Sessão Race não encontrada")
         
         // 2. Buscar stints e drivers do nosso proxy
@@ -51,32 +51,43 @@ function TyreStrategy({ season, country, results }: { season: number, country: s
         return r.json()
       })
       .then(json => {
-        const { stints: stintsData, drivers } = json.data
+        if (!json?.data) {
+          setStints([])
+          setLoading(false)
+          return
+        }
+        const stintsData = Array.isArray(json.data.stints) ? json.data.stints : []
+        const drivers = Array.isArray(json.data.drivers) ? json.data.drivers : []
         
         // Mapa de acrônimos dos pilotos
         const driverAcronyms: Record<number, string> = {}
         drivers.forEach((d: any) => {
-          driverAcronyms[d.driver_number] = d.name_acronym || ""
+          if (d?.driver_number) {
+            driverAcronyms[d.driver_number] = d.name_acronym || ""
+          }
         })
 
         // Agrupar stints por driver
         const grouped: Record<number, any[]> = {}
         stintsData.forEach((s: any) => {
-          if (!grouped[s.driver_number]) grouped[s.driver_number] = []
-          grouped[s.driver_number].push(s)
+          if (s?.driver_number) {
+            if (!grouped[s.driver_number]) grouped[s.driver_number] = []
+            grouped[s.driver_number].push(s)
+          }
         })
         
         // Formatar para o gráfico
-        const chartData = Object.values(grouped).map(driverStints => {
-          driverStints.sort((a, b) => a.lap_start - b.lap_start)
-          const driverNumber = driverStints[0].driver_number
+        const chartData = Object.values(grouped).filter(driverStints => driverStints.length > 0).map(driverStints => {
+          driverStints.sort((a, b) => (a.lap_start || 0) - (b.lap_start || 0))
+          const driverNumber = driverStints[0]?.driver_number
+          const lastStint = driverStints[driverStints.length - 1]
           return {
             driver_number: driverNumber,
             acronym: driverAcronyms[driverNumber] || String(driverNumber),
-            total_laps: driverStints[driverStints.length - 1].lap_end,
+            total_laps: lastStint?.lap_end || 0,
             stints: driverStints
           }
-        }).sort((a, b) => b.total_laps - a.total_laps) // mantém sort default
+        }).sort((a, b) => b.total_laps - a.total_laps)
         
         setStints(chartData)
         setLoading(false)

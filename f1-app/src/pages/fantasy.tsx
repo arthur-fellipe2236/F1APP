@@ -56,7 +56,7 @@ export function FantasyPage() {
       
     fetch(url)
       .then(res => res.json())
-      .then(data => setLeaderboard(data))
+      .then(data => setLeaderboard(Array.isArray(data) ? data : []))
       .catch(() => setLeaderboard([]))
   }, [series, seasonParam, activeLeague])
 
@@ -66,14 +66,16 @@ export function FantasyPage() {
         headers: { "Authorization": `Bearer ${token}` }
       })
       .then(res => res.json())
-      .then(data => setPredictions(data))
+      .then(data => setPredictions(Array.isArray(data) ? data : []))
+      .catch(() => setPredictions([]))
 
       // Load my leagues
       fetch(`/api/v1/fantasy/leagues`, {
         headers: { "Authorization": `Bearer ${token}` }
       })
       .then(res => res.json())
-      .then(data => setMyLeagues(data))
+      .then(data => setMyLeagues(Array.isArray(data) ? data : []))
+      .catch(() => setMyLeagues([]))
     }
   }, [user, token, series, seasonParam])
 
@@ -307,11 +309,11 @@ export function FantasyPage() {
                     {activeLeague !== "global" && (
                       <div className="mb-4 p-3 bg-muted rounded-lg text-sm flex items-center justify-between">
                         <span className="font-medium text-muted-foreground">Código de Convite:</span>
-                        <Badge variant="outline" className="font-mono text-primary bg-background">{myLeagues.find(l => l.id.toString() === activeLeague)?.code}</Badge>
+                        <Badge variant="outline" className="font-mono text-primary bg-background">{myLeagues?.find(l => l.id?.toString() === activeLeague)?.code}</Badge>
                       </div>
                     )}
                     
-                    {leaderboard.length === 0 ? (
+                    {!Array.isArray(leaderboard) || leaderboard.length === 0 ? (
                       <p className="text-sm text-muted-foreground text-center py-4">Nenhum ponto registrado ainda.</p>
                     ) : (
                       <ul className="space-y-2">

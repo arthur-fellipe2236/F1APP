@@ -9,12 +9,7 @@ export function SeasonSelector({ value, onValueChange, className = "w-[140px]" }
     const groups: Record<string, number[]> = {}
     seasons.forEach((year) => {
       const decade = Math.floor(year / 10) * 10
-      let label = ""
-      if (decade >= 2000) {
-        label = `Anos ${decade}`
-      } else {
-        label = `Anos ${decade.toString().slice(2)}`
-      }
+      const label = decade >= 2000 ? `Anos ${decade}` : `Anos ${decade.toString().slice(2)}`
       
       if (!groups[label]) groups[label] = []
       groups[label].push(year)

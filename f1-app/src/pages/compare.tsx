@@ -26,7 +26,7 @@ export function ComparePage() {
   const [statsB, setStatsB] = useState<any>(null)
 
   useEffect(() => {
-    api.drivers({ series, season: Number(season) || 2024, per_page: 50 })
+    api.drivers({ series, season: Number(season) || 2026, per_page: 50 })
       .then(res => setDrivers(res?.data || []))
       .catch(err => console.error("Compare drivers error:", err))
   }, [series, season])
@@ -49,26 +49,30 @@ export function ComparePage() {
     }
   }, [driverB])
 
-  const chartData = (statsA?.driver?.name && statsB?.driver?.name) ? [
+  const isSameDriver = statsA?.driver?.id && statsB?.driver?.id && statsA.driver.id === statsB.driver.id;
+  const labelA = statsA?.driver?.name ? (isSameDriver ? `${statsA.driver.name} (A)` : statsA.driver.name) : ""
+  const labelB = statsB?.driver?.name ? (isSameDriver ? `${statsB.driver.name} (B)` : statsB.driver.name) : ""
+
+  const chartData = (labelA && labelB) ? [
     {
       name: "Corridas",
-      [statsA.driver.name]: statsA.total_races,
-      [statsB.driver.name]: statsB.total_races
+      [labelA]: statsA.total_races,
+      [labelB]: statsB.total_races
     },
     {
       name: "Vitórias",
-      [statsA.driver.name]: statsA.total_wins,
-      [statsB.driver.name]: statsB.total_wins
+      [labelA]: statsA.total_wins,
+      [labelB]: statsB.total_wins
     },
     {
       name: "Pódios",
-      [statsA.driver.name]: statsA.total_podiums,
-      [statsB.driver.name]: statsB.total_podiums
+      [labelA]: statsA.total_podiums,
+      [labelB]: statsB.total_podiums
     },
     {
       name: "Poles",
-      [statsA.driver.name]: statsA.total_poles,
-      [statsB.driver.name]: statsB.total_poles
+      [labelA]: statsA.total_poles,
+      [labelB]: statsB.total_poles
     }
   ] : []
 
@@ -172,8 +176,8 @@ export function ComparePage() {
                   <YAxis />
                   <Tooltip cursor={{fill: 'transparent'}} contentStyle={{backgroundColor: 'var(--card)', borderColor: 'var(--border)', borderRadius: '8px'}} />
                   <Legend />
-                  <Bar dataKey={statsA.driver.name} fill="var(--primary)" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey={statsB.driver.name} fill="#8884d8" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey={labelA} fill="var(--primary)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey={labelB} fill="#8884d8" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -186,8 +190,8 @@ export function ComparePage() {
                   <YAxis type="category" dataKey="name" width={65} tick={{ fontSize: 12 }} />
                   <Tooltip cursor={{fill: 'transparent'}} contentStyle={{backgroundColor: 'var(--card)', borderColor: 'var(--border)', borderRadius: '8px'}} />
                   <Legend verticalAlign="top" />
-                  <Bar dataKey={statsA.driver.name} fill="var(--primary)" radius={[0, 4, 4, 0]} />
-                  <Bar dataKey={statsB.driver.name} fill="#8884d8" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey={labelA} fill="var(--primary)" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey={labelB} fill="#8884d8" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

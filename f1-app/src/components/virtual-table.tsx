@@ -9,9 +9,10 @@ interface VirtualTableProps<T> {
   rowHeight?: number
   getRowColor?: (row: T) => string | undefined
   renderMobileCard?: (row: T) => React.ReactNode
+  onRowClicked?: (row: T) => void
 }
 
-export function VirtualDataTable<T>({ data, columns, rowHeight = 60, getRowColor, renderMobileCard }: VirtualTableProps<T>) {
+export function VirtualDataTable<T>({ data, columns, rowHeight = 60, getRowColor, renderMobileCard, onRowClicked }: VirtualTableProps<T>) {
   const parentRef = React.useRef<HTMLDivElement>(null)
 
   const rowVirtualizer = useVirtualizer({
@@ -82,7 +83,11 @@ export function VirtualDataTable<T>({ data, columns, rowHeight = 60, getRowColor
             return (
               <div
                 key={virtualRow.index}
-                className="absolute left-0 w-full flex border-b border-border/50 hover:bg-muted/50 transition-colors group"
+                onClick={() => onRowClicked?.(row)}
+                className={cn(
+                  "absolute left-0 w-full flex border-b border-border/50 hover:bg-muted/50 transition-colors group",
+                  onRowClicked && "cursor-pointer"
+                )}
                 style={{
                   height: `${virtualRow.size}px`,
                   top: `40px`, // Offset by header height

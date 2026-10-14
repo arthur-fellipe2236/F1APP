@@ -228,10 +228,10 @@ export function RacesPage() {
       {races.error ? (
         <ErrorState message={races.error} onRetry={races.reload} />
       ) : (
-        <div className="cursor-pointer">
         <VirtualDataTable
           columns={columns}
           data={displayData}
+          onRowClicked={(row) => navigate(`/calendario/${row.id}`)}
           renderMobileCard={(row) => (
             <div onClick={() => navigate(`/calendario/${row.id}`)} className="flex flex-col gap-2 cursor-pointer">
               <div className="flex items-center justify-between">
@@ -259,7 +259,6 @@ export function RacesPage() {
             </div>
           )}
         />
-        </div>
       )}
     </div>
   )

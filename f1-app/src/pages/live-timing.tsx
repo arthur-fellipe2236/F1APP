@@ -393,10 +393,10 @@ export function LiveTimingPage() {
               <table className="w-full text-sm text-left whitespace-nowrap">
                 <thead className="text-xs uppercase bg-white/5 text-muted-foreground">
                   <tr>
-                    <th className="px-3 sm:px-4 py-3 font-semibold w-12 text-center sticky left-0 z-20 bg-zinc-900 border-r border-border/40">
+                    <th className="px-3 sm:px-4 py-3 font-semibold w-12 text-center sticky left-0 z-20 bg-muted/95 backdrop-blur-xs border-r border-border/40">
                       Pos
                     </th>
-                    <th className="px-3 sm:px-4 py-3 font-semibold sticky left-12 z-20 bg-zinc-900 border-r border-border/40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
+                    <th className="px-3 sm:px-4 py-3 font-semibold sticky left-12 z-20 bg-muted/95 backdrop-blur-xs border-r border-border/40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.15)]">
                       Piloto
                     </th>
                     <th className="px-4 py-3 font-semibold text-center">Pneu</th>
@@ -407,11 +407,11 @@ export function LiveTimingPage() {
                 </thead>
                 <tbody className="divide-y divide-border/30">
                   {liveData.drivers.map((driver) => (
-                    <tr key={driver.driver_number} className="hover:bg-white/5 transition-colors group">
-                      <td className="px-3 sm:px-4 py-2 text-center font-bold sticky left-0 z-10 bg-zinc-950 group-hover:bg-zinc-900 border-r border-border/40">
+                    <tr key={driver.driver_number} className="hover:bg-muted/40 transition-colors group">
+                      <td className="px-3 sm:px-4 py-2 text-center font-bold sticky left-0 z-10 bg-card group-hover:bg-muted border-r border-border/40 transition-colors">
                         {driver.position || "-"}
                       </td>
-                      <td className="px-3 sm:px-4 py-2 font-medium flex items-center gap-2 sm:gap-3 sticky left-12 z-10 bg-zinc-950 group-hover:bg-zinc-900 border-r border-border/40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
+                      <td className="px-3 sm:px-4 py-2 font-medium flex items-center gap-2 sm:gap-3 sticky left-12 z-10 bg-card group-hover:bg-muted border-r border-border/40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.15)] transition-colors">
                         <span
                           className="w-1 h-4 rounded-full shrink-0"
                           style={{ backgroundColor: `#${driver.team_colour}` }}
@@ -448,10 +448,18 @@ export function LiveTimingPage() {
                         )}
                       </td>
                       <td className="px-4 py-2 text-right font-mono tabular-nums">
-                        {driver.gap_to_leader !== null ? `+${driver.gap_to_leader.toFixed(3)}s` : "PIT"}
+                        {driver.gap_to_leader !== null && driver.gap_to_leader !== undefined
+                          ? typeof driver.gap_to_leader === "number"
+                            ? `+${driver.gap_to_leader.toFixed(3)}s`
+                            : String(driver.gap_to_leader)
+                          : "PIT"}
                       </td>
                       <td className="px-4 py-2 text-right font-mono tabular-nums text-muted-foreground">
-                        {driver.interval !== null ? `+${driver.interval.toFixed(3)}s` : "-"}
+                        {driver.interval !== null && driver.interval !== undefined
+                          ? typeof driver.interval === "number"
+                            ? `+${driver.interval.toFixed(3)}s`
+                            : String(driver.interval)
+                          : "-"}
                       </td>
                       <td className="px-4 py-2 text-center font-mono tabular-nums">
                         {driver.lap_number || "-"}
