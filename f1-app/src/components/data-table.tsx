@@ -67,7 +67,7 @@ export function F1DataTable<T>(props: F1DataTableProps<T>) {
       
       <div
         className={cn(
-          "overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm",
+          "overflow-x-auto rounded-xl border bg-card text-card-foreground shadow-sm",
           renderMobileCard ? "hidden md:block" : "block",
           `
           [--rdt-color-bg:var(--card)]

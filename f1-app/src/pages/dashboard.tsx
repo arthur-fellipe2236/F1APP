@@ -482,6 +482,31 @@ export function DashboardPage() {
                 fixedHeaderScrollHeight={isF12021 ? "280px" : undefined}
                 paginationPerPage={20}
                 paginationRowsPerPageOptions={[10, 20]}
+                renderMobileCard={(row) => (
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="font-mono text-2xl font-black text-muted-foreground/40 tabular-nums w-8 text-center shrink-0">
+                        {row.position}º
+                      </span>
+                      <div className="min-w-0">
+                        <div className="font-bold text-base leading-tight truncate">
+                          {row.driver_name}
+                        </div>
+                        <div className="mt-1">
+                          <TeamInline season={seasonParam} name={row.team_name ?? null} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="font-black text-lg text-primary tabular-nums">
+                        {formatPoints(row.points)} <span className="text-xs font-semibold text-muted-foreground">pts</span>
+                      </div>
+                      <div className="text-xs text-muted-foreground font-medium">
+                        {row.wins > 0 ? `${row.wins} vit.` : `${row.races} corr.`}
+                      </div>
+                    </div>
+                  </div>
+                )}
               />
             </div>
           )}
@@ -499,6 +524,26 @@ export function DashboardPage() {
               keyField="team_name"
               progressPending={teamStandings.loading}
               progressSkeleton
+              renderMobileCard={(row) => (
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="font-mono text-2xl font-black text-muted-foreground/40 tabular-nums w-8 text-center shrink-0">
+                      {row.position}º
+                    </span>
+                    <div className="min-w-0">
+                      <TeamName name={row.team_name} season={seasonParam} />
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="font-black text-lg text-primary tabular-nums">
+                      {formatPoints(row.points)} <span className="text-xs font-semibold text-muted-foreground">pts</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground font-medium">
+                      {row.wins > 0 ? `${row.wins} vitórias` : `${row.podiums} pódios`}
+                    </div>
+                  </div>
+                </div>
+              )}
             />
           )}
         </TabsContent>

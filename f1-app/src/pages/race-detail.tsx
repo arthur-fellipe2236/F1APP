@@ -398,6 +398,34 @@ function RaceDetailPageInner() {
                 keyField="id"
                 progressPending={results.loading}
                 progressSkeleton
+                renderMobileCard={(row) => (
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <PositionBadge position={row.position} />
+                      <div className="min-w-0">
+                        <div className="font-bold text-sm leading-tight flex items-center gap-2 truncate">
+                          <span>{row.driver_name ?? "—"}</span>
+                          {row.fastest_lap && (
+                            <span title="Volta mais rápida">
+                              <Zap className="size-3.5 text-amber-500 shrink-0" />
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-0.5">
+                          <TeamInline name={row.team_name} season={race.data?.season} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="font-mono font-black text-sm text-primary tabular-nums">
+                        {formatPoints(row.points + (row.sprint_points || 0))} <span className="text-[10px] text-muted-foreground">pts</span>
+                      </div>
+                      <div className="text-[11px] text-muted-foreground mt-0.5">
+                        {row.laps ? `${row.laps} voltas` : formatStatus(row.status)}
+                      </div>
+                    </div>
+                  </div>
+                )}
               />
             </div>
           )}

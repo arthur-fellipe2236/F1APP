@@ -100,6 +100,35 @@ export function QualyResults({ season, round }: { season: number; round: number 
         keyField="position"
         progressPending={loading}
         progressSkeleton
+        renderMobileCard={(row) => {
+          const bestTime = row.Q3 || row.Q2 || row.Q1 || "—"
+          return (
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="font-mono text-xl font-black text-muted-foreground/40 tabular-nums w-7 text-center shrink-0">
+                  {row.position}º
+                </span>
+                <div className="min-w-0">
+                  <div className="font-bold text-sm leading-tight truncate">
+                    {row.Driver.givenName} {row.Driver.familyName}
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-0.5">
+                    <TeamInline name={row.Constructor.name} season={season} />
+                  </div>
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                <div className="font-mono font-bold text-sm text-primary tabular-nums">
+                  {bestTime}
+                </div>
+                <div className="text-[10px] text-muted-foreground font-mono flex gap-1.5 justify-end mt-0.5">
+                  {row.Q1 && <span>Q1: {row.Q1}</span>}
+                  {row.Q2 && <span>Q2: {row.Q2}</span>}
+                </div>
+              </div>
+            </div>
+          )
+        }}
       />
     </div>
   )
