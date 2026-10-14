@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils"
 import { UserProfile } from "@/components/user-profile"
 import { ModeToggle } from "@/components/mode-toggle"
 import { TeamThemeSelector, THEMES } from "@/components/team-theme-selector"
+import { TeamWingLivery } from "@/components/team-wing"
 import { Tabs as TabsPrimitive } from "radix-ui"
 import { useAppStore } from "@/store"
 import { RadioPlayer } from "@/components/radio-player"
@@ -383,6 +384,9 @@ export function Layout() {
               alt="F1 Front Wing 3D"
               className="w-full h-auto max-h-[120px] lg:max-h-[134px] object-contain select-none pointer-events-none drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)]"
             />
+            {/* LIVERY OFICIAL DA EQUIPE (OPÇÃO 01: FERRARI / OPÇÃO 02: MERCEDES-AMG) */}
+            <TeamWingLivery theme={teamTheme} />
+
             {/* CÁPSULA FLUTUANTE CENTRAL F1 / F2 / F3 */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ top: "-2px" }}>
               <TabsPrimitive.Root 
