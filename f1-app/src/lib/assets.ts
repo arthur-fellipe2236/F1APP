@@ -495,12 +495,14 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
     color: "#111111",
   },
   "Kick Sauber": {
-    url: "https://media.formula1.com/image/upload/c_fit,h_160/q_auto/v1740000001/common/f1/2024/kicksauber/2024kicksauberlogowhite.svg",
+    url: "/teams/kicksauber.svg",
     color: "#52E252",
+    className: "brightness-100 filter-none",
   },
   Sauber: {
-    url: "https://media.formula1.com/image/upload/c_fit,h_160/q_auto/v1740000001/common/f1/2024/kicksauber/2024kicksauberlogowhite.svg",
+    url: "/teams/kicksauber.svg",
     color: "#52E252",
+    className: "brightness-100 filter-none",
   },
   "Alfa Romeo": {
     url: f1Logo("Alfa Romeo"),
@@ -750,8 +752,8 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   if (!name) return null
   const canonical = TEAM_ALIASES[name.trim().toLowerCase()] || name
 
-  // For current and future seasons (2025+), prioritize the official vector logo
-  if (!season || season >= 2025) {
+  // For modern and future seasons (2024+), prioritize the official vector logo
+  if (!season || season >= 2024) {
     if (TEAM_LOGO_BY_NAME[canonical]) {
       return TEAM_LOGO_BY_NAME[canonical]
     }

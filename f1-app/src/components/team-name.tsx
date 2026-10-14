@@ -45,7 +45,7 @@ export function TeamInline({ name, season }: { name: string | null; season?: num
     )
   }
 
-  const isLightBg = logo.color ? getLuminance(logo.color) >= 155 : false
+  const isLightBg = logo.color && !logo.className?.includes("filter-none") ? getLuminance(logo.color) >= 155 : false
   const isDarkBg = logo.color ? getLuminance(logo.color) <= 40 : false
   const isHistorical = !logo.color
 
@@ -98,7 +98,7 @@ export function TeamName({ name, season }: { name: string; season?: number }) {
     )
   }
 
-  const isLightBg = logo.color ? getLuminance(logo.color) >= 155 : false
+  const isLightBg = logo.color && !logo.className?.includes("filter-none") ? getLuminance(logo.color) >= 155 : false
   const isDarkBg = logo.color ? getLuminance(logo.color) <= 40 : false
   const isHistorical = !logo.color
   
