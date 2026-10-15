@@ -198,6 +198,8 @@ export function Layout() {
       ? "/f1-front-wing-haas.png"
       : teamTheme === "williams"
       ? "/f1-front-wing-williams.png"
+      : teamTheme === "aston"
+      ? "/f1-front-wing-aston.png"
       : "/f1-front-wing.png";
 
   return (
