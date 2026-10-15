@@ -200,6 +200,8 @@ export function Layout() {
       ? "/f1-front-wing-williams.png"
       : teamTheme === "aston"
       ? "/f1-front-wing-aston.png"
+      : teamTheme === "audi"
+      ? "/f1-front-wing-audi.png"
       : "/f1-front-wing.png";
 
   return (
