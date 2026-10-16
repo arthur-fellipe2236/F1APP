@@ -319,7 +319,7 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2006 + i, { url: "/teams/bmwsauber.svg", color: "#FFFFFF", className: "object-contain p-0.5" }])),
   },
   "Virgin": {
-    2010: { url: "/teams/virgin.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+    2010: { url: "/teams/virgin.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
     2011: { url: "/teams/marussia_virgin.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
   },
   "Marussia Virgin": {
@@ -603,7 +603,7 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   Lotus: { url: "/teams/teamlotus.svg", color: "#004225", className: "object-contain" },
   "Team Lotus": { url: "/teams/teamlotus.svg", color: "#004225", className: "object-contain" },
   Caterham: { url: "/teams/caterham.svg", color: "#005030", className: "object-contain p-0.5" },
-  Virgin: { url: "/teams/virgin.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+  Virgin: { url: "/teams/virgin.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
   Marussia: { url: "/teams/marussia.png", color: "#1E1E1E", className: "object-contain" },
   "Manor Marussia": { url: "/teams/manor.png", color: "#1E1E1E", className: "object-contain" },
   "Manor Racing": { url: "/teams/manor.png", color: "#1E1E1E", className: "object-contain" },
@@ -888,7 +888,7 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
     return { url: "/teams/marussia_virgin.svg", color: "#FFFFFF", className: "object-contain p-0.5" }
   }
   if (season === 2010 && (canonical === "Virgin" || name.toLowerCase().includes("virgin"))) {
-    return { url: "/teams/virgin.png", color: "#FFFFFF", className: "object-contain p-0.5" }
+    return { url: "/teams/virgin.svg", color: "#FFFFFF", className: "object-contain p-0.5" }
   }
 
   // From 2005 to modern era (2026), prioritize the pristine official vector / high-res logos
