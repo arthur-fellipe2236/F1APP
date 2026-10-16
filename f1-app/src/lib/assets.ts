@@ -636,6 +636,7 @@ const TEAM_ALIASES: Record<string, string> = {
   haas: "Haas",
   "haas f1 team": "Haas",
   "moneygram haas f1 team": "Haas",
+  "uralkali haas f1 team": "Haas",
 
   // Red Bull
   "red bull": "Red Bull Racing",
@@ -648,6 +649,9 @@ const TEAM_ALIASES: Record<string, string> = {
   "aston martin aramco": "Aston Martin",
   "aston martin aramco f1 team": "Aston Martin",
   "aston martin aramco cognac f1 team": "Aston Martin",
+  "aston martin aramco cognizant": "Aston Martin",
+  "aston martin aramco cognizant f1 team": "Aston Martin",
+  "aston martin aramco cognizant formula one team": "Aston Martin",
 
   // Alpine
   alpine: "Alpine",
@@ -707,6 +711,8 @@ const TEAM_ALIASES: Record<string, string> = {
   "alfa romeo": "Alfa Romeo",
   "alfa romeo racing": "Alfa Romeo",
   "alfa romeo f1 team": "Alfa Romeo",
+  "alfa romeo f1 team orlen": "Alfa Romeo",
+  "alfa romeo orlen": "Alfa Romeo",
   "alfa romeo f1 team stake": "Alfa Romeo",
 
   // F2 & F3 Aliases
@@ -762,8 +768,8 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   if (!name) return null
   const canonical = TEAM_ALIASES[name.trim().toLowerCase()] || name
 
-  // For modern and future seasons (2023+), prioritize the official vector logo
-  if (!season || season >= 2023) {
+  // For modern and future seasons (2022+), prioritize the official vector logo
+  if (!season || season >= 2022) {
     if (TEAM_LOGO_BY_NAME[canonical]) {
       return TEAM_LOGO_BY_NAME[canonical]
     }
@@ -830,6 +836,7 @@ export function displayTeamName(name: string | null, season?: number): string {
   }
   
   if (name === "Alpine") {
+    if (season && season >= 2022) return "BWT ALPINE F1 TEAM"
     return "ALPINE F1 TEAM"
   }
   if (name === "Lotus F1") {
@@ -845,8 +852,10 @@ export function displayTeamName(name: string | null, season?: number): string {
   if (name === "Force India") return "Force India F1 Team"
   if (name === "Racing Point") return "Racing Point F1 Team"
   if (name === "Aston Martin") {
-    if (season && season >= 2021) return "Aston Martin Aramco F1 Team"
-    return "Aston Martin F1 Team"
+    if (season === 2021) return "ASTON MARTIN COGNIZANT F1 TEAM"
+    if (season === 2022) return "ASTON MARTIN ARAMCO COGNIZANT F1 TEAM"
+    if (season && season >= 2023) return "ASTON MARTIN ARAMCO F1 TEAM"
+    return "ASTON MARTIN F1 TEAM"
   }
   if (name === "Sauber") {
     if (season && season >= 1993 && season <= 2005) return "Sauber Clássica"
@@ -963,25 +972,42 @@ export function displayTeamName(name: string | null, season?: number): string {
     if (season && season >= 2000 && season <= 2013) return "WILLIAMS-BMW"
     if (season && season >= 2014 && season <= 2018) return "MARTINI WILLIAMS RACING"
     if (season && season >= 2019 && season <= 2021) return "ROKIT WILLIAMS"
-    if (season && season >= 2022) return "ATLASSIAN WILLIAMS F1 TEAM"
+    if (season && season >= 2022) return "WILLIAMS RACING"
     return "WILLIAMS GRAND PRIX ENGINEERING"
   }
 
-
   if (name === "Haas" || name === "Haas F1 Team") {
     if (season === 2019) return "RICH ENERGY HAAS F1 TEAM"
-    if (season && season >= 2021 && season <= 2022) return "URALKALI HAAS F1 TEAM"
+    if (season === 2021) return "URALKALI HAAS F1 TEAM"
+    if (season === 2022) return "HAAS F1 TEAM"
     if (season && season >= 2023) return "MONEYGRAM HAAS F1 TEAM"
     return "HAAS F1 TEAM"
   }
 
-  
   if (name === "Alfa Romeo" || name === "Alfa Romeo F1 Team") {
     if (season === 2019) return "ALFA ROMEO RACING"
     if (season && season >= 2020 && season <= 2021) return "ALFA ROMEO RACING ORLEN"
     if (season === 2022) return "ALFA ROMEO F1 TEAM ORLEN"
     if (season === 2023) return "ALFA ROMEO F1 TEAM STAKE"
     return "ALFA ROMEO F1 TEAM"
+  }
+
+  if (name === "Red Bull" || name === "Red Bull Racing") {
+    if (season && season >= 2022) return "ORACLE RED BULL RACING"
+    return "RED BULL RACING"
+  }
+
+  if (name === "Ferrari") {
+    if (season && season >= 2024) return "SCUDERIA FERRARI HP"
+    return "SCUDERIA FERRARI"
+  }
+
+  if (name === "Mercedes") {
+    return "MERCEDES-AMG PETRONAS F1 TEAM"
+  }
+
+  if (name === "McLaren") {
+    return "MCLAREN F1 TEAM"
   }
 
   return name
@@ -1092,6 +1118,18 @@ export const HISTORICAL_CONSTRUCTOR_ORDERS: Record<number, Record<string, number
     "Euro Brun": 18,
     Coloni: 19,
     Zakspeed: 20,
+  },
+  2022: {
+    "Red Bull Racing": 1,
+    Ferrari: 2,
+    Mercedes: 3,
+    Alpine: 4,
+    McLaren: 5,
+    "Alfa Romeo": 6,
+    "Aston Martin": 7,
+    Haas: 8,
+    AlphaTauri: 9,
+    Williams: 10,
   },
   2023: {
     "Red Bull Racing": 1,
