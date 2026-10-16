@@ -425,42 +425,42 @@ export function Layout() {
         </div>
 
         {/* MOBILE (< MD): ASA DIANTEIRA COMPACTA E SELETOR ADAPTADO */}
-        <div className="flex md:hidden w-full bg-transparent px-3 pb-3 pt-1 items-center justify-center relative z-10">
+        <div className="flex md:hidden w-full bg-transparent px-2 pb-2 pt-0 items-center justify-center relative z-10">
           <TeamWing theme={teamTheme} series={series} isMobile>
-            <TabsPrimitive.Root value={series} onValueChange={setSeries} className="w-full max-w-[340px]">
-              <TabsPrimitive.List className="h-10 grid w-full grid-cols-3 p-1 rounded-xl bg-black/50 border border-white/10 shadow-inner backdrop-blur-md">
+            <TabsPrimitive.Root value={series} onValueChange={setSeries} className="w-[210px] pointer-events-auto">
+              <TabsPrimitive.List className="h-7 grid w-full grid-cols-3 p-0.5 rounded-lg bg-black/80 border border-white/20 shadow-2xl backdrop-blur-md">
                 <TabsPrimitive.Trigger
                   value="f1"
                   className={cn(
-                    "h-full flex items-center justify-center rounded-lg transition-all duration-300 font-bold outline-none cursor-pointer",
+                    "h-full flex items-center justify-center rounded-md transition-all duration-300 font-bold outline-none cursor-pointer",
                     "text-white/50 hover:text-white hover:bg-white/5",
-                    "data-[state=active]:bg-[#E10600] data-[state=active]:text-white data-[state=active]:shadow-[0_2px_12px_rgba(225,6,0,0.45)]"
+                    "data-[state=active]:bg-[#E10600] data-[state=active]:text-white data-[state=active]:shadow-[0_0_12px_rgba(225,6,0,0.7)]"
                   )}
                   title="Formula 1"
                 >
-                  <F1Logo className="h-3.5 w-auto" />
+                  <F1Logo className="h-2.5 w-auto" />
                 </TabsPrimitive.Trigger>
                 <TabsPrimitive.Trigger
                   value="f2"
                   className={cn(
-                    "h-full flex items-center justify-center rounded-lg transition-all duration-300 font-bold outline-none cursor-pointer",
+                    "h-full flex items-center justify-center rounded-md transition-all duration-300 font-bold outline-none cursor-pointer",
                     "text-white/50 hover:text-white hover:bg-white/5",
-                    "data-[state=active]:bg-[#0090D0] data-[state=active]:text-white data-[state=active]:shadow-[0_2px_12px_rgba(0,144,208,0.45)]"
+                    "data-[state=active]:bg-[#0090D0] data-[state=active]:text-white data-[state=active]:shadow-[0_0_12px_rgba(0,144,208,0.7)]"
                   )}
                   title="FIA Formula 2"
                 >
-                  <F2Logo className="h-3.5 w-auto" />
+                  <F2Logo className="h-2.5 w-auto" />
                 </TabsPrimitive.Trigger>
                 <TabsPrimitive.Trigger
                   value="f3"
                   className={cn(
-                    "h-full flex items-center justify-center rounded-lg transition-all duration-300 font-bold outline-none cursor-pointer",
+                    "h-full flex items-center justify-center rounded-md transition-all duration-300 font-bold outline-none cursor-pointer",
                     "text-white/50 hover:text-white hover:bg-white/5",
-                    "data-[state=active]:bg-[#F9A01B] data-[state=active]:text-white data-[state=active]:shadow-[0_2px_12px_rgba(249,160,27,0.45)]"
+                    "data-[state=active]:bg-[#F9A01B] data-[state=active]:text-white data-[state=active]:shadow-[0_0_12px_rgba(249,160,27,0.7)]"
                   )}
                   title="FIA Formula 3"
                 >
-                  <F3Logo className="h-3.5 w-auto" />
+                  <F3Logo className="h-2.5 w-auto" />
                 </TabsPrimitive.Trigger>
               </TabsPrimitive.List>
             </TabsPrimitive.Root>

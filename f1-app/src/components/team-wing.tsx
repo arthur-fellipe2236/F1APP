@@ -107,25 +107,34 @@ export const TeamWing: React.FC<TeamWingProps> = ({
   const teamLabel = themeObj.id !== "default" ? themeObj.name : "Fórmula 1 Padrão"
   const altText = `Asa dianteira 3D - ${teamLabel} (Regulamento FIA 2026)`
 
-  // Em mobile: versão compacta e elegante
+  // Em mobile: versão compacta, centralizada e elegante com cross-fade
   if (isMobile) {
     return (
-      <div className={cn("w-full relative flex flex-col items-center justify-center select-none", className)}>
-        {/* Asa Dianteira em escala mobile com iluminação ambiente */}
-        <div className="w-full relative flex items-center justify-center -mb-7 pointer-events-none">
+      <div className={cn("w-full relative flex items-center justify-center select-none py-1", className)}>
+        {/* Asa Dianteira em escala mobile com iluminação ambiente e cross-fade */}
+        <div className="w-full relative flex items-center justify-center max-w-[420px] px-2">
           <div 
-            className="absolute inset-x-8 h-10 -top-1 rounded-full blur-xl opacity-40 transition-colors duration-700 pointer-events-none"
+            className="absolute inset-x-6 h-8 top-1 rounded-full blur-xl opacity-35 transition-colors duration-700 pointer-events-none"
             style={{ backgroundColor: themeObj.color || "rgba(255,255,255,0.2)" }}
           />
+          {prevSrc && isCrossFading && (
+            <img
+              src={prevSrc}
+              alt={altText}
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-auto max-h-[82px] object-contain select-none pointer-events-none drop-shadow-[0_8px_16px_rgba(0,0,0,0.85)] transition-opacity duration-450 ease-in-out opacity-0"
+            />
+          )}
           <img
             src={activeSrc}
             alt={altText}
-            className="w-full h-auto max-h-[72px] object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.85)] transition-opacity duration-300"
+            className="w-full h-auto max-h-[82px] object-contain select-none pointer-events-none drop-shadow-[0_8px_16px_rgba(0,0,0,0.85)] transition-opacity duration-450 ease-in-out"
           />
-        </div>
-        {/* Conteúdo sobreposto (seletor de categorias) */}
-        <div className="relative z-10 w-full flex justify-center">
-          {children}
+
+          {/* Conteúdo sobreposto perfeitamente centralizado no bico da asa dianteira */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ top: "-1px" }}>
+            {children}
+          </div>
         </div>
       </div>
     )
