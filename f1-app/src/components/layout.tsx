@@ -424,8 +424,8 @@ export function Layout() {
           </TeamWing>
         </div>
 
-        {/* MOBILE (< MD): ASA DIANTEIRA COMPACTA E SELETOR ADAPTADO */}
-        <div className="flex md:hidden w-full bg-transparent px-2 pb-2 pt-0 items-center justify-center relative z-10">
+        {/* MOBILE (< MD): ASA DIANTEIRA AMPLIADA E SELETOR COMPACTO */}
+        <div className="flex md:hidden w-full bg-transparent px-1 pb-2 pt-0 items-center justify-center relative z-10">
           <TeamWing theme={teamTheme} series={series} isMobile>
             <TabsPrimitive.Root value={series} onValueChange={setSeries} className="w-[210px] pointer-events-auto">
               <TabsPrimitive.List className="h-7 grid w-full grid-cols-3 p-0.5 rounded-lg bg-black/80 border border-white/20 shadow-2xl backdrop-blur-md">

@@ -107,14 +107,14 @@ export const TeamWing: React.FC<TeamWingProps> = ({
   const teamLabel = themeObj.id !== "default" ? themeObj.name : "Fórmula 1 Padrão"
   const altText = `Asa dianteira 3D - ${teamLabel} (Regulamento FIA 2026)`
 
-  // Em mobile: versão compacta, centralizada e elegante com cross-fade
+  // Em mobile: versão ampliada, centralizada e elegante com cross-fade
   if (isMobile) {
     return (
-      <div className={cn("w-full relative flex items-center justify-center select-none py-1", className)}>
-        {/* Asa Dianteira em escala mobile com iluminação ambiente e cross-fade */}
-        <div className="w-full relative flex items-center justify-center max-w-[420px] px-2">
+      <div className={cn("w-full relative flex items-center justify-center select-none py-0.5", className)}>
+        {/* Asa Dianteira em escala mobile ampliada com iluminação ambiente e cross-fade */}
+        <div className="w-full relative flex items-center justify-center max-w-[500px] px-1">
           <div 
-            className="absolute inset-x-6 h-8 top-1 rounded-full blur-xl opacity-35 transition-colors duration-700 pointer-events-none"
+            className="absolute inset-x-4 h-10 top-2 rounded-full blur-2xl opacity-40 transition-colors duration-700 pointer-events-none"
             style={{ backgroundColor: themeObj.color || "rgba(255,255,255,0.2)" }}
           />
           {prevSrc && isCrossFading && (
@@ -122,17 +122,17 @@ export const TeamWing: React.FC<TeamWingProps> = ({
               src={prevSrc}
               alt={altText}
               aria-hidden="true"
-              className="absolute inset-0 w-full h-auto max-h-[82px] object-contain select-none pointer-events-none drop-shadow-[0_8px_16px_rgba(0,0,0,0.85)] transition-opacity duration-450 ease-in-out opacity-0"
+              className="absolute inset-0 w-full h-auto max-h-[105px] object-contain select-none pointer-events-none drop-shadow-[0_10px_22px_rgba(0,0,0,0.85)] transition-opacity duration-450 ease-in-out opacity-0"
             />
           )}
           <img
             src={activeSrc}
             alt={altText}
-            className="w-full h-auto max-h-[82px] object-contain select-none pointer-events-none drop-shadow-[0_8px_16px_rgba(0,0,0,0.85)] transition-opacity duration-450 ease-in-out"
+            className="w-full h-auto max-h-[105px] object-contain select-none pointer-events-none drop-shadow-[0_10px_22px_rgba(0,0,0,0.85)] transition-opacity duration-450 ease-in-out"
           />
 
           {/* Conteúdo sobreposto perfeitamente centralizado no bico da asa dianteira */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ top: "-1px" }}>
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ top: "-2px" }}>
             {children}
           </div>
         </div>
