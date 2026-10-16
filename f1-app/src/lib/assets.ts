@@ -313,8 +313,12 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
   },
   "Sauber": {
     ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1993 + i, { url: "/sauber/sauber-1.jpg", className: "bg-white rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1999 + i, { url: "/teams/sauber.svg", color: "#002B49", className: "object-contain p-0.5" }])),
-    ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [2010 + i, { url: "/teams/sauber.svg", color: "#002B49", className: "object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1999 + i, { url: "/teams/sauber.png", color: "#002B49", className: "object-contain p-0.5" }])),
+    ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [2010 + i, { url: "/teams/sauber.png", color: "#002B49", className: "object-contain p-0.5" }])),
+  },
+  "Sauber Clássica": {
+    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1993 + i, { url: "/sauber/sauber-1.jpg", className: "bg-white rounded-sm" }])),
+    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1999 + i, { url: "/teams/sauber.png", color: "#002B49", className: "object-contain p-0.5" }])),
   },
   "BMW Sauber": {
     ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2006 + i, { url: "/teams/bmwsauber.svg", color: "#FFFFFF", className: "object-contain p-0.5" }])),
@@ -364,15 +368,24 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     2007: { url: "/teams/spyker.png", color: "#F58020", className: "object-contain p-0.5" },
   },
   "Spyker MF1": {
-    2006: { url: "/teams/spykermf1.svg", color: "#1E1E1E", className: "object-contain" },
+    2006: { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+  },
+  "Spyker MF1 Racing": {
+    2006: { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
   },
   "MF1": {
-    2006: { url: "/teams/spykermf1.svg", color: "#1E1E1E", className: "object-contain" },
+    2006: { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
   },
   "Midland": {
-    2006: { url: "/teams/spykermf1.svg", color: "#1E1E1E", className: "object-contain" },
+    2006: { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
   },
   "BAR": {
+    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1999 + i, { url: "/teams/bar.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
+  },
+  "Lucky Strike BAR Honda": {
+    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1999 + i, { url: "/teams/bar.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
+  },
+  "BAR Honda": {
     ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1999 + i, { url: "/teams/bar.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
   },
   "Jaguar": {
@@ -380,8 +393,11 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
   },
   "Arrows": {
     ...Object.fromEntries(Array.from({ length: 13 }, (_, i) => [1978 + i, { url: "/arrows/arrows-1.jpg", className: "bg-white rounded-sm object-contain" }])),
-    ...Object.fromEntries(Array.from({ length: 2 }, (_, i) => [1997 + i, { url: "/arrows/arrows-3.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 2 }, (_, i) => [1997 + i, { url: "/teams/arrows.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
     ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1999 + i, { url: "/teams/arrows.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
+  },
+  "Orange Arrows": {
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2000 + i, { url: "/teams/arrows.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
   },
   "Footwork": {
     ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1991 + i, { url: "/arrows/arrows-2.jpg", className: "bg-white rounded-sm object-contain" }])),
@@ -389,13 +405,17 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
   "Benetton": {
     ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1986 + i, { url: "/benetton/benetton-1.jpg", className: "bg-white rounded-sm object-contain" }])),
     ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1991 + i, { url: "/benetton/benetton-2.jpg", className: "bg-white rounded-sm object-contain" }])),
-    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1994 + i, { url: "/benetton/benetton-3.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1994 + i, { url: "/teams/benetton.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
     ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1999 + i, { url: "/teams/benetton.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
   },
+  "Benetton Formula Mild Seven": {
+    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1994 + i, { url: "/teams/benetton.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
+  },
   "Prost": {
-    1997: { url: "/prost/prost-1.jpg", className: "bg-white rounded-sm object-contain" },
-    1998: { url: "/prost/prost-2.jpg", className: "bg-white rounded-sm object-contain" },
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1999 + i, { url: "/teams/prost.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1997 + i, { url: "/teams/prost.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
+  },
+  "Prost Grand Prix Acer": {
+    2001: { url: "/teams/prost.png", color: "#FFFFFF", className: "object-contain p-0.5" },
   },
   "Stewart": {
     1997: { url: "/stewart/stewart-1.jpg", className: "bg-white rounded-sm object-contain" },
@@ -607,14 +627,21 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   Marussia: { url: "/teams/marussia.png", color: "#1E1E1E", className: "object-contain" },
   "Manor Marussia": { url: "/teams/manor.png", color: "#1E1E1E", className: "object-contain" },
   "Manor Racing": { url: "/teams/manor.png", color: "#1E1E1E", className: "object-contain" },
-  "Sauber Clássica": { url: "/teams/sauber.svg", color: "#002B49", className: "object-contain" },
+  "Sauber Clássica": { url: "/teams/sauber.png", color: "#002B49", className: "object-contain p-0.5" },
   "BMW Sauber": { url: "/teams/bmwsauber.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
   BAR: { url: "/teams/bar.png", color: "#FFFFFF", className: "object-contain p-0.5" },
   "BAR Honda": { url: "/teams/bar.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+  "Lucky Strike BAR Honda": { url: "/teams/bar.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+  "Orange Arrows": { url: "/teams/arrows.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+  "Prost Grand Prix": { url: "/teams/prost.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+  "Prost Grand Prix Acer": { url: "/teams/prost.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+  "Benetton Formula": { url: "/teams/benetton.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+  "Benetton Formula Mild Seven": { url: "/teams/benetton.png", color: "#FFFFFF", className: "object-contain p-0.5" },
   Spyker: { url: "/teams/spyker.png", color: "#F58020", className: "object-contain p-0.5" },
-  "Spyker MF1": { url: "/teams/spykermf1.svg", color: "#1E1E1E", className: "object-contain" },
-  MF1: { url: "/teams/spykermf1.svg", color: "#1E1E1E", className: "object-contain" },
-  Midland: { url: "/teams/spykermf1.svg", color: "#1E1E1E", className: "object-contain" },
+  "Spyker MF1": { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+  "Spyker MF1 Racing": { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+  MF1: { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+  Midland: { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
   "Marussia Virgin": { url: "/teams/marussia_virgin.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
   "Force India": { url: "/teams/forceindia.svg", color: "#F58020", className: "object-contain" },
   "Racing Point": { url: "/teams/racingpoint.svg", color: "#F596C8" },
@@ -843,15 +870,43 @@ const TEAM_ALIASES: Record<string, string> = {
   bar: "BAR",
   "bar honda": "BAR",
   "british american racing": "BAR",
+  "lucky strike bar honda": "BAR",
+  "lucky strike bar": "BAR",
+  "sauber clássica": "Sauber",
+  "sauber classica": "Sauber",
+  "sauber petronas": "Sauber",
+  "red bull sauber petronas": "Sauber",
+  arrows: "Arrows",
+  "orange arrows": "Arrows",
+  "arrows grand prix": "Arrows",
+  "arrows grand prix international": "Arrows",
+  "arrows footwork": "Arrows",
+  footwork: "Arrows",
+  prost: "Prost",
+  "prost grand prix": "Prost",
+  "prost grand prix acer": "Prost",
+  "prost acer": "Prost",
+  "prost grand prix yahoo!": "Prost",
+  "prost yahoo": "Prost",
+  "prost grand prix formula one team": "Prost",
+  benetton: "Benetton",
+  "benetton formula": "Benetton",
+  "benetton formula 1": "Benetton",
+  "benetton formula mild seven": "Benetton",
+  "benetton mild seven": "Benetton",
+  "benetton formula united colors": "Benetton",
+  "benetton formula united colors of benetton": "Benetton",
   jordan: "Jordan",
   "jordan grand prix": "Jordan",
   minardi: "Minardi",
   "scuderia minardi": "Minardi",
-  mf1: "MF1",
-  midland: "MF1",
-  "midland f1": "MF1",
-  "midland f1 racing": "MF1",
+  mf1: "Spyker MF1",
+  "mf1 racing": "Spyker MF1",
+  midland: "Spyker MF1",
+  "midland f1": "Spyker MF1",
+  "midland f1 racing": "Spyker MF1",
   "spyker mf1": "Spyker MF1",
+  "spyker mf1 racing": "Spyker MF1",
   spyker: "Spyker",
   "spyker f1": "Spyker",
   "spyker f1 team": "Spyker",
@@ -889,6 +944,9 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   }
   if (season === 2010 && (canonical === "Virgin" || name.toLowerCase().includes("virgin"))) {
     return { url: "/teams/virgin.svg", color: "#FFFFFF", className: "object-contain p-0.5" }
+  }
+  if (season && season <= 2005 && (canonical === "Kick Sauber" || canonical === "Sauber" || name.toLowerCase().includes("sauber"))) {
+    return { url: "/teams/sauber.png", color: "#002B49", className: "object-contain p-0.5" }
   }
 
   // From 1999 to modern era (2026), prioritize pristine vector and curated high-res logos
@@ -1066,7 +1124,10 @@ export function displayTeamName(name: string | null, season?: number): string {
     return "Jaguar Racing"
   }
   if (name === "Footwork") return "Arrows Footwork"
-  if (name === "Arrows") return "Arrows"
+  if (name === "Arrows") {
+    if (season && season >= 2000 && season <= 2002) return "Orange Arrows"
+    return "Arrows"
+  }
   if (name === "Benetton") {
     if (season && season >= 1986 && season <= 1990) return "Benetton Formula United Colors of Benetton"
     if (season && season >= 1991 && season <= 1993) return "Benetton Formula United Colors"
