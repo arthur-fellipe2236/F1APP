@@ -846,47 +846,51 @@ export function engineLogo(name: string | null): string | null {
 export function displayTeamName(name: string | null, season?: number): string {
   if (!name) return ""
   
-  if (name === "RB" || name === "Racing Bulls") {
-    if (season === 2024) return "VISA CASH APP RB FORMULA ONE TEAM"
-    if (season && season >= 2025) return "RACING BULLS F1 TEAM"
+  if (name === "RB" || name === "Racing Bulls" || name === "Racing Bulls F1 Team" || name === "VCARB") {
+    if (season === 2024) return "Visa Cash App RB Formula One Team"
+    if (season && season >= 2025) return "Racing Bulls F1 Team"
+    if (season && season >= 2020 && season <= 2023) return "Scuderia AlphaTauri"
+    return "Racing Bulls F1 Team"
   }
   if (name === "AlphaTauri" || (name === "RB" && season && season >= 2020 && season <= 2023)) {
-    return "SCUDERIA ALPHATAURI"
+    return "Scuderia AlphaTauri"
   }
   if (name === "Toro Rosso") {
-    return "SCUDERIA TORO ROSSO"
+    return "Scuderia Toro Rosso"
   }
   
-  if (name === "Alpine") {
-    if (season && season >= 2022) return "BWT ALPINE F1 TEAM"
-    return "ALPINE F1 TEAM"
+  if (name === "Alpine" || name === "Alpine F1 Team" || name === "BWT Alpine" || name === "BWT Alpine F1 Team") {
+    if (season === 2021) return "Alpine F1 Team"
+    if (season && season >= 2022) return "BWT Alpine F1 Team"
+    return "BWT Alpine F1 Team"
   }
   if (name === "Lotus F1") {
-    return "LOTUS F1 TEAM"
+    return "Lotus F1 Team"
   }
   if (name === "Renault") {
-    if (season && season >= 1981 && season <= 2010) return "RENAULT F1 TEAM"
-    if (season === 2011) return "LOTUS RENAULT GP"
-    if (season && season >= 2016 && season <= 2020) return "RENAULT DP WORLD F1 TEAM"
-    return "RENAULT F1 TEAM"
+    if (season && season >= 1981 && season <= 2010) return "Renault F1 Team"
+    if (season === 2011) return "Lotus Renault GP"
+    if (season && season >= 2016 && season <= 2020) return "Renault DP World F1 Team"
+    return "Renault F1 Team"
   }
 
   if (name === "Force India") return "Force India F1 Team"
   if (name === "Racing Point" || name === "Racing Point F1 Team") {
-    if (season === 2019) return "SPORTPESA RACING POINT F1 TEAM"
-    if (season === 2020) return "BWT RACING POINT F1 TEAM"
-    return "RACING POINT F1 TEAM"
+    if (season === 2019) return "SportPesa Racing Point F1 Team"
+    if (season === 2020) return "BWT Racing Point F1 Team"
+    return "Racing Point F1 Team"
   }
-  if (name === "Aston Martin") {
-    if (season === 2021) return "ASTON MARTIN COGNIZANT F1 TEAM"
-    if (season === 2022) return "ASTON MARTIN ARAMCO COGNIZANT F1 TEAM"
-    if (season && season >= 2023) return "ASTON MARTIN ARAMCO F1 TEAM"
-    return "ASTON MARTIN F1 TEAM"
+  if (name === "Aston Martin" || name === "Aston Martin Aramco" || name === "Aston Martin F1 Team") {
+    if (season === 2021) return "Aston Martin Cognizant F1 Team"
+    if (season === 2022) return "Aston Martin Aramco Cognizant F1 Team"
+    if (season && season >= 2023) return "Aston Martin Aramco F1 Team"
+    return "Aston Martin Aramco F1 Team"
   }
-  if (name === "Sauber") {
+  if (name === "Sauber" || name === "Kick Sauber" || name === "Stake F1 Team") {
+    if (season === 2024 || season === 2025) return "Stake F1 Team Kick Sauber"
     if (season && season >= 1993 && season <= 2005) return "Sauber Clássica"
     if (season && season >= 2010 && season <= 2018) return "Sauber"
-    return "Sauber F1 Team"
+    return "Kick Sauber F1 Team"
   }
   if (name === "BMW Sauber") return "BMW Sauber F1 Team"
   if (name === "Virgin") {
@@ -992,51 +996,55 @@ export function displayTeamName(name: string | null, season?: number): string {
     if (season && season >= 2001 && season <= 2005) return "Minardi European"
     return "Minardi F1 Team"
   }
-  if (name === "Williams") {
-    if (season && season >= 1978 && season <= 1993) return "WILLIAMS GRAND PRIX ENGINEERING"
-    if (season && season >= 1994 && season <= 1999) return "WILLIAMS ROTHMANS"
-    if (season && season >= 2000 && season <= 2013) return "WILLIAMS-BMW"
-    if (season && season >= 2014 && season <= 2018) return "MARTINI WILLIAMS RACING"
-    if (season === 2019) return "ROKIT WILLIAMS RACING"
-    if (season && season >= 2020) return "WILLIAMS RACING"
-    return "WILLIAMS GRAND PRIX ENGINEERING"
+  if (name === "Williams" || name === "Williams Racing") {
+    if (season && season >= 1978 && season <= 1993) return "Williams Grand Prix Engineering"
+    if (season && season >= 1994 && season <= 1999) return "Williams Rothmans"
+    if (season && season >= 2000 && season <= 2013) return "Williams-BMW"
+    if (season && season >= 2014 && season <= 2018) return "Martini Williams Racing"
+    if (season === 2019) return "ROKiT Williams Racing"
+    if (season && season >= 2020) return "Williams Racing"
+    return "Williams Racing"
   }
 
   if (name === "Haas" || name === "Haas F1 Team") {
-    if (season === 2019) return "RICH ENERGY HAAS F1 TEAM"
-    if (season === 2021) return "URALKALI HAAS F1 TEAM"
-    if (season === 2022) return "HAAS F1 TEAM"
-    if (season && season >= 2023) return "MONEYGRAM HAAS F1 TEAM"
-    return "HAAS F1 TEAM"
+    if (season === 2019) return "Rich Energy Haas F1 Team"
+    if (season === 2020) return "Haas F1 Team"
+    if (season === 2021) return "Uralkali Haas F1 Team"
+    if (season === 2022) return "Haas F1 Team"
+    if (season && season >= 2023) return "Moneygran Haas F1 Team"
+    return "Moneygran Haas F1 Team"
   }
 
   if (name === "Alfa Romeo" || name === "Alfa Romeo F1 Team") {
-    if (season === 2019) return "ALFA ROMEO RACING"
-    if (season && season >= 2020 && season <= 2021) return "ALFA ROMEO RACING ORLEN"
-    if (season === 2022) return "ALFA ROMEO F1 TEAM ORLEN"
-    if (season === 2023) return "ALFA ROMEO F1 TEAM STAKE"
-    return "ALFA ROMEO F1 TEAM"
+    if (season === 2019) return "Alfa Romeo Racing"
+    if (season && season >= 2020 && season <= 2021) return "Alfa Romeo Racing ORLEN"
+    if (season === 2022) return "Alfa Romeo F1 Team ORLEN"
+    if (season === 2023) return "Alfa Romeo F1 Team Stake"
+    return "Alfa Romeo F1 Team"
   }
 
-  if (name === "Red Bull" || name === "Red Bull Racing") {
-    if (season === 2020) return "ASTON MARTIN RED BULL RACING"
-    if (season === 2021) return "RED BULL RACING HONDA"
-    if (season && season >= 2022) return "ORACLE RED BULL RACING"
-    return "RED BULL RACING"
+  if (name === "Red Bull" || name === "Red Bull Racing" || name === "Oracle Red Bull Racing") {
+    if (season === 2020) return "Aston Martin Red Bull Racing"
+    if (season === 2021) return "Red Bull Racing Honda"
+    if (season && season >= 2022) return "Oracle Red Bull Racing"
+    if (!season) return "Oracle Red Bull Racing"
+    return "Red Bull Racing"
   }
 
-  if (name === "Ferrari" || name === "Scuderia Ferrari") {
-    if (season === 2021) return "SCUDERIA FERRARI MISSION WINNOW"
-    if (season && season >= 2024) return "SCUDERIA FERRARI HP"
-    return "SCUDERIA FERRARI"
+  if (name === "Ferrari" || name === "Scuderia Ferrari" || name === "Scuderia Ferrari HP") {
+    if (season === 2021) return "Scuderia Ferrari Mission Winnow"
+    if (season && season >= 2024) return "Scuderia Ferrari HP"
+    if (season && season >= 2020 && season <= 2023) return "Scuderia Ferrari"
+    if (!season) return "Scuderia Ferrari HP"
+    return "Scuderia Ferrari"
   }
 
-  if (name === "Mercedes") {
-    return "MERCEDES-AMG PETRONAS F1 TEAM"
+  if (name === "Mercedes" || name === "Mercedes-AMG Petronas" || name === "Mercedes-AMG Petronas F1 Team") {
+    return "Mercedes-AMG Petronas F1 Team"
   }
 
-  if (name === "McLaren") {
-    return "MCLAREN F1 TEAM"
+  if (name === "McLaren" || name === "Mclaren" || name === "McLaren F1 Team" || name === "Mclaren F1 Team") {
+    return "Mclaren F1 Team"
   }
 
   return name
