@@ -320,7 +320,10 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
   },
   "Virgin": {
     2010: { url: "/teams/virgin.png", color: "#FFFFFF", className: "object-contain p-0.5" },
-    2011: { url: "/teams/virgin.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+    2011: { url: "/teams/marussia_virgin.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
+  },
+  "Marussia Virgin": {
+    2011: { url: "/teams/marussia_virgin.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
   },
   "Marussia": {
     ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2012 + i, { url: "/teams/marussia.png", color: "#1E1E1E", className: "object-contain" }])),
@@ -361,10 +364,13 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     2007: { url: "/teams/spyker.png", color: "#F58020", className: "object-contain p-0.5" },
   },
   "Spyker MF1": {
-    2006: { url: "/spyker/spyker-1.jpg", className: "bg-white rounded-sm" },
+    2006: { url: "/teams/spykermf1.svg", color: "#1E1E1E", className: "object-contain" },
   },
   "MF1": {
-    2006: { url: "/spyker/spyker-1.jpg", className: "bg-white rounded-sm" },
+    2006: { url: "/teams/spykermf1.svg", color: "#1E1E1E", className: "object-contain" },
+  },
+  "Midland": {
+    2006: { url: "/teams/spykermf1.svg", color: "#1E1E1E", className: "object-contain" },
   },
   "BAR": {
     ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1999 + i, { url: "/bar/bar-1.jpg", className: "bg-white rounded-sm" }])),
@@ -606,9 +612,10 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   BAR: { url: "/bar/bar-1.jpg", color: "#FFFFFF", className: "object-contain bg-white rounded-sm" },
   "BAR Honda": { url: "/bar/bar-1.jpg", color: "#FFFFFF", className: "object-contain bg-white rounded-sm" },
   Spyker: { url: "/teams/spyker.png", color: "#F58020", className: "object-contain p-0.5" },
-  "Spyker MF1": { url: "/spyker/spyker-1.jpg", color: "#E10600", className: "object-contain bg-white rounded-sm" },
-  MF1: { url: "/spyker/spyker-1.jpg", color: "#E10600", className: "object-contain bg-white rounded-sm" },
-  Midland: { url: "/spyker/spyker-1.jpg", color: "#E10600", className: "object-contain bg-white rounded-sm" },
+  "Spyker MF1": { url: "/teams/spykermf1.svg", color: "#1E1E1E", className: "object-contain" },
+  MF1: { url: "/teams/spykermf1.svg", color: "#1E1E1E", className: "object-contain" },
+  Midland: { url: "/teams/spykermf1.svg", color: "#1E1E1E", className: "object-contain" },
+  "Marussia Virgin": { url: "/teams/marussia_virgin.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
   "Force India": { url: "/teams/forceindia.svg", color: "#F58020", className: "object-contain" },
   "Racing Point": { url: "/teams/racingpoint.svg", color: "#F596C8" },
   "Toro Rosso": { url: "/teams/tororosso.svg", color: "#001A30", className: "object-contain brightness-100 filter-none" },
@@ -659,8 +666,8 @@ const TEAM_ALIASES: Record<string, string> = {
   // Virgin, Marussia & Manor
   virgin: "Virgin",
   "virgin racing": "Virgin",
-  "marussia virgin": "Virgin",
-  "marussia virgin racing": "Virgin",
+  "marussia virgin": "Marussia Virgin",
+  "marussia virgin racing": "Marussia Virgin",
   marussia: "Marussia",
   "marussia f1 team": "Marussia",
   manor: "Manor Marussia",
@@ -876,6 +883,12 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   }
   if ((season === 2010 || season === 2011) && (canonical === "Lotus" || canonical === "Team Lotus")) {
     return { url: "/teams/teamlotus.svg", color: "#004225", className: "object-contain" }
+  }
+  if (season === 2011 && (canonical === "Virgin" || canonical === "Marussia Virgin" || name.toLowerCase().includes("virgin"))) {
+    return { url: "/teams/marussia_virgin.svg", color: "#FFFFFF", className: "object-contain p-0.5" }
+  }
+  if (season === 2010 && (canonical === "Virgin" || name.toLowerCase().includes("virgin"))) {
+    return { url: "/teams/virgin.png", color: "#FFFFFF", className: "object-contain p-0.5" }
   }
 
   // From 2005 to modern era (2026), prioritize the pristine official vector / high-res logos
