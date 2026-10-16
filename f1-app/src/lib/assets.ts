@@ -870,7 +870,25 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   if (!name) return null
   const canonical = TEAM_ALIASES[name.trim().toLowerCase()] || name
 
-  // Check historical season logo database first if season is provided
+  // Specific historical exceptions for 2010-2011 distinct identities
+  if (season === 2010 && (canonical === "HRT" || name.toLowerCase().includes("hispania"))) {
+    return { url: "/teams/hispania.svg", color: "#E10600", className: "object-contain p-0.5" }
+  }
+  if ((season === 2010 || season === 2011) && (canonical === "Lotus" || canonical === "Team Lotus")) {
+    return { url: "/teams/teamlotus.svg", color: "#004225", className: "object-contain" }
+  }
+
+  // From 2005 to modern era (2026), prioritize the pristine official vector / high-res logos
+  if (!season || season >= 2005) {
+    if (TEAM_LOGO_BY_NAME[canonical]) {
+      return TEAM_LOGO_BY_NAME[canonical]
+    }
+    if (TEAM_LOGO_BY_NAME[name]) {
+      return TEAM_LOGO_BY_NAME[name]
+    }
+  }
+
+  // Pre-2005 vintage seasons (1950-2004)
   if (season) {
     const seasonLogo = TEAM_SEASON_LOGOS[canonical]?.[season] ?? TEAM_SEASON_LOGOS[name]?.[season]
     if (seasonLogo) {
