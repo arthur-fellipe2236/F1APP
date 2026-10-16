@@ -111,12 +111,8 @@ export const TeamWing: React.FC<TeamWingProps> = ({
   if (isMobile) {
     return (
       <div className={cn("w-full relative flex items-center justify-center select-none py-0.5", className)}>
-        {/* Asa Dianteira em escala mobile ampliada com iluminação ambiente e cross-fade */}
+        {/* Asa Dianteira em escala mobile ampliada perfeitamente integrada ao fundo do menu */}
         <div className="w-full relative flex items-center justify-center max-w-[500px] px-1">
-          <div 
-            className="absolute inset-x-4 h-10 top-2 rounded-full blur-2xl opacity-40 transition-colors duration-700 pointer-events-none"
-            style={{ backgroundColor: themeObj.color || "rgba(255,255,255,0.2)" }}
-          />
           {prevSrc && isCrossFading && (
             <img
               src={prevSrc}

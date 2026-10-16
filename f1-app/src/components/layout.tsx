@@ -428,7 +428,7 @@ export function Layout() {
         <div className="flex md:hidden w-full bg-transparent px-1 pb-2 pt-0 items-center justify-center relative z-10">
           <TeamWing theme={teamTheme} series={series} isMobile>
             <TabsPrimitive.Root value={series} onValueChange={setSeries} className="w-[210px] pointer-events-auto">
-              <TabsPrimitive.List className="h-7 grid w-full grid-cols-3 p-0.5 rounded-lg bg-black/80 border border-white/20 shadow-2xl backdrop-blur-md">
+              <TabsPrimitive.List className="h-7 grid w-full grid-cols-3 p-0.5 rounded-lg bg-[#101015]/85 border border-white/15 shadow-2xl backdrop-blur-md">
                 <TabsPrimitive.Trigger
                   value="f1"
                   className={cn(
