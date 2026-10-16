@@ -118,13 +118,13 @@ export const TeamWing: React.FC<TeamWingProps> = ({
               src={prevSrc}
               alt={altText}
               aria-hidden="true"
-              className="absolute inset-0 w-full h-auto max-h-[105px] object-contain select-none pointer-events-none drop-shadow-[0_10px_22px_rgba(0,0,0,0.85)] transition-opacity duration-450 ease-in-out opacity-0"
+              className="absolute inset-0 w-full h-auto max-h-[105px] object-contain select-none pointer-events-none drop-shadow-[0_6px_14px_rgba(0,0,0,0.4)] transition-opacity duration-450 ease-in-out opacity-0"
             />
           )}
           <img
             src={activeSrc}
             alt={altText}
-            className="w-full h-auto max-h-[105px] object-contain select-none pointer-events-none drop-shadow-[0_10px_22px_rgba(0,0,0,0.85)] transition-opacity duration-450 ease-in-out"
+            className="w-full h-auto max-h-[105px] object-contain select-none pointer-events-none drop-shadow-[0_6px_14px_rgba(0,0,0,0.4)] transition-opacity duration-450 ease-in-out"
           />
 
           {/* Conteúdo sobreposto perfeitamente centralizado no bico da asa dianteira */}
@@ -169,7 +169,7 @@ export const TeamWing: React.FC<TeamWingProps> = ({
             src={prevSrc}
             alt={altText}
             aria-hidden="true"
-            className="absolute inset-0 w-full h-auto max-h-[120px] lg:max-h-[134px] object-contain select-none pointer-events-none drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)] transition-opacity duration-500 ease-in-out opacity-0"
+            className="absolute inset-0 w-full h-auto max-h-[120px] lg:max-h-[134px] object-contain select-none pointer-events-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.45)] transition-opacity duration-500 ease-in-out opacity-0"
           />
         )}
 
@@ -178,7 +178,7 @@ export const TeamWing: React.FC<TeamWingProps> = ({
           src={activeSrc}
           alt={altText}
           className={cn(
-            "w-full h-auto max-h-[120px] lg:max-h-[134px] object-contain select-none pointer-events-none drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)] transition-all duration-500 ease-in-out",
+            "w-full h-auto max-h-[120px] lg:max-h-[134px] object-contain select-none pointer-events-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.45)] transition-all duration-500 ease-in-out",
             isCrossFading ? "opacity-100" : "opacity-100"
           )}
         />

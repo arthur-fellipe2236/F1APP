@@ -151,22 +151,35 @@
 
 @layer utilities {
   .bg-f1-pattern {
-    background-color: #15151e;
+    background-color: #181822;
     background-image:
+      /* Tiras verticais sincronizadas que descem do logo até a asa dianteira */
       repeating-linear-gradient(
-        135deg,
-        #23232f 0px,
-        #23232f 20px,
+        90deg,
+        rgba(255, 255, 255, 0.05) 0px,
+        rgba(255, 255, 255, 0.05) 2px,
+        transparent 2px,
         transparent 20px,
-        transparent 120px
+        rgba(0, 0, 0, 0.3) 20px,
+        rgba(0, 0, 0, 0.3) 40px
       ),
+      /* Trama horizontal fina de fibra de carbono aeroespacial */
       repeating-linear-gradient(
-        135deg,
-        transparent 0px,
-        transparent 60px,
-        #1a1a24 60px,
-        #1a1a24 75px
+        0deg,
+        rgba(255, 255, 255, 0.025) 0px,
+        rgba(255, 255, 255, 0.025) 1px,
+        transparent 1px,
+        transparent 6px
+      ),
+      /* Gradiente de profundidade carbono grafite */
+      linear-gradient(
+        180deg,
+        #21212c 0%,
+        #1a1a24 45%,
+        #14141d 100%
       );
+    background-size: 40px 100%, 100% 6px, 100% 100%;
+    background-position: center top;
   }
 }
 .dark .dark-invert { filter: brightness(0) invert(1); }
