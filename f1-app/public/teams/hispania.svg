@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="4.14 3.41 100.2 100.2">
+	<defs>
+		<circle id="hispania_circle" cx="54.236" cy="53.507" r="50.092"/>
+		<clipPath id="hispania_clip">
+			<use xlink:href="#hispania_circle" overflow="visible"/>
+		</clipPath>
+	</defs>
+	<use xlink:href="#hispania_circle" overflow="visible" fill="#E10600"/>
+	<path clip-path="url(#hispania_clip)" fill="#FFFFFF" d="M0,64.133c0,0,50.851-9.867,54.266-64.133h9.487 c0,0,9.107,69.066-62.995,67.548L0,64.133z"/>
+	<path clip-path="url(#hispania_clip)" fill="#FFFFFF" d="M11.005,22.011c0,0,20.872,26.563,71.723,22.769L66.41,55.785 c0,0-36.811,4.174-59.58-26.185L11.005,22.011z"/>
+	<path clip-path="url(#hispania_clip)" fill="#FFFFFF" d="M105.876,39.466c0,0-63.754-4.174-55.785,66.79l7.969,1.139 c0,0-3.036-46.678,48.574-62.995L105.876,39.466z"/>
+</svg>

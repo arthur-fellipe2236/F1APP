@@ -316,11 +316,11 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [2010 + i, { url: "/teams/sauber.svg", color: "#002B49", className: "object-contain" }])),
   },
   "BMW Sauber": {
-    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2006 + i, { url: "/sauber/sauber-2.jpg", className: "bg-white rounded-sm" }])),
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2006 + i, { url: "/teams/bmwsauber.svg", color: "#FFFFFF", className: "object-contain p-0.5" }])),
   },
   "Virgin": {
-    2010: { url: "/teams/virgin.svg", color: "#1E1E1E", className: "object-contain" },
-    2011: { url: "/teams/virgin.svg", color: "#1E1E1E", className: "object-contain" },
+    2010: { url: "/teams/virgin.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+    2011: { url: "/teams/virgin.png", color: "#FFFFFF", className: "object-contain p-0.5" },
   },
   "Marussia": {
     ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2012 + i, { url: "/teams/marussia.png", color: "#1E1E1E", className: "object-contain" }])),
@@ -335,32 +335,30 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     2011: { url: "/teams/teamlotus.svg", color: "#004225", className: "object-contain" },
   },
   "Caterham": {
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2012 + i, { url: "/teams/caterham.svg", color: "#005030", className: "object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2012 + i, { url: "/teams/caterham.svg", color: "#005030", className: "object-contain p-0.5" }])),
   },
   "HRT": {
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2010 + i, { url: "/teams/hrt.svg", color: "#C09040", className: "object-contain" }])),
+    2010: { url: "/teams/hispania.svg", color: "#E10600", className: "object-contain p-0.5" },
+    2011: { url: "/teams/hrt.svg", color: "#1E1E1E", className: "object-contain" },
+    2012: { url: "/teams/hrt.svg", color: "#1E1E1E", className: "object-contain" },
   },
   "Brawn": {
-    2009: { url: "/brawn/brawn-1.jpg", className: "bg-white rounded-sm" },
+    2009: { url: "/teams/brawn.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
   },
   "Toyota": {
     2002: { url: "/toyota/toyota-1.jpg", className: "bg-white rounded-sm" },
-    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2003 + i, { url: "/toyota/toyota-2.jpg", className: "bg-white rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2007 + i, { url: "/toyota/toyota-3.jpg", className: "bg-white rounded-sm" }])),
+    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [2003 + i, { url: "/teams/toyota.svg", color: "#FFFFFF", className: "object-contain p-0.5" }])),
   },
   "Honda": {
     ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1964 + i, { url: "/honda/honda-1.jpg", className: "bg-white rounded-sm" }])),
     ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [1983 + i, { url: "/honda/honda-2.jpg", className: "bg-white rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 2 }, (_, i) => [2006 + i, { url: "/honda/honda-3.jpg", className: "bg-white rounded-sm" }])),
-    2008: { url: "/honda/honda-4.jpg", className: "bg-white rounded-sm" },
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2006 + i, { url: "/teams/honda.svg", color: "#fc0217", className: "object-contain p-0.5" }])),
   },
   "Super Aguri": {
-    2006: { url: "/aguri/aguri-1.jpg", className: "bg-white rounded-sm" },
-    2007: { url: "/aguri/aguri-2.jpg", className: "bg-white rounded-sm" },
-    2008: { url: "/aguri/aguri-3.jpg", className: "bg-white rounded-sm" },
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2006 + i, { url: "/teams/superaguri.svg", color: "#FFFFFF", className: "object-contain p-0.5" }])),
   },
   "Spyker": {
-    2007: { url: "/spyker/spyker-2.jpg", className: "bg-white rounded-sm" },
+    2007: { url: "/teams/spyker.png", color: "#F58020", className: "object-contain p-0.5" },
   },
   "Spyker MF1": {
     2006: { url: "/spyker/spyker-1.jpg", className: "bg-white rounded-sm" },
@@ -588,22 +586,29 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   Forti: { url: "/forti/forti.jpg", color: "#FFD700", className: "object-contain" },
   Pacific: { url: "/pacific/pacific.png", color: "#009384", className: "object-contain" },
   Simtek: { url: "/simtek/simtek.jpg", color: "#48286A", className: "object-contain" },
-  Minardi: { url: "/minardi/minardi-2.jpg", color: "#FFCC00", className: "object-contain" },
-  Jordan: { url: "/jordan/jordan-2.jpg", color: "#FFDE00", className: "object-contain" },
-  "Super Aguri": { url: "/aguri/aguri-2.jpg", color: "#E10600", className: "object-contain" },
-  Honda: { url: "/honda/honda-3.jpg", color: "#E10600", className: "object-contain" },
-  Toyota: { url: "/toyota/toyota-2.jpg", color: "#E10600", className: "object-contain" },
-  Brawn: { url: "/brawn/brawn-1.jpg", color: "#B8FD00", className: "object-contain" },
-  HRT: { url: "/teams/hrt.svg", color: "#C09040", className: "object-contain" },
+  Minardi: { url: "/minardi/minardi-3.jpg", color: "#1E1E1E", className: "object-contain bg-white rounded-sm" },
+  Jordan: { url: "/jordan/jordan-3.jpg", color: "#FFDE00", className: "object-contain bg-white rounded-sm" },
+  "Super Aguri": { url: "/teams/superaguri.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
+  Honda: { url: "/teams/honda.svg", color: "#fc0217", className: "object-contain p-0.5" },
+  Toyota: { url: "/teams/toyota.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
+  Brawn: { url: "/teams/brawn.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
+  "Brawn GP": { url: "/teams/brawn.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
+  HRT: { url: "/teams/hrt.svg", color: "#1E1E1E", className: "object-contain" },
   Lotus: { url: "/teams/teamlotus.svg", color: "#004225", className: "object-contain" },
   "Team Lotus": { url: "/teams/teamlotus.svg", color: "#004225", className: "object-contain" },
-  Caterham: { url: "/teams/caterham.svg", color: "#005030", className: "object-contain" },
-  Virgin: { url: "/teams/virgin.svg", color: "#1E1E1E", className: "object-contain" },
+  Caterham: { url: "/teams/caterham.svg", color: "#005030", className: "object-contain p-0.5" },
+  Virgin: { url: "/teams/virgin.png", color: "#FFFFFF", className: "object-contain p-0.5" },
   Marussia: { url: "/teams/marussia.png", color: "#1E1E1E", className: "object-contain" },
   "Manor Marussia": { url: "/teams/manor.png", color: "#1E1E1E", className: "object-contain" },
   "Manor Racing": { url: "/teams/manor.png", color: "#1E1E1E", className: "object-contain" },
   "Sauber Clássica": { url: "/teams/sauber.svg", color: "#002B49", className: "object-contain" },
-  "BMW Sauber": { url: "/sauber/sauber-2.jpg", color: "#002B49", className: "object-contain" },
+  "BMW Sauber": { url: "/teams/bmwsauber.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
+  BAR: { url: "/bar/bar-1.jpg", color: "#FFFFFF", className: "object-contain bg-white rounded-sm" },
+  "BAR Honda": { url: "/bar/bar-1.jpg", color: "#FFFFFF", className: "object-contain bg-white rounded-sm" },
+  Spyker: { url: "/teams/spyker.png", color: "#F58020", className: "object-contain p-0.5" },
+  "Spyker MF1": { url: "/spyker/spyker-1.jpg", color: "#E10600", className: "object-contain bg-white rounded-sm" },
+  MF1: { url: "/spyker/spyker-1.jpg", color: "#E10600", className: "object-contain bg-white rounded-sm" },
+  Midland: { url: "/spyker/spyker-1.jpg", color: "#E10600", className: "object-contain bg-white rounded-sm" },
   "Force India": { url: "/teams/forceindia.svg", color: "#F58020", className: "object-contain" },
   "Racing Point": { url: "/teams/racingpoint.svg", color: "#F596C8" },
   "Toro Rosso": { url: "/teams/tororosso.svg", color: "#001A30", className: "object-contain brightness-100 filter-none" },
@@ -827,25 +832,45 @@ const TEAM_ALIASES: Record<string, string> = {
   coloni: "Coloni",
   rial: "Rial",
   onyx: "Onyx",
-  spirit: "Spirit",
-  ram: "RAM",
+  // 2005-2009 Historical Teams
+  bar: "BAR",
+  "bar honda": "BAR",
+  "british american racing": "BAR",
+  jordan: "Jordan",
+  "jordan grand prix": "Jordan",
+  minardi: "Minardi",
+  "scuderia minardi": "Minardi",
+  mf1: "MF1",
+  midland: "MF1",
+  "midland f1": "MF1",
+  "midland f1 racing": "MF1",
+  "spyker mf1": "Spyker MF1",
+  spyker: "Spyker",
+  "spyker f1": "Spyker",
+  "spyker f1 team": "Spyker",
+  brawn: "Brawn",
+  "brawn gp": "Brawn",
+  "brawn gp f1 team": "Brawn",
+  "brawn gp formula one team": "Brawn",
+  toyota: "Toyota",
+  "toyota racing": "Toyota",
+  "panasonic toyota racing": "Toyota",
+  "panasonic toyota": "Toyota",
+  honda: "Honda",
+  "honda racing": "Honda",
+  "honda racing f1 team": "Honda",
+  "honda f1": "Honda",
+  "honda f1 team": "Honda",
+  "super aguri": "Super Aguri",
+  "super aguri f1": "Super Aguri",
+  "super aguri f1 team": "Super Aguri",
 }
 
 export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   if (!name) return null
   const canonical = TEAM_ALIASES[name.trim().toLowerCase()] || name
 
-  // For modern and recent seasons (2010+), prioritize the official vector logo
-  if (!season || season >= 2010) {
-    if (TEAM_LOGO_BY_NAME[canonical]) {
-      return TEAM_LOGO_BY_NAME[canonical]
-    }
-    if (TEAM_LOGO_BY_NAME[name]) {
-      return TEAM_LOGO_BY_NAME[name]
-    }
-  }
-
-  // Check historical season logo database
+  // Check historical season logo database first if season is provided
   if (season) {
     const seasonLogo = TEAM_SEASON_LOGOS[canonical]?.[season] ?? TEAM_SEASON_LOGOS[name]?.[season]
     if (seasonLogo) {
@@ -913,7 +938,10 @@ export function displayTeamName(name: string | null, season?: number): string {
     return "Lotus F1 Team"
   }
   if (name === "Renault") {
-    if (season && season >= 1981 && season <= 2010) return "Renault F1 Team"
+    if (season && season >= 1981 && season <= 2001) return "Renault F1 Team"
+    if (season && season >= 2002 && season <= 2006) return "Mild Seven Renault F1 Team"
+    if (season && season >= 2007 && season <= 2009) return "ING Renault F1 Team"
+    if (season === 2010) return "Renault F1 Team"
     if (season === 2011) return "Lotus Renault GP"
     if (season && season >= 2016 && season <= 2020) return "Renault DP World F1 Team"
     return "Renault F1 Team"
@@ -964,15 +992,14 @@ export function displayTeamName(name: string | null, season?: number): string {
   }
   if (name === "Toyota") {
     if (season === 2002) return "Toyota Racing"
-    if (season && season >= 2003 && season <= 2006) return "Panasonic Toyota Racing"
-    if (season && season >= 2007 && season <= 2009) return "Panasonic Toyota"
+    if (season && season >= 2003 && season <= 2009) return "Panasonic Toyota Racing"
     return "Panasonic Toyota Racing"
   }
   if (name === "Honda") {
     if (season && season >= 1964 && season <= 1968) return "Honda F1 Team"
     if (season && season >= 1983 && season <= 1992) return "Honda F1"
-    if (season && season >= 2006 && season <= 2008) return "Honda F1"
-    return "Honda F1"
+    if (season && season >= 2006 && season <= 2008) return "Honda Racing F1 Team"
+    return "Honda Racing F1 Team"
   }
   if (name === "Super Aguri") {
     return "Super Aguri F1 Team"
@@ -982,8 +1009,8 @@ export function displayTeamName(name: string | null, season?: number): string {
   }
   if (name === "Spyker MF1") return "Spyker MF1 Racing"
   if (name === "MF1") return "MF1 Racing"
-  if (name === "BAR") {
-    return "British American Racing"
+  if (name === "BAR" || name === "BAR Honda") {
+    return "Lucky Strike BAR Honda"
   }
   if (name === "Jordan") {
     if (season && season >= 1991 && season <= 1995) return "Jordan Grand Prix"
@@ -1044,7 +1071,10 @@ export function displayTeamName(name: string | null, season?: number): string {
   if (name === "Williams" || name === "Williams Racing") {
     if (season && season >= 1978 && season <= 1993) return "Williams Grand Prix Engineering"
     if (season && season >= 1994 && season <= 1999) return "Williams Rothmans"
-    if (season && season >= 2000 && season <= 2013) return "Williams-BMW"
+    if (season && season >= 2000 && season <= 2005) return "BMW WilliamsF1 Team"
+    if (season === 2006) return "WilliamsF1 Team"
+    if (season && season >= 2007 && season <= 2011) return "AT&T Williams"
+    if (season && season >= 2012 && season <= 2013) return "Williams F1 Team"
     if (season && season >= 2014 && season <= 2018) return "Martini Williams Racing"
     if (season === 2019) return "ROKiT Williams Racing"
     if (season && season >= 2020) return "Williams Racing"
@@ -1077,6 +1107,7 @@ export function displayTeamName(name: string | null, season?: number): string {
   }
 
   if (name === "Ferrari" || name === "Scuderia Ferrari" || name === "Scuderia Ferrari HP") {
+    if (season && season >= 1997 && season <= 2010) return "Scuderia Ferrari Marlboro"
     if (season === 2021) return "Scuderia Ferrari Mission Winnow"
     if (season && season >= 2024) return "Scuderia Ferrari HP"
     if (season && season >= 2020 && season <= 2023) return "Scuderia Ferrari"
@@ -1089,6 +1120,9 @@ export function displayTeamName(name: string | null, season?: number): string {
   }
 
   if (name === "McLaren" || name === "Mclaren" || name === "McLaren F1 Team" || name === "Mclaren F1 Team") {
+    if (season && season >= 1997 && season <= 2005) return "West McLaren Mercedes"
+    if (season === 2006) return "Team McLaren Mercedes"
+    if (season && season >= 2007 && season <= 2013) return "Vodafone McLaren Mercedes"
     return "Mclaren F1 Team"
   }
 
@@ -1200,6 +1234,82 @@ export const HISTORICAL_CONSTRUCTOR_ORDERS: Record<number, Record<string, number
     "Euro Brun": 18,
     Coloni: 19,
     Zakspeed: 20,
+  },
+  2005: {
+    Renault: 1,
+    McLaren: 2,
+    Ferrari: 3,
+    Toyota: 4,
+    Williams: 5,
+    BAR: 6,
+    "BAR Honda": 6,
+    "Red Bull Racing": 7,
+    "Red Bull": 7,
+    Sauber: 8,
+    Jordan: 9,
+    Minardi: 10,
+  },
+  2006: {
+    Renault: 1,
+    Ferrari: 2,
+    McLaren: 3,
+    Honda: 4,
+    "BMW Sauber": 5,
+    Sauber: 5,
+    Toyota: 6,
+    "Red Bull Racing": 7,
+    "Red Bull": 7,
+    Williams: 8,
+    "Toro Rosso": 9,
+    MF1: 10,
+    Midland: 10,
+    "Spyker MF1": 10,
+    "Super Aguri": 11,
+  },
+  2007: {
+    Ferrari: 1,
+    "BMW Sauber": 2,
+    Sauber: 2,
+    Renault: 3,
+    Williams: 4,
+    "Red Bull Racing": 5,
+    "Red Bull": 5,
+    Toyota: 6,
+    "Toro Rosso": 7,
+    Honda: 8,
+    "Super Aguri": 9,
+    Spyker: 10,
+    McLaren: 11,
+  },
+  2008: {
+    Ferrari: 1,
+    McLaren: 2,
+    "BMW Sauber": 3,
+    Sauber: 3,
+    Renault: 4,
+    Toyota: 5,
+    "Toro Rosso": 6,
+    "Red Bull Racing": 7,
+    "Red Bull": 7,
+    Williams: 8,
+    Honda: 9,
+    "Force India": 10,
+    "Super Aguri": 11,
+  },
+  2009: {
+    Brawn: 1,
+    "Brawn GP": 1,
+    "Red Bull Racing": 2,
+    "Red Bull": 2,
+    McLaren: 3,
+    Ferrari: 4,
+    Toyota: 5,
+    "BMW Sauber": 6,
+    Sauber: 6,
+    Williams: 7,
+    Renault: 8,
+    "Force India": 9,
+    "Toro Rosso": 10,
   },
   2010: {
     "Red Bull Racing": 1,
