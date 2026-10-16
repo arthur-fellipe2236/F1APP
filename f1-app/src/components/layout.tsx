@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils"
 import { UserProfile } from "@/components/user-profile"
 import { ModeToggle } from "@/components/mode-toggle"
 import { TeamThemeSelector, THEMES } from "@/components/team-theme-selector"
-import { TeamWingLivery } from "@/components/team-wing"
+import { TeamWing } from "@/components/team-wing"
 import { Tabs as TabsPrimitive } from "radix-ui"
 import { useAppStore } from "@/store"
 import { RadioPlayer } from "@/components/radio-player"
@@ -178,31 +178,6 @@ export function Layout() {
   const bgImage = isThemed 
     ? `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h24v24H0V0zm12 12h12v12H12V12zM0 12h12v12H0V12zm12-12h12v12H12V0z' fill='%23000000' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E"), radial-gradient(circle at 50% 0%, var(--team-glow, transparent) 0%, transparent 70%)` 
     : "none";
-
-  const wingImageSrc =
-    teamTheme === "ferrari"
-      ? "/f1-front-wing-ferrari.png"
-      : teamTheme === "mercedes"
-      ? "/f1-front-wing-mercedes.png"
-      : teamTheme === "mclaren"
-      ? "/f1-front-wing-mclaren.png"
-      : teamTheme === "redbull"
-      ? "/f1-front-wing-redbull.png"
-      : teamTheme === "racingbulls"
-      ? "/f1-front-wing-racingbulls.png"
-      : teamTheme === "alpine"
-      ? "/f1-front-wing-alpine.png"
-      : teamTheme === "haas"
-      ? "/f1-front-wing-haas.png"
-      : teamTheme === "williams"
-      ? "/f1-front-wing-williams.png"
-      : teamTheme === "aston"
-      ? "/f1-front-wing-aston.png"
-      : teamTheme === "audi"
-      ? "/f1-front-wing-audi.png"
-      : teamTheme === "cadillac"
-      ? "/f1-front-wing-cadillac.png"
-      : "/f1-front-wing.png";
 
   return (
     <div className="min-h-screen bg-background relative transition-colors duration-700 overflow-hidden flex flex-col">
@@ -401,16 +376,7 @@ export function Layout() {
 
         {/* DESKTOP (MD+): ASA DIANTEIRA 3D COM SELETOR EMBUTIDO NO CHASSIS */}
         <div className="hidden md:flex w-full max-w-5xl mx-auto relative px-2 items-center justify-center -mt-1 select-none">
-          <div className="w-full relative flex items-center justify-center">
-            <img
-              key={wingImageSrc}
-              src={wingImageSrc}
-              alt="F1 Front Wing 3D"
-              className="w-full h-auto max-h-[120px] lg:max-h-[134px] object-contain select-none pointer-events-none drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)] transition-all duration-300"
-            />
-            {/* LIVERY OFICIAL DA EQUIPE (OPÇÃO 01: FERRARI / OPÇÃO 02: MERCEDES-AMG) */}
-            <TeamWingLivery theme={teamTheme} />
-
+          <TeamWing theme={teamTheme} series={series}>
             {/* CÁPSULA FLUTUANTE CENTRAL F1 / F2 / F3 */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ top: "-2px" }}>
               <TabsPrimitive.Root 
@@ -455,48 +421,50 @@ export function Layout() {
                 </TabsPrimitive.List>
               </TabsPrimitive.Root>
             </div>
-          </div>
+          </TeamWing>
         </div>
 
-        {/* MOBILE (< MD): SELETOR COMPACTO ADAPTADO PARA SMARTPHONES */}
+        {/* MOBILE (< MD): ASA DIANTEIRA COMPACTA E SELETOR ADAPTADO */}
         <div className="flex md:hidden w-full bg-transparent px-3 pb-3 pt-1 items-center justify-center relative z-10">
-          <TabsPrimitive.Root value={series} onValueChange={setSeries} className="w-full max-w-[340px]">
-            <TabsPrimitive.List className="h-10 grid w-full grid-cols-3 p-1 rounded-xl bg-black/50 border border-white/10 shadow-inner backdrop-blur-md">
-              <TabsPrimitive.Trigger
-                value="f1"
-                className={cn(
-                  "h-full flex items-center justify-center rounded-lg transition-all duration-300 font-bold outline-none cursor-pointer",
-                  "text-white/50 hover:text-white hover:bg-white/5",
-                  "data-[state=active]:bg-[#E10600] data-[state=active]:text-white data-[state=active]:shadow-[0_2px_12px_rgba(225,6,0,0.45)]"
-                )}
-                title="Formula 1"
-              >
-                <F1Logo className="h-3.5 w-auto" />
-              </TabsPrimitive.Trigger>
-              <TabsPrimitive.Trigger
-                value="f2"
-                className={cn(
-                  "h-full flex items-center justify-center rounded-lg transition-all duration-300 font-bold outline-none cursor-pointer",
-                  "text-white/50 hover:text-white hover:bg-white/5",
-                  "data-[state=active]:bg-[#0090D0] data-[state=active]:text-white data-[state=active]:shadow-[0_2px_12px_rgba(0,144,208,0.45)]"
-                )}
-                title="FIA Formula 2"
-              >
-                <F2Logo className="h-3.5 w-auto" />
-              </TabsPrimitive.Trigger>
-              <TabsPrimitive.Trigger
-                value="f3"
-                className={cn(
-                  "h-full flex items-center justify-center rounded-lg transition-all duration-300 font-bold outline-none cursor-pointer",
-                  "text-white/50 hover:text-white hover:bg-white/5",
-                  "data-[state=active]:bg-[#F9A01B] data-[state=active]:text-white data-[state=active]:shadow-[0_2px_12px_rgba(249,160,27,0.45)]"
-                )}
-                title="FIA Formula 3"
-              >
-                <F3Logo className="h-3.5 w-auto" />
-              </TabsPrimitive.Trigger>
-            </TabsPrimitive.List>
-          </TabsPrimitive.Root>
+          <TeamWing theme={teamTheme} series={series} isMobile>
+            <TabsPrimitive.Root value={series} onValueChange={setSeries} className="w-full max-w-[340px]">
+              <TabsPrimitive.List className="h-10 grid w-full grid-cols-3 p-1 rounded-xl bg-black/50 border border-white/10 shadow-inner backdrop-blur-md">
+                <TabsPrimitive.Trigger
+                  value="f1"
+                  className={cn(
+                    "h-full flex items-center justify-center rounded-lg transition-all duration-300 font-bold outline-none cursor-pointer",
+                    "text-white/50 hover:text-white hover:bg-white/5",
+                    "data-[state=active]:bg-[#E10600] data-[state=active]:text-white data-[state=active]:shadow-[0_2px_12px_rgba(225,6,0,0.45)]"
+                  )}
+                  title="Formula 1"
+                >
+                  <F1Logo className="h-3.5 w-auto" />
+                </TabsPrimitive.Trigger>
+                <TabsPrimitive.Trigger
+                  value="f2"
+                  className={cn(
+                    "h-full flex items-center justify-center rounded-lg transition-all duration-300 font-bold outline-none cursor-pointer",
+                    "text-white/50 hover:text-white hover:bg-white/5",
+                    "data-[state=active]:bg-[#0090D0] data-[state=active]:text-white data-[state=active]:shadow-[0_2px_12px_rgba(0,144,208,0.45)]"
+                  )}
+                  title="FIA Formula 2"
+                >
+                  <F2Logo className="h-3.5 w-auto" />
+                </TabsPrimitive.Trigger>
+                <TabsPrimitive.Trigger
+                  value="f3"
+                  className={cn(
+                    "h-full flex items-center justify-center rounded-lg transition-all duration-300 font-bold outline-none cursor-pointer",
+                    "text-white/50 hover:text-white hover:bg-white/5",
+                    "data-[state=active]:bg-[#F9A01B] data-[state=active]:text-white data-[state=active]:shadow-[0_2px_12px_rgba(249,160,27,0.45)]"
+                  )}
+                  title="FIA Formula 3"
+                >
+                  <F3Logo className="h-3.5 w-auto" />
+                </TabsPrimitive.Trigger>
+              </TabsPrimitive.List>
+            </TabsPrimitive.Root>
+          </TeamWing>
         </div>
       </header>
       <main className="mx-auto max-w-6xl w-full px-3 sm:px-4 py-4 sm:py-8 relative z-10 flex-1 pb-24 md:pb-8">
