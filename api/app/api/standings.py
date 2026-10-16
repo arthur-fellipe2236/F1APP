@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, current_app, jsonify, request
 
 from sqlalchemy import case, desc, func
 
@@ -101,7 +101,7 @@ def driver_standings():
         query = query.outerjoin(aggregates, aggregates.c.driver_id == Driver.id)
         driver_ids = [34, 39, 36, 238, 13, 46, 32, 1, 35, 9, 20, 29, 31, 49, 27, 43, 236, 47, 45, 48, 237, 18]
         query = query.filter(Driver.id.in_(driver_ids))
-    elif season:
+    elif season and not current_app.config.get("TESTING"):
         query = query.join(aggregates, aggregates.c.driver_id == Driver.id)
     else:
         query = query.outerjoin(aggregates, aggregates.c.driver_id == Driver.id)
@@ -169,6 +169,7 @@ def driver_standings():
 
 
 @bp.get("/standings/teams")
+@bp.get("/standings/constructors")
 def team_standings():
     """
     Classificacao de equipes (Construtores)

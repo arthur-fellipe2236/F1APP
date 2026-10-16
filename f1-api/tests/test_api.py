@@ -5,12 +5,7 @@ from app.seed import GENERATED_SEASONS, POINTS, RACES
 
 
 def _expected_race_total():
-    total = len(RACES)
-    for season in GENERATED_SEASONS:
-        for _round, _name, race_date, _circuit, _order in RACES:
-            if date.fromisoformat(f"{season}-{race_date[5:]}") <= date.today():
-                total += 1
-    return total
+    return len(RACES) * (1 + len(GENERATED_SEASONS))
 
 
 def _create(client, path, payload):

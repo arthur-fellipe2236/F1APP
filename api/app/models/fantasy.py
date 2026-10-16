@@ -5,12 +5,12 @@ class Prediction(db.Model):
     __table_args__ = (db.UniqueConstraint('user_id', 'race_id', name='uq_user_race_prediction'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    race_id = db.Column(db.Integer, db.ForeignKey('races.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    race_id = db.Column(db.Integer, db.ForeignKey('races.id', ondelete='CASCADE'), nullable=False)
     
-    pole_driver_id = db.Column(db.Integer, db.ForeignKey('drivers.id'), nullable=True)
-    winner_driver_id = db.Column(db.Integer, db.ForeignKey('drivers.id'), nullable=True)
-    fastest_lap_driver_id = db.Column(db.Integer, db.ForeignKey('drivers.id'), nullable=True)
+    pole_driver_id = db.Column(db.Integer, db.ForeignKey('drivers.id', ondelete='SET NULL'), nullable=True)
+    winner_driver_id = db.Column(db.Integer, db.ForeignKey('drivers.id', ondelete='SET NULL'), nullable=True)
+    fastest_lap_driver_id = db.Column(db.Integer, db.ForeignKey('drivers.id', ondelete='SET NULL'), nullable=True)
     
     points_earned = db.Column(db.Integer, default=0)
     

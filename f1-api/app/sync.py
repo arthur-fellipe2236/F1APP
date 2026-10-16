@@ -541,6 +541,11 @@ def _sync_season_jolpica(season, force=False):
         else:
             force = True
 
+    if force:
+        for race in Race.query.filter_by(season=season).all():
+            db.session.delete(race)
+        db.session.commit()
+
     imported = 0
     for round_ in sorted(int(r["round"]) for r in calendar):
         if Race.query.filter_by(season=season, round=round_).first():

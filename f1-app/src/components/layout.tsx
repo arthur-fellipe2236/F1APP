@@ -12,7 +12,6 @@ import {
   Sparkles,
   GitCompare,
   ShieldAlert,
-  Home,
 } from "lucide-react"
 
 import { api } from "@/lib/api"
@@ -29,7 +28,6 @@ import { RadioPlayer } from "@/components/radio-player"
 const navItems = [
   { to: "/pilotos", label: "Pilotos", icon: Users },
   { to: "/equipes", label: "Equipes", icon: Trophy },
-  { to: "/", label: "App", icon: Home },
   { to: "/circuitos", label: "Resultados", icon: Flag },
   { to: "/calendario", label: "Calendário", icon: Calendar },
   { to: "/live", label: "Ao Vivo", icon: Radio, isLive: true },

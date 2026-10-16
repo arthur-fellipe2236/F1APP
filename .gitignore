@@ -32,6 +32,8 @@ f1-iframe-extension/
 
 # Scratch & temporary scripts
 scratch/
+scratch_*.py
+stress_test_results.json
 f1-app/scratch/
 f1-api/scratch/
 f1-api/cache/

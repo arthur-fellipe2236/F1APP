@@ -175,3 +175,33 @@ def join_league(current_user):
 @token_required
 def get_my_leagues(current_user):
     return jsonify([l.to_dict() for l in current_user.leagues])
+
+
+@bp.get("/fantasy/rules")
+def get_fantasy_rules():
+    """Regras de pontuação e funcionamento da Liga Fantasy"""
+    return jsonify({
+        "scoring": {
+            "winner": 10,
+            "pole_position": 5,
+            "fastest_lap": 5,
+        },
+        "deadline_hours": 48,
+        "description": "Envie seus palpites de Pole Position, Vencedor e Volta mais rapida ate 48 horas antes da largada de cada Grande Premio."
+    })
+
+
+@bp.get("/fantasy/standings")
+def get_fantasy_standings():
+    """Classificacao geral da Liga Fantasy (temporada atual ou informada)"""
+    season = request.args.get("season", type=int) or 2026
+    return get_leaderboard(season)
+
+
+@bp.get("/fantasy/my-predictions")
+@token_required
+def get_current_user_predictions(current_user):
+    """Palpites do usuario logado na temporada atual"""
+    season = request.args.get("season", type=int) or 2026
+    return get_user_predictions(current_user, season)
+

@@ -488,6 +488,8 @@ def live_tower():
         detected = _session_by_key(requested)
         if detected is not None:
             state = session_state(detected, now)
+        else:
+            raise ApiError("Sessao nao encontrada", 404)
     else:
         try:
             detected, state = detect_session(now)
@@ -528,6 +530,48 @@ def live_tower():
     if state == "finished":
         app_cache.set(tower_key, tower, TOWER_FINISHED_TTL)
     return jsonify(tower)
+
+
+@bp.get("/live/state")
+def live_state():
+    """
+    Estado resumido da sessao ativa (ou ultima encerrada)
+    ---
+    tags:
+      - Live
+    responses:
+      200:
+        description: Estado da sessao atual
+    """
+    now = _now_utc()
+    requested = parse_int(request.args.get("session_key"), "session_key")
+    if requested:
+        detected = _session_by_key(requested)
+        if not detected:
+            raise ApiError("Sessao nao encontrada", 404)
+        state = session_state(detected, now)
+    else:
+        try:
+            detected, state = detect_session(now)
+        except Exception:
+            detected, state = None, None
+
+    if detected is None:
+        return jsonify({
+            "active": False,
+            "state": "offseason",
+            "session": None
+        })
+
+    return jsonify({
+        "active": state == "live",
+        "state": state,
+        "session_key": detected["session_key"],
+        "session_name": detected.get("session_name"),
+        "meeting_name": detected.get("meeting_name"),
+        "date_start": detected.get("date_start"),
+        "date_end": detected.get("date_end"),
+    })
 
 
 @bp.get("/live/sessions")

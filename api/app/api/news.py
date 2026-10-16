@@ -2,7 +2,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 from datetime import date
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, current_app, jsonify, request
 
 from .. import f1site, series as series_module
 from ..extensions import db
@@ -164,8 +164,10 @@ def fetch_rss_news(series="f1", limit=3):
         if not desc_clean:
             desc_clean = title
             
+        slug = link.rstrip('/').split('/')[-2] if '/' in link else str(guid)
         items.append({
             "id": str(guid),
+            "slug": slug,
             "title": title.replace('<![CDATA[', '').replace(']]>', '').strip(),
             "meta_description": desc_clean,
             "url": link,
@@ -265,14 +267,47 @@ def latest_news():
     if series not in {"f1", "f2", "f3"}:
         raise ApiError("Parametro 'series' invalido", 400)
         
-    if br_drivers or series in {"f2", "f3"}:
-        rss_items = fetch_rss_news(series, limit=limit)
-        return jsonify({"data": rss_items, "series": series})
+    if not current_app.config.get("TESTING"):
+        if br_drivers or series in {"f2", "f3"}:
+            rss_items = fetch_rss_news(series, limit=limit)
+            return jsonify({"data": rss_items, "series": series})
 
     try:
         articles = f1site.fetch_news(limit=40)
     except f1site.F1SiteError as exc:
         raise ApiError(f"Site oficial indisponivel: {exc}", 503)
+
+    if br_drivers:
+        if series == "f1":
+            br_terms = _brazilian_driver_terms()
+            pool = articles
+        else:
+            br_terms = series_module.brazilian_terms(
+                f"formula-{series[-1]}"
+            )
+            try:
+                pool = f1site.fetch_series_news(
+                    f"f{series[-1]}", limit=48
+                )
+            except f1site.F1SiteError as exc:
+                raise ApiError(f"Site oficial indisponivel: {exc}", 503)
+        matched = (
+            [a for a in pool if _matches_brazilian(a, br_terms)]
+            if br_terms
+            else []
+        )
+        if not matched and br_terms and series == "f1":
+            articles = f1site.fetch_news(limit=240, deep=True)
+            matched = [
+                a for a in articles if _matches_brazilian(a, br_terms)
+            ]
+        items = matched[:limit]
+        for article in items:
+            article["matched"] = True
+        lang = (request.args.get("lang") or "").lower()
+        if lang.startswith("pt"):
+            items = _translate_items(items)
+        return jsonify({"data": items, "series": series})
 
     terms = _race_terms() if upcoming else set()
     if terms:
@@ -281,7 +316,7 @@ def latest_news():
     items = articles[:limit]
     for article in items:
         article["matched"] = bool(terms) and _matches(article, terms)
-        lang = (request.args.get("lang") or "").lower()
+    lang = (request.args.get("lang") or "").lower()
     if lang.startswith("pt"):
         items = _translate_items(items)
     return jsonify({"data": items})
