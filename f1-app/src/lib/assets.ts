@@ -349,8 +349,7 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     2009: { url: "/teams/brawn.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
   },
   "Toyota": {
-    2002: { url: "/toyota/toyota-1.jpg", className: "bg-white rounded-sm" },
-    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [2003 + i, { url: "/teams/toyota.svg", color: "#FFFFFF", className: "object-contain p-0.5" }])),
+    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [2002 + i, { url: "/teams/toyota.svg", color: "#FFFFFF", className: "object-contain p-0.5" }])),
   },
   "Honda": {
     ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1964 + i, { url: "/honda/honda-1.jpg", className: "bg-white rounded-sm" }])),
@@ -891,8 +890,8 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
     return { url: "/teams/virgin.svg", color: "#FFFFFF", className: "object-contain p-0.5" }
   }
 
-  // From 2005 to modern era (2026), prioritize the pristine official vector / high-res logos
-  if (!season || season >= 2005) {
+  // From 2010 to modern era (2026), prioritize the pristine official vector / high-res logos
+  if (!season || season >= 2010) {
     if (TEAM_LOGO_BY_NAME[canonical]) {
       return TEAM_LOGO_BY_NAME[canonical]
     }
@@ -1265,6 +1264,82 @@ export const HISTORICAL_CONSTRUCTOR_ORDERS: Record<number, Record<string, number
     "Euro Brun": 18,
     Coloni: 19,
     Zakspeed: 20,
+  },
+  1999: {
+    Ferrari: 1,
+    McLaren: 2,
+    Jordan: 3,
+    Stewart: 4,
+    Williams: 5,
+    Benetton: 6,
+    Prost: 7,
+    Sauber: 8,
+    Arrows: 9,
+    Minardi: 10,
+    BAR: 11,
+  },
+  2000: {
+    Ferrari: 1,
+    McLaren: 2,
+    Williams: 3,
+    Benetton: 4,
+    BAR: 5,
+    Jordan: 6,
+    Arrows: 7,
+    Sauber: 8,
+    Jaguar: 9,
+    Minardi: 10,
+    Prost: 11,
+  },
+  2001: {
+    Ferrari: 1,
+    McLaren: 2,
+    Williams: 3,
+    Sauber: 4,
+    Jordan: 5,
+    BAR: 6,
+    Benetton: 7,
+    Jaguar: 8,
+    Prost: 9,
+    Arrows: 10,
+    Minardi: 11,
+  },
+  2002: {
+    Ferrari: 1,
+    Williams: 2,
+    McLaren: 3,
+    Renault: 4,
+    Sauber: 5,
+    Jordan: 6,
+    Jaguar: 7,
+    BAR: 8,
+    Minardi: 9,
+    Toyota: 10,
+    Arrows: 11,
+  },
+  2003: {
+    Ferrari: 1,
+    Williams: 2,
+    McLaren: 3,
+    Renault: 4,
+    BAR: 5,
+    Sauber: 6,
+    Jaguar: 7,
+    Toyota: 8,
+    Jordan: 9,
+    Minardi: 10,
+  },
+  2004: {
+    Ferrari: 1,
+    BAR: 2,
+    Renault: 3,
+    Williams: 4,
+    McLaren: 5,
+    Sauber: 6,
+    Jaguar: 7,
+    Toyota: 8,
+    Jordan: 9,
+    Minardi: 10,
   },
   2005: {
     Renault: 1,
