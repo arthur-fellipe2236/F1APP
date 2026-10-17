@@ -392,8 +392,8 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2000 + i, { url: "/teams/jaguar.svg", color: "#004225", className: "object-contain p-0.5" }])),
   },
   "Arrows": {
-    ...Object.fromEntries(Array.from({ length: 12 }, (_, i) => [1978 + i, { url: "/arrows/arrows-1.jpg", className: "bg-white rounded-sm object-contain" }])),
-    1990: { url: "/teams/arrows.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1978 + i, { url: "/arrows/arrows-1.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1985 + i, { url: "/teams/arrows.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
     ...Object.fromEntries(Array.from({ length: 2 }, (_, i) => [1997 + i, { url: "/teams/arrows.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
     ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1999 + i, { url: "/teams/arrows.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
   },
@@ -404,8 +404,7 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1991 + i, { url: "/teams/footwork.svg", color: "#FFFFFF", className: "object-contain p-0.5" }])),
   },
   "Benetton": {
-    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1986 + i, { url: "/benetton/benetton-1.jpg", className: "bg-white rounded-sm object-contain" }])),
-    ...Object.fromEntries(Array.from({ length: 12 }, (_, i) => [1990 + i, { url: "/teams/benetton.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
+    ...Object.fromEntries(Array.from({ length: 16 }, (_, i) => [1986 + i, { url: "/teams/benetton.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
   },
   "Benetton Formula Mild Seven": {
     ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1994 + i, { url: "/teams/benetton.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
@@ -423,13 +422,12 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
   },
   "Tyrrell": {
     ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [1970 + i, { url: "/tyrrell/tyrrell-1.jpg", className: "bg-white rounded-sm object-contain" }])),
-    ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [1980 + i, { url: "/tyrrell/tyrrell-2.jpg", className: "bg-white rounded-sm object-contain" }])),
-    ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [1990 + i, { url: "/teams/tyrrell.svg", color: "#002B7F", className: "object-contain p-1" }])),
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1980 + i, { url: "/tyrrell/tyrrell-2.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 14 }, (_, i) => [1985 + i, { url: "/teams/tyrrell.svg", color: "#002B7F", className: "object-contain p-1" }])),
   },
   "Ligier": {
-    ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [1976 + i, { url: "/ligier/ligier-1.jpg", className: "bg-white rounded-sm object-contain" }])),
-    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1986 + i, { url: "/ligier/ligier-2.jpg", className: "bg-white rounded-sm object-contain" }])),
-    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1990 + i, { url: "/teams/ligier.svg", color: "#FFFFFF", className: "object-contain p-0.5" }])),
+    ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [1976 + i, { url: "/ligier/ligier-1.jpg", className: "bg-white rounded-sm object-contain" }])),
+    ...Object.fromEntries(Array.from({ length: 12 }, (_, i) => [1985 + i, { url: "/teams/ligier.svg", color: "#FFFFFF", className: "object-contain p-0.5" }])),
   },
   "Forti": {
     1995: { url: "/teams/forti.png", color: "#FFFFFF", className: "object-contain p-0.5" },
@@ -444,8 +442,7 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     1995: { url: "/teams/simtek.svg", color: "#19193f", className: "object-contain p-0.5" },
   },
   "Minardi": {
-    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1985 + i, { url: "/minardi/minardi-1.jpg", className: "bg-white rounded-sm object-contain" }])),
-    ...Object.fromEntries(Array.from({ length: 16 }, (_, i) => [1990 + i, { url: "/teams/minardi.svg", color: "#1E1E1E", className: "object-contain p-0.5" }])),
+    ...Object.fromEntries(Array.from({ length: 21 }, (_, i) => [1985 + i, { url: "/teams/minardi.svg", color: "#1E1E1E", className: "object-contain p-0.5" }])),
   },
   "Jordan": {
     ...Object.fromEntries(Array.from({ length: 15 }, (_, i) => [1991 + i, { url: "/teams/jordan.png", color: "#FFDE00", className: "object-contain p-0.5" }])),
@@ -867,6 +864,9 @@ const TEAM_ALIASES: Record<string, string> = {
   coloni: "Coloni",
   rial: "Rial",
   onyx: "Onyx",
+  spirit: "Spirit",
+  ram: "RAM",
+  "ram racing": "RAM",
   // 2005-2009 Historical Teams
   bar: "BAR",
   "bar honda": "BAR",
@@ -985,8 +985,8 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
     return { url: "/teams/sauber.png", color: "#002B49", className: "object-contain p-0.5" }
   }
 
-  // From 1990 to modern era (2026), prioritize pristine vector and curated high-res logos
-  if (!season || season >= 1990) {
+  // From 1985 to modern era (2026), prioritize pristine vector and curated high-res logos
+  if (!season || season >= 1985) {
     // 1. Check if there is a specific curated season logo that is NOT an old scanned jpg
     const seasonLogo = season ? (TEAM_SEASON_LOGOS[canonical]?.[season] ?? TEAM_SEASON_LOGOS[name]?.[season]) : undefined
     if (seasonLogo && !seasonLogo.url.includes("/ferrari/") && !seasonLogo.url.includes("/mclaren/") && !seasonLogo.url.includes("/williams/") && !seasonLogo.url.includes("/redbull/") && !seasonLogo.url.includes("/alpine/")) {
@@ -1006,7 +1006,7 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
     }
   }
 
-  // Pre-1990 vintage seasons (1950-1989)
+  // Pre-1985 vintage seasons (1950-1984)
   if (season) {
     const seasonLogo = TEAM_SEASON_LOGOS[canonical]?.[season] ?? TEAM_SEASON_LOGOS[name]?.[season]
     if (seasonLogo) {
