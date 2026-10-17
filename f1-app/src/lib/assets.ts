@@ -1047,7 +1047,7 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   if (!season || season >= 1985) {
     // 1. Check if there is a specific curated season logo that is NOT an old scanned jpg
     const seasonLogo = season ? (TEAM_SEASON_LOGOS[canonical]?.[season] ?? TEAM_SEASON_LOGOS[name]?.[season]) : undefined
-    if (seasonLogo && !seasonLogo.url.includes("/ferrari/") && !seasonLogo.url.includes("/mclaren/") && !seasonLogo.url.includes("/williams/") && !seasonLogo.url.includes("/redbull/") && !seasonLogo.url.includes("/alpine/")) {
+    if (seasonLogo && !seasonLogo.url.includes("/ferrari/") && !seasonLogo.url.includes("/mclaren/") && !seasonLogo.url.includes("/williams/") && !seasonLogo.url.includes("/redbull/") && !seasonLogo.url.includes("/alpine/") && !seasonLogo.url.includes("/mercedes/") && !seasonLogo.url.includes("/haas/")) {
       const fallbackColor = TEAM_LOGO_BY_NAME[canonical]?.color ?? TEAM_LOGO_BY_NAME[name]?.color
       return {
         ...seasonLogo,
