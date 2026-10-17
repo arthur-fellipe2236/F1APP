@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="46" fill="#0B1A30" stroke="#C8A051" stroke-width="2.5"/>
+  <circle cx="50" cy="50" r="38" fill="#FFFFFF"/>
+  <path d="M50 12 L50 88 A38 38 0 0 1 50 12 Z" fill="#0072CE"/>
+  <!-- Red Cross -->
+  <rect x="20" y="44" width="24" height="12" fill="#D6001C"/>
+  <rect x="26" y="32" width="12" height="36" fill="#D6001C"/>
+  <!-- Biscione serpent silhouette -->
+  <path d="M62 30 Q74 30 74 42 Q74 50 64 54 Q74 58 74 68 Q74 76 64 76" fill="none" stroke="#008837" stroke-width="6" stroke-linecap="round"/>
+</svg>

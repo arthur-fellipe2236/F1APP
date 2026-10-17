@@ -174,19 +174,30 @@ export function Layout() {
 
   const themeObj = THEMES.find((t) => t.id === teamTheme);
   const isThemed = themeObj && themeObj.id !== "default";
-  
-  const bgImage = isThemed 
-    ? `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h24v24H0V0zm12 12h12v12H12V12zM0 12h12v12H0V12zm12-12h12v12H12V0z' fill='%23000000' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E"), radial-gradient(circle at 50% 0%, var(--team-glow, transparent) 0%, transparent 70%)` 
-    : "none";
+  const isDark = resolvedTheme === "dark";
+
+  // High-Tech F1 Carbon Twill Weave & Atmospheric Track Lighting
+  const carbonPattern = isDark
+    ? `url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h8v8H0V0zm8 8h8v8H8V8z' fill='%23ffffff' fill-opacity='0.024'/%3E%3Cpath d='M0 8h8v8H0V8zm8-8h8v8H8V0z' fill='%23000000' fill-opacity='0.20'/%3E%3Cpath d='M0 0l8 8M8 0l8 8M0 8l8 8M8 8l8 8' stroke='%23ffffff' stroke-opacity='0.018' stroke-width='0.5'/%3E%3C/svg%3E")`
+    : `radial-gradient(circle, rgba(0, 0, 0, 0.06) 1px, transparent 1px)`;
+
+  const atmosphericGlow = isThemed
+    ? `radial-gradient(ellipse 90% 55% at 50% -5%, var(--team-glow, rgba(225,6,0,0.18)) 0%, transparent 75%)`
+    : (isDark
+      ? `radial-gradient(ellipse 90% 50% at 50% -5%, rgba(225, 6, 0, 0.08) 0%, rgba(30, 41, 59, 0.14) 40%, transparent 75%)`
+      : `radial-gradient(ellipse 90% 45% at 50% -5%, rgba(225, 6, 0, 0.04) 0%, transparent 70%)`);
+
+  const bgImage = `${carbonPattern}, ${atmosphericGlow}`;
+  const bgSize = isDark ? "16px 16px, 100% 100%" : "24px 24px, 100% 100%";
 
   return (
     <div className="min-h-screen bg-background relative transition-colors duration-700 overflow-hidden flex flex-col">
-      {/* Carbon Fiber + Radial Glow Background Overlay */}
+      {/* High-Tech Carbon Fiber + Atmospheric Track Lighting Background Overlay */}
       <div 
         className="fixed inset-0 pointer-events-none transition-all duration-1000 z-0 team-bg-layer" 
         style={{ 
-          backgroundColor: "var(--team-bg-color, transparent)",
-          backgroundSize: "24px 24px, 100% 100%",
+          backgroundColor: isThemed ? "var(--team-bg-color, transparent)" : "transparent",
+          backgroundSize: bgSize,
           backgroundImage: bgImage
         }} 
       />

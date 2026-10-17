@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect x="2" y="2" width="96" height="96" rx="14" fill="#001815" stroke="#00A19B" stroke-width="2"/>
+  <!-- Petronas drop symbol -->
+  <path d="M50 16 C34 38 24 54 24 68 C24 82 36 90 50 90 C64 90 76 82 76 68 C76 54 66 38 50 16 Z" fill="#00A19B"/>
+  <circle cx="50" cy="66" r="14" fill="#001815"/>
+</svg>

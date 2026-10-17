@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="46" fill="#D6001C" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="50" cy="50" r="38" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+  <!-- 3 crossed tuning forks -->
+  <g stroke="#FFFFFF" stroke-width="3.5" fill="none" stroke-linecap="round">
+    <line x1="50" y1="50" x2="50" y2="16"/>
+    <path d="M42 22 C46 28 54 28 58 22"/>
+    <line x1="50" y1="50" x2="20" y2="67"/>
+    <path d="M28 72 C32 66 36 73 40 76"/>
+    <line x1="50" y1="50" x2="80" y2="67"/>
+    <path d="M72 72 C68 66 64 73 60 76"/>
+  </g>
+  <circle cx="50" cy="50" r="6" fill="#FFFFFF"/>
+</svg>

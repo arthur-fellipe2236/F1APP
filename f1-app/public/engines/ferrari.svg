@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 130">
+  <path d="M12 12 Q50 6 88 12 L88 80 Q88 115 50 128 Q12 115 12 80 Z" fill="#FFE000" stroke="#000000" stroke-width="2"/>
+  <rect x="13" y="10" width="24" height="10" fill="#009246"/>
+  <rect x="37" y="10" width="26" height="10" fill="#FFFFFF"/>
+  <rect x="63" y="10" width="24" height="10" fill="#CE2B37"/>
+  <!-- Cavallino silhouette -->
+  <path d="M52 32 C50 30 46 32 44 36 C42 40 45 44 43 48 C41 52 37 56 38 60 C39 63 43 62 45 60 C46 59 47 62 46 66 C44 71 39 74 38 78 C37 82 41 82 43 80 C46 77 47 73 48 70 C49 74 48 81 50 86 C51 90 54 94 54 98 C54 100 52 103 53 105 C55 106 58 103 57 100 C56 95 53 90 53 85 C55 85 58 87 60 90 C62 94 63 99 64 103 C65 106 68 105 68 102 C67 98 64 92 61 87 C59 83 58 78 57 73 C60 74 63 76 66 79 C68 81 70 80 69 77 C67 73 63 70 59 67 C63 65 67 62 68 57 C69 52 65 48 62 46 C60 44 57 40 56 36 C55 33 54 33 52 32 Z" fill="#000000"/>
+  <text x="32" y="120" font-family="Arial, sans-serif" font-weight="900" font-size="14" fill="#000000">S</text>
+  <text x="68" y="120" font-family="Arial, sans-serif" font-weight="900" font-size="14" fill="#000000" text-anchor="end">F</text>
+</svg>

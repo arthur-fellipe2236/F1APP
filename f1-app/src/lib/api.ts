@@ -13,6 +13,7 @@ export interface Paginated<T> {
 export interface Team {
   id: number
   name: string
+  base_city?: string | null
   base_country: string | null
   engine_manufacturer: string | null
   founded_year: number | null

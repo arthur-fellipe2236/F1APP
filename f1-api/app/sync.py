@@ -69,53 +69,442 @@ NATIONALITY_PT = {
 
 # Sede, motor e ano de fundacao por construtor (a OpenF1/Jolpica nao
 # fornecem esses campos). Valores referentes a era mais recente da equipe.
+# Sede (cidade, pais), motor e ano de fundacao por construtor para todas as 74 equipes
 TEAM_METADATA = {
-    "Red Bull Racing": ("Reino Unido", "Red Bull Ford", 2005),
-    "Ferrari": ("Itália", "Ferrari", 1950),
-    "Mercedes": ("Alemanha", "Mercedes", 2010),
-    "McLaren": ("Reino Unido", "Mercedes", 1963),
-    "Aston Martin": ("Reino Unido", "Honda", 2021),
-    "Alpine": ("França", "Mercedes", 2021),
-    "Williams": ("Reino Unido", "Mercedes", 1977),
-    "AlphaTauri": ("Itália", "Honda RBPT", 2020),
-    "RB": ("Itália", "Honda RBPT", 2022),
-    "Visa Cash App RB": ("Itália", "Honda RBPT", 2022),
-    "Racing Bulls": ("Itália", "Red Bull Ford", 2025),
-    "Alfa Romeo": ("Suíça", "Ferrari", 2018),
-    "Kick Sauber": ("Suíça", "Ferrari", 2024),
-    "Audi": ("Suíça", "Audi", 2026),
-    "Haas": ("Estados Unidos", "Ferrari", 2014),
-    "Cadillac": ("Estados Unidos", "Ferrari", 2026),
+    "Mercedes": ("Brackley", "Alemanha", "Mercedes", 2010),
+    "Ferrari": ("Maranello", "Itália", "Ferrari", 1950),
+    "Williams": ("Grove", "Reino Unido", "Mercedes", 1977),
+    "Sauber": ("Hinwil", "Suíça", "Ferrari", 1993),
+    "Red Bull Racing": ("Milton Keynes", "Reino Unido", "Red Bull Ford", 2005),
+    "Force India": ("Silverstone", "Reino Unido", "Mercedes", 2007),
+    "Toro Rosso": ("Faenza", "Itália", "Honda", 2005),
+    "McLaren": ("Woking", "Reino Unido", "Mercedes", 1963),
+    "Lotus F1": ("Enstone", "Reino Unido", "Renault", 2012),
+    "Manor Marussia": ("Banbury", "Reino Unido", "Ferrari", 2015),
+    "Haas": ("Kannapolis", "Estados Unidos", "Ferrari", 2014),
+    "Renault": ("Enstone", "França", "Renault", 1977),
+    "Alfa Romeo": ("Hinwil", "Suíça", "Ferrari", 2018),
+    "Racing Point": ("Silverstone", "Reino Unido", "BWT Mercedes", 2018),
+    "AlphaTauri": ("Faenza", "Itália", "Honda RBPT", 2020),
+    "Aston Martin": ("Silverstone", "Reino Unido", "Mercedes", 2009),
+    "Alpine": ("Enstone", "França", "Renault", 2021),
+    "RB": ("Faenza", "Itália", "Honda RBPT", 2024),
+    "Visa Cash App RB": ("Faenza", "Itália", "Honda RBPT", 2024),
+    "Kick Sauber": ("Hinwil", "Suíça", "Ferrari", 2024),
+    "Racing Bulls": ("Faenza", "Itália", "Red Bull Ford", 2025),
+    "Audi": ("Neuburg an der Donau", "Alemanha", "Audi", 2026),
+    "Cadillac": ("Fishers", "Estados Unidos", "Ferrari", 2026),
+    "Marussia": ("Banbury", "Reino Unido", "Cosworth", 2012),
+    "Caterham": ("Leafield", "Reino Unido", "Renault", 2012),
+    "HRT": ("Madrid", "Espanha", "Cosworth", 2010),
+    "Lotus": ("Hethel", "Reino Unido", "Honda", 1952),
+    "Virgin": ("Dinnington", "Reino Unido", "Cosworth", 2010),
+    "Brawn": ("Brackley", "Reino Unido", "Mercedes", 2009),
+    "Toyota": ("Colônia", "Alemanha", "Toyota", 2002),
+    "BMW Sauber": ("Hinwil", "Suíça", "BMW", 2006),
+    "Super Aguri": ("Leafield", "Japão", "Honda", 2006),
+    "Honda": ("Brackley", "Japão", "Honda", 1964),
+    "Spyker": ("Silverstone", "Holanda", "Ferrari", 2007),
+    "MF1": ("Silverstone", "Rússia", "Toyota", 2006),
+    "Spyker MF1": ("Silverstone", "Holanda", "Toyota", 2006),
+    "BAR": ("Brackley", "Reino Unido", "Honda", 1999),
+    "Jordan": ("Silverstone", "Irlanda", "Ford Cosworth", 1991),
+    "Minardi": ("Faenza", "Itália", "Ford Cosworth", 1979),
+    "Jaguar": ("Milton Keynes", "Reino Unido", "Cosworth", 2000),
+    "Arrows": ("Milton Keynes", "Reino Unido", "Ford Cosworth", 1978),
+    "Prost": ("Guyancourt", "França", "Peugeot", 1997),
+    "Benetton": ("Enstone", "Reino Unido", "Ford Cosworth", 1986),
+    "Stewart": ("Milton Keynes", "Reino Unido", "Ford", 1997),
+    "Tyrrell": ("Ockham", "Reino Unido", "Ford Cosworth", 1968),
+    "Ligier": ("Abrest", "França", "Renault", 1976),
+    "Footwork": ("Milton Keynes", "Reino Unido", "Porsche", 1991),
+    "Forti": ("Alessandria", "Itália", "Ford Cosworth", 1977),
+    "Pacific": ("Thetford", "Reino Unido", "Ford Cosworth", 1984),
+    "Simtek": ("Banbury", "Reino Unido", "Ford Cosworth", 1989),
+    "Team Lotus": ("Hethel", "Reino Unido", "Honda", 1952),
+    "Larrousse": ("Antony", "França", "Lamborghini", 1987),
+    "Lola": ("Huntingdon", "Reino Unido", "Ford Cosworth", 1958),
+    "Brabham": ("Chessington", "Reino Unido", "BMW", 1962),
+    "Dallara": ("Varano de' Melegari", "Itália", "Ford Cosworth", 1988),
+    "Fondmetal": ("Palosco", "Itália", "Ford Cosworth", 1991),
+    "March": ("Bicester", "Reino Unido", "Judd", 1969),
+    "Andrea Moda": ("Civitanova Marche", "Itália", "Judd", 1992),
+    "Lambo": ("Modena", "Itália", "Lamborghini", 1991),
+    "AGS": ("Gonfaron", "França", "Ford Cosworth", 1986),
+    "Leyton House": ("Bicester", "Reino Unido", "Judd", 1990),
+    "Euro Brun": ("Senago", "Itália", "Judd", 1988),
+    "Osella": ("Volpiano", "Itália", "Ford Cosworth", 1980),
+    "Onyx": ("Littlehampton", "Reino Unido", "Ford Cosworth", 1989),
+    "Rial": ("Fussgönheim", "Alemanha", "Ford Cosworth", 1988),
+    "Zakspeed": ("Niederzissen", "Alemanha", "Zakspeed", 1985),
+    "Coloni": ("Passignano sul Trasimeno", "Itália", "Ford Cosworth", 1987),
+    "RAM": ("Silverstone", "Reino Unido", "Hart", 1976),
+    "Spirit": ("Slough", "Reino Unido", "Hart", 1981),
+    "Toleman": ("Witney", "Reino Unido", "Hart", 1981),
+    "ATS": ("Bad Dürkheim", "Alemanha", "Ford Cosworth", 1977),
+    "Theodore": ("Hong Kong", "Hong Kong", "Ford Cosworth", 1977),
+    "Fittipaldi": ("Reading", "Brasil", "Ford Cosworth", 1974),
+    "Ensign": ("Burntwood", "Reino Unido", "Ford Cosworth", 1973),
+    "Shadow": ("Northampton", "Reino Unido", "Ford Cosworth", 1969),
 }
 
-# Motor por temporada (equipes trocam de fornecedor ao longo dos anos).
-# Valores ausentes usam o padrao da linha em TEAM_METADATA.
+# Motor especifico por temporada (1980-2026)
 TEAM_ENGINES_BY_SEASON = {
+    "Ferrari": {s: "Ferrari" for s in range(1980, 2027)},
+    "McLaren": {
+        **{s: "Ford Cosworth" for s in range(1980, 1984)},
+        **{s: "TAG Porsche" for s in range(1984, 1988)},
+        **{s: "Honda" for s in range(1988, 1993)},
+        1993: "Ford Cosworth",
+        1994: "Peugeot",
+        **{s: "Mercedes" for s in range(1995, 2015)},
+        **{s: "Honda" for s in range(2015, 2018)},
+        **{s: "Renault" for s in range(2018, 2021)},
+        **{s: "Mercedes" for s in range(2021, 2027)},
+    },
+    "Williams": {
+        **{s: "Ford Cosworth" for s in range(1980, 1984)},
+        **{s: "Honda" for s in range(1984, 1988)},
+        1988: "Judd",
+        **{s: "Renault" for s in range(1989, 1998)},
+        1998: "Mecachrome",
+        1999: "Supertec",
+        **{s: "BMW" for s in range(2000, 2006)},
+        2006: "Cosworth",
+        **{s: "Toyota" for s in range(2007, 2010)},
+        2010: "Cosworth", 2011: "Cosworth",
+        2012: "Renault", 2013: "Renault",
+        **{s: "Mercedes" for s in range(2014, 2027)},
+    },
     "Red Bull Racing": {
-        2022: "Honda RBPT", 2023: "Honda RBPT",
-        2024: "Honda RBPT", 2025: "Honda RBPT",
+        2005: "Cosworth",
+        2006: "Ferrari",
+        **{s: "Renault" for s in range(2007, 2016)},
+        **{s: "TAG Heuer" for s in range(2016, 2019)},
+        **{s: "Honda" for s in range(2019, 2022)},
+        **{s: "Honda RBPT" for s in range(2022, 2026)},
         2026: "Red Bull Ford",
     },
-    "Aston Martin": {
-        2022: "Mercedes", 2023: "Mercedes",
-        2024: "Mercedes", 2025: "Mercedes",
-        2026: "Honda",
+    "Mercedes": {s: "Mercedes" for s in range(2010, 2027)},
+    "Renault": {
+        **{s: "Renault" for s in range(1977, 1986)},
+        **{s: "Renault" for s in range(2002, 2012)},
+        **{s: "Renault" for s in range(2016, 2021)},
     },
     "Alpine": {
-        2022: "Renault", 2023: "Renault",
-        2024: "Renault", 2025: "Renault",
+        **{s: "Renault" for s in range(2021, 2026)},
         2026: "Mercedes",
     },
-    "Haas": {2022: "Ferrari", 2023: "Ferrari", 2024: "Ferrari",
-             2025: "Ferrari", 2026: "Ferrari"},
-    "Alfa Romeo": {2022: "Ferrari", 2023: "Ferrari"},
-    "AlphaTauri": {2022: "Honda RBPT", 2023: "Honda RBPT"},
-    "RB": {2024: "Honda RBPT"},
-    "Visa Cash App RB": {2025: "Honda RBPT"},
-    "Racing Bulls": {2025: "Honda RBPT", 2026: "Red Bull Ford"},
-    "Kick Sauber": {2024: "Ferrari", 2025: "Ferrari"},
-    "Audi": {2026: "Audi"},
-    "Cadillac": {2026: "Ferrari"},
+    "Aston Martin": {
+        **{s: "Mercedes" for s in range(2021, 2026)},
+        2026: "Honda",
+    },
+    "Force India": {
+        2008: "Ferrari",
+        **{s: "Mercedes" for s in range(2009, 2019)},
+    },
+    "Racing Point": {
+        **{s: "BWT Mercedes" for s in range(2018, 2021)},
+    },
+    "Toro Rosso": {
+        2006: "Cosworth",
+        **{s: "Ferrari" for s in range(2007, 2014)},
+        2014: "Renault", 2015: "Renault",
+        2016: "Ferrari",
+        2017: "Renault",
+        2018: "Honda", 2019: "Honda",
+    },
+    "AlphaTauri": {
+        2020: "Honda", 2021: "Honda",
+        2022: "Honda RBPT", 2023: "Honda RBPT",
+    },
+    "RB": {
+        2024: "Honda RBPT",
+    },
+    "Visa Cash App RB": {
+        2024: "Honda RBPT", 2025: "Honda RBPT",
+    },
+    "Racing Bulls": {
+        2025: "Honda RBPT",
+        2026: "Red Bull Ford",
+    },
+    "Sauber": {
+        1993: "Ilmor",
+        1994: "Mercedes",
+        1995: "Ford Cosworth", 1996: "Ford Cosworth",
+        **{s: "Petronas" for s in range(1997, 2006)},
+        **{s: "Ferrari" for s in range(2010, 2019)},
+    },
+    "Sauber Clássica": {
+        **{s: "Petronas" for s in range(1997, 2006)},
+    },
+    "BMW Sauber": {
+        **{s: "BMW" for s in range(2006, 2010)},
+    },
+    "Alfa Romeo": {
+        **{s: "Ferrari" for s in range(2018, 2024)},
+    },
+    "Kick Sauber": {
+        2024: "Ferrari", 2025: "Ferrari",
+    },
+    "Audi": {
+        2026: "Audi",
+    },
+    "Haas": {
+        **{s: "Ferrari" for s in range(2016, 2027)},
+    },
+    "Cadillac": {
+        2026: "Ferrari",
+    },
+    "Benetton": {
+        1986: "BMW",
+        **{s: "Ford Cosworth" for s in range(1987, 1995)},
+        **{s: "Renault" for s in range(1995, 1998)},
+        **{s: "Playlife" for s in range(1998, 2001)},
+        2001: "Renault",
+    },
+    "Jordan": {
+        1991: "Ford Cosworth",
+        1992: "Yamaha",
+        1993: "Hart", 1994: "Hart",
+        **{s: "Peugeot" for s in range(1995, 1998)},
+        **{s: "Mugen-Honda" for s in range(1998, 2001)},
+        2001: "Honda", 2002: "Honda",
+        2003: "Ford Cosworth", 2004: "Ford Cosworth",
+        2005: "Toyota",
+    },
+    "Lotus": {
+        **{s: "Ford Cosworth" for s in range(1980, 1984)},
+        **{s: "Renault" for s in range(1983, 1987)},
+        1987: "Honda", 1988: "Honda",
+        1989: "Judd",
+        1990: "Lamborghini",
+        1991: "Judd",
+        1992: "Ford Cosworth", 1993: "Ford Cosworth",
+        1994: "Mugen-Honda",
+        2010: "Cosworth", 2011: "Renault",
+    },
+    "Team Lotus": {
+        **{s: "Ford Cosworth" for s in range(1980, 1984)},
+        **{s: "Renault" for s in range(1983, 1987)},
+        1987: "Honda", 1988: "Honda",
+        1989: "Judd",
+        1990: "Lamborghini",
+        1991: "Judd",
+        1992: "Ford Cosworth", 1993: "Ford Cosworth",
+        1994: "Mugen-Honda",
+        2011: "Renault",
+    },
+    "Lotus F1": {
+        **{s: "Renault" for s in range(2012, 2015)},
+        2015: "Mercedes",
+    },
+    "Brabham": {
+        1980: "Ford Cosworth", 1981: "Ford Cosworth",
+        **{s: "BMW" for s in range(1982, 1988)},
+        1989: "Judd", 1990: "Judd",
+        1991: "Yamaha",
+        1992: "Judd",
+    },
+    "Tyrrell": {
+        **{s: "Ford Cosworth" for s in range(1980, 1986)},
+        1985: "Renault", 1986: "Renault",
+        **{s: "Ford Cosworth" for s in range(1987, 1991)},
+        1991: "Honda",
+        1992: "Ilmor",
+        **{s: "Yamaha" for s in range(1993, 1997)},
+        1997: "Ford Cosworth", 1998: "Ford Cosworth",
+    },
+    "Ligier": {
+        1980: "Ford Cosworth",
+        1981: "Matra", 1982: "Matra",
+        1983: "Ford Cosworth",
+        **{s: "Renault" for s in range(1984, 1987)},
+        1987: "Megatron",
+        1988: "Judd",
+        1989: "Ford Cosworth", 1990: "Ford Cosworth",
+        1991: "Lamborghini",
+        **{s: "Renault" for s in range(1992, 1995)},
+        1995: "Mugen-Honda", 1996: "Mugen-Honda",
+    },
+    "Minardi": {
+        **{s: "Motori Moderni" for s in range(1985, 1988)},
+        **{s: "Ford Cosworth" for s in range(1988, 1991)},
+        1991: "Ferrari",
+        1992: "Lamborghini",
+        1993: "Ford Cosworth", 1994: "Ford Cosworth",
+        1995: "Mugen-Honda",
+        **{s: "Ford Cosworth" for s in range(1996, 2000)},
+        2000: "Fondmetal",
+        2001: "European",
+        2002: "Asiatech",
+        **{s: "Cosworth" for s in range(2003, 2006)},
+    },
+    "Arrows": {
+        **{s: "Ford Cosworth" for s in range(1980, 1984)},
+        **{s: "BMW" for s in range(1984, 1987)},
+        1987: "Megatron", 1988: "Megatron",
+        1989: "Ford Cosworth", 1990: "Ford Cosworth",
+        1996: "Hart",
+        1997: "Yamaha",
+        1998: "Arrows", 1999: "Arrows",
+        2000: "Supertec",
+        2001: "Asiatech",
+        2002: "Cosworth",
+    },
+    "Footwork": {
+        1991: "Porsche",
+        1992: "Mugen-Honda", 1993: "Mugen-Honda",
+        1994: "Ford Cosworth", 1995: "Ford Cosworth",
+        1996: "Hart",
+    },
+    "Prost": {
+        1997: "Mugen-Honda",
+        **{s: "Peugeot" for s in range(1998, 2001)},
+        2001: "Acer",
+    },
+    "Stewart": {
+        **{s: "Ford" for s in range(1997, 2000)},
+    },
+    "Jaguar": {
+        **{s: "Cosworth" for s in range(2000, 2005)},
+    },
+    "BAR": {
+        1999: "Supertec",
+        **{s: "Honda" for s in range(2000, 2006)},
+    },
+    "Honda": {
+        **{s: "Honda" for s in range(2006, 2009)},
+    },
+    "Brawn": {
+        2009: "Mercedes",
+    },
+    "Toyota": {
+        **{s: "Toyota" for s in range(2002, 2010)},
+    },
+    "Super Aguri": {
+        **{s: "Honda" for s in range(2006, 2009)},
+    },
+    "Spyker": {
+        2007: "Ferrari",
+    },
+    "MF1": {
+        2006: "Toyota",
+    },
+    "Spyker MF1": {
+        2006: "Toyota",
+    },
+    "Virgin": {
+        2010: "Cosworth", 2011: "Cosworth",
+    },
+    "Marussia": {
+        **{s: "Cosworth" for s in range(2012, 2014)},
+        2014: "Ferrari",
+    },
+    "Manor Marussia": {
+        2015: "Ferrari",
+        2016: "Mercedes",
+    },
+    "Caterham": {
+        **{s: "Renault" for s in range(2012, 2015)},
+    },
+    "HRT": {
+        **{s: "Cosworth" for s in range(2010, 2013)},
+    },
+    "Larrousse": {
+        1987: "Ford Cosworth", 1988: "Ford Cosworth",
+        1989: "Lamborghini", 1990: "Lamborghini",
+        1991: "Ford Cosworth",
+        1992: "Lamborghini",
+        1993: "Ford Cosworth", 1994: "Ford Cosworth",
+    },
+    "March": {
+        1987: "Ford Cosworth", 1988: "Ford Cosworth",
+        1989: "Judd", 1990: "Judd",
+        1992: "Ilmor",
+    },
+    "Leyton House": {
+        1990: "Judd",
+        1991: "Ilmor",
+    },
+    "Dallara": {
+        **{s: "Ford Cosworth" for s in range(1988, 1991)},
+        1991: "Judd",
+        1992: "Ferrari",
+    },
+    "Osella": {
+        **{s: "Ford Cosworth" for s in range(1980, 1984)},
+        **{s: "Alfa Romeo" for s in range(1984, 1989)},
+        1989: "Ford Cosworth", 1990: "Ford Cosworth",
+    },
+    "Fondmetal": {
+        1991: "Ford Cosworth", 1992: "Ford Cosworth",
+    },
+    "Simtek": {
+        1994: "Ford Cosworth", 1995: "Ford Cosworth",
+    },
+    "Pacific": {
+        1994: "Ilmor",
+        1995: "Ford Cosworth",
+    },
+    "Forti": {
+        1995: "Ford Cosworth", 1996: "Ford Cosworth",
+    },
+    "Andrea Moda": {
+        1992: "Judd",
+    },
+    "Lambo": {
+        1991: "Lamborghini",
+    },
+    "AGS": {
+        1986: "Motori Moderni",
+        **{s: "Ford Cosworth" for s in range(1987, 1992)},
+    },
+    "Euro Brun": {
+        **{s: "Judd" for s in range(1988, 1991)},
+    },
+    "Rial": {
+        1988: "Ford Cosworth", 1989: "Ford Cosworth",
+    },
+    "Onyx": {
+        1989: "Ford Cosworth", 1990: "Ford Cosworth",
+    },
+    "Zakspeed": {
+        **{s: "Zakspeed" for s in range(1985, 1989)},
+        1989: "Yamaha",
+    },
+    "Coloni": {
+        **{s: "Ford Cosworth" for s in range(1987, 1990)},
+        1990: "Subaru",
+        1991: "Ford Cosworth",
+    },
+    "RAM": {
+        1983: "Ford Cosworth",
+        1984: "Hart", 1985: "Hart",
+    },
+    "Spirit": {
+        1983: "Honda",
+        1984: "Hart", 1985: "Hart",
+    },
+    "Toleman": {
+        **{s: "Hart" for s in range(1981, 1986)},
+    },
+    "ATS": {
+        **{s: "Ford Cosworth" for s in range(1980, 1983)},
+        1983: "BMW", 1984: "BMW",
+    },
+    "Theodore": {
+        **{s: "Ford Cosworth" for s in range(1981, 1984)},
+    },
+    "Fittipaldi": {
+        **{s: "Ford Cosworth" for s in range(1980, 1983)},
+    },
+    "Ensign": {
+        **{s: "Ford Cosworth" for s in range(1980, 1983)},
+    },
+    "Shadow": {
+        1980: "Ford Cosworth",
+    },
 }
 
 SYNC_LOCK = threading.Lock()
@@ -663,7 +1052,10 @@ def apply_team_metadata():
         meta = TEAM_METADATA.get(team.name)
         if meta is None:
             continue
-        base_country, engine, founded = meta
+        base_city, base_country, engine, founded = meta
+        if team.base_city is None:
+            team.base_city = base_city
+            changed = True
         if team.base_country is None:
             team.base_country = base_country
             changed = True

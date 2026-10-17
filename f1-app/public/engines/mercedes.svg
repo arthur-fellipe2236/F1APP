@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="46" fill="#0D1117" stroke="#00A19B" stroke-width="2.5"/>
+  <circle cx="50" cy="50" r="42" fill="none" stroke="#E5E7EB" stroke-width="3"/>
+  <!-- 3-point star facets -->
+  <polygon points="50,14 50,50 44,50" fill="#FFFFFF"/>
+  <polygon points="50,14 50,50 56,50" fill="#A0AEC0"/>
+  <polygon points="81,68 50,50 53,44" fill="#FFFFFF"/>
+  <polygon points="81,68 50,50 47,54" fill="#A0AEC0"/>
+  <polygon points="19,68 50,50 53,54" fill="#FFFFFF"/>
+  <polygon points="19,68 50,50 47,44" fill="#A0AEC0"/>
+  <circle cx="50" cy="50" r="4" fill="#CBD5E0"/>
+</svg>

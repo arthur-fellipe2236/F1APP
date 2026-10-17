@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 50">
+  <rect x="2" y="2" width="136" height="46" rx="6" fill="#1C1917" stroke="#EA580C" stroke-width="2"/>
+  <circle cx="28" cy="25" r="10" fill="#EA580C"/>
+  <text x="82" y="31" fill="#FFFFFF" font-family="Arial, sans-serif" font-weight="900" font-size="16" letter-spacing="1" text-anchor="middle">ASIATECH</text>
+</svg>

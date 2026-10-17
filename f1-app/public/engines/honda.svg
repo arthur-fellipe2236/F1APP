@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100">
+  <rect x="4" y="4" width="112" height="92" rx="16" fill="#CC0000" stroke="#FFFFFF" stroke-width="3"/>
+  <!-- Bold Honda H -->
+  <path d="M28 22 L42 22 L45 46 C47 46 73 46 75 46 L78 22 L92 22 L86 78 L72 78 L71 58 C69 58 51 58 49 58 L48 78 L34 78 Z" fill="#FFFFFF"/>
+</svg>

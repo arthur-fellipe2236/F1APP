@@ -8,6 +8,7 @@ class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False, index=True)
     series = db.Column(db.String(10), default="f1", index=True)
+    base_city = db.Column(db.String(80))
     base_country = db.Column(db.String(80))
     engine_manufacturer = db.Column(db.String(80))
     founded_year = db.Column(db.Integer)
@@ -19,6 +20,7 @@ class Team(db.Model):
             "id": self.id,
             "name": self.name,
             "series": self.series,
+            "base_city": self.base_city,
             "base_country": self.base_country,
             "engine_manufacturer": self.engine_manufacturer,
             "founded_year": self.founded_year,

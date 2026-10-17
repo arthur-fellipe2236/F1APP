@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 60">
+  <rect x="2" y="2" width="146" height="56" rx="6" fill="#111111" stroke="#D4AF37" stroke-width="1.5"/>
+  <rect x="10" y="10" width="35" height="12" fill="#CC0000"/>
+  <rect x="47" y="10" width="35" height="12" fill="#FFFFFF"/>
+  <rect x="84" y="10" width="35" height="12" fill="#D4AF37"/>
+  <text x="75" y="44" fill="#FFFFFF" font-family="Arial Black, sans-serif" font-weight="900" font-size="16" letter-spacing="2" text-anchor="middle">MUGEN</text>
+</svg>

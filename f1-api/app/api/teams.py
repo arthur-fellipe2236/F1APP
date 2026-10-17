@@ -15,7 +15,7 @@ from .helpers import (
 
 bp = Blueprint("teams", __name__)
 
-ALLOWED_FIELDS = {"name", "base_country", "engine_manufacturer", "founded_year"}
+ALLOWED_FIELDS = {"name", "base_city", "base_country", "engine_manufacturer", "founded_year"}
 
 
 @bp.get("/teams")

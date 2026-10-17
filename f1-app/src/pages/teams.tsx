@@ -6,14 +6,13 @@ import { TeamInline } from "@/components/team-name"
 import { VirtualDataTable } from "@/components/virtual-table"
 import { ErrorState } from "@/components/error-state"
 import type { TableColumn } from "react-data-table-component"
-import { Flag } from "@/components/flag"
 import { TeamName } from "@/components/team-name"
 import { PageHeader } from "@/components/page-header"
 import { Label } from "@/components/ui/label"
 import { useApi } from "@/hooks/use-api"
 import { useSeasons } from "@/hooks/use-seasons"
 import { api, fetchAll, type Team } from "@/lib/api"
-import { engineLogo, flagFromCountry, formatCountry, getTeamStandingsOrder, teamLogo } from "@/lib/assets"
+import { engineLogo, flagFromCountry, formatCountry, getTeamEngine, getTeamMetadata, getTeamStandingsOrder, teamLogo } from "@/lib/assets"
 import { formatNumber } from "@/lib/format"
 
 const getColumns = (seasonParam?: number): TableColumn<Team>[] => [
@@ -27,34 +26,64 @@ const getColumns = (seasonParam?: number): TableColumn<Team>[] => [
   {
     name: "Sede",
     sortable: true,
-    selector: (row) => row.base_country ?? "",
-    cell: (row) => (
-      <Flag src={flagFromCountry(row.base_country)} label={formatCountry(row.base_country)} />
-    ),
+    minWidth: "190px",
+    selector: (row) => {
+      const meta = getTeamMetadata(row.name)
+      return row.base_country || meta?.country || ""
+    },
+    cell: (row) => {
+      const meta = getTeamMetadata(row.name)
+      const city = row.base_city || meta?.city
+      const country = row.base_country || meta?.country
+      const flagUrl = flagFromCountry(country)
+      const locationText = city && country ? `${city}, ${formatCountry(country)}` : (formatCountry(country) || "—")
+      
+      return (
+        <span className="flex items-center gap-2 font-medium text-xs sm:text-sm">
+          {flagUrl && (
+            <img
+              src={flagUrl}
+              alt=""
+              aria-hidden
+              loading="lazy"
+              className="h-3.5 w-5 shrink-0 rounded-[2px] object-cover shadow-xs"
+            />
+          )}
+          <span className="truncate" title={locationText}>
+            {locationText}
+          </span>
+        </span>
+      )
+    },
   },
   {
     name: "Motor",
     sortable: true,
-    selector: (row) => row.engine_manufacturer ?? "",
-    width: "90px",
-    center: true,
+    minWidth: "160px",
+    selector: (row) => getTeamEngine(row.name, seasonParam, row.engine_manufacturer),
     cell: (row) => {
-      const logo = engineLogo(row.engine_manufacturer)
-      if (!logo) {
-        return <span>{row.engine_manufacturer ?? "—"}</span>
-      }
+      const engineName = getTeamEngine(row.name, seasonParam, row.engine_manufacturer)
+      const logo = engineLogo(engineName)
+      
       return (
         <span
-          className="flex items-center justify-center"
-          title={row.engine_manufacturer ?? ""}
+          className="flex items-center gap-2 font-medium text-xs sm:text-sm"
+          title={`Motor: ${engineName}`}
         >
-          <img
-            src={logo}
-            alt={row.engine_manufacturer ?? "motor"}
-            loading="lazy"
-            referrerPolicy="no-referrer"
-            className="h-7 w-7 rounded bg-white p-0.5 object-contain shadow-xs border border-border/50"
-          />
+          {logo ? (
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-white/10 dark:bg-white/5 border border-white/20 p-1 shadow-xs">
+              <img
+                src={logo}
+                alt={engineName}
+                loading="lazy"
+                referrerPolicy="no-referrer"
+                className="max-h-full max-w-full object-contain"
+              />
+            </span>
+          ) : (
+            <span className="size-2 rounded-full bg-muted-foreground/40 shrink-0" />
+          )}
+          <span className="truncate">{engineName}</span>
         </span>
       )
     },
@@ -63,8 +92,12 @@ const getColumns = (seasonParam?: number): TableColumn<Team>[] => [
     name: "Fundação",
     right: true,
     sortable: true,
-    selector: (row) => row.founded_year ?? 0,
-    format: (row) => formatNumber(row.founded_year),
+    width: "110px",
+    selector: (row) => row.founded_year || getTeamMetadata(row.name)?.founded || 0,
+    format: (row) => {
+      const year = row.founded_year || getTeamMetadata(row.name)?.founded
+      return year ? formatNumber(year) : "—"
+    },
   },
 ]
 
@@ -114,29 +147,55 @@ export function TeamsPage() {
           columns={getColumns(seasonParam)}
           data={sortedTeams}
           getRowColor={(row) => teamLogo(row.name, seasonParam)?.color || undefined}
-          renderMobileCard={(row) => (
-            <>
-              <div className="flex items-center justify-between mb-2">
-                <TeamInline season={seasonParam} name={row.name} />
-                {row.base_country && (
-                  <Flag
-                    src={flagFromCountry(row.base_country)}
-                    label={formatCountry(row.base_country)}
-                  />
-                )}
-              </div>
-              <div className="flex flex-col gap-1 mt-2 text-sm text-muted-foreground">
-                <div className="flex justify-between">
-                  <span>Motor:</span>
-                  <span className="font-medium text-foreground">{row.engine_manufacturer || "—"}</span>
+          renderMobileCard={(row) => {
+            const meta = getTeamMetadata(row.name)
+            const city = row.base_city || meta?.city
+            const country = row.base_country || meta?.country
+            const flagUrl = flagFromCountry(country)
+            const locationText = city && country ? `${city}, ${formatCountry(country)}` : (formatCountry(country) || "—")
+            const engineName = getTeamEngine(row.name, seasonParam, row.engine_manufacturer)
+            const engineSvg = engineLogo(engineName)
+            const founded = row.founded_year || meta?.founded
+
+            return (
+              <>
+                <div className="flex items-center justify-between mb-2">
+                  <TeamInline season={seasonParam} name={row.name} />
+                  {country && (
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+                      {flagUrl && (
+                        <img
+                          src={flagUrl}
+                          alt=""
+                          aria-hidden
+                          loading="lazy"
+                          className="h-3 w-4.5 rounded-[2px] object-cover shadow-xs"
+                        />
+                      )}
+                      <span>{locationText}</span>
+                    </span>
+                  )}
                 </div>
-                <div className="flex justify-between">
-                  <span>Fundação:</span>
-                  <span className="font-medium text-foreground">{row.founded_year || "—"}</span>
+                <div className="flex flex-col gap-1.5 mt-2 text-sm text-muted-foreground pt-1.5 border-t border-border/40">
+                  <div className="flex items-center justify-between">
+                    <span>Motor:</span>
+                    <span className="flex items-center gap-1.5 font-medium text-foreground">
+                      {engineSvg && (
+                        <span className="flex size-5.5 shrink-0 items-center justify-center rounded bg-white/10 dark:bg-white/5 border border-white/20 p-0.5 shadow-2xs">
+                          <img src={engineSvg} alt="" className="max-h-full max-w-full object-contain" />
+                        </span>
+                      )}
+                      <span>{engineName}</span>
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Fundação:</span>
+                    <span className="font-medium text-foreground">{founded || "—"}</span>
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
+              </>
+            )
+          }}
         />
       )}
     </div>

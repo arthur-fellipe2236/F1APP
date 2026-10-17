@@ -227,10 +227,10 @@ export function flagFromNationality(
 }
 
 export function flagFromCountry(
-  country: string | null,
+  country: string | null | undefined,
   width = 40,
 ): string | null {
-  const iso = lookup(COUNTRY_TO_ISO, country)
+  const iso = lookup(COUNTRY_TO_ISO, country ?? null)
   return iso ? `https://flagcdn.com/w${width}/${iso}.png` : null
 }
 
@@ -1080,32 +1080,535 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
 }
 
 const ENGINE_LOGOS: Record<string, string> = {
-  Ferrari: "https://upload.wikimedia.org/wikipedia/en/d/df/Scuderia_Ferrari_HP_logo_24.svg",
-  Mercedes:
-    "https://upload.wikimedia.org/wikipedia/commons/9/9e/Mercedes-Benz_Logo_2010.svg",
-  Renault: "https://upload.wikimedia.org/wikipedia/commons/b/b7/Renault_2021_Logo.svg",
-  Honda: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Honda_Racing_logo_%282022%29.svg",
-  "Honda RBPT": "https://upload.wikimedia.org/wikipedia/commons/c/c7/Honda_Racing_logo_%282022%29.svg",
-  "Red Bull Ford": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Ford_Motor_Company_Logo.svg",
-  Audi: "https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg",
-  Mecachrome: "https://upload.wikimedia.org/wikipedia/commons/d/da/Nouveau_logo_Mecachrome.png",
-  BMW: "/engines/bmw.svg",
+  Ferrari: "/engines/ferrari.svg",
+  Mercedes: "/engines/mercedes.svg",
+  "Mercedes-Benz": "/engines/mercedes.svg",
+  Renault: "/engines/renault.svg",
+  Honda: "/engines/honda.svg",
+  "Honda RBPT": "/engines/honda_rbpt.svg",
+  "Red Bull Ford": "/engines/ford.svg",
   Ford: "/engines/ford.svg",
   "Ford Cosworth": "/engines/ford.svg",
   Cosworth: "/engines/cosworth.svg",
+  BMW: "/engines/bmw.svg",
+  Audi: "/engines/audi.svg",
   Porsche: "/engines/porsche.svg",
-  Lamborghini: "/engines/lamborghini.svg",
-  Toyota: "/engines/toyota.svg",
+  "TAG Porsche": "/engines/tag.svg",
+  TAG: "/engines/tag.svg",
+  "TAG Heuer": "/engines/tag.svg",
   Peugeot: "/engines/peugeot.svg",
-  Judd: "/engines/judd.svg",
+  "Mugen-Honda": "/engines/mugen.svg",
+  Mugen: "/engines/mugen.svg",
+  Yamaha: "/engines/yamaha.svg",
+  Toyota: "/engines/toyota.svg",
+  Lamborghini: "/engines/lamborghini.svg",
   Hart: "/engines/hart.svg",
+  Judd: "/engines/judd.svg",
+  Petronas: "/engines/petronas.svg",
+  Ilmor: "/engines/ilmor.svg",
+  "Alfa Romeo": "/engines/alfa_romeo.svg",
+  Matra: "/engines/matra.svg",
+  Mecachrome: "/engines/mecachrome.svg",
+  Supertec: "/engines/supertec.svg",
+  Playlife: "/engines/playlife.svg",
+  Asiatech: "/engines/asiatech.svg",
+  Acer: "/engines/ferrari.svg",
+  European: "/engines/cosworth.svg",
+  Fondmetal: "/engines/ford.svg",
+  Megatron: "/engines/bmw.svg",
+  Subaru: "/engines/subaru.svg",
   Zakspeed: "/engines/zakspeed.svg",
+  "Motori Moderni": "/engines/alfa_romeo.svg",
+  "BWT Mercedes": "/engines/mercedes.svg",
 }
 
 export function engineLogo(name: string | null): string | null {
   if (!name) return null
-  return ENGINE_LOGOS[name] ?? null
+  const trimmed = name.trim()
+  if (ENGINE_LOGOS[trimmed]) return ENGINE_LOGOS[trimmed]
+
+  const lower = trimmed.toLowerCase()
+  if (lower.includes("ferrari") || lower.includes("acer")) return "/engines/ferrari.svg"
+  if (lower.includes("mercedes")) return "/engines/mercedes.svg"
+  if (lower.includes("renault")) return "/engines/renault.svg"
+  if (lower.includes("honda")) return lower.includes("rbpt") ? "/engines/honda_rbpt.svg" : "/engines/honda.svg"
+  if (lower.includes("ford") || lower.includes("cosworth") || lower.includes("european") || lower.includes("fondmetal")) {
+    return lower.includes("cosworth") && !lower.includes("ford") ? "/engines/cosworth.svg" : "/engines/ford.svg"
+  }
+  if (lower.includes("bmw") || lower.includes("megatron")) return "/engines/bmw.svg"
+  if (lower.includes("audi")) return "/engines/audi.svg"
+  if (lower.includes("porsche")) return "/engines/porsche.svg"
+  if (lower.includes("tag")) return "/engines/tag.svg"
+  if (lower.includes("peugeot")) return "/engines/peugeot.svg"
+  if (lower.includes("mugen")) return "/engines/mugen.svg"
+  if (lower.includes("yamaha")) return "/engines/yamaha.svg"
+  if (lower.includes("toyota")) return "/engines/toyota.svg"
+  if (lower.includes("lamborghini")) return "/engines/lamborghini.svg"
+  if (lower.includes("hart")) return "/engines/hart.svg"
+  if (lower.includes("judd")) return "/engines/judd.svg"
+  if (lower.includes("petronas")) return "/engines/petronas.svg"
+  if (lower.includes("ilmor")) return "/engines/ilmor.svg"
+  if (lower.includes("alfa")) return "/engines/alfa_romeo.svg"
+  if (lower.includes("matra")) return "/engines/matra.svg"
+  if (lower.includes("mecachrome")) return "/engines/mecachrome.svg"
+  if (lower.includes("supertec")) return "/engines/supertec.svg"
+  if (lower.includes("playlife")) return "/engines/playlife.svg"
+  if (lower.includes("asiatech")) return "/engines/asiatech.svg"
+  if (lower.includes("subaru")) return "/engines/subaru.svg"
+  if (lower.includes("zakspeed")) return "/engines/zakspeed.svg"
+
+  return null
 }
+
+export interface TeamMetadataInfo {
+  city: string
+  country: string
+  founded: number
+  engine: string
+}
+
+export const TEAM_METADATA_FALLBACK: Record<string, TeamMetadataInfo> = {
+  Mercedes: { city: "Brackley", country: "Alemanha", founded: 2010, engine: "Mercedes" },
+  Ferrari: { city: "Maranello", country: "Itália", founded: 1950, engine: "Ferrari" },
+  Williams: { city: "Grove", country: "Reino Unido", founded: 1977, engine: "Mercedes" },
+  Sauber: { city: "Hinwil", country: "Suíça", founded: 1993, engine: "Ferrari" },
+  "Sauber Clássica": { city: "Hinwil", country: "Suíça", founded: 1993, engine: "Petronas" },
+  "BMW Sauber": { city: "Hinwil", country: "Suíça", founded: 2006, engine: "BMW" },
+  "Kick Sauber": { city: "Hinwil", country: "Suíça", founded: 2024, engine: "Ferrari" },
+  Audi: { city: "Neuburg an der Donau", country: "Alemanha", founded: 2026, engine: "Audi" },
+  "Red Bull Racing": { city: "Milton Keynes", country: "Reino Unido", founded: 2005, engine: "Red Bull Ford" },
+  "Force India": { city: "Silverstone", country: "Reino Unido", founded: 2007, engine: "Mercedes" },
+  "Racing Point": { city: "Silverstone", country: "Reino Unido", founded: 2018, engine: "BWT Mercedes" },
+  "Aston Martin": { city: "Silverstone", country: "Reino Unido", founded: 2009, engine: "Mercedes" },
+  "Toro Rosso": { city: "Faenza", country: "Itália", founded: 2005, engine: "Honda" },
+  AlphaTauri: { city: "Faenza", country: "Itália", founded: 2020, engine: "Honda RBPT" },
+  RB: { city: "Faenza", country: "Itália", founded: 2024, engine: "Honda RBPT" },
+  "Racing Bulls": { city: "Faenza", country: "Itália", founded: 2025, engine: "Red Bull Ford" },
+  McLaren: { city: "Woking", country: "Reino Unido", founded: 1963, engine: "Mercedes" },
+  Renault: { city: "Enstone", country: "França", founded: 1977, engine: "Renault" },
+  Alpine: { city: "Enstone", country: "França", founded: 2021, engine: "Renault" },
+  "Lotus F1": { city: "Enstone", country: "Reino Unido", founded: 2012, engine: "Renault" },
+  Haas: { city: "Kannapolis", country: "Estados Unidos", founded: 2014, engine: "Ferrari" },
+  "Haas F1 Team": { city: "Kannapolis", country: "Estados Unidos", founded: 2014, engine: "Ferrari" },
+  Cadillac: { city: "Fishers", country: "Estados Unidos", founded: 2026, engine: "Ferrari" },
+  "Alfa Romeo": { city: "Hinwil", country: "Suíça", founded: 2018, engine: "Ferrari" },
+  Benetton: { city: "Enstone", country: "Reino Unido", founded: 1986, engine: "Ford Cosworth" },
+  Jordan: { city: "Silverstone", country: "Irlanda", founded: 1991, engine: "Ford Cosworth" },
+  Lotus: { city: "Hethel", country: "Reino Unido", founded: 1952, engine: "Honda" },
+  "Team Lotus": { city: "Hethel", country: "Reino Unido", founded: 1952, engine: "Honda" },
+  Brabham: { city: "Chessington", country: "Reino Unido", founded: 1962, engine: "BMW" },
+  Tyrrell: { city: "Ockham", country: "Reino Unido", founded: 1968, engine: "Ford Cosworth" },
+  Ligier: { city: "Abrest", country: "França", founded: 1976, engine: "Renault" },
+  Minardi: { city: "Faenza", country: "Itália", founded: 1979, engine: "Ford Cosworth" },
+  Arrows: { city: "Milton Keynes", country: "Reino Unido", founded: 1978, engine: "Ford Cosworth" },
+  Footwork: { city: "Milton Keynes", country: "Reino Unido", founded: 1991, engine: "Porsche" },
+  Prost: { city: "Guyancourt", country: "França", founded: 1997, engine: "Peugeot" },
+  Stewart: { city: "Milton Keynes", country: "Reino Unido", founded: 1997, engine: "Ford" },
+  Jaguar: { city: "Milton Keynes", country: "Reino Unido", founded: 2000, engine: "Cosworth" },
+  BAR: { city: "Brackley", country: "Reino Unido", founded: 1999, engine: "Honda" },
+  "Lucky Strike BAR Honda": { city: "Brackley", country: "Reino Unido", founded: 1999, engine: "Honda" },
+  "BAR Honda": { city: "Brackley", country: "Reino Unido", founded: 1999, engine: "Honda" },
+  Honda: { city: "Brackley", country: "Japão", founded: 1964, engine: "Honda" },
+  Brawn: { city: "Brackley", country: "Reino Unido", founded: 2009, engine: "Mercedes" },
+  Toyota: { city: "Colônia", country: "Alemanha", founded: 2002, engine: "Toyota" },
+  "Super Aguri": { city: "Leafield", country: "Japão", founded: 2006, engine: "Honda" },
+  Spyker: { city: "Silverstone", country: "Holanda", founded: 2007, engine: "Ferrari" },
+  "Spyker MF1": { city: "Silverstone", country: "Holanda", founded: 2006, engine: "Toyota" },
+  MF1: { city: "Silverstone", country: "Rússia", founded: 2006, engine: "Toyota" },
+  Midland: { city: "Silverstone", country: "Rússia", founded: 2006, engine: "Toyota" },
+  Virgin: { city: "Dinnington", country: "Reino Unido", founded: 2010, engine: "Cosworth" },
+  Marussia: { city: "Banbury", country: "Reino Unido", founded: 2012, engine: "Cosworth" },
+  "Manor Marussia": { city: "Banbury", country: "Reino Unido", founded: 2015, engine: "Ferrari" },
+  "Manor Racing": { city: "Banbury", country: "Reino Unido", founded: 2015, engine: "Mercedes" },
+  Caterham: { city: "Leafield", country: "Reino Unido", founded: 2012, engine: "Renault" },
+  HRT: { city: "Madrid", country: "Espanha", founded: 2010, engine: "Cosworth" },
+  Larrousse: { city: "Antony", country: "França", founded: 1987, engine: "Lamborghini" },
+  Lola: { city: "Huntingdon", country: "Reino Unido", founded: 1958, engine: "Ford Cosworth" },
+  March: { city: "Bicester", country: "Reino Unido", founded: 1969, engine: "Judd" },
+  "Leyton House": { city: "Bicester", country: "Reino Unido", founded: 1990, engine: "Judd" },
+  Dallara: { city: "Varano de' Melegari", country: "Itália", founded: 1988, engine: "Ford Cosworth" },
+  Osella: { city: "Volpiano", country: "Itália", founded: 1980, engine: "Ford Cosworth" },
+  Fondmetal: { city: "Palosco", country: "Itália", founded: 1991, engine: "Ford Cosworth" },
+  Simtek: { city: "Banbury", country: "Reino Unido", founded: 1989, engine: "Ford Cosworth" },
+  Pacific: { city: "Thetford", country: "Reino Unido", founded: 1984, engine: "Ford Cosworth" },
+  Forti: { city: "Alessandria", country: "Itália", founded: 1977, engine: "Ford Cosworth" },
+  "Andrea Moda": { city: "Civitanova Marche", country: "Itália", founded: 1992, engine: "Judd" },
+  Lambo: { city: "Modena", country: "Itália", founded: 1991, engine: "Lamborghini" },
+  "Modena Team": { city: "Modena", country: "Itália", founded: 1991, engine: "Lamborghini" },
+  AGS: { city: "Gonfaron", country: "França", founded: 1986, engine: "Ford Cosworth" },
+  "Euro Brun": { city: "Senago", country: "Itália", founded: 1988, engine: "Judd" },
+  Rial: { city: "Fussgönheim", country: "Alemanha", founded: 1988, engine: "Ford Cosworth" },
+  Onyx: { city: "Littlehampton", country: "Reino Unido", founded: 1989, engine: "Ford Cosworth" },
+  Zakspeed: { city: "Niederzissen", country: "Alemanha", founded: 1985, engine: "Zakspeed" },
+  Coloni: { city: "Passignano sul Trasimeno", country: "Itália", founded: 1987, engine: "Ford Cosworth" },
+  RAM: { city: "Silverstone", country: "Reino Unido", founded: 1976, engine: "Hart" },
+  Spirit: { city: "Slough", country: "Reino Unido", founded: 1981, engine: "Hart" },
+  Toleman: { city: "Witney", country: "Reino Unido", founded: 1981, engine: "Hart" },
+  ATS: { city: "Bad Dürkheim", country: "Alemanha", founded: 1977, engine: "Ford Cosworth" },
+  Theodore: { city: "Hong Kong", country: "Hong Kong", founded: 1977, engine: "Ford Cosworth" },
+  Fittipaldi: { city: "Reading", country: "Brasil", founded: 1974, engine: "Ford Cosworth" },
+  Ensign: { city: "Burntwood", country: "Reino Unido", founded: 1973, engine: "Ford Cosworth" },
+  Shadow: { city: "Northampton", country: "Reino Unido", founded: 1969, engine: "Ford Cosworth" },
+}
+
+export const HISTORICAL_TEAM_ENGINES: Record<string, Record<number, string>> = {
+  Ferrari: Object.fromEntries(Array.from({ length: 47 }, (_, i) => [1980 + i, "Ferrari"])),
+  McLaren: {
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1980 + i, "Ford Cosworth"])),
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1984 + i, "TAG Porsche"])),
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1988 + i, "Honda"])),
+    1993: "Ford Cosworth",
+    1994: "Peugeot",
+    ...Object.fromEntries(Array.from({ length: 20 }, (_, i) => [1995 + i, "Mercedes"])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2015 + i, "Honda"])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2018 + i, "Renault"])),
+    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [2021 + i, "Mercedes"])),
+  },
+  Williams: {
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1980 + i, "Ford Cosworth"])),
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1984 + i, "Honda"])),
+    1988: "Judd",
+    ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [1989 + i, "Renault"])),
+    1998: "Mecachrome",
+    1999: "Supertec",
+    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [2000 + i, "BMW"])),
+    2006: "Cosworth",
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2007 + i, "Toyota"])),
+    2010: "Cosworth",
+    2011: "Cosworth",
+    2012: "Renault",
+    2013: "Renault",
+    ...Object.fromEntries(Array.from({ length: 13 }, (_, i) => [2014 + i, "Mercedes"])),
+  },
+  "Red Bull Racing": {
+    2005: "Cosworth",
+    2006: "Ferrari",
+    ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [2007 + i, "Renault"])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2016 + i, "TAG Heuer"])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2019 + i, "Honda"])),
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2022 + i, "Honda RBPT"])),
+    2026: "Red Bull Ford",
+  },
+  Mercedes: Object.fromEntries(Array.from({ length: 17 }, (_, i) => [2010 + i, "Mercedes"])),
+  Renault: {
+    ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [1977 + i, "Renault"])),
+    ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [2002 + i, "Renault"])),
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2016 + i, "Renault"])),
+  },
+  Alpine: {
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2021 + i, "Renault"])),
+    2026: "Mercedes",
+  },
+  "Aston Martin": {
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2021 + i, "Mercedes"])),
+    2026: "Honda",
+  },
+  "Force India": {
+    2008: "Ferrari",
+    ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [2009 + i, "Mercedes"])),
+  },
+  "Racing Point": Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2018 + i, "BWT Mercedes"])),
+  "Toro Rosso": {
+    2006: "Cosworth",
+    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [2007 + i, "Ferrari"])),
+    2014: "Renault",
+    2015: "Renault",
+    2016: "Ferrari",
+    2017: "Renault",
+    2018: "Honda",
+    2019: "Honda",
+  },
+  AlphaTauri: {
+    2020: "Honda",
+    2021: "Honda",
+    2022: "Honda RBPT",
+    2023: "Honda RBPT",
+  },
+  RB: { 2024: "Honda RBPT" },
+  "Racing Bulls": {
+    2025: "Honda RBPT",
+    2026: "Red Bull Ford",
+  },
+  Sauber: {
+    1993: "Ilmor",
+    1994: "Mercedes",
+    1995: "Ford Cosworth",
+    1996: "Ford Cosworth",
+    ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [1997 + i, "Petronas"])),
+    ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [2010 + i, "Ferrari"])),
+  },
+  "Sauber Clássica": Object.fromEntries(Array.from({ length: 9 }, (_, i) => [1997 + i, "Petronas"])),
+  "BMW Sauber": Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2006 + i, "BMW"])),
+  "Alfa Romeo": Object.fromEntries(Array.from({ length: 6 }, (_, i) => [2018 + i, "Ferrari"])),
+  "Kick Sauber": { 2024: "Ferrari", 2025: "Ferrari" },
+  Audi: { 2026: "Audi" },
+  Haas: Object.fromEntries(Array.from({ length: 11 }, (_, i) => [2016 + i, "Ferrari"])),
+  "Haas F1 Team": Object.fromEntries(Array.from({ length: 11 }, (_, i) => [2016 + i, "Ferrari"])),
+  Cadillac: { 2026: "Ferrari" },
+  Benetton: {
+    1986: "BMW",
+    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1987 + i, "Ford Cosworth"])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1995 + i, "Renault"])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1998 + i, "Playlife"])),
+    2001: "Renault",
+  },
+  Jordan: {
+    1991: "Ford Cosworth",
+    1992: "Yamaha",
+    1993: "Hart",
+    1994: "Hart",
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1995 + i, "Peugeot"])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1998 + i, "Mugen-Honda"])),
+    2001: "Honda",
+    2002: "Honda",
+    2003: "Ford Cosworth",
+    2004: "Ford Cosworth",
+    2005: "Toyota",
+  },
+  Lotus: {
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1980 + i, "Ford Cosworth"])),
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1983 + i, "Renault"])),
+    1987: "Honda",
+    1988: "Honda",
+    1989: "Judd",
+    1990: "Lamborghini",
+    1991: "Judd",
+    1992: "Ford Cosworth",
+    1993: "Ford Cosworth",
+    1994: "Mugen-Honda",
+    2010: "Cosworth",
+    2011: "Renault",
+  },
+  "Team Lotus": {
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1980 + i, "Ford Cosworth"])),
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1983 + i, "Renault"])),
+    1987: "Honda",
+    1988: "Honda",
+    1989: "Judd",
+    1990: "Lamborghini",
+    1991: "Judd",
+    1992: "Ford Cosworth",
+    1993: "Ford Cosworth",
+    1994: "Mugen-Honda",
+    2011: "Renault",
+  },
+  "Lotus F1": {
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2012 + i, "Renault"])),
+    2015: "Mercedes",
+  },
+  Brabham: {
+    1980: "Ford Cosworth",
+    1981: "Ford Cosworth",
+    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1982 + i, "BMW"])),
+    1989: "Judd",
+    1990: "Judd",
+    1991: "Yamaha",
+    1992: "Judd",
+  },
+  Tyrrell: {
+    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1980 + i, "Ford Cosworth"])),
+    1985: "Renault",
+    1986: "Renault",
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1987 + i, "Ford Cosworth"])),
+    1991: "Honda",
+    1992: "Ilmor",
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1993 + i, "Yamaha"])),
+    1997: "Ford Cosworth",
+    1998: "Ford Cosworth",
+  },
+  Ligier: {
+    1980: "Ford Cosworth",
+    1981: "Matra",
+    1982: "Matra",
+    1983: "Ford Cosworth",
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1984 + i, "Renault"])),
+    1987: "Megatron",
+    1988: "Judd",
+    1989: "Ford Cosworth",
+    1990: "Ford Cosworth",
+    1991: "Lamborghini",
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1992 + i, "Renault"])),
+    1995: "Mugen-Honda",
+    1996: "Mugen-Honda",
+  },
+  Minardi: {
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1985 + i, "Motori Moderni"])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1988 + i, "Ford Cosworth"])),
+    1991: "Ferrari",
+    1992: "Lamborghini",
+    1993: "Ford Cosworth",
+    1994: "Ford Cosworth",
+    1995: "Mugen-Honda",
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1996 + i, "Ford Cosworth"])),
+    2000: "Fondmetal",
+    2001: "European",
+    2002: "Asiatech",
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2003 + i, "Cosworth"])),
+  },
+  Arrows: {
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1980 + i, "Ford Cosworth"])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1984 + i, "BMW"])),
+    1987: "Megatron",
+    1988: "Megatron",
+    1989: "Ford Cosworth",
+    1990: "Ford Cosworth",
+    1996: "Hart",
+    1997: "Yamaha",
+    1998: "Arrows",
+    1999: "Arrows",
+    2000: "Supertec",
+    2001: "Asiatech",
+    2002: "Cosworth",
+  },
+  Footwork: {
+    1991: "Porsche",
+    1992: "Mugen-Honda",
+    1993: "Mugen-Honda",
+    1994: "Ford Cosworth",
+    1995: "Ford Cosworth",
+    1996: "Hart",
+  },
+  Prost: {
+    1997: "Mugen-Honda",
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1998 + i, "Peugeot"])),
+    2001: "Acer",
+  },
+  Stewart: Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1997 + i, "Ford"])),
+  Jaguar: Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2000 + i, "Cosworth"])),
+  BAR: {
+    1999: "Supertec",
+    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [2000 + i, "Honda"])),
+  },
+  "Lucky Strike BAR Honda": Object.fromEntries(Array.from({ length: 6 }, (_, i) => [2000 + i, "Honda"])),
+  "BAR Honda": Object.fromEntries(Array.from({ length: 6 }, (_, i) => [2000 + i, "Honda"])),
+  Honda: Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2006 + i, "Honda"])),
+  Brawn: { 2009: "Mercedes" },
+  Toyota: Object.fromEntries(Array.from({ length: 8 }, (_, i) => [2002 + i, "Toyota"])),
+  "Super Aguri": Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2006 + i, "Honda"])),
+  Spyker: { 2007: "Ferrari" },
+  "Spyker MF1": { 2006: "Toyota" },
+  MF1: { 2006: "Toyota" },
+  Midland: { 2006: "Toyota" },
+  Virgin: { 2010: "Cosworth", 2011: "Cosworth" },
+  Marussia: {
+    ...Object.fromEntries(Array.from({ length: 2 }, (_, i) => [2012 + i, "Cosworth"])),
+    2014: "Ferrari",
+  },
+  "Manor Marussia": {
+    2015: "Ferrari",
+    2016: "Mercedes",
+  },
+  "Manor Racing": { 2016: "Mercedes" },
+  Caterham: Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2012 + i, "Renault"])),
+  HRT: Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2010 + i, "Cosworth"])),
+  Larrousse: {
+    1987: "Ford Cosworth",
+    1988: "Ford Cosworth",
+    1989: "Lamborghini",
+    1990: "Lamborghini",
+    1991: "Ford Cosworth",
+    1992: "Lamborghini",
+    1993: "Ford Cosworth",
+    1994: "Ford Cosworth",
+  },
+  March: {
+    1987: "Ford Cosworth",
+    1988: "Ford Cosworth",
+    1989: "Judd",
+    1990: "Judd",
+    1992: "Ilmor",
+  },
+  "Leyton House": {
+    1990: "Judd",
+    1991: "Ilmor",
+  },
+  Dallara: {
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1988 + i, "Ford Cosworth"])),
+    1991: "Judd",
+    1992: "Ferrari",
+  },
+  Osella: {
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1980 + i, "Ford Cosworth"])),
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1984 + i, "Alfa Romeo"])),
+    1989: "Ford Cosworth",
+    1990: "Ford Cosworth",
+  },
+  Fondmetal: { 1991: "Ford Cosworth", 1992: "Ford Cosworth" },
+  Simtek: { 1994: "Ford Cosworth", 1995: "Ford Cosworth" },
+  Pacific: { 1994: "Ilmor", 1995: "Ford Cosworth" },
+  Forti: { 1995: "Ford Cosworth", 1996: "Ford Cosworth" },
+  "Andrea Moda": { 1992: "Judd" },
+  Lambo: { 1991: "Lamborghini" },
+  "Modena Team": { 1991: "Lamborghini" },
+  AGS: {
+    1986: "Motori Moderni",
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1987 + i, "Ford Cosworth"])),
+  },
+  "Euro Brun": Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1988 + i, "Judd"])),
+  Rial: { 1988: "Ford Cosworth", 1989: "Ford Cosworth" },
+  Onyx: { 1989: "Ford Cosworth", 1990: "Ford Cosworth" },
+  Zakspeed: {
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1985 + i, "Zakspeed"])),
+    1989: "Yamaha",
+  },
+  Coloni: {
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1987 + i, "Ford Cosworth"])),
+    1990: "Subaru",
+    1991: "Ford Cosworth",
+  },
+  RAM: {
+    1983: "Ford Cosworth",
+    1984: "Hart",
+    1985: "Hart",
+  },
+  Spirit: {
+    1983: "Honda",
+    1984: "Hart",
+    1985: "Hart",
+  },
+  Toleman: Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1981 + i, "Hart"])),
+  ATS: {
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1980 + i, "Ford Cosworth"])),
+    1983: "BMW",
+    1984: "BMW",
+  },
+  Theodore: Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1981 + i, "Ford Cosworth"])),
+  Fittipaldi: Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1980 + i, "Ford Cosworth"])),
+  Ensign: Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1980 + i, "Ford Cosworth"])),
+  Shadow: { 1980: "Ford Cosworth" },
+}
+
+export function getTeamEngine(teamName: string | null | undefined, season?: number, fallbackEngine?: string | null): string {
+  if (!teamName) return fallbackEngine || "—"
+  const trimmed = teamName.trim()
+  const canonical = TEAM_ALIASES[trimmed.toLowerCase()] || trimmed
+  if (season && HISTORICAL_TEAM_ENGINES[canonical]?.[season]) {
+    return HISTORICAL_TEAM_ENGINES[canonical][season]
+  }
+  if (season && HISTORICAL_TEAM_ENGINES[trimmed]?.[season]) {
+    return HISTORICAL_TEAM_ENGINES[trimmed][season]
+  }
+  if (fallbackEngine && fallbackEngine !== "—") return fallbackEngine
+  return TEAM_METADATA_FALLBACK[canonical]?.engine || TEAM_METADATA_FALLBACK[trimmed]?.engine || "—"
+}
+
+export function getTeamMetadata(teamName: string | null | undefined): TeamMetadataInfo | null {
+  if (!teamName) return null
+  const trimmed = teamName.trim()
+  const canonical = TEAM_ALIASES[trimmed.toLowerCase()] || trimmed
+  return TEAM_METADATA_FALLBACK[canonical] || TEAM_METADATA_FALLBACK[trimmed] || null
+}
+
+export function formatTeamHeadquarters(city?: string | null, country?: string | null, teamName?: string | null): string {
+  if (city && country) return `${city}, ${country}`
+  if (country) return country
+  if (teamName) {
+    const meta = getTeamMetadata(teamName)
+    if (meta) return `${meta.city}, ${meta.country}`
+  }
+  return "—"
+}
+
 
 export function displayTeamName(name: string | null, season?: number): string {
   if (!name) return ""
@@ -1358,7 +1861,7 @@ export function formatNationality(nationality: string | null): string {
   return nationality
 }
 
-export function formatCountry(country: string | null): string {
+export function formatCountry(country: string | null | undefined): string {
   if (!country) return ""
   return country
 }
