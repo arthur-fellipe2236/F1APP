@@ -1038,6 +1038,11 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
     return { url: "/teams/forti.svg", color: "#FFCC00", className: "object-contain p-0.5" }
   }
 
+  // Classic Williams Grand Prix Engineering (1978-1993)
+  if (season && season >= 1978 && season <= 1993 && (canonical === "Williams" || name.toLowerCase().includes("williams"))) {
+    return { url: "/williams/williams-1.jpg", color: "#002B49", className: "bg-white rounded-sm p-0.5" }
+  }
+
   // From 1985 to modern era (2026), prioritize pristine vector and curated high-res logos
   if (!season || season >= 1985) {
     // 1. Check if there is a specific curated season logo that is NOT an old scanned jpg
@@ -1898,5 +1903,37 @@ export function getTeamStandingsOrder(name: string | null | undefined, season?: 
   if (!seasonTable) return 999
   const canonical = TEAM_ALIASES[name.trim().toLowerCase()] || name
   return seasonTable[canonical] ?? seasonTable[name] ?? 999
+}
+
+const HISTORICAL_DRIVER_PHOTOS: Record<string, string> = {
+  "Nelson Piquet": "/drivers/piquet_1987.jpg",
+  "Ayrton Senna": "/drivers/senna.jpg",
+  "Alain Prost": "/drivers/prost.jpg",
+  "Niki Lauda": "/drivers/lauda.jpg",
+  "Keke Rosberg": "/drivers/rosberg.jpg",
+  "Nigel Mansell": "/drivers/mansell.jpg",
+}
+
+export function driverPhoto(
+  driverName: string | null | undefined,
+  season?: number,
+  fallbackUrl?: string | null
+): string | null {
+  if (!driverName) return fallbackUrl ?? null
+
+  const norm = driverName.trim().toLowerCase()
+  if (norm.includes("piquet") && (norm.includes("jr") || norm.includes("junior"))) {
+    return fallbackUrl ?? null
+  }
+
+  for (const [key, path] of Object.entries(HISTORICAL_DRIVER_PHOTOS)) {
+    if (norm === key.toLowerCase() || norm.includes(key.toLowerCase())) {
+      if (!season || season <= 2000 || !fallbackUrl) {
+        return path
+      }
+    }
+  }
+
+  return fallbackUrl ?? null
 }
 

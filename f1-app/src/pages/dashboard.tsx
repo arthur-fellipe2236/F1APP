@@ -18,7 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useApi } from "@/hooks/use-api"
 import { api, type DriverStanding, type TeamStanding } from "@/lib/api"
-import { teamLogo, displayTeamName } from "@/lib/assets"
+import { teamLogo, displayTeamName, driverPhoto } from "@/lib/assets"
 import { formatPoints } from "@/lib/format"
 import { mediaUrl } from "@/lib/media"
 import { cn } from "@/lib/utils"
@@ -123,24 +123,39 @@ const getTeamColumns = (seasonParam?: number): TableColumn<TeamStanding>[] => [
   },
 ]
 
-function LeaderAvatar({ driver }: { driver: DriverStanding }) {
+function LeaderAvatar({ driver, season }: { driver: DriverStanding; season?: number }) {
   const [broken, setBroken] = useState(false)
-  if (!driver.headshot_url || broken) {
+  const photoUrl = driverPhoto(driver.driver_name, season, driver.headshot_url)
+
+  if (!photoUrl || broken) {
     return (
-      <span className="flex size-20 md:size-24 shrink-0 items-center justify-center rounded-full bg-secondary text-2xl font-bold text-muted-foreground ring-4 ring-background shadow-md">
-        {(driver.driver_code ?? driver.driver_name.slice(0, 3)).toUpperCase()}
-      </span>
+      <div className="relative shrink-0">
+        <span className="flex size-20 md:size-24 shrink-0 items-center justify-center rounded-2xl bg-secondary text-2xl font-bold text-muted-foreground ring-2 ring-amber-500/30 shadow-md">
+          {(driver.driver_code ?? driver.driver_name.slice(0, 3)).toUpperCase()}
+        </span>
+        <div className="absolute -bottom-1 -right-1 flex items-center justify-center rounded-full bg-amber-500 text-black font-extrabold text-[10px] md:text-xs px-1.5 py-0.5 shadow-md border-2 border-background ring-1 ring-amber-500/30">
+          1º
+        </div>
+      </div>
     )
   }
-  const isWiki = driver.headshot_url.includes('wikimedia');
+
+  const isWiki = photoUrl.includes("wikimedia")
   return (
-    <img
-      src={mediaUrl(driver.headshot_url, 160) ?? driver.headshot_url}
-      alt={driver.driver_name}
-      loading="lazy"
-      onError={() => setBroken(true)}
-      className={`size-20 md:size-24 shrink-0 rounded-full bg-secondary object-cover ring-4 ring-background shadow-md ${isWiki ? 'object-center' : 'object-top'}`}
-    />
+    <div className="relative shrink-0">
+      <div className="size-20 md:size-24 shrink-0 overflow-hidden rounded-2xl bg-secondary ring-2 ring-amber-500/30 dark:ring-amber-400/20 shadow-lg border border-border/50">
+        <img
+          src={photoUrl.startsWith("/drivers/") ? photoUrl : (mediaUrl(photoUrl, 200) ?? photoUrl)}
+          alt={driver.driver_name}
+          loading="lazy"
+          onError={() => setBroken(true)}
+          className={`size-full object-cover ${isWiki ? "object-center" : "object-top"} transition-transform duration-500 group-hover:scale-105`}
+        />
+      </div>
+      <div className="absolute -bottom-1 -right-1 flex items-center justify-center rounded-full bg-amber-500 text-black font-extrabold text-[10px] md:text-xs px-1.5 py-0.5 shadow-md border-2 border-background ring-1 ring-amber-500/30">
+        1º
+      </div>
+    </div>
   )
 }
 
@@ -199,7 +214,7 @@ function TeamBadge({ name, season }: { name: string; season?: number }) {
   return (
     <span 
       className={cn(
-        "flex h-16 w-32 md:h-20 md:w-40 shrink-0 items-center justify-center rounded-xl p-2.5 shadow-md border border-border/50 transition-all",
+        "flex h-16 w-28 sm:w-32 md:h-20 md:w-36 shrink-0 items-center justify-center rounded-2xl p-2.5 shadow-md border border-border/50 transition-all",
         isDarkBg && "ring-1 ring-white/20 dark:border-white/25",
         !logo.color ? "bg-white text-zinc-900 border-border/70" : undefined
       )}
@@ -385,20 +400,24 @@ export function DashboardPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <SummaryCard
           title="Líder do campeonato"
-          icon={<Trophy className="size-4" />}
+          icon={<Trophy className="size-4 text-amber-500" />}
           loading={driverStandings.loading}
+          background={topDriver?.team_name ? teamLogo(topDriver.team_name, seasonParam) : null}
         >
           {topDriver ? (
             <div className="flex items-center gap-4 py-2">
-              <div className="transition-transform duration-500 group-hover:scale-105"><LeaderAvatar driver={topDriver} /></div>
-              <div className="space-y-1">
-                <div className="text-2xl md:text-3xl font-bold tracking-tight">
+              <div className="shrink-0 transition-transform duration-500 group-hover:scale-105">
+                <LeaderAvatar driver={topDriver} season={seasonParam} />
+              </div>
+              <div className="min-w-0 flex-1 space-y-1.5">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight truncate leading-tight">
                   {topDriver.driver_name}
                 </div>
-                <div className="flex flex-wrap items-center gap-1.5 text-sm md:text-base text-muted-foreground mt-1">
+                <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                   <TeamInline name={topDriver.team_name} season={seasonParam} />
-                  <span className="font-medium whitespace-nowrap hidden xs:inline">·</span>
-                  <span className="font-medium whitespace-nowrap">{formatPoints(topDriver.points)} pts</span>
+                  <span className="font-semibold text-foreground text-xs md:text-sm whitespace-nowrap bg-secondary/80 px-2.5 py-0.5 rounded-md border border-border/40 font-mono">
+                    {formatPoints(topDriver.points)} pts
+                  </span>
                 </div>
               </div>
             </div>
@@ -409,17 +428,27 @@ export function DashboardPage() {
 
         <SummaryCard
           title="Líder dos construtores"
-          icon={<Shield className="size-4" />}
+          icon={<Shield className="size-4 text-blue-500" />}
           loading={teamStandings.loading}
+          background={topTeam?.team_name ? teamLogo(topTeam.team_name, seasonParam) : null}
         >
           {topTeam ? (
             <div className="flex items-center gap-4 py-2">
-              <div className="transition-transform duration-500 group-hover:scale-105"><TeamBadge name={topTeam.team_name} season={seasonParam} /></div>
-              <div className="space-y-1">
-                <div className="text-2xl md:text-3xl font-bold tracking-tight">{displayTeamName(topTeam.team_name, seasonParam)}</div>
-                <div className="text-sm md:text-base text-muted-foreground font-medium mt-1">
-                  {formatPoints(topTeam.points)} pts · {topTeam.wins}{" "}
-                  {topTeam.wins === 1 ? "vitória" : "vitórias"}
+              <div className="shrink-0 transition-transform duration-500 group-hover:scale-105">
+                <TeamBadge name={topTeam.team_name} season={seasonParam} />
+              </div>
+              <div className="min-w-0 flex-1 space-y-1.5">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight truncate leading-tight">
+                  {displayTeamName(topTeam.team_name, seasonParam)}
+                </div>
+                <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                  <span className="font-semibold text-foreground text-xs md:text-sm whitespace-nowrap bg-secondary/80 px-2.5 py-0.5 rounded-md border border-border/40 font-mono">
+                    {formatPoints(topTeam.points)} pts
+                  </span>
+                  <span>·</span>
+                  <span className="text-xs md:text-sm">
+                    {topTeam.wins} {topTeam.wins === 1 ? "vitória" : "vitórias"}
+                  </span>
                 </div>
               </div>
             </div>
