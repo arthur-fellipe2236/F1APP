@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 90" width="100%" height="100%">
+  <defs>
+    <linearGradient id="brGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#009B3A"/>
+      <stop offset="50%" stop-color="#FEDF00"/>
+      <stop offset="100%" stop-color="#002776"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(15, 10)">
+    <!-- Brazilian Speed Ribbon -->
+    <path d="M10 22 L55 22 L45 34 L0 34 Z" fill="#009B3A"/>
+    <path d="M15 36 L60 36 L50 48 L5 48 Z" fill="#FEDF00"/>
+    <path d="M20 50 L65 50 L55 62 L10 62 Z" fill="#002776"/>
+    <!-- Fittipaldi Script -->
+    <text x="75" y="44" font-family="'Brush Script MT', 'Bickham Script Pro', cursive, sans-serif" font-weight="bold" font-size="38" fill="#FFFFFF" font-style="italic">Fittipaldi</text>
+    <text x="78" y="60" font-family="'Helvetica Neue', Arial, sans-serif" font-weight="800" font-size="11" fill="#FEDF00" letter-spacing="3.5">AUTOMOTIVE F1</text>
+  </g>
+</svg>

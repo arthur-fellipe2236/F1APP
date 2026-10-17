@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 90" width="100%" height="100%">
+  <defs>
+    <linearGradient id="ensignBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#004B87"/>
+      <stop offset="100%" stop-color="#002B49"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(20, 10)">
+    <!-- Speed Chevron / 'E' Motif -->
+    <path d="M10 15 L45 15 L35 27 L10 27 Z" fill="#0088CE"/>
+    <path d="M10 32 L35 32 L27 44 L10 44 Z" fill="#FFFFFF"/>
+    <path d="M10 49 L45 49 L35 61 L10 61 Z" fill="#0088CE"/>
+    <!-- Ensign Typography -->
+    <text x="65" y="42" font-family="'Arial Black', 'Impact', sans-serif" font-weight="900" font-size="32" fill="#FFFFFF" letter-spacing="2">ENSIGN</text>
+    <text x="68" y="58" font-family="'Helvetica Neue', Arial, sans-serif" font-weight="700" font-size="11" fill="#0088CE" letter-spacing="4">RACING TEAM</text>
+  </g>
+</svg>

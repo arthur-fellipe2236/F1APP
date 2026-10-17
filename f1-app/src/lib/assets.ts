@@ -666,6 +666,15 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   EuroBrun: { url: "/classic/eurobrun.svg", color: "#FF5F00", className: "object-contain" },
   Spirit: { url: "/classic/spirit.svg", color: "#C8102E", className: "object-contain" },
   RAM: { url: "/classic/ram.svg", color: "#007A3D", className: "object-contain" },
+  Fittipaldi: { url: "/classic/fittipaldi.svg", color: "#002776", className: "object-contain" },
+  "Fittipaldi Automotive": { url: "/classic/fittipaldi.svg", color: "#002776", className: "object-contain" },
+  ATS: { url: "/classic/ats.svg", color: "#FEDF00", className: "object-contain" },
+  Theodore: { url: "/classic/theodore.svg", color: "#D40000", className: "object-contain" },
+  "Theodore Racing": { url: "/classic/theodore.svg", color: "#D40000", className: "object-contain" },
+  Ensign: { url: "/classic/ensign.svg", color: "#002B49", className: "object-contain" },
+  "Team Ensign": { url: "/classic/ensign.svg", color: "#002B49", className: "object-contain" },
+  Shadow: { url: "/classic/shadow.svg", color: "#000000", className: "object-contain" },
+  "Shadow Racing Cars": { url: "/classic/shadow.svg", color: "#000000", className: "object-contain" },
 }
 
 const TEAM_ALIASES: Record<string, string> = {
@@ -869,6 +878,20 @@ const TEAM_ALIASES: Record<string, string> = {
   spirit: "Spirit",
   ram: "RAM",
   "ram racing": "RAM",
+  fittipaldi: "Fittipaldi",
+  "fittipaldi automotive": "Fittipaldi",
+  copersucar: "Fittipaldi",
+  "copersucar-fittipaldi": "Fittipaldi",
+  ats: "ATS",
+  "ats racing": "ATS",
+  "ats wheels": "ATS",
+  theodore: "Theodore",
+  "theodore racing": "Theodore",
+  ensign: "Ensign",
+  "team ensign": "Ensign",
+  shadow: "Shadow",
+  "shadow racing": "Shadow",
+  "shadow racing cars": "Shadow",
   // 2005-2009 Historical Teams
   bar: "BAR",
   "bar honda": "BAR",
@@ -1242,6 +1265,21 @@ export function displayTeamName(name: string | null, season?: number): string {
   if (name === "Lambo" || name === "Modena Team") {
     return "Modena Team Lambo"
   }
+  if (name === "Fittipaldi") {
+    return "Fittipaldi Automotive"
+  }
+  if (name === "Theodore") {
+    return "Theodore Racing"
+  }
+  if (name === "Ensign") {
+    return "Team Ensign"
+  }
+  if (name === "Shadow") {
+    return "Shadow Racing Cars"
+  }
+  if (name === "ATS") {
+    return "ATS Wheels F1 Team"
+  }
   if (name === "Andrea Moda") {
     return "Andrea Moda Formula"
   }
@@ -1321,6 +1359,96 @@ export function formatCountry(country: string | null): string {
 }
 
 export const HISTORICAL_CONSTRUCTOR_ORDERS: Record<number, Record<string, number>> = {
+  1980: {
+    Williams: 1,
+    Ligier: 2,
+    Brabham: 3,
+    Renault: 4,
+    "Team Lotus": 5,
+    Tyrrell: 6,
+    Arrows: 7,
+    Fittipaldi: 8,
+    McLaren: 9,
+    Ferrari: 10,
+    "Alfa Romeo": 11,
+    ATS: 12,
+    Ensign: 13,
+    Osella: 14,
+    Shadow: 15,
+  },
+  1981: {
+    Williams: 1,
+    Brabham: 2,
+    Renault: 3,
+    Ligier: 4,
+    Ferrari: 5,
+    McLaren: 6,
+    "Team Lotus": 7,
+    Arrows: 8,
+    "Alfa Romeo": 9,
+    Tyrrell: 10,
+    Ensign: 11,
+    Theodore: 12,
+    ATS: 13,
+    March: 14,
+    Fittipaldi: 15,
+    Osella: 16,
+    Toleman: 17,
+  },
+  1982: {
+    Ferrari: 1,
+    McLaren: 2,
+    Renault: 3,
+    Williams: 4,
+    Brabham: 5,
+    "Team Lotus": 6,
+    Tyrrell: 7,
+    Ligier: 8,
+    "Alfa Romeo": 9,
+    Arrows: 10,
+    ATS: 11,
+    Osella: 12,
+    Fittipaldi: 13,
+    March: 14,
+    Ensign: 15,
+    Toleman: 16,
+    Theodore: 17,
+  },
+  1983: {
+    Ferrari: 1,
+    Renault: 2,
+    Brabham: 3,
+    Williams: 4,
+    McLaren: 5,
+    "Alfa Romeo": 6,
+    Tyrrell: 7,
+    "Team Lotus": 8,
+    Toleman: 9,
+    Arrows: 10,
+    Theodore: 11,
+    Ligier: 12,
+    Spirit: 13,
+    ATS: 14,
+    Osella: 15,
+    RAM: 16,
+  },
+  1984: {
+    McLaren: 1,
+    Ferrari: 2,
+    "Team Lotus": 3,
+    Brabham: 4,
+    Renault: 5,
+    Williams: 6,
+    Toleman: 7,
+    "Alfa Romeo": 8,
+    Arrows: 9,
+    Ligier: 10,
+    Osella: 11,
+    ATS: 12,
+    Spirit: 13,
+    RAM: 14,
+    Tyrrell: 15,
+  },
   1985: {
     McLaren: 1,
     Ferrari: 2,
