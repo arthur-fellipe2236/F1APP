@@ -1,6 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 70">
-  <rect width="160" height="70" rx="8" fill="#007A3D"/>
-  <rect x="18" y="20" width="30" height="30" rx="4" fill="#111111" stroke="#ffffff" stroke-width="1.5"/>
-  <text x="33" y="42" fill="#ffffff" font-family="Impact, sans-serif" font-size="18" text-anchor="middle">RAM</text>
-  <text x="100" y="43" fill="#ffffff" font-family="Arial Black, Impact, sans-serif" font-size="22" letter-spacing="3" text-anchor="middle">RAM</text>
-</svg>
+<?xml version='1.0' encoding='utf-8'?>
+<ns0:svg xmlns:ns0="http://www.w3.org/2000/svg" viewBox="0 0 300 90" xmlns="http://www.w3.org/2000/svg">
+  <ns0:g transform="translate(20, 10)">
+    
+    <ns0:rect x="5" y="8" width="80" height="54" rx="8" fill="#005A2B" stroke="#D4AF37" stroke-width="3" />
+    <ns0:path d="M22 48 L22 22 L38 22 C45 22 49 26 49 31 C49 35 46 38 42 39 L51 48 L41 48 L33 40 L29 40 L29 48 Z M29 35 L37 35 C40 35 42 33 42 31 C42 29 40 27 37 27 L29 27 Z" fill="#FFFFFF" />
+    <ns0:path d="M54 48 L65 22 L73 22 L84 48 L76 48 L74 42 L64 42 L62 48 Z M66 37 L72 37 L69 28 Z" fill="#FFFFFF" />
+    <ns0:text x="100" y="42" font-family="'Arial Black', sans-serif" font-weight="900" font-size="28" fill="#FFFFFF" letter-spacing="2">RAM</ns0:text>
+    <ns0:text x="102" y="58" font-family="'Helvetica Neue', Arial, sans-serif" font-weight="700" font-size="12" fill="#D4AF37" letter-spacing="4">RACING F1</ns0:text>
+  </ns0:g>
+</ns0:svg>
