@@ -178,17 +178,17 @@ export function Layout() {
 
   // High-Tech F1 Carbon Twill Weave & Atmospheric Track Lighting
   const carbonPattern = isDark
-    ? `url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h8v8H0V0zm8 8h8v8H8V8z' fill='%23ffffff' fill-opacity='0.024'/%3E%3Cpath d='M0 8h8v8H0V8zm8-8h8v8H8V0z' fill='%23000000' fill-opacity='0.20'/%3E%3Cpath d='M0 0l8 8M8 0l8 8M0 8l8 8M8 8l8 8' stroke='%23ffffff' stroke-opacity='0.018' stroke-width='0.5'/%3E%3C/svg%3E")`
+    ? `url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%230b0e14'/%3E%3Crect x='0' y='0' width='8' height='8' fill='%23161923'/%3E%3Crect x='8' y='8' width='8' height='8' fill='%23161923'/%3E%3Cline x1='0' y1='0' x2='8' y2='8' stroke='%23252a3b' stroke-width='1.2'/%3E%3Cline x1='8' y1='8' x2='16' y2='16' stroke='%23252a3b' stroke-width='1.2'/%3E%3C/svg%3E")`
     : `radial-gradient(circle, rgba(0, 0, 0, 0.06) 1px, transparent 1px)`;
 
   const atmosphericGlow = isThemed
-    ? `radial-gradient(ellipse 90% 55% at 50% -5%, var(--team-glow, rgba(225,6,0,0.18)) 0%, transparent 75%)`
+    ? `radial-gradient(ellipse 95% 65% at 50% -8%, var(--team-glow, rgba(225,6,0,0.35)) 0%, color-mix(in srgb, var(--primary) 20%, transparent) 40%, transparent 75%)`
     : (isDark
-      ? `radial-gradient(ellipse 90% 50% at 50% -5%, rgba(225, 6, 0, 0.08) 0%, rgba(30, 41, 59, 0.14) 40%, transparent 75%)`
-      : `radial-gradient(ellipse 90% 45% at 50% -5%, rgba(225, 6, 0, 0.04) 0%, transparent 70%)`);
+      ? `radial-gradient(ellipse 90% 55% at 50% -8%, rgba(225, 6, 0, 0.22) 0%, rgba(30, 41, 59, 0.32) 35%, transparent 75%)`
+      : `radial-gradient(ellipse 90% 45% at 50% -8%, rgba(225, 6, 0, 0.05) 0%, transparent 70%)`);
 
-  const bgImage = `${carbonPattern}, ${atmosphericGlow}`;
-  const bgSize = isDark ? "16px 16px, 100% 100%" : "24px 24px, 100% 100%";
+  const bgImage = `${atmosphericGlow}, ${carbonPattern}`;
+  const bgSize = isDark ? "100% 100%, 16px 16px" : "100% 100%, 24px 24px";
 
   return (
     <div className="min-h-screen bg-background relative transition-colors duration-700 overflow-hidden flex flex-col">
@@ -196,9 +196,12 @@ export function Layout() {
       <div 
         className="fixed inset-0 pointer-events-none transition-all duration-1000 z-0 team-bg-layer" 
         style={{ 
-          backgroundColor: isThemed ? "var(--team-bg-color, transparent)" : "transparent",
+          backgroundColor: isThemed ? "var(--team-bg-color, transparent)" : (isDark ? "#0b0e14" : "transparent"),
+          backgroundImage: bgImage,
           backgroundSize: bgSize,
-          backgroundImage: bgImage
+          backgroundRepeat: "no-repeat, repeat",
+          backgroundPosition: "center top, 0 0",
+          backgroundAttachment: "fixed, fixed"
         }} 
       />
 
