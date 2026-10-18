@@ -1,6 +1,6 @@
 {
   "installCommand": "cd f1-app && npm install --legacy-peer-deps",
-  "buildCommand": "cp -rf f1-api/app/* api/app/ && cd f1-app && npm run build",
+  "buildCommand": "cp -rf f1-api/app/* api/app/ && cp -f f1-api/instance/f1.db api/instance/f1.db && cd f1-app && npm run build",
   "outputDirectory": "f1-app/dist",
   "functions": {
     "api/**": {
