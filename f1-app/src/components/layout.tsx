@@ -190,13 +190,34 @@ export function Layout() {
   const bgImage = `${atmosphericGlow}, ${carbonPattern}`;
   const bgSize = isDark ? "100% 100%, 16px 16px" : "100% 100%, 24px 24px";
 
+  const teamBgUrl = `/backgrounds/bg-${teamTheme || "default"}.webp`;
+
   return (
     <div className="min-h-screen bg-background relative transition-colors duration-700 overflow-hidden flex flex-col">
+      {/* Base Dark Foundation */}
+      <div 
+        className="fixed inset-0 pointer-events-none z-0" 
+        style={{ backgroundColor: isDark ? "#0b0e14" : "transparent" }}
+      />
+
+      {/* Dynamic F1 Car with Titanium Sparks (Reactive to Selected Team Livery) */}
+      {isDark && (
+        <div 
+          key={teamTheme || "default"}
+          className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat animate-in fade-in duration-700"
+          style={{ 
+            backgroundImage: `url('${teamBgUrl}')`,
+            backgroundAttachment: "fixed",
+            opacity: isThemed ? 0.72 : 0.62,
+          }}
+        />
+      )}
+
       {/* High-Tech Carbon Fiber + Atmospheric Track Lighting Background Overlay */}
       <div 
         className="fixed inset-0 pointer-events-none transition-all duration-1000 z-0 team-bg-layer" 
         style={{ 
-          backgroundColor: isThemed ? "var(--team-bg-color, transparent)" : (isDark ? "#0b0e14" : "transparent"),
+          backgroundColor: isThemed ? "var(--team-bg-color, transparent)" : "transparent",
           backgroundImage: bgImage,
           backgroundSize: bgSize,
           backgroundRepeat: "no-repeat, repeat",
