@@ -188,15 +188,17 @@ export function Layout() {
   const teamBgUrl = `/backgrounds/bg-${teamTheme || "default"}.webp`;
 
   return (
-    <div className="min-h-screen relative transition-colors duration-700 overflow-hidden flex flex-col bg-[#080a0f]">
+    <div className="min-h-screen relative transition-colors duration-700 overflow-x-hidden flex flex-col bg-[#080a0f]">
       {/* Dynamic F1 Car with Titanium Sparks (Reactive to Selected Team Livery) */}
       <div 
         key={teamTheme || "default"}
-        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-700 animate-in fade-in"
+        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-[75%_center] sm:bg-center bg-no-repeat transition-opacity duration-700 animate-in fade-in"
         style={{ 
           backgroundImage: `url('${teamBgUrl}')`,
-          backgroundAttachment: "fixed",
           opacity: 0.95,
+          transform: "translate3d(0, 0, 0)",
+          WebkitTransform: "translate3d(0, 0, 0)",
+          willChange: "opacity",
         }}
       />
 
@@ -209,8 +211,9 @@ export function Layout() {
           backgroundSize: bgSize,
           backgroundRepeat: "no-repeat, repeat",
           backgroundPosition: "center top, 0 0",
-          backgroundAttachment: "fixed, fixed",
-          opacity: 0.85
+          opacity: 0.85,
+          transform: "translate3d(0, 0, 0)",
+          WebkitTransform: "translate3d(0, 0, 0)",
         }} 
       />
 

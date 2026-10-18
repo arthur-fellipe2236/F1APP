@@ -297,11 +297,15 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 15 }, (_, i) => [2016 + i, { url: "/alpine/renault-2.jpg", className: "bg-white rounded-sm" }])),
   },
   "Haas": {
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2016 + i, { url: "/haas/haas-1.jpg", className: "bg-white rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 1 }, (_, i) => [2019 + i, { url: "/haas/haas-2.jpg", className: "bg-white rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 1 }, (_, i) => [2020 + i, { url: "/haas/haas-1.jpg", className: "bg-white rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 2 }, (_, i) => [2021 + i, { url: "/haas/haas-3.jpg", className: "bg-white rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 15 }, (_, i) => [2023 + i, { url: "/haas/haas-4.jpg", className: "bg-white rounded-sm" }])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2016 + i, { url: "/teams/haas_f1_team.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
+    2019: { url: "/teams/rich_energy_haas.svg", color: "#000000", className: "object-contain p-0.5 filter-none" },
+    2020: { url: "/teams/haas_f1_team.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
+    2021: { url: "/teams/uralkali_haas.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
+    2022: { url: "/teams/haas_f1_team.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
+    ...Object.fromEntries(Array.from({ length: 15 }, (_, i) => [2023 + i, { url: "/teams/moneygram_haas.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
+  },
+  "Rich Energy Haas F1 Team": {
+    2019: { url: "/teams/rich_energy_haas.svg", color: "#000000", className: "object-contain p-0.5 filter-none" },
   },
   "Williams": {
     ...Object.fromEntries(Array.from({ length: 16 }, (_, i) => [1978 + i, { url: "/williams/williams-1.jpg", className: "bg-white rounded-sm" }])),
@@ -312,16 +316,16 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [2022 + i, { url: "/williams/williams-6.jpg", className: "bg-white rounded-sm" }])),
   },
   "Sauber": {
-    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1993 + i, { url: "/sauber/sauber-1.jpg", className: "bg-white rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1999 + i, { url: "/teams/sauber.png", color: "#002B49", className: "object-contain p-0.5" }])),
-    ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [2010 + i, { url: "/teams/sauber.png", color: "#002B49", className: "object-contain p-0.5" }])),
+    ...Object.fromEntries(Array.from({ length: 13 }, (_, i) => [1993 + i, { url: "/teams/sauber.png", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2006 + i, { url: "/teams/bmw_sauber.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 14 }, (_, i) => [2010 + i, { url: "/teams/sauber.png", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2024 + i, { url: "/teams/kicksauber.svg", color: "#52E252", className: "brightness-100 filter-none" }])),
   },
   "Sauber Clássica": {
-    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1993 + i, { url: "/sauber/sauber-1.jpg", className: "bg-white rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1999 + i, { url: "/teams/sauber.png", color: "#002B49", className: "object-contain p-0.5" }])),
+    ...Object.fromEntries(Array.from({ length: 13 }, (_, i) => [1993 + i, { url: "/teams/sauber.png", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
   },
   "BMW Sauber": {
-    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2006 + i, { url: "/teams/bmwsauber.svg", color: "#FFFFFF", className: "object-contain p-0.5" }])),
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2006 + i, { url: "/teams/bmw_sauber.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
   },
   "Virgin": {
     2010: { url: "/teams/virgin.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
@@ -502,20 +506,34 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
     color: "#1021C7",
   },
   Haas: {
-    url: "/haas/haas-4.jpg",
-    className: "bg-white rounded-sm",
+    url: "/teams/moneygram_haas.svg",
+    color: "#FFFFFF",
+    className: "object-contain p-0.5 filter-none",
   },
   "Haas F1 Team": {
-    url: "/haas/haas-4.jpg",
-    className: "bg-white rounded-sm",
+    url: "/teams/haas_f1_team.svg",
+    color: "#FFFFFF",
+    className: "object-contain p-0.5 filter-none",
+  },
+  "Rich Energy Haas F1 Team": {
+    url: "/teams/rich_energy_haas.svg",
+    color: "#000000",
+    className: "object-contain p-0.5 filter-none",
   },
   "MoneyGram Haas F1 Team": {
-    url: "/haas/haas-4.jpg",
-    className: "bg-white rounded-sm",
+    url: "/teams/moneygram_haas.svg",
+    color: "#FFFFFF",
+    className: "object-contain p-0.5 filter-none",
   },
   "Moneygran Haas F1 Team": {
-    url: "/haas/haas-4.jpg",
-    className: "bg-white rounded-sm",
+    url: "/teams/moneygram_haas.svg",
+    color: "#FFFFFF",
+    className: "object-contain p-0.5 filter-none",
+  },
+  "Uralkali Haas F1 Team": {
+    url: "/teams/uralkali_haas.svg",
+    color: "#FFFFFF",
+    className: "object-contain p-0.5 filter-none",
   },
   Audi: {
     url: `${F1_2026_BASE}/audi/2026audilogowhite.svg`,
@@ -531,9 +549,19 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
     className: "brightness-100 filter-none",
   },
   Sauber: {
-    url: "/teams/kicksauber.svg",
-    color: "#52E252",
-    className: "brightness-100 filter-none",
+    url: "/teams/sauber.png",
+    color: "#FFFFFF",
+    className: "object-contain p-0.5 filter-none",
+  },
+  "Sauber F1 Team": {
+    url: "/teams/sauber.png",
+    color: "#FFFFFF",
+    className: "object-contain p-0.5 filter-none",
+  },
+  "Sauber Motorsport": {
+    url: "/teams/sauber.png",
+    color: "#FFFFFF",
+    className: "object-contain p-0.5 filter-none",
   },
   "Alfa Romeo": {
     url: "/teams/alfaromeo.svg",
@@ -743,11 +771,12 @@ const TEAM_ALIASES: Record<string, string> = {
 
   // Haas
   haas: "Haas",
-  "haas f1 team": "Haas",
+  "haas f1 team": "Haas F1 Team",
   "moneygram haas f1 team": "Haas",
   "moneygran haas f1 team": "Haas",
   "uralkali haas f1 team": "Haas",
-  "rich energy haas f1 team": "Haas",
+  "rich energy haas": "Rich Energy Haas F1 Team",
+  "rich energy haas f1 team": "Rich Energy Haas F1 Team",
 
   // Red Bull
   "red bull": "Red Bull Racing",
@@ -796,8 +825,9 @@ const TEAM_ALIASES: Record<string, string> = {
   // Sauber / Audi
   "kick sauber": "Kick Sauber",
   "stake f1 team kick sauber": "Kick Sauber",
-  sauber: "Kick Sauber",
-  "sauber f1 team": "Kick Sauber",
+  sauber: "Sauber",
+  "sauber f1 team": "Sauber",
+  "sauber motorsport": "Sauber",
   audi: "Audi",
   "audi f1 team": "Audi",
   "audi sport": "Audi",
@@ -1011,6 +1041,63 @@ const TEAM_ALIASES: Record<string, string> = {
 export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   if (!name) return null
   const canonical = TEAM_ALIASES[name.trim().toLowerCase()] || name
+
+  // Special high-res branding for Rich Energy Haas, Haas F1 Team, and Sauber
+  if (
+    (season === 2019 && (name.toLowerCase().includes("haas") || canonical === "Haas")) ||
+    name.toLowerCase().includes("rich energy") ||
+    canonical === "Rich Energy Haas F1 Team"
+  ) {
+    return {
+      url: "/teams/rich_energy_haas.svg",
+      color: "#000000",
+      className: "object-contain p-0.5 filter-none",
+    }
+  }
+
+  if (name.toLowerCase().includes("haas") || canonical === "Haas" || canonical === "Haas F1 Team") {
+    if (season === 2021) {
+      return {
+        url: "/teams/uralkali_haas.svg",
+        color: "#FFFFFF",
+        className: "object-contain p-0.5 filter-none",
+      }
+    }
+    if (season && season >= 2023) {
+      return {
+        url: "/teams/moneygram_haas.svg",
+        color: "#FFFFFF",
+        className: "object-contain p-0.5 filter-none",
+      }
+    }
+    return {
+      url: "/teams/haas_f1_team.svg",
+      color: "#FFFFFF",
+      className: "object-contain p-0.5 filter-none",
+    }
+  }
+
+  if (name.toLowerCase().includes("sauber") || canonical === "Sauber" || canonical === "Kick Sauber" || canonical === "BMW Sauber") {
+    if (season && season >= 2006 && season <= 2009) {
+      return {
+        url: "/teams/bmw_sauber.svg",
+        color: "#FFFFFF",
+        className: "object-contain p-0.5 filter-none",
+      }
+    }
+    if (season && season >= 2024) {
+      return {
+        url: "/teams/kicksauber.svg",
+        color: "#52E252",
+        className: "object-contain p-0.5 brightness-100 filter-none",
+      }
+    }
+    return {
+      url: "/teams/sauber.png",
+      color: "#FFFFFF",
+      className: "object-contain p-0.5 filter-none",
+    }
+  }
 
   // Specific historical exceptions for 2010-2011 distinct identities
   if (season === 2010 && (canonical === "HRT" || name.toLowerCase().includes("hispania"))) {

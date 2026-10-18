@@ -33,9 +33,9 @@ export function TeamInline({ name, season }: { name: string | null; season?: num
     const textColor = logo?.color ? getContrastColor(logo.color) : "var(--secondary-foreground)"
     
     return (
-      <span className="flex items-center gap-1.5">
+      <span className="flex items-center gap-2">
         <span 
-          className="flex h-6 min-w-9 px-1 shrink-0 items-center justify-center rounded-md text-[9px] font-bold shadow-xs border border-border/40"
+          className="flex h-7 min-w-10 sm:min-w-12 px-1 shrink-0 items-center justify-center rounded-md text-[10px] font-bold shadow-xs border border-border/40"
           style={{ backgroundColor: bgColor, color: textColor }}
         >
           {initials(name).slice(0, 3)}
@@ -45,15 +45,17 @@ export function TeamInline({ name, season }: { name: string | null; season?: num
     )
   }
 
-  const isLightBg = logo.color && !logo.className?.includes("filter-none") ? getLuminance(logo.color) >= 155 : false
+  // Only monochrome white SVG logos should be tinted black on light backgrounds
+  const isWhiteMonoLogo = logo.url.includes("logowhite.svg") || logo.className?.includes("make-black")
+  const isLightBg = isWhiteMonoLogo && logo.color && !logo.className?.includes("filter-none") ? getLuminance(logo.color) >= 155 : false
   const isDarkBg = logo.color ? getLuminance(logo.color) <= 40 : false
   const isHistorical = !logo.color
 
   return (
-    <span className="flex items-center gap-1.5">
+    <span className="flex items-center gap-2">
       <span 
         className={cn(
-          "flex h-6 w-11 shrink-0 items-center justify-center rounded-md px-1 py-0.5 shadow-xs border border-border/50 transition-all",
+          "flex h-7 w-12 sm:w-14 shrink-0 items-center justify-center rounded-md px-1.5 py-0.5 shadow-xs border border-border/50 transition-all",
           isDarkBg && "ring-1 ring-white/20 dark:border-white/25",
           isHistorical ? "bg-white text-zinc-900 border-border/70" : (!logo.color && "bg-white dark:bg-zinc-800")
         )}
@@ -86,9 +88,9 @@ export function TeamName({ name, season }: { name: string; season?: number }) {
     const textColor = logo?.color ? getContrastColor(logo.color) : "var(--secondary-foreground)"
     
     return (
-      <span className="flex items-center gap-3 min-h-9 group">
+      <span className="flex items-center gap-3 min-h-10 group">
         <span 
-          className="flex h-8 min-w-12 px-1.5 shrink-0 items-center justify-center rounded-md text-[11px] font-bold shadow-xs border border-border/40 transition-transform duration-300 group-hover:scale-105"
+          className="flex h-9 min-w-14 sm:min-w-16 px-1.5 shrink-0 items-center justify-center rounded-md text-[11px] font-bold shadow-xs border border-border/40 transition-transform duration-300 group-hover:scale-105"
           style={{ backgroundColor: bgColor, color: textColor }}
         >
           {initials(name)}
@@ -98,15 +100,16 @@ export function TeamName({ name, season }: { name: string; season?: number }) {
     )
   }
 
-  const isLightBg = logo.color && !logo.className?.includes("filter-none") ? getLuminance(logo.color) >= 155 : false
+  const isWhiteMonoLogo = logo.url.includes("logowhite.svg") || logo.className?.includes("make-black")
+  const isLightBg = isWhiteMonoLogo && logo.color && !logo.className?.includes("filter-none") ? getLuminance(logo.color) >= 155 : false
   const isDarkBg = logo.color ? getLuminance(logo.color) <= 40 : false
   const isHistorical = !logo.color
   
   return (
-    <span className="flex items-center gap-3 min-h-9 group">
+    <span className="flex items-center gap-3 min-h-10 group">
       <span 
         className={cn(
-          "flex h-8 w-14 shrink-0 items-center justify-center rounded-md px-1 py-0.5 shadow-xs border border-border/50 transition-transform duration-300 group-hover:scale-105",
+          "flex h-9 w-16 sm:h-10 sm:w-20 shrink-0 items-center justify-center rounded-md px-1.5 py-0.5 shadow-xs border border-border/50 transition-transform duration-300 group-hover:scale-105",
           isDarkBg && "ring-1 ring-white/20 dark:border-white/25",
           isHistorical ? "bg-white text-zinc-900 border-border/70" : (!logo.color && "bg-white dark:bg-zinc-800")
         )}
