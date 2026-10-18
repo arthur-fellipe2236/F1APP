@@ -458,8 +458,16 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
     color: "#E8002D",
   },
   Mercedes: {
-    url: `${F1_2026_BASE}/mercedes/2026mercedeslogowhite.svg`,
-    color: "#00A19B",
+    url: "/mercedes/2020-2025.jpg",
+    className: "bg-white rounded-sm",
+  },
+  "Mercedes-AMG Petronas": {
+    url: "/mercedes/2020-2025.jpg",
+    className: "bg-white rounded-sm",
+  },
+  "Mercedes-AMG Petronas F1 Team": {
+    url: "/mercedes/2020-2025.jpg",
+    className: "bg-white rounded-sm",
   },
   "Red Bull Racing": {
     url: `${F1_2026_BASE}/redbullracing/2026redbullracinglogowhite.svg`,
@@ -494,12 +502,20 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
     color: "#1021C7",
   },
   Haas: {
-    url: `${F1_2026_BASE}/haas/2026haaslogowhite.svg`,
-    color: "#1F1F1F",
+    url: "/haas/haas-4.jpg",
+    className: "bg-white rounded-sm",
   },
   "Haas F1 Team": {
-    url: `${F1_2026_BASE}/haas/2026haaslogowhite.svg`,
-    color: "#1F1F1F",
+    url: "/haas/haas-4.jpg",
+    className: "bg-white rounded-sm",
+  },
+  "MoneyGram Haas F1 Team": {
+    url: "/haas/haas-4.jpg",
+    className: "bg-white rounded-sm",
+  },
+  "Moneygran Haas F1 Team": {
+    url: "/haas/haas-4.jpg",
+    className: "bg-white rounded-sm",
   },
   Audi: {
     url: `${F1_2026_BASE}/audi/2026audilogowhite.svg`,
@@ -729,7 +745,9 @@ const TEAM_ALIASES: Record<string, string> = {
   haas: "Haas",
   "haas f1 team": "Haas",
   "moneygram haas f1 team": "Haas",
+  "moneygran haas f1 team": "Haas",
   "uralkali haas f1 team": "Haas",
+  "rich energy haas f1 team": "Haas",
 
   // Red Bull
   "red bull": "Red Bull Racing",
@@ -1047,7 +1065,7 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   if (!season || season >= 1985) {
     // 1. Check if there is a specific curated season logo that is NOT an old scanned jpg
     const seasonLogo = season ? (TEAM_SEASON_LOGOS[canonical]?.[season] ?? TEAM_SEASON_LOGOS[name]?.[season]) : undefined
-    if (seasonLogo && !seasonLogo.url.includes("/ferrari/") && !seasonLogo.url.includes("/mclaren/") && !seasonLogo.url.includes("/williams/") && !seasonLogo.url.includes("/redbull/") && !seasonLogo.url.includes("/alpine/") && !seasonLogo.url.includes("/mercedes/") && !seasonLogo.url.includes("/haas/")) {
+    if (seasonLogo && !seasonLogo.url.includes("/ferrari/") && !seasonLogo.url.includes("/mclaren/") && !seasonLogo.url.includes("/williams/") && !seasonLogo.url.includes("/redbull/") && !seasonLogo.url.includes("/alpine/")) {
       const fallbackColor = TEAM_LOGO_BY_NAME[canonical]?.color ?? TEAM_LOGO_BY_NAME[name]?.color
       return {
         ...seasonLogo,
@@ -1813,8 +1831,8 @@ export function displayTeamName(name: string | null, season?: number): string {
     if (season === 2020) return "Haas F1 Team"
     if (season === 2021) return "Uralkali Haas F1 Team"
     if (season === 2022) return "Haas F1 Team"
-    if (season && season >= 2023) return "Moneygran Haas F1 Team"
-    return "Moneygran Haas F1 Team"
+    if (season && season >= 2023) return "MoneyGram Haas F1 Team"
+    return "MoneyGram Haas F1 Team"
   }
 
   if (name === "Alfa Romeo" || name === "Alfa Romeo F1 Team") {
