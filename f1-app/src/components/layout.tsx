@@ -174,44 +174,31 @@ export function Layout() {
 
   const themeObj = THEMES.find((t) => t.id === teamTheme);
   const isThemed = themeObj && themeObj.id !== "default";
-  const isDark = resolvedTheme === "dark";
 
-  // High-Tech F1 Carbon Twill Weave & Atmospheric Track Lighting
-  const carbonPattern = isDark
-    ? `url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%230b0e14'/%3E%3Crect x='0' y='0' width='8' height='8' fill='%23161923'/%3E%3Crect x='8' y='8' width='8' height='8' fill='%23161923'/%3E%3Cline x1='0' y1='0' x2='8' y2='8' stroke='%23252a3b' stroke-width='1.2'/%3E%3Cline x1='8' y1='8' x2='16' y2='16' stroke='%23252a3b' stroke-width='1.2'/%3E%3C/svg%3E")`
-    : `radial-gradient(circle, rgba(0, 0, 0, 0.06) 1px, transparent 1px)`;
+  // High-Tech F1 Carbon Twill Weave & Atmospheric Track Lighting (Transparent overlay, does not block the car)
+  const carbonPattern = `url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' width='8' height='8' fill='%23ffffff' fill-opacity='0.03'/%3E%3Crect x='8' y='8' width='8' height='8' fill='%23ffffff' fill-opacity='0.03'/%3E%3Cline x1='0' y1='0' x2='8' y2='8' stroke='%23ffffff' stroke-opacity='0.06' stroke-width='1.2'/%3E%3Cline x1='8' y1='8' x2='16' y2='16' stroke='%23ffffff' stroke-opacity='0.06' stroke-width='1.2'/%3E%3C/svg%3E")`;
 
   const atmosphericGlow = isThemed
     ? `radial-gradient(ellipse 95% 65% at 50% -8%, var(--team-glow, rgba(225,6,0,0.35)) 0%, color-mix(in srgb, var(--primary) 20%, transparent) 40%, transparent 75%)`
-    : (isDark
-      ? `radial-gradient(ellipse 90% 55% at 50% -8%, rgba(225, 6, 0, 0.22) 0%, rgba(30, 41, 59, 0.32) 35%, transparent 75%)`
-      : `radial-gradient(ellipse 90% 45% at 50% -8%, rgba(225, 6, 0, 0.05) 0%, transparent 70%)`);
+    : `radial-gradient(ellipse 90% 55% at 50% -8%, rgba(225, 6, 0, 0.22) 0%, rgba(30, 41, 59, 0.32) 35%, transparent 75%)`;
 
   const bgImage = `${atmosphericGlow}, ${carbonPattern}`;
-  const bgSize = isDark ? "100% 100%, 16px 16px" : "100% 100%, 24px 24px";
+  const bgSize = "100% 100%, 16px 16px";
 
   const teamBgUrl = `/backgrounds/bg-${teamTheme || "default"}.webp`;
 
   return (
-    <div className="min-h-screen bg-background relative transition-colors duration-700 overflow-hidden flex flex-col">
-      {/* Base Dark Foundation */}
-      <div 
-        className="fixed inset-0 pointer-events-none z-0" 
-        style={{ backgroundColor: isDark ? "#0b0e14" : "transparent" }}
-      />
-
+    <div className="min-h-screen relative transition-colors duration-700 overflow-hidden flex flex-col bg-[#080a0f]">
       {/* Dynamic F1 Car with Titanium Sparks (Reactive to Selected Team Livery) */}
-      {isDark && (
-        <div 
-          key={teamTheme || "default"}
-          className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat animate-in fade-in duration-700"
-          style={{ 
-            backgroundImage: `url('${teamBgUrl}')`,
-            backgroundAttachment: "fixed",
-            opacity: isThemed ? 0.72 : 0.62,
-          }}
-        />
-      )}
+      <div 
+        key={teamTheme || "default"}
+        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-700 animate-in fade-in"
+        style={{ 
+          backgroundImage: `url('${teamBgUrl}')`,
+          backgroundAttachment: "fixed",
+          opacity: 0.95,
+        }}
+      />
 
       {/* High-Tech Carbon Fiber + Atmospheric Track Lighting Background Overlay */}
       <div 
@@ -222,7 +209,8 @@ export function Layout() {
           backgroundSize: bgSize,
           backgroundRepeat: "no-repeat, repeat",
           backgroundPosition: "center top, 0 0",
-          backgroundAttachment: "fixed, fixed"
+          backgroundAttachment: "fixed, fixed",
+          opacity: 0.85
         }} 
       />
 
