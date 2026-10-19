@@ -338,16 +338,16 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2012 + i, { url: "/teams/marussia.png", color: "#1E1E1E", className: "object-contain" }])),
   },
   "Manor Marussia": {
-    2015: { url: "/teams/marussia.png", color: "#1E1E1E", className: "object-contain" },
-    2016: { url: "/teams/manor.png", color: "#1E1E1E", className: "object-contain" },
-    2017: { url: "/teams/manor.png", color: "#1E1E1E", className: "object-contain" },
+    2015: { url: "/teams/manor_marussia.png", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
+    2016: { url: "/teams/manor_marussia_large.png", color: "#001428", className: "object-contain p-0.5 filter-none" },
+    2017: { url: "/teams/manor_marussia_large.png", color: "#001428", className: "object-contain p-0.5 filter-none" },
   },
   "Lotus": {
     2010: { url: "/teams/teamlotus.svg", color: "#004225", className: "object-contain" },
     2011: { url: "/teams/teamlotus.svg", color: "#004225", className: "object-contain" },
   },
   "Caterham": {
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2012 + i, { url: "/teams/caterham.svg", color: "#005030", className: "object-contain p-0.5" }])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2012 + i, { url: "/teams/caterham.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
   },
   "HRT": {
     2010: { url: "/teams/hispania.svg", color: "#E10600", className: "object-contain p-0.5" },
@@ -355,10 +355,10 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     2012: { url: "/teams/hrt.svg", color: "#1E1E1E", className: "object-contain" },
   },
   "Brawn": {
-    2009: { url: "/teams/brawn.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
+    2009: { url: "/teams/brawn.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   },
   "Toyota": {
-    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [2002 + i, { url: "/teams/toyota.svg", color: "#FFFFFF", className: "object-contain p-0.5" }])),
+    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [2002 + i, { url: "/teams/panasonic_toyota.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
   },
   "Honda": {
     ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1964 + i, { url: "/honda/honda-1.jpg", className: "bg-white rounded-sm" }])),
@@ -372,16 +372,16 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     2007: { url: "/teams/spyker.png", color: "#F58020", className: "object-contain p-0.5" },
   },
   "Spyker MF1": {
-    2006: { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+    2006: { url: "/teams/spyker_f1.png", color: "#F58020", className: "object-contain p-0.5 filter-none" },
   },
   "Spyker MF1 Racing": {
-    2006: { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+    2006: { url: "/teams/spyker_f1.png", color: "#F58020", className: "object-contain p-0.5 filter-none" },
   },
   "MF1": {
-    2006: { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+    2006: { url: "/teams/mf1_racing.png", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   },
   "Midland": {
-    2006: { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+    2006: { url: "/teams/mf1_racing.png", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   },
   "BAR": {
     ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1999 + i, { url: "/teams/bar.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
@@ -401,7 +401,7 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1999 + i, { url: "/teams/arrows.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
   },
   "Orange Arrows": {
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2000 + i, { url: "/teams/arrows.png", color: "#FFFFFF", className: "object-contain p-0.5" }])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2000 + i, { url: "/teams/orange_arrows.svg", color: "#000000", className: "object-contain p-0.5 filter-none" }])),
   },
   "Footwork": {
     ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1991 + i, { url: "/teams/footwork.svg", color: "#FFFFFF", className: "object-contain p-0.5" }])),
@@ -462,16 +462,19 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
     color: "#E8002D",
   },
   Mercedes: {
-    url: "/mercedes/2020-2025.jpg",
-    className: "bg-white rounded-sm",
+    url: "/teams/mercedes_amg_petronas.svg",
+    color: "#FFFFFF",
+    className: "object-contain p-0.5 filter-none",
   },
   "Mercedes-AMG Petronas": {
-    url: "/mercedes/2020-2025.jpg",
-    className: "bg-white rounded-sm",
+    url: "/teams/mercedes_amg_petronas.svg",
+    color: "#FFFFFF",
+    className: "object-contain p-0.5 filter-none",
   },
   "Mercedes-AMG Petronas F1 Team": {
-    url: "/mercedes/2020-2025.jpg",
-    className: "bg-white rounded-sm",
+    url: "/teams/mercedes_amg_petronas.svg",
+    color: "#FFFFFF",
+    className: "object-contain p-0.5 filter-none",
   },
   "Red Bull Racing": {
     url: `${F1_2026_BASE}/redbullracing/2026redbullracinglogowhite.svg`,
@@ -660,32 +663,32 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   Jordan: { url: "/teams/jordan.png", color: "#FFDE00", className: "object-contain p-0.5" },
   "Super Aguri": { url: "/teams/superaguri.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
   Honda: { url: "/teams/honda.svg", color: "#fc0217", className: "object-contain p-0.5" },
-  Toyota: { url: "/teams/toyota.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
-  Brawn: { url: "/teams/brawn.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
-  "Brawn GP": { url: "/teams/brawn.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
+  Toyota: { url: "/teams/panasonic_toyota.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
+  Brawn: { url: "/teams/brawn.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
+  "Brawn GP": { url: "/teams/brawn.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   HRT: { url: "/teams/hrt.svg", color: "#1E1E1E", className: "object-contain" },
   Lotus: { url: "/teams/teamlotus.svg", color: "#004225", className: "object-contain" },
   "Team Lotus": { url: "/teams/teamlotus.svg", color: "#004225", className: "object-contain" },
-  Caterham: { url: "/teams/caterham.svg", color: "#005030", className: "object-contain p-0.5" },
+  Caterham: { url: "/teams/caterham.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   Virgin: { url: "/teams/virgin.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
   Marussia: { url: "/teams/marussia.png", color: "#1E1E1E", className: "object-contain" },
-  "Manor Marussia": { url: "/teams/manor.png", color: "#1E1E1E", className: "object-contain" },
+  "Manor Marussia": { url: "/teams/manor_marussia.png", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   "Manor Racing": { url: "/teams/manor.png", color: "#1E1E1E", className: "object-contain" },
   "Sauber Clássica": { url: "/teams/sauber_classic.svg", color: "#002B49", className: "object-contain p-0.5" },
   "BMW Sauber": { url: "/teams/bmwsauber.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
   BAR: { url: "/teams/bar.png", color: "#FFFFFF", className: "object-contain p-0.5" },
   "BAR Honda": { url: "/teams/bar.png", color: "#FFFFFF", className: "object-contain p-0.5" },
   "Lucky Strike BAR Honda": { url: "/teams/bar.png", color: "#FFFFFF", className: "object-contain p-0.5" },
-  "Orange Arrows": { url: "/teams/arrows.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+  "Orange Arrows": { url: "/teams/orange_arrows.svg", color: "#000000", className: "object-contain p-0.5 filter-none" },
   "Prost Grand Prix": { url: "/teams/prost.png", color: "#FFFFFF", className: "object-contain p-0.5" },
   "Prost Grand Prix Acer": { url: "/teams/prost.png", color: "#FFFFFF", className: "object-contain p-0.5" },
   "Benetton Formula": { url: "/teams/benetton.png", color: "#FFFFFF", className: "object-contain p-0.5" },
   "Benetton Formula Mild Seven": { url: "/teams/benetton.png", color: "#FFFFFF", className: "object-contain p-0.5" },
-  Spyker: { url: "/teams/spyker.png", color: "#F58020", className: "object-contain p-0.5" },
-  "Spyker MF1": { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
-  "Spyker MF1 Racing": { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
-  MF1: { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
-  Midland: { url: "/teams/spykermf1.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+  Spyker: { url: "/teams/spyker_f1.png", color: "#F58020", className: "object-contain p-0.5 filter-none" },
+  "Spyker MF1": { url: "/teams/spyker_f1.png", color: "#F58020", className: "object-contain p-0.5 filter-none" },
+  "Spyker MF1 Racing": { url: "/teams/spyker_f1.png", color: "#F58020", className: "object-contain p-0.5 filter-none" },
+  MF1: { url: "/teams/mf1_racing.png", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
+  Midland: { url: "/teams/mf1_racing.png", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   "Marussia Virgin": { url: "/teams/marussia_virgin.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
   "Force India": { url: "/teams/forceindia.svg", color: "#F58020", className: "object-contain" },
   "Racing Point": { url: "/teams/racingpoint.svg", color: "#F596C8" },
@@ -951,7 +954,7 @@ const TEAM_ALIASES: Record<string, string> = {
   "sauber petronas": "Sauber",
   "red bull sauber petronas": "Sauber",
   arrows: "Arrows",
-  "orange arrows": "Arrows",
+  "orange arrows": "Orange Arrows",
   "arrows grand prix": "Arrows",
   "arrows grand prix international": "Arrows",
   footwork: "Footwork",
@@ -977,8 +980,8 @@ const TEAM_ALIASES: Record<string, string> = {
   "jordan grand prix": "Jordan",
   minardi: "Minardi",
   "scuderia minardi": "Minardi",
-  mf1: "Spyker MF1",
-  "mf1 racing": "Spyker MF1",
+  mf1: "MF1",
+  "mf1 racing": "MF1",
   midland: "Spyker MF1",
   "midland f1": "Spyker MF1",
   "midland f1 racing": "Spyker MF1",
@@ -1726,6 +1729,10 @@ export function displayTeamName(name: string | null, season?: number): string {
   }
   if (name === "AlphaTauri" || (name === "RB" && season && season >= 2020 && season <= 2023)) {
     return "Scuderia AlphaTauri"
+  }
+  if (name === "Mercedes" || name === "Mercedes-AMG" || name === "Mercedes-AMG Petronas" || name === "Mercedes-AMG Petronas F1 Team") {
+    if (season && season >= 2010 && season <= 2011) return "Mercedes GP Petronas F1 Team"
+    return "Mercedes-AMG Petronas F1 Team"
   }
   if (name === "Toro Rosso") {
     return "Scuderia Toro Rosso"
