@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="ldsclimaxBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#042114" /><stop offset="50%" stop-color="#02130B" /><stop offset="100%" stop-color="#010804" />
+    </linearGradient>
+    <filter id="ldsclimaxsh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#ldsclimaxBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#0E5933" stroke-width="1.2" />
+  <rect x="12" y="2" width="146" height="3" fill="#FFB81C" rx="1" />
+  <g transform="translate(12, 16)" filter="url(#ldsclimaxsh)">
+    <circle cx="25" cy="25" r="23" fill="#020E08" stroke="#FFB81C" stroke-width="2" /><ellipse cx="25" cy="25" rx="19" ry="14" fill="#0E5933" stroke="#FFFFFF" stroke-width="1" /><text x="25" y="29" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="9" text-anchor="middle">CLIMAX</text>
+  </g>
+  <g transform="translate(68, 20)" filter="url(#ldsclimaxsh)">
+    <text x="0" y="23" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-style="normal" font-size="18" letter-spacing="1.5">LDS-CLIMAX</text>
+    <text x="1" y="34" fill="#FFB81C" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="7.5" letter-spacing="2.8">FORMULA 1 • 1967</text>
+    <line x1="1" y1="39" x2="88" y2="39" stroke="#FFB81C" stroke-width="1.2" opacity="0.8" />
+    <text x="1" y="49" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="6.5" letter-spacing="1.8">SERRURIER • COVENTRY</text>
+  </g>
+</svg>

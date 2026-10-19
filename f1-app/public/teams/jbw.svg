@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="jbwBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#042416" /><stop offset="50%" stop-color="#02130B" /><stop offset="100%" stop-color="#010905" />
+    </linearGradient>
+    <filter id="jbwsh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#jbwBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#0D5232" stroke-width="1.2" />
+  <rect x="12" y="2" width="146" height="3" fill="#FFEB3B" rx="1" />
+  <g transform="translate(12, 16)" filter="url(#jbwsh)">
+    <circle cx="25" cy="25" r="23" fill="#020E08" stroke="#FFEB3B" stroke-width="2" /><text x="25" y="31" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="11" text-anchor="middle" letter-spacing="1">JBW</text>
+  </g>
+  <g transform="translate(68, 20)" filter="url(#jbwsh)">
+    <text x="0" y="23" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-style="normal" font-size="24" letter-spacing="1.5">JBW</text>
+    <text x="1" y="34" fill="#FFEB3B" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="7.5" letter-spacing="2.8">J.B. NAYLOR RACING</text>
+    <line x1="1" y1="39" x2="88" y2="39" stroke="#FFEB3B" stroke-width="1.2" opacity="0.8" />
+    <text x="1" y="49" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="6.5" letter-spacing="1.8">MASERATI • CLIMAX</text>
+  </g>
+</svg>
