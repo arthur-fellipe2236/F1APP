@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="politoysBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E0406" />
+      <stop offset="50%" stop-color="#100203" />
+      <stop offset="100%" stop-color="#050001" />
+    </linearGradient>
+    <linearGradient id="politoysRed" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF2438" />
+      <stop offset="100%" stop-color="#C80010" />
+    </linearGradient>
+    <filter id="pltsh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#politoysBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#4A1015" stroke-width="1.2" />
+  <!-- Red & Yellow Accent -->
+  <rect x="12" y="2" width="146" height="3" fill="#FFD100" rx="1" />
+  <!-- Politoys Diecast Oval Emblem -->
+  <g transform="translate(10, 18)" filter="url(#pltsh)">
+    <ellipse cx="26" cy="23" rx="24" ry="18" fill="url(#politoysRed)" stroke="#FFFFFF" stroke-width="2" />
+    <text x="26" y="27" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-style="italic" font-size="9" text-anchor="middle">POLITOYS</text>
+  </g>
+  <!-- Typography -->
+  <g transform="translate(66, 18)" filter="url(#pltsh)">
+    <text x="0" y="22" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="19" letter-spacing="1.5">POLITOYS</text>
+    <text x="1" y="33" fill="#FFD100" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="7.5" letter-spacing="2.5">WILLIAMS RACING FX3</text>
+    <line x1="1" y1="38" x2="92" y2="38" stroke="url(#politoysRed)" stroke-width="1.2" />
+    <text x="1" y="49" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="7" letter-spacing="2">HENRI PESCAROLO • 1972</text>
+  </g>
+</svg>

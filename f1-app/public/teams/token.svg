@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="tokenBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#062419" />
+      <stop offset="50%" stop-color="#03140E" />
+      <stop offset="100%" stop-color="#010A07" />
+    </linearGradient>
+    <linearGradient id="tokenGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE066" />
+      <stop offset="50%" stop-color="#D4AF37" />
+      <stop offset="100%" stop-color="#997715" />
+    </linearGradient>
+    <filter id="toksh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#tokenBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#124D37" stroke-width="1.2" />
+  <!-- Gold Accent Bar -->
+  <rect x="12" y="2" width="146" height="3" fill="url(#tokenGold)" rx="1" />
+  <!-- Token Medallion / Coin Emblem -->
+  <g transform="translate(12, 16)" filter="url(#toksh)">
+    <circle cx="25" cy="25" r="23" fill="#020E09" stroke="url(#tokenGold)" stroke-width="2.5" />
+    <circle cx="25" cy="25" r="18" fill="none" stroke="url(#tokenGold)" stroke-width="1" stroke-dasharray="3 2" />
+    <!-- Stylized "T" -->
+    <path d="M 15 16 L 35 16 L 35 21 L 28 21 L 28 35 L 22 35 L 22 21 L 15 21 Z" fill="url(#tokenGold)" />
+  </g>
+  <!-- Typography -->
+  <g transform="translate(68, 20)" filter="url(#toksh)">
+    <text x="0" y="24" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="22" letter-spacing="2">TOKEN</text>
+    <text x="1" y="35" fill="url(#tokenGold)" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="8" letter-spacing="3.5">RACING F1</text>
+    <line x1="1" y1="40" x2="88" y2="40" stroke="url(#tokenGold)" stroke-width="1.2" />
+    <text x="1" y="50" fill="#A7F3D0" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="7" letter-spacing="2">RJ02 • TOM PRYCE</text>
+  </g>
+</svg>

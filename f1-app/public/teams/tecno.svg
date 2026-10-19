@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="tecnoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1F0407" />
+      <stop offset="50%" stop-color="#120204" />
+      <stop offset="100%" stop-color="#050001" />
+    </linearGradient>
+    <linearGradient id="tecnoRed" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E10600" />
+      <stop offset="100%" stop-color="#A60400" />
+    </linearGradient>
+    <filter id="tcsh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#tecnoBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#4D1016" stroke-width="1.2" />
+  <!-- Martini & Rossi Racing Stripes Accent -->
+  <g transform="translate(10, 2)">
+    <rect x="0" y="0" width="150" height="2" fill="#002D62" />
+    <rect x="0" y="2" width="150" height="1.5" fill="#00A3E0" />
+    <rect x="0" y="3.5" width="150" height="1.5" fill="#E10600" />
+  </g>
+  <!-- Tecno Crown Crest -->
+  <g transform="translate(12, 16)" filter="url(#tcsh)">
+    <circle cx="25" cy="25" r="23" fill="#0C0203" stroke="url(#tecnoRed)" stroke-width="2" />
+    <!-- Stylized Crown & "T" -->
+    <path d="M 16 16 L 25 12 L 34 16 L 31 22 L 19 22 Z" fill="#FFD100" />
+    <path d="M 18 24 L 32 24 L 32 28 L 27 28 L 27 36 L 23 36 L 23 28 L 18 28 Z" fill="#FFFFFF" />
+  </g>
+  <!-- Typography -->
+  <g transform="translate(68, 20)" filter="url(#tcsh)">
+    <text x="0" y="24" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="22" letter-spacing="2">TECNO</text>
+    <text x="1" y="35" fill="url(#tecnoRed)" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="8" letter-spacing="3.2">BOLOGNA • FLAT-12</text>
+    <line x1="1" y1="40" x2="88" y2="40" stroke="#00A3E0" stroke-width="1.2" />
+    <text x="1" y="50" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="7" letter-spacing="2">MARTINI RACING • PA123</text>
+  </g>
+</svg>

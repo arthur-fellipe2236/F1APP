@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="parnelliBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0E1D3B" />
+      <stop offset="50%" stop-color="#081124" />
+      <stop offset="100%" stop-color="#03060D" />
+    </linearGradient>
+    <linearGradient id="usaRed" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF1A26" />
+      <stop offset="100%" stop-color="#C2040F" />
+    </linearGradient>
+    <filter id="psh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#parnelliBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#254378" stroke-width="1.2" />
+  <!-- US Flag Stripes on Top -->
+  <rect x="12" y="2" width="46" height="3" fill="#C2040F" rx="1" />
+  <rect x="58" y="2" width="48" height="3" fill="#FFFFFF" rx="1" />
+  <rect x="106" y="2" width="46" height="3" fill="#002868" rx="1" />
+  <!-- VPJ Racing Shield -->
+  <g transform="translate(12, 16)" filter="url(#psh)">
+    <polygon points="12,6 38,6 35,38 25,44 15,38" fill="#040A17" stroke="#FFD100" stroke-width="2" />
+    <!-- US Stars & Checkered elements -->
+    <path d="M 15 14 L 35 14 L 34 26 L 16 26 Z" fill="url(#usaRed)" />
+    <text x="25" y="23" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="7.5" text-anchor="middle">VPJ</text>
+    <polygon points="25,29 27,34 32,34 28,37 30,42 25,39 20,42 22,37 18,34 23,34" fill="#FFD100" />
+  </g>
+  <!-- Typography -->
+  <g transform="translate(62, 19)" filter="url(#psh)">
+    <text x="0" y="23" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-style="italic" font-size="19" letter-spacing="1.5">PARNELLI</text>
+    <text x="1" y="34" fill="#FFD100" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="7.5" letter-spacing="2.5">VEL'S PARNELLI JONES</text>
+    <line x1="1" y1="39" x2="96" y2="39" stroke="url(#usaRed)" stroke-width="1.5" />
+    <text x="1" y="50" fill="#CBD5E1" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="7" letter-spacing="2">MARIO ANDRETTI • VPJ4</text>
+  </g>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="detomasoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B2044" />
+      <stop offset="50%" stop-color="#06132C" />
+      <stop offset="100%" stop-color="#020814" />
+    </linearGradient>
+    <filter id="dtsh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#detomasoBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#1D3E75" stroke-width="1.2" />
+  <!-- Argentine Flag Accent on Top -->
+  <rect x="12" y="2" width="46" height="3" fill="#75AADB" rx="1" />
+  <rect x="58" y="2" width="48" height="3" fill="#FFFFFF" rx="1" />
+  <rect x="106" y="2" width="46" height="3" fill="#75AADB" rx="1" />
+  <!-- De Tomaso Official Cattle Branding Iron Shield -->
+  <g transform="translate(12, 14)" filter="url(#dtsh)">
+    <rect x="4" y="4" width="38" height="46" rx="4" fill="#040D1C" stroke="#D4AF37" stroke-width="2" />
+    <!-- Argentine Flag Stripes Inside Shield -->
+    <rect x="6" y="6" width="34" height="11" fill="#75AADB" />
+    <rect x="6" y="17" width="34" height="11" fill="#FFFFFF" />
+    <rect x="6" y="28" width="34" height="11" fill="#75AADB" />
+    <!-- De Tomaso Cattle Brand "T" in Gold & Black -->
+    <path d="M 17 18 L 29 18 L 29 22 L 25 22 L 25 35 L 21 35 L 21 22 L 17 22 Z" fill="#D4AF37" stroke="#111111" stroke-width="0.8" />
+  </g>
+  <!-- Typography -->
+  <g transform="translate(62, 18)" filter="url(#dtsh)">
+    <text x="0" y="22" fill="#FFFFFF" font-family="'Times New Roman', serif" font-weight="900" font-size="18.5" letter-spacing="1.5">DE TOMASO</text>
+    <text x="1" y="33" fill="#75AADB" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="7.5" letter-spacing="2.8">MODENA • DALLARA 505</text>
+    <line x1="1" y1="38" x2="96" y2="38" stroke="#D4AF37" stroke-width="1.2" />
+    <text x="1" y="49" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="7" letter-spacing="2">PIERS COURAGE • 1970</text>
+  </g>
+</svg>

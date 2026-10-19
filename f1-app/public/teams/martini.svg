@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="martiniBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B2347" />
+      <stop offset="50%" stop-color="#06162E" />
+      <stop offset="100%" stop-color="#020914" />
+    </linearGradient>
+    <filter id="mrtsh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#martiniBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#1D4075" stroke-width="1.2" />
+  <!-- French Tricolore Accent -->
+  <rect x="12" y="2" width="46" height="3" fill="#002395" rx="1" />
+  <rect x="58" y="2" width="48" height="3" fill="#FFFFFF" rx="1" />
+  <rect x="106" y="2" width="46" height="3" fill="#ED2939" rx="1" />
+  <!-- Tico Martini Racing Wings Emblem -->
+  <g transform="translate(12, 16)" filter="url(#mrtsh)">
+    <circle cx="25" cy="25" r="23" fill="#051226" stroke="#FFFFFF" stroke-width="2" />
+    <circle cx="25" cy="25" r="19" fill="none" stroke="#ED2939" stroke-width="1.2" />
+    <!-- Winged "M" -->
+    <path d="M 12 32 L 18 16 L 25 25 L 32 16 L 38 32 L 33 32 L 29 23 L 25 29 L 21 23 L 17 32 Z" fill="#FFFFFF" />
+    <!-- Laurel Wreath -->
+    <path d="M 16 34 Q 25 40 34 34" fill="none" stroke="#FFD100" stroke-width="1.5" />
+  </g>
+  <!-- Typography -->
+  <g transform="translate(68, 20)" filter="url(#mrtsh)">
+    <text x="0" y="22" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="18.5" letter-spacing="1.5">MARTINI</text>
+    <text x="1" y="33" fill="#60A5FA" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="7.5" letter-spacing="3">AUTOMOBILES</text>
+    <line x1="1" y1="38" x2="85" y2="38" stroke="#ED2939" stroke-width="1.2" />
+    <text x="1" y="49" fill="#D1D5DB" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="7" letter-spacing="2">FORMULA 1 • MK23</text>
+  </g>
+</svg>

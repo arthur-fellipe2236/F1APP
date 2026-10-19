@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="connewBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1C0508" />
+      <stop offset="50%" stop-color="#0E0204" />
+      <stop offset="100%" stop-color="#050001" />
+    </linearGradient>
+    <linearGradient id="connewRed" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF1A26" />
+      <stop offset="100%" stop-color="#C2040F" />
+    </linearGradient>
+    <filter id="cnwsh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#connewBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#4A1016" stroke-width="1.2" />
+  <!-- Union Jack Corner Accent -->
+  <g transform="translate(132, 4)" opacity="0.8">
+    <rect width="28" height="15" fill="#00247D" />
+    <line x1="0" y1="0" x2="28" y2="15" stroke="#FFFFFF" stroke-width="2" />
+    <line x1="28" y1="0" x2="0" y2="15" stroke="#FFFFFF" stroke-width="2" />
+    <line x1="0" y1="7.5" x2="28" y2="7.5" stroke="#FFFFFF" stroke-width="4" />
+    <line x1="14" y1="0" x2="14" y2="15" stroke="#FFFFFF" stroke-width="4" />
+    <line x1="0" y1="7.5" x2="28" y2="7.5" stroke="#CF142B" stroke-width="2.5" />
+    <line x1="14" y1="0" x2="14" y2="15" stroke="#CF142B" stroke-width="2.5" />
+  </g>
+  <!-- Connew "C" Monogram Crest -->
+  <g transform="translate(12, 16)" filter="url(#cnwsh)">
+    <circle cx="25" cy="25" r="23" fill="#0A0203" stroke="url(#connewRed)" stroke-width="2" />
+    <circle cx="25" cy="25" r="19" fill="none" stroke="#FFD100" stroke-width="1" stroke-dasharray="3 2" />
+    <!-- Stylized "C" and Piston -->
+    <path d="M 32 18 C 22 14 16 20 16 25 C 16 30 22 36 32 32" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
+  </g>
+  <!-- Typography -->
+  <g transform="translate(68, 20)" filter="url(#cnwsh)">
+    <text x="0" y="24" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="20" letter-spacing="2">CONNEW</text>
+    <text x="1" y="35" fill="url(#connewRed)" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="8" letter-spacing="3.2">RACING TEAM F1</text>
+    <line x1="1" y1="40" x2="88" y2="40" stroke="url(#connewRed)" stroke-width="1.2" />
+    <text x="1" y="50" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="7" letter-spacing="2">PC1 • ESSEX • 1972</text>
+  </g>
+</svg>

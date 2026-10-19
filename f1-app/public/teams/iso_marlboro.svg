@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="isoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#220408" />
+      <stop offset="50%" stop-color="#140204" />
+      <stop offset="100%" stop-color="#080002" />
+    </linearGradient>
+    <linearGradient id="isoRed" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF1A26" />
+      <stop offset="100%" stop-color="#C2040F" />
+    </linearGradient>
+    <filter id="isosh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#isoBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#52141C" stroke-width="1.2" />
+  <!-- Marlboro Chevron in Top Right -->
+  <polygon points="120,2 168,2 168,40 144,40" fill="url(#isoRed)" />
+  <polygon points="144,40 168,40 168,83 120,83" fill="#FFFFFF" opacity="0.9" />
+  <!-- Iso Rivolta Griffin Crest -->
+  <g transform="translate(12, 14)" filter="url(#isosh)">
+    <rect x="4" y="4" width="38" height="46" rx="4" fill="#0C0204" stroke="#FFD100" stroke-width="2" />
+    <!-- Rampant Winged Griffin -->
+    <path d="M 23 12 C 26 12 28 14 26 18 C 29 17 32 19 31 24 C 29 27 27 27 25 25 C 24 29 27 34 29 38 L 24 38 C 22 34 21 28 20 28 C 18 31 16 38 14 38 L 13 38 C 16 32 17 26 18 20 C 17 18 16 16 18 14 C 20 12 22 12 23 12 Z" fill="#FFD100" />
+    <!-- Iso Header Bar -->
+    <rect x="7" y="7" width="32" height="6" fill="url(#isoRed)" />
+    <text x="23" y="12" fill="#FFFFFF" font-family="'Times New Roman', serif" font-weight="900" font-size="5" text-anchor="middle">ISO</text>
+  </g>
+  <!-- Typography -->
+  <g transform="translate(60, 18)" filter="url(#isosh)">
+    <text x="0" y="20" fill="#FFFFFF" font-family="'Times New Roman', serif" font-weight="900" font-size="18" letter-spacing="1.5">ISO-MARLBORO</text>
+    <text x="1" y="32" fill="#FFD100" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="7.5" letter-spacing="2.5">WILLIAMS RACING CARS</text>
+    <line x1="1" y1="37" x2="98" y2="37" stroke="url(#isoRed)" stroke-width="1.5" />
+    <text x="1" y="48" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="7" letter-spacing="2">FORMULA 1 • 1973-1974</text>
+  </g>
+</svg>

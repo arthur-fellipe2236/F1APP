@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="boroBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B00" />
+      <stop offset="50%" stop-color="#E65100" />
+      <stop offset="100%" stop-color="#BF360C" />
+    </linearGradient>
+    <filter id="bsh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.5" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#boroBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#FFA726" stroke-width="1.2" opacity="0.6" />
+  <!-- Dutch Flag Accent -->
+  <rect x="12" y="2" width="46" height="3" fill="#AE1C28" rx="1" />
+  <rect x="58" y="2" width="48" height="3" fill="#FFFFFF" rx="1" />
+  <rect x="106" y="2" width="46" height="3" fill="#21468B" rx="1" />
+  <!-- Left: Boro HB Emblem Roundel -->
+  <g transform="translate(12, 16)" filter="url(#bsh)">
+    <circle cx="25" cy="25" r="23" fill="#111111" stroke="#FFFFFF" stroke-width="2.5" />
+    <!-- Stylized "B" Monogram -->
+    <rect x="16" y="14" width="5" height="22" fill="#FFFFFF" />
+    <path d="M 21 14 Q 32 14 32 20 Q 32 25 21 25 Z" fill="#FFFFFF" />
+    <path d="M 21 24 Q 34 24 34 30 Q 34 36 21 36 Z" fill="#FFFFFF" />
+    <circle cx="24" cy="19.5" r="2.5" fill="#111111" />
+    <circle cx="25" cy="30" r="3" fill="#111111" />
+  </g>
+  <!-- Typography -->
+  <g transform="translate(68, 20)" filter="url(#bsh)">
+    <text x="0" y="24" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="22" letter-spacing="2">BORO</text>
+    <text x="1" y="36" fill="#111111" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="8" letter-spacing="3.5">FORMULA 1 TEAM</text>
+    <line x1="1" y1="41" x2="88" y2="41" stroke="#FFFFFF" stroke-width="1.5" />
+    <text x="1" y="51" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="7" letter-spacing="2">HOORN • HOLLAND</text>
+  </g>
+</svg>

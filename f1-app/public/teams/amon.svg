@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="amonBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A1833" />
+      <stop offset="50%" stop-color="#050E20" />
+      <stop offset="100%" stop-color="#02060E" />
+    </linearGradient>
+    <filter id="amonsh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#amonBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#1E3768" stroke-width="1.2" />
+  <!-- New Zealand Accent Bar -->
+  <rect x="12" y="2" width="146" height="3" fill="#D52B1E" rx="1" />
+  <!-- Chris Amon Kiwi Bird Shield -->
+  <g transform="translate(12, 16)" filter="url(#amonsh)">
+    <circle cx="25" cy="25" r="23" fill="#040A17" stroke="#FFFFFF" stroke-width="2" />
+    <!-- Kiwi Bird Silhouette in Pure White -->
+    <path d="M 14 26 Q 16 18 24 18 Q 33 18 34 26 Q 34 33 26 33 Q 19 33 14 26 Z" fill="#FFFFFF" />
+    <!-- Beak -->
+    <path d="M 14 26 L 8 28 L 14 28 Z" fill="#FFFFFF" />
+    <!-- Eye -->
+    <circle cx="18" cy="23" r="1.5" fill="#040A17" />
+    <!-- Red Accent Ring -->
+    <circle cx="25" cy="25" r="19" fill="none" stroke="#D52B1E" stroke-width="1.5" />
+  </g>
+  <!-- Typography -->
+  <g transform="translate(68, 20)" filter="url(#amonsh)">
+    <text x="0" y="24" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-style="italic" font-size="22" letter-spacing="2">AMON</text>
+    <text x="1" y="35" fill="#38BDF8" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="8" letter-spacing="3">CHRIS AMON RACING</text>
+    <line x1="1" y1="40" x2="88" y2="40" stroke="#D52B1E" stroke-width="1.2" />
+    <text x="1" y="50" fill="#94A3B8" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="7" letter-spacing="2">FORMULA 1 • AF101</text>
+  </g>
+</svg>

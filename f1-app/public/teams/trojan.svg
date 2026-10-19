@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="trojanBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1C0608" />
+      <stop offset="50%" stop-color="#0E0304" />
+      <stop offset="100%" stop-color="#050102" />
+    </linearGradient>
+    <linearGradient id="trojanRed" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF1A26" />
+      <stop offset="100%" stop-color="#B8000A" />
+    </linearGradient>
+    <filter id="trsh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#trojanBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#4A1218" stroke-width="1.2" />
+  <!-- Red Top Stripe -->
+  <rect x="12" y="2" width="146" height="3" fill="url(#trojanRed)" rx="1" />
+  <!-- Trojan Helmet Crest -->
+  <g transform="translate(12, 16)" filter="url(#trsh)">
+    <circle cx="25" cy="25" r="23" fill="#0C0203" stroke="url(#trojanRed)" stroke-width="2" />
+    <!-- Classical Trojan Helmet Profile -->
+    <path d="M 23 12 C 29 12 34 16 34 22 L 34 27 L 27 27 L 27 34 L 21 34 L 21 27 L 16 27 C 16 20 18 12 23 12 Z" fill="#FFFFFF" />
+    <!-- Plume Crest -->
+    <path d="M 20 11 Q 28 8 36 14 Q 30 14 24 13 Z" fill="#FFD100" />
+    <!-- Eye Slot -->
+    <rect x="23" y="22" width="6" height="2.5" fill="#0C0203" />
+  </g>
+  <!-- Typography -->
+  <g transform="translate(68, 20)" filter="url(#trsh)">
+    <text x="0" y="24" fill="#FFFFFF" font-family="'Times New Roman', serif" font-weight="900" font-size="21" letter-spacing="2">TROJAN</text>
+    <text x="1" y="35" fill="url(#trojanRed)" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="8" letter-spacing="3">TAURANAC RACING</text>
+    <line x1="1" y1="40" x2="88" y2="40" stroke="url(#trojanRed)" stroke-width="1.2" />
+    <text x="1" y="50" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="7" letter-spacing="2">TIM SCHENKEN • T103</text>
+  </g>
+</svg>

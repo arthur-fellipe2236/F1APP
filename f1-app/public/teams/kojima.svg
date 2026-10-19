@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="kojimaBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1C20" />
+      <stop offset="50%" stop-color="#0E1012" />
+      <stop offset="100%" stop-color="#050607" />
+    </linearGradient>
+    <linearGradient id="kojimaRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF2A38" />
+      <stop offset="100%" stop-color="#B8000D" />
+    </linearGradient>
+    <filter id="kjsh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#kojimaBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#2D333D" stroke-width="1.2" />
+  <!-- Rising Sun Accent Bar -->
+  <rect x="12" y="2" width="146" height="3" fill="url(#kojimaRed)" rx="1" />
+  <!-- Kojima Rising Sun Crest -->
+  <g transform="translate(12, 16)" filter="url(#kjsh)">
+    <circle cx="25" cy="25" r="23" fill="#FFFFFF" stroke="url(#kojimaRed)" stroke-width="2.5" />
+    <circle cx="25" cy="25" r="16" fill="url(#kojimaRed)" />
+    <!-- Stylized "K" in Pure White -->
+    <path d="M 18 16 L 22 16 L 22 34 L 18 34 Z" fill="#FFFFFF" />
+    <path d="M 22 25 L 30 16 L 34 16 L 25 26 L 34 34 L 29 34 Z" fill="#FFFFFF" />
+  </g>
+  <!-- Typography -->
+  <g transform="translate(68, 20)" filter="url(#kjsh)">
+    <text x="0" y="23" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="20" letter-spacing="2">KOJIMA</text>
+    <text x="1" y="34" fill="url(#kojimaRed)" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="8.5" letter-spacing="3">ENGINEERING</text>
+    <line x1="1" y1="39" x2="88" y2="39" stroke="#FFFFFF" stroke-width="1.2" opacity="0.6" />
+    <text x="1" y="50" fill="#9CA3AF" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="7" letter-spacing="2.5">KYOTO • JAPAN</text>
+  </g>
+</svg>
