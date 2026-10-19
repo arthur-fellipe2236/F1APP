@@ -1,26 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
   <defs>
-    <linearGradient id="buGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#007A3E" />
+    <linearGradient id="buGreenBig" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#008040" />
       <stop offset="100%" stop-color="#004D25" />
     </linearGradient>
-    <filter id="buDrop" x="-10%" y="-10%" width="120%" height="120%">
+    <filter id="buDropBig" x="-10%" y="-10%" width="120%" height="120%">
       <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.35" />
     </filter>
   </defs>
 
-  <!-- Left: The Iconic United Colors Wool Stitch / Knot Monogram -->
-  <g transform="translate(8, 12)" filter="url(#buDrop)">
-    <rect x="0" y="0" width="60" height="60" rx="14" fill="url(#buGreen)" stroke="#00E676" stroke-width="1.5" />
-    <!-- White Knitted Wool Stitch Knot -->
-    <path d="M 30 14 C 23 14 18 19 18 26 C 18 31 21 35 25 37 L 25 43 C 21 41 18 37 18 32 L 13 32 C 13 39 18 45 25 47 L 25 49 L 30 49 L 30 47 C 37 45 42 39 42 32 L 37 32 C 37 37 34 41 30 43 L 30 37 C 34 35 37 31 37 26 C 37 19 32 14 30 14 Z M 30 20 C 33 20 35 22.5 35 26 C 35 29.5 33 32 30 32 C 27 32 25 29.5 25 26 C 25 22.5 27 20 30 20 Z" fill="#FFFFFF" fill-rule="evenodd" />
+  <!-- Left: Retângulo Verde Benetton Ampliado com Nó de Lã em Relevo -->
+  <g transform="translate(6, 9)" filter="url(#buDropBig)">
+    <rect x="0" y="0" width="66" height="66" rx="14" fill="url(#buGreenBig)" stroke="#00E676" stroke-width="1.8" />
+    <!-- Nó de Lã Tricotado Ampliado -->
+    <path d="M 33 13 C 25 13 19 19 19 27 C 19 32.5 22.5 37 27 39 L 27 46 C 22.5 44 19 39.5 19 34 L 13 34 C 13 42 19 49 27 51 L 27 53 L 33 53 L 33 51 C 41 49 47 42 47 34 L 41 34 C 41 39.5 37.5 44 33 46 L 33 39 C 37.5 37 41 32.5 41 27 C 41 19 35 13 33 13 Z M 33 20 C 36.5 20 38.5 23 38.5 27 C 38.5 31 36.5 34 33 34 C 29.5 34 27.5 31 27.5 27 C 27.5 23 29.5 20 33 20 Z" fill="#FFFFFF" fill-rule="evenodd" />
   </g>
 
-  <!-- Right: UNITED COLORS OF BENETTON Typography -->
-  <g transform="translate(76, 0)">
-    <text x="0" y="32" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="900" fill="url(#buGreen)" letter-spacing="1">UNITED COLORS</text>
-    <text x="0" y="47" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="10.5" font-weight="900" fill="#444444" letter-spacing="2">OF BENETTON</text>
-    <text x="0" y="68" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="18" font-weight="900" font-style="italic" fill="url(#buGreen)" letter-spacing="1">FORMULA 1</text>
-    <rect x="0" y="73" width="90" height="3" rx="1.5" fill="url(#buGreen)" />
+  <!-- Right: UNITED COLORS OF BENETTON Ampliado -->
+  <g transform="translate(78, 0)">
+    <text x="0" y="32" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="900" fill="url(#buGreenBig)" letter-spacing="1">UNITED COLORS</text>
+    <text x="0" y="47" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="900" fill="#333333" letter-spacing="2">OF BENETTON</text>
+    <text x="0" y="69" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="20" font-weight="900" font-style="italic" fill="url(#buGreenBig)" letter-spacing="1">FORMULA 1</text>
+    <rect x="0" y="74" width="90" height="3.5" rx="1.5" fill="url(#buGreenBig)" />
   </g>
 </svg>

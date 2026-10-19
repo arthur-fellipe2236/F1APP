@@ -1,44 +1,39 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
   <defs>
-    <!-- Vibrant Dutch Racing Orange Gradient -->
-    <linearGradient id="smf1BgOrange" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF8200" />
-      <stop offset="50%" stop-color="#FF6F00" />
-      <stop offset="100%" stop-color="#E65100" />
+    <linearGradient id="smf1BgOrangeFull" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF8A00" />
+      <stop offset="50%" stop-color="#FF7200" />
+      <stop offset="100%" stop-color="#EA580C" />
     </linearGradient>
 
-    <!-- Chrome Propeller Gradient -->
-    <linearGradient id="smf1Chrome" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="smf1ChromeFull" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF" />
       <stop offset="40%" stop-color="#E2E8F0" />
       <stop offset="70%" stop-color="#94A3B8" />
       <stop offset="100%" stop-color="#475569" />
     </linearGradient>
 
-    <filter id="smf1Shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.35" />
+    <filter id="smf1ShadowFull" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.4" />
     </filter>
   </defs>
 
-  <!-- Fundo Laranja Oficial Holandês -->
-  <rect x="0" y="0" width="170" height="85" rx="10" fill="url(#smf1BgOrange)" />
-  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#FFA733" stroke-width="1.2" opacity="0.6" />
+  <!-- Fundo Laranja Totalmente Preenchido de Borda a Borda -->
+  <rect x="0" y="0" width="170" height="85" fill="url(#smf1BgOrangeFull)" />
+  <rect x="1" y="1" width="168" height="83" fill="none" stroke="#FFA733" stroke-width="1.5" opacity="0.7" />
 
-  <!-- Left: Spyker Aircraft Propeller & Wire Wheel Roundel -->
-  <g transform="translate(9, 11)" filter="url(#smf1Shadow)">
-    <circle cx="31.5" cy="31.5" r="30" fill="#12161A" stroke="#FFFFFF" stroke-width="2.5" />
-    <circle cx="31.5" cy="31.5" r="23.5" fill="none" stroke="#64748B" stroke-width="1.2" stroke-dasharray="2.5,2.5" />
-    <ellipse cx="31.5" cy="31.5" rx="25" ry="6.5" transform="rotate(-35, 31.5, 31.5)" fill="url(#smf1Chrome)" stroke="#0F172A" stroke-width="0.6" />
-    <circle cx="31.5" cy="31.5" r="5.5" fill="#FF7A00" stroke="#FFFFFF" stroke-width="1.8" />
+  <!-- Left: Emblema Circular da Spyker -->
+  <g transform="translate(6, 9)" filter="url(#smf1ShadowFull)">
+    <circle cx="33.5" cy="33.5" r="32" fill="#12161A" stroke="#FFFFFF" stroke-width="2.8" />
+    <circle cx="33.5" cy="33.5" r="25.5" fill="none" stroke="#64748B" stroke-width="1.2" stroke-dasharray="2.5,2.5" />
+    <ellipse cx="33.5" cy="33.5" rx="27" ry="7" transform="rotate(-35, 33.5, 33.5)" fill="url(#smf1ChromeFull)" stroke="#0F172A" stroke-width="0.6" />
+    <circle cx="33.5" cy="33.5" r="6" fill="#FF7200" stroke="#FFFFFF" stroke-width="2" />
   </g>
 
-  <!-- Right: Letras em Branco Puro -->
-  <g transform="translate(76, 0)" filter="url(#smf1Shadow)">
-    <!-- Spyker signature script in pure white -->
-    <text x="0" y="39" font-family="'Brush Script MT', 'Segoe Script', cursive, sans-serif" font-size="33" font-weight="bold" fill="#FFFFFF" letter-spacing="0.5">Spyker</text>
-    <!-- MF1 RACING in bold white racing sans -->
-    <text x="2" y="60" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="16" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="2.5">MF1 RACING</text>
-    <!-- White Speed Accent Line -->
-    <rect x="2" y="67" width="86" height="3" rx="1.5" fill="#FFFFFF" opacity="0.9" />
+  <!-- Right: Letras em Branco Puro Preenchendo MF1 Racing -->
+  <g transform="translate(75, 0)" filter="url(#smf1ShadowFull)">
+    <text x="0" y="41" font-family="'Brush Script MT', 'Segoe Script', cursive, sans-serif" font-size="36" font-weight="bold" fill="#FFFFFF" letter-spacing="0.5">Spyker</text>
+    <text x="2" y="63" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="16.5" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="2.8">MF1 RACING</text>
+    <rect x="2" y="70" width="88" height="3.5" rx="1.5" fill="#FFFFFF" />
   </g>
 </svg>

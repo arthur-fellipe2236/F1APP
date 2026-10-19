@@ -2,24 +2,33 @@
   <defs>
     <linearGradient id="mf1RedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FF2438" />
-      <stop offset="100%" stop-color="#CC0014" />
+      <stop offset="100%" stop-color="#D90014" />
     </linearGradient>
     <filter id="mf1Drop" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3" />
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.5" />
     </filter>
   </defs>
 
+  <!-- Fundo Preto Oficial da Equipe MF1 -->
+  <rect x="0" y="0" width="170" height="85" rx="10" fill="#0A0D12" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#252D38" stroke-width="1.2" />
+
   <!-- Left: Midland MF1 Delta Wing Monogram -->
-  <g transform="translate(10, 12)" filter="url(#mf1Drop)">
-    <rect x="0" y="0" width="58" height="60" rx="12" fill="#11161D" stroke="#333E4A" stroke-width="1.5" />
-    <path d="M 12 48 L 29 14 L 46 48 L 36 48 L 29 32 L 22 48 Z" fill="url(#mf1RedGrad)" />
-    <path d="M 29 28 L 38 48 L 20 48 Z" fill="#FFFFFF" opacity="0.8" />
+  <g transform="translate(10, 11)" filter="url(#mf1Drop)">
+    <rect x="0" y="0" width="60" height="62" rx="12" fill="#141922" stroke="#FF2438" stroke-width="1.8" />
+    <!-- Delta Wings in Red and White -->
+    <path d="M 13 50 L 30 14 L 47 50 L 37 50 L 30 33 L 23 50 Z" fill="url(#mf1RedGrad)" />
+    <path d="M 30 28 L 39 49 L 21 49 Z" fill="#FFFFFF" />
   </g>
 
-  <!-- Right: MF1 RACING Typography -->
-  <g transform="translate(74, 0)">
-    <text x="0" y="42" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="32" font-weight="900" font-style="italic" fill="#11161D" letter-spacing="1">MF1</text>
-    <text x="1" y="62" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="14.5" font-weight="900" font-style="italic" fill="url(#mf1RedGrad)" letter-spacing="3.5">RACING</text>
-    <rect x="0" y="68" width="88" height="3.5" rx="1.5" fill="url(#mf1RedGrad)" />
+  <!-- Right: Letras em Branco e Vermelho -->
+  <g transform="translate(76, 0)" filter="url(#mf1Drop)">
+    <!-- MF1 em Branco Puro com Sombra -->
+    <text x="0" y="44" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="36" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="1">MF1</text>
+    <!-- RACING em Vermelho Vivo -->
+    <text x="2" y="66" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="16" font-weight="900" font-style="italic" fill="url(#mf1RedGrad)" letter-spacing="3.5">RACING</text>
+    <!-- Barras de velocidade em vermelho e branco -->
+    <rect x="2" y="72" width="56" height="3.5" rx="1.5" fill="url(#mf1RedGrad)" />
+    <rect x="62" y="72" width="26" height="3.5" rx="1.5" fill="#FFFFFF" />
   </g>
 </svg>

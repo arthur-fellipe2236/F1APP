@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <!-- French Racing Blue Gradient -->
+    <linearGradient id="prostBlueAcer" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#002D80" />
+      <stop offset="50%" stop-color="#002060" />
+      <stop offset="100%" stop-color="#001440" />
+    </linearGradient>
+
+    <linearGradient id="acerRedGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF2438" />
+      <stop offset="100%" stop-color="#D90014" />
+    </linearGradient>
+
+    <filter id="prostAcerDrop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <!-- Fundo Azul Francês Oficial Prost -->
+  <rect x="0" y="0" width="170" height="85" rx="10" fill="url(#prostBlueAcer)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#2555B0" stroke-width="1.2" />
+
+  <!-- Left: Prost Aerodynamic Wing / Arrowhead Crest -->
+  <g transform="translate(8, 11)" filter="url(#prostAcerDrop)">
+    <rect x="0" y="0" width="60" height="62" rx="12" fill="#00184D" stroke="#FFFFFF" stroke-width="1.5" />
+    <path d="M 12 48 L 30 16 L 48 48 L 40 48 L 30 30 L 20 48 Z" fill="#FFFFFF" />
+    <polygon points="30,22 42,44 18,44" fill="url(#acerRedGrad)" />
+    <circle cx="30" cy="34" r="3.5" fill="#FFFFFF" />
+  </g>
+
+  <!-- Right: PROST em Branco e ACER em Vermelho Vivo -->
+  <g transform="translate(74, 0)" filter="url(#prostAcerDrop)">
+    <!-- PROST em Branco Puro -->
+    <text x="0" y="40" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="28" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="1">PROST</text>
+    <!-- ACER em Vermelho com AP04 Subtitle -->
+    <text x="1" y="62" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="18" font-weight="900" font-style="italic" fill="url(#acerRedGrad)" letter-spacing="3.5">ACER</text>
+    <!-- Speed Lines em Branco e Vermelho -->
+    <rect x="0" y="68" width="56" height="3.5" rx="1.5" fill="#FFFFFF" />
+    <rect x="60" y="68" width="32" height="3.5" rx="1.5" fill="url(#acerRedGrad)" />
+  </g>
+</svg>

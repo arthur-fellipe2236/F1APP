@@ -1,34 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
   <defs>
-    <linearGradient id="scSwirlGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF2438" />
-      <stop offset="100%" stop-color="#C20014" />
+    <!-- Turquesa / Verde-Água Gradient -->
+    <linearGradient id="scTurquoise" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00E5CC" />
+      <stop offset="50%" stop-color="#00C4B4" />
+      <stop offset="100%" stop-color="#009688" />
     </linearGradient>
-    <linearGradient id="scPetronas" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00A396" />
-      <stop offset="100%" stop-color="#00C4B4" />
+
+    <!-- Azul Escuro Profundo da Sauber -->
+    <linearGradient id="scDarkBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00284D" />
+      <stop offset="100%" stop-color="#00142B" />
     </linearGradient>
+
     <filter id="scDrop" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3" />
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.4" />
     </filter>
   </defs>
 
-  <!-- Left: Sauber Historic "S" Helical Swirl Roundel -->
-  <g transform="translate(8, 10)" filter="url(#scDrop)">
-    <!-- Dark Navy Base Shield with Silver Bezel -->
-    <circle cx="32" cy="32" r="30" fill="#00223D" stroke="#D1D9E0" stroke-width="2" />
+  <!-- Fundo Azul Escuro Oficial Sauber -->
+  <rect x="0" y="0" width="170" height="85" rx="10" fill="url(#scDarkBlue)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#00C4B4" stroke-width="1.2" opacity="0.7" />
+
+  <!-- Left: Sauber Historic "S" Swirl in Turquesa e Branco -->
+  <g transform="translate(8, 11)" filter="url(#scDrop)">
+    <!-- Base Roundel in Dark Blue with White & Turquoise Trim -->
+    <circle cx="31.5" cy="31.5" r="30" fill="#001B36" stroke="#FFFFFF" stroke-width="2" />
     
-    <!-- Stylized Sauber Swirl Aerodynamic S Shape -->
-    <path d="M 32 8 C 45.2 8 56 18.8 56 32 C 56 38.6 53.4 44.6 49.2 49 C 45 44 42 37 42 32 C 42 26.5 37.5 22 32 22 C 26.5 22 22 26.5 22 32 C 22 41 29 48 37 51 C 35.4 51.6 33.7 52 32 52 C 18.8 52 8 41.2 8 32 C 8 18.8 18.8 8 32 8 Z" fill="url(#scSwirlGrad)" />
-    <path d="M 32 22 C 37.5 22 42 26.5 42 32 C 42 37 45 44 49.2 49 C 45 53.4 38.8 56 32 56 C 24 56 16.5 51 14 43 C 18 46 24 47 28 44 C 33 40 33 32 29 27 C 30 23.5 31 22 32 22 Z" fill="#FFFFFF" opacity="0.9" />
+    <!-- Stylized Sauber Swirl "S" in Turquesa / Verde-água -->
+    <path d="M 31.5 8 C 44.5 8 55 18.5 55 31.5 C 55 38 52.5 44 48.5 48.5 C 44.5 43.5 41.5 36.5 41.5 31.5 C 41.5 26 37 21.5 31.5 21.5 C 26 21.5 21.5 26 21.5 31.5 C 21.5 40.5 28.5 47.5 36.5 50.5 C 35 51 33.2 51.5 31.5 51.5 C 18.5 51.5 8 41 8 31.5 C 8 18.5 18.5 8 31.5 8 Z" fill="url(#scTurquoise)" />
+    <!-- White Swirl Complement Forming Dynamic S Arc -->
+    <path d="M 31.5 21.5 C 37 21.5 41.5 26 41.5 31.5 C 41.5 36.5 44.5 43.5 48.5 48.5 C 44.5 53 38.5 55.5 31.5 55.5 C 23.5 55.5 16 50.5 13.5 42.5 C 17.5 45.5 23.5 46.5 27.5 43.5 C 32.5 39.5 32.5 31.5 28.5 26.5 C 29.5 23 30.5 21.5 31.5 21.5 Z" fill="#FFFFFF" />
   </g>
 
-  <!-- Right: SAUBER PETRONAS Typography -->
-  <g transform="translate(74, 0)">
-    <text x="0" y="40" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="27" font-weight="900" fill="#00223D" letter-spacing="1">SAUBER</text>
-    <text x="1" y="60" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="900" font-style="italic" fill="url(#scPetronas)" letter-spacing="3">PETRONAS</text>
-    <!-- Turquoise & Red Speed Bars -->
-    <rect x="1" y="66" width="62" height="3.5" rx="1.5" fill="url(#scPetronas)" />
-    <rect x="66" y="66" width="22" height="3.5" rx="1.5" fill="url(#scSwirlGrad)" />
+  <!-- Right: SAUBER em Branco e PETRONAS em Turquesa -->
+  <g transform="translate(74, 0)" filter="url(#scDrop)">
+    <!-- SAUBER em Branco Puro -->
+    <text x="0" y="42" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF" letter-spacing="1">SAUBER</text>
+    <!-- PETRONAS em Turquesa / Verde-água -->
+    <text x="1" y="62" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="14.5" font-weight="900" font-style="italic" fill="url(#scTurquoise)" letter-spacing="3.2">PETRONAS</text>
+    <!-- Speed Bars em Turquesa e Branco -->
+    <rect x="1" y="68" width="62" height="3.5" rx="1.5" fill="url(#scTurquoise)" />
+    <rect x="67" y="68" width="22" height="3.5" rx="1.5" fill="#FFFFFF" />
   </g>
 </svg>

@@ -1,33 +1,33 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
   <defs>
-    <linearGradient id="msBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="msBlueBig" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#00B4F5" />
       <stop offset="50%" stop-color="#008BE3" />
       <stop offset="100%" stop-color="#0066C4" />
     </linearGradient>
-    <linearGradient id="benGreen" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00A843" />
-      <stop offset="100%" stop-color="#008535" />
+    <linearGradient id="benGreenBig" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00B347" />
+      <stop offset="100%" stop-color="#008736" />
     </linearGradient>
-    <filter id="msDrop" x="-10%" y="-10%" width="120%" height="120%">
+    <filter id="msDropBig" x="-10%" y="-10%" width="120%" height="120%">
       <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3" />
     </filter>
   </defs>
 
-  <!-- Left: Mild Seven Cerulean Blue Box & Arc -->
-  <g transform="translate(8, 12)" filter="url(#msDrop)">
-    <rect x="0" y="0" width="60" height="60" rx="13" fill="url(#msBlue)" stroke="#FFFFFF" stroke-width="1.2" />
-    <!-- White Stylized Sky Arc -->
-    <path d="M 8 46 C 22 22 42 16 52 24 C 40 22 24 30 14 50 Z" fill="#FFFFFF" />
-    <circle cx="44" cy="20" r="3" fill="#FFFFFF" />
-    <text x="30" y="52" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="8.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">MILD SEVEN</text>
+  <!-- Left: Mild Seven Box Ampliado de Borda a Borda -->
+  <g transform="translate(6, 9)" filter="url(#msDropBig)">
+    <rect x="0" y="0" width="66" height="66" rx="14" fill="url(#msBlueBig)" stroke="#FFFFFF" stroke-width="1.8" />
+    <!-- Arco de velocidade ampliado -->
+    <path d="M 8 50 C 24 24 46 17 58 26 C 45 24 27 33 15 55 Z" fill="#FFFFFF" />
+    <circle cx="49" cy="22" r="3.5" fill="#FFFFFF" />
+    <text x="33" y="58" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="9.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">MILD SEVEN</text>
   </g>
 
-  <!-- Right: BENETTON FORMULA Typography -->
-  <g transform="translate(76, 0)">
-    <text x="0" y="40" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="22" font-weight="900" font-style="italic" fill="url(#benGreen)" letter-spacing="0.5">BENETTON</text>
-    <text x="1" y="60" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="14.5" font-weight="900" font-style="italic" fill="url(#msBlue)" letter-spacing="3.2">FORMULA 1</text>
-    <rect x="0" y="66" width="58" height="3.5" rx="1.5" fill="url(#benGreen)" />
-    <rect x="62" y="66" width="28" height="3.5" rx="1.5" fill="url(#msBlue)" />
+  <!-- Right: BENETTON FORMULA 1 Ampliado -->
+  <g transform="translate(78, 0)">
+    <text x="0" y="42" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="24" font-weight="900" font-style="italic" fill="url(#benGreenBig)" letter-spacing="0.5">BENETTON</text>
+    <text x="1" y="63" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="15.5" font-weight="900" font-style="italic" fill="url(#msBlueBig)" letter-spacing="3.2">FORMULA 1</text>
+    <rect x="0" y="69" width="58" height="4" rx="2" fill="url(#benGreenBig)" />
+    <rect x="62" y="69" width="28" height="4" rx="2" fill="url(#msBlueBig)" />
   </g>
 </svg>
