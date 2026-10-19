@@ -1,26 +1,37 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
   <defs>
-    <linearGradient id="buGreenBig" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#008040" />
+    <!-- Benetton Official Racing Green Gradient Full-Bleed -->
+    <linearGradient id="buBgGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#008A46" />
+      <stop offset="50%" stop-color="#007238" />
       <stop offset="100%" stop-color="#004D25" />
     </linearGradient>
-    <filter id="buDropBig" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.35" />
+
+    <filter id="buShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.45" />
     </filter>
   </defs>
 
-  <!-- Left: Retângulo Verde Benetton Ampliado com Nó de Lã em Relevo -->
-  <g transform="translate(6, 9)" filter="url(#buDropBig)">
-    <rect x="0" y="0" width="66" height="66" rx="14" fill="url(#buGreenBig)" stroke="#00E676" stroke-width="1.8" />
-    <!-- Nó de Lã Tricotado Ampliado -->
-    <path d="M 33 13 C 25 13 19 19 19 27 C 19 32.5 22.5 37 27 39 L 27 46 C 22.5 44 19 39.5 19 34 L 13 34 C 13 42 19 49 27 51 L 27 53 L 33 53 L 33 51 C 41 49 47 42 47 34 L 41 34 C 41 39.5 37.5 44 33 46 L 33 39 C 37.5 37 41 32.5 41 27 C 41 19 35 13 33 13 Z M 33 20 C 36.5 20 38.5 23 38.5 27 C 38.5 31 36.5 34 33 34 C 29.5 34 27.5 31 27.5 27 C 27.5 23 29.5 20 33 20 Z" fill="#FFFFFF" fill-rule="evenodd" />
+  <!-- Fundo Verde Oficial Benetton Preenchido de Borda a Borda -->
+  <rect x="0" y="0" width="170" height="85" rx="10" fill="url(#buBgGreen)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#00E676" stroke-width="1.2" opacity="0.6" />
+
+  <!-- Left: O Lendário Nó de Lã Benetton em Branco Puro Gigante -->
+  <g transform="translate(8, 10)" filter="url(#buShadow)">
+    <rect x="0" y="0" width="62" height="64" rx="13" fill="#005A2B" stroke="#00E676" stroke-width="1.8" />
+    <!-- Monograma do Nó de Lã Tricotado em Branco -->
+    <path d="M 31 13 C 23.5 13 18 19 18 26.5 C 18 31.8 21.5 36 26 38 L 26 44.5 C 21.5 42.5 18 38 18 33 L 12.5 33 C 12.5 41 18 47.5 26 49.5 L 26 51.5 L 31 51.5 L 31 49.5 C 39 47.5 44.5 41 44.5 33 L 39 33 C 39 38 35.5 42.5 31 44.5 L 31 38 C 35.5 36 39 31.8 39 26.5 C 39 19 33.5 13 31 13 Z M 31 19.5 C 34.5 19.5 36.5 22.5 36.5 26.5 C 36.5 30.5 34.5 33.5 31 33.5 C 27.5 33.5 25.5 30.5 25.5 26.5 C 25.5 22.5 27.5 19.5 31 19.5 Z" fill="#FFFFFF" fill-rule="evenodd" />
   </g>
 
-  <!-- Right: UNITED COLORS OF BENETTON Ampliado -->
-  <g transform="translate(78, 0)">
-    <text x="0" y="32" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="12.5" font-weight="900" fill="url(#buGreenBig)" letter-spacing="1">UNITED COLORS</text>
-    <text x="0" y="47" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="900" fill="#333333" letter-spacing="2">OF BENETTON</text>
-    <text x="0" y="69" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="20" font-weight="900" font-style="italic" fill="url(#buGreenBig)" letter-spacing="1">FORMULA 1</text>
-    <rect x="0" y="74" width="90" height="3.5" rx="1.5" fill="url(#buGreenBig)" />
+  <!-- Right: UNITED COLORS OF BENETTON em Branco Puro em Tamanho Gigante -->
+  <g transform="translate(76, 0)" filter="url(#buShadow)">
+    <!-- UNITED COLORS em Branco -->
+    <text x="0" y="32" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="13" font-weight="900" fill="#FFFFFF" letter-spacing="1">UNITED COLORS</text>
+    <!-- OF BENETTON. em Branco -->
+    <text x="0" y="47" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="12" font-weight="900" fill="#E2F5EA" letter-spacing="2">OF BENETTON.</text>
+    <!-- FORMULA 1 em Verde Neon e Branco -->
+    <text x="0" y="69" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="20" font-weight="900" font-style="italic" fill="#00FF88" letter-spacing="1">FORMULA 1</text>
+    <!-- Friso de velocidade -->
+    <rect x="0" y="74" width="88" height="3.5" rx="1.5" fill="#00FF88" />
   </g>
 </svg>

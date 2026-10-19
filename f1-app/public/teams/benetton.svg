@@ -1,33 +1,45 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
   <defs>
-    <linearGradient id="msBlueBig" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00B4F5" />
+    <!-- Mild Seven Cerulean Blue Gradient Full-Bleed -->
+    <linearGradient id="msBgBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00A2F2" />
       <stop offset="50%" stop-color="#008BE3" />
-      <stop offset="100%" stop-color="#0066C4" />
+      <stop offset="100%" stop-color="#0062B8" />
     </linearGradient>
-    <linearGradient id="benGreenBig" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00B347" />
-      <stop offset="100%" stop-color="#008736" />
+
+    <linearGradient id="benGlowGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00FF88" />
+      <stop offset="100%" stop-color="#00E676" />
     </linearGradient>
-    <filter id="msDropBig" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3" />
+
+    <filter id="msShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.45" />
     </filter>
   </defs>
 
-  <!-- Left: Mild Seven Box Ampliado de Borda a Borda -->
-  <g transform="translate(6, 9)" filter="url(#msDropBig)">
-    <rect x="0" y="0" width="66" height="66" rx="14" fill="url(#msBlueBig)" stroke="#FFFFFF" stroke-width="1.8" />
-    <!-- Arco de velocidade ampliado -->
-    <path d="M 8 50 C 24 24 46 17 58 26 C 45 24 27 33 15 55 Z" fill="#FFFFFF" />
-    <circle cx="49" cy="22" r="3.5" fill="#FFFFFF" />
-    <text x="33" y="58" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="9.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">MILD SEVEN</text>
+  <!-- Fundo Azul Celeste Mild Seven Preenchido de Borda a Borda -->
+  <rect x="0" y="0" width="170" height="85" rx="10" fill="url(#msBgBlue)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#60C8FF" stroke-width="1.2" opacity="0.6" />
+
+  <!-- Left: Emblema Oficial Mild Seven Preenchendo a Lateral Esquerda -->
+  <g transform="translate(8, 10)" filter="url(#msShadow)">
+    <rect x="0" y="0" width="62" height="64" rx="13" fill="#0072C6" stroke="#FFFFFF" stroke-width="2" />
+    <!-- Arco Dinâmico Branco Mild Seven -->
+    <path d="M 8 48 C 22 22 44 16 54 24 C 42 22 25 31 14 53 Z" fill="#FFFFFF" />
+    <!-- Círculo / Astro Celeste -->
+    <circle cx="45" cy="20" r="3.8" fill="#FFFFFF" />
+    <!-- Texto MILD SEVEN em Relevo Branco -->
+    <text x="31" y="56" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="9.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.8">MILD SEVEN</text>
   </g>
 
-  <!-- Right: BENETTON FORMULA 1 Ampliado -->
-  <g transform="translate(78, 0)">
-    <text x="0" y="42" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="24" font-weight="900" font-style="italic" fill="url(#benGreenBig)" letter-spacing="0.5">BENETTON</text>
-    <text x="1" y="63" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="15.5" font-weight="900" font-style="italic" fill="url(#msBlueBig)" letter-spacing="3.2">FORMULA 1</text>
-    <rect x="0" y="69" width="58" height="4" rx="2" fill="url(#benGreenBig)" />
-    <rect x="62" y="69" width="28" height="4" rx="2" fill="url(#msBlueBig)" />
+  <!-- Right: BENETTON FORMULA 1 em Tamanho Gigante -->
+  <g transform="translate(76, 0)" filter="url(#msShadow)">
+    <!-- BENETTON em Branco Puro com Alto Impacto -->
+    <text x="0" y="42" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="26" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="0.5">BENETTON</text>
+    <!-- FORMULA 1 em Verde Benetton Fluorescente e Branco -->
+    <text x="1" y="63" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="16" font-weight="900" font-style="italic" fill="url(#benGlowGreen)" letter-spacing="3.2">FORMULA 1</text>
+    <!-- Barras de velocidade em verde esmeralda e branco -->
+    <rect x="0" y="69" width="60" height="4" rx="2" fill="url(#benGlowGreen)" />
+    <rect x="64" y="69" width="26" height="4" rx="2" fill="#FFFFFF" />
   </g>
 </svg>

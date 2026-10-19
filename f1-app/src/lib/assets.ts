@@ -478,21 +478,24 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1991 + i, { url: "/teams/footwork_arrows.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
   },
   "Benetton": {
-    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1986 + i, { url: "/teams/benetton_united.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
-    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1994 + i, { url: "/teams/benetton_mild_seven.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1986 + i, { url: "/teams/benetton_united.svg", color: "#007A3E", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1994 + i, { url: "/teams/benetton_mild_seven.svg", color: "#008BE3", className: "object-contain p-0.5 filter-none" }])),
   },
   "Benetton Formula": {
-    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1986 + i, { url: "/teams/benetton_united.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
-    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1994 + i, { url: "/teams/benetton_mild_seven.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1986 + i, { url: "/teams/benetton_united.svg", color: "#007A3E", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1994 + i, { url: "/teams/benetton_mild_seven.svg", color: "#008BE3", className: "object-contain p-0.5 filter-none" }])),
   },
   "Benetton Formula United Colors of Benetton": {
-    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1986 + i, { url: "/teams/benetton_united.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1986 + i, { url: "/teams/benetton_united.svg", color: "#007A3E", className: "object-contain p-0.5 filter-none" }])),
   },
   "Benetton Formula United Colors": {
-    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1986 + i, { url: "/teams/benetton_united.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1986 + i, { url: "/teams/benetton_united.svg", color: "#007A3E", className: "object-contain p-0.5 filter-none" }])),
+  },
+  "Benetton United": {
+    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1986 + i, { url: "/teams/benetton_united.svg", color: "#007A3E", className: "object-contain p-0.5 filter-none" }])),
   },
   "Benetton Formula Mild Seven": {
-    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1994 + i, { url: "/teams/benetton_mild_seven.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1994 + i, { url: "/teams/benetton_mild_seven.svg", color: "#008BE3", className: "object-contain p-0.5 filter-none" }])),
   },
   "Prost": {
     ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1997 + i, { url: "/teams/prost.svg", color: "#002060", className: "object-contain p-0.5 filter-none" }])),
@@ -984,11 +987,11 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   "Orange Arrows": { url: "/teams/orange_arrows.svg", color: "#000000", className: "object-contain p-0.5 filter-none" },
   "Prost Grand Prix": { url: "/teams/prost.svg", color: "#002060", className: "object-contain p-0.5 filter-none" },
   "Prost Grand Prix Acer": { url: "/teams/prost_acer.svg", color: "#002060", className: "object-contain p-0.5 filter-none" },
-  "Benetton Formula": { url: "/teams/benetton_mild_seven.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
-  "Benetton Formula Mild Seven": { url: "/teams/benetton_mild_seven.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
-  "Benetton Formula United Colors of Benetton": { url: "/teams/benetton_united.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
-  "Benetton Formula United Colors": { url: "/teams/benetton_united.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
-  "Benetton United": { url: "/teams/benetton_united.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
+  "Benetton Formula": { url: "/teams/benetton_mild_seven.svg", color: "#008BE3", className: "object-contain p-0.5 filter-none" },
+  "Benetton Formula Mild Seven": { url: "/teams/benetton_mild_seven.svg", color: "#008BE3", className: "object-contain p-0.5 filter-none" },
+  "Benetton Formula United Colors of Benetton": { url: "/teams/benetton_united.svg", color: "#007A3E", className: "object-contain p-0.5 filter-none" },
+  "Benetton Formula United Colors": { url: "/teams/benetton_united.svg", color: "#007A3E", className: "object-contain p-0.5 filter-none" },
+  "Benetton United": { url: "/teams/benetton_united.svg", color: "#007A3E", className: "object-contain p-0.5 filter-none" },
   Spyker: { url: "/teams/spyker_f1.svg", color: "#FF7A00", className: "object-contain p-0.5 filter-none" },
   "Spyker F1": { url: "/teams/spyker_f1.svg", color: "#FF7A00", className: "object-contain p-0.5 filter-none" },
   "Spyker F1 Team": { url: "/teams/spyker_f1.svg", color: "#FF7A00", className: "object-contain p-0.5 filter-none" },
@@ -1579,11 +1582,19 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   }
 
   // Benetton Era Overrides
-  if (canonical === "Benetton" || canonical === "Benetton Formula" || name.toLowerCase().includes("benetton")) {
+  if (
+    canonical === "Benetton" ||
+    canonical === "Benetton Formula" ||
+    canonical === "Benetton United" ||
+    canonical === "Benetton Formula Mild Seven" ||
+    canonical === "Benetton Formula United Colors" ||
+    canonical === "Benetton Formula United Colors of Benetton" ||
+    name.toLowerCase().includes("benetton")
+  ) {
     if ((season && season >= 1994) || name.toLowerCase().includes("mild seven")) {
-      return { url: "/teams/benetton_mild_seven.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }
+      return { url: "/teams/benetton_mild_seven.svg", color: "#008BE3", className: "object-contain p-0.5 filter-none" }
     }
-    return { url: "/teams/benetton_united.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }
+    return { url: "/teams/benetton_united.svg", color: "#007A3E", className: "object-contain p-0.5 filter-none" }
   }
 
   // Toyota Racing Era Overrides
@@ -1694,9 +1705,7 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   if (season && (season === 1994 || season === 1995) && (canonical === "Simtek" || name.toLowerCase().includes("simtek"))) {
     return { url: "/teams/mtv_simtek_ford.svg", color: "#160728", className: "object-contain p-0.5 filter-none" }
   }
-  if (season && season >= 1986 && season <= 1990 && (canonical === "Benetton" || name.toLowerCase().includes("benetton"))) {
-    return { url: "/teams/benetton_united.svg", color: "#00502A", className: "object-contain p-0.5 filter-none" }
-  }
+
   if (canonical === "Leyton House" || name.toLowerCase().includes("leyton")) {
     return { url: "/teams/leytonhouse.svg", color: "#071017", className: "object-contain p-0.5 filter-none" }
   }
