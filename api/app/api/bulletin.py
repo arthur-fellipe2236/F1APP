@@ -148,6 +148,7 @@ def text_to_mp3(text: str, voice: str = "thalita") -> bytes:
     # 1. Try high fidelity neural Edge-TTS synthesis
     try:
         import asyncio
+        import concurrent.futures
         import edge_tts
 
         async def _synth():
@@ -163,7 +164,20 @@ def text_to_mp3(text: str, voice: str = "thalita") -> bytes:
                     bio.write(chunk["data"])
             return bio.getvalue()
 
-        audio_bytes = asyncio.run(_synth())
+        def _run_coro(coro):
+            try:
+                loop = asyncio.get_event_loop()
+            except RuntimeError:
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+
+            if loop.is_running():
+                with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                    return executor.submit(asyncio.run, coro).result(timeout=25)
+            else:
+                return loop.run_until_complete(coro)
+
+        audio_bytes = _run_coro(_synth())
         if audio_bytes and len(audio_bytes) > 200:
             _audio_cache[cache_key] = audio_bytes
             return audio_bytes

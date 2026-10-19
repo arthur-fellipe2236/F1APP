@@ -291,7 +291,7 @@ export function RadioPlayer() {
       }
 
       // 3. Play high-quality MP3 voice stream via HTML5 Audio element
-      const audioUrl = `/api/v1/news/bulletin/audio?series=${series}&voice=${voiceToUse}${token ? `&token=${token}` : ""}`
+      const audioUrl = `/api/v1/news/bulletin/audio?series=${series}&voice=${voiceToUse}&t=${Date.now()}${token ? `&token=${token}` : ""}`
       const audio = new Audio(audioUrl)
       audioRef.current = audio
       audio.muted = isMuted
