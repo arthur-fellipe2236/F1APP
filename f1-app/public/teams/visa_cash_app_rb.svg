@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 90" width="100%" height="100%">
+  <defs>
+    <!-- Bull Chrome Metallic Gradient -->
+    <linearGradient id="rbBullChrome" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="30%" stop-color="#E2EDF8" />
+      <stop offset="70%" stop-color="#93AEC7" />
+      <stop offset="100%" stop-color="#4E677F" />
+    </linearGradient>
+
+    <!-- Bull Horns Gold -->
+    <linearGradient id="rbHornsGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFE600" />
+      <stop offset="100%" stop-color="#FF9900" />
+    </linearGradient>
+
+    <!-- Royal Racing Blue Gradient -->
+    <linearGradient id="vcarbRoyalBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#001B94" />
+      <stop offset="50%" stop-color="#1021C7" />
+      <stop offset="100%" stop-color="#2D5BFF" />
+    </linearGradient>
+
+    <!-- Visa Gold Gradient -->
+    <linearGradient id="visaGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFCC00" />
+      <stop offset="100%" stop-color="#FF9900" />
+    </linearGradient>
+
+    <!-- Cash App Green -->
+    <linearGradient id="cashAppGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D632" />
+      <stop offset="100%" stop-color="#009922" />
+    </linearGradient>
+
+    <!-- Shadow -->
+    <filter id="vcarbShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.8" flood-color="#000000" flood-opacity="0.65" />
+    </filter>
+  </defs>
+
+  <!-- Left Emblem: The Dynamic Racing Bull in Chrome -->
+  <g transform="translate(6, 6)" filter="url(#vcarbShadow)">
+    <!-- Aura disc background -->
+    <circle cx="36" cy="38" r="32" fill="url(#vcarbRoyalBlue)" stroke="#00C2FF" stroke-width="1.2" opacity="0.9" />
+
+    <!-- Bull Silhouette Charging Forward -->
+    <g transform="translate(26, 28) scale(1.15)">
+      <!-- Muscular bull body -->
+      <path d="M -16,10 C -14,5 -10,0 -4,-3 C 0,-5 5,-4 9,-1 C 12,1 15,4 17,8 C 15,10 12,10 9,9 C 6,8 3,9 0,11 C -4,13 -8,14 -12,14 C -14,14 -15,12 -16,10 Z" fill="url(#rbBullChrome)" stroke="#FFFFFF" stroke-width="0.8" />
+      <!-- Horns -->
+      <path d="M 6,-3 C 9,-8 14,-11 19,-12 C 16,-8 14,-5 11,0 Z" fill="url(#rbHornsGold)" />
+      <!-- Front Legs -->
+      <path d="M 3,10 L 8,17 L 11,16 L 6,9 Z" fill="url(#rbBullChrome)" />
+      <!-- Rear Legs -->
+      <path d="M -11,11 L -14,17 L -11,18 L -8,12 Z" fill="url(#rbBullChrome)" />
+    </g>
+
+    <!-- Glowing Speed Accent Arc -->
+    <path d="M 12,56 C 24,66 48,66 60,56" fill="none" stroke="#00C2FF" stroke-width="2.2" stroke-linecap="round" />
+  </g>
+
+  <!-- Right Side: VISA | CASH APP | RB / RACING BULLS -->
+  <g filter="url(#vcarbShadow)">
+    <!-- Top Sponsors Bar: VISA and CASH APP -->
+    <g transform="translate(78, 22)">
+      <!-- VISA text with gold wing on V -->
+      <text x="0" y="0" font-family="'Futura', 'Titillium Web', system-ui, Arial Black, sans-serif" font-size="14.5" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="0.5">VISA</text>
+      <polygon points="0,-12 3,-12 1,-8" fill="url(#visaGold)" />
+
+      <!-- Cash App Badge -->
+      <g transform="translate(42, -9)">
+        <rect x="0" y="0" width="12" height="12" rx="3" fill="url(#cashAppGreen)" />
+        <text x="6" y="9.5" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" font-weight="900" fill="#FFFFFF">$</text>
+        <text x="16" y="9.5" font-family="system-ui, sans-serif" font-size="8.5" font-weight="800" fill="#FFFFFF" letter-spacing="0.2">Cash App</text>
+      </g>
+    </g>
+
+    <!-- Main Bold "RB" / RACING BULLS Title -->
+    <text x="78" y="54" font-family="'Titillium Web', system-ui, Arial Black, sans-serif" font-size="30" font-weight="900" fill="#FFFFFF" letter-spacing="1">RB</text>
+
+    <!-- RACING BULLS subtitle with Royal Blue & Cyan accent line -->
+    <text x="122" y="47" font-family="'Titillium Web', system-ui, sans-serif" font-size="10.5" font-weight="900" fill="#00C2FF" letter-spacing="1.5">RACING</text>
+    <text x="122" y="58" font-family="'Titillium Web', system-ui, sans-serif" font-size="10.5" font-weight="900" fill="#FFFFFF" letter-spacing="1.5">BULLS</text>
+
+    <!-- Formula One Team Footer Line -->
+    <text x="79" y="73" font-family="system-ui, sans-serif" font-size="7.5" font-weight="800" fill="#9DAAB3" letter-spacing="2.8">FORMULA ONE TEAM</text>
+
+    <!-- Cyan racing underline -->
+    <path d="M 79,78 L 165,78 L 161,80.5 L 79,80.5 Z" fill="#00C2FF" />
+  </g>
+</svg>

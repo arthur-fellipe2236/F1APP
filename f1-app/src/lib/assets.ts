@@ -267,12 +267,32 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
   "Mercedes": {
     1954: { url: "/teams/mercedes_amg_petronas.svg", color: "#0A141A", className: "object-contain p-0.5 filter-none" },
     1955: { url: "/teams/mercedes_amg_petronas.svg", color: "#0A141A", className: "object-contain p-0.5 filter-none" },
-    ...Object.fromEntries(Array.from({ length: 2 }, (_, i) => [2010 + i, { url: "/mercedes/2010-2011.jpg", className: "bg-white rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2012 + i, { url: "/mercedes/2012-2014.jpg", className: "bg-white rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 2 }, (_, i) => [2015 + i, { url: "/mercedes/2015-2016.jpg", className: "bg-white rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2017 + i, { url: "/mercedes/2017-2019.jpg", className: "bg-white rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [2020 + i, { url: "/mercedes/2020-2025.jpg", className: "bg-white rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [2026 + i, { url: "/mercedes/2026-Present.jpg", className: "bg-white rounded-sm" }])),
+    ...Object.fromEntries(Array.from({ length: 18 }, (_, i) => [2010 + i, { url: "/teams/mercedes_amg_petronas.svg", color: "#0A141A", className: "object-contain p-0.5 filter-none" }])),
+  },
+  "Mercedes-AMG Petronas": {
+    ...Object.fromEntries(Array.from({ length: 18 }, (_, i) => [2010 + i, { url: "/teams/mercedes_amg_petronas.svg", color: "#0A141A", className: "object-contain p-0.5 filter-none" }])),
+  },
+  "Mercedes-AMG Petronas F1 Team": {
+    ...Object.fromEntries(Array.from({ length: 18 }, (_, i) => [2010 + i, { url: "/teams/mercedes_amg_petronas.svg", color: "#0A141A", className: "object-contain p-0.5 filter-none" }])),
+  },
+  "Red Bull": {
+    ...Object.fromEntries(Array.from({ length: 13 }, (_, i) => [2005 + i, { url: "/teams/red_bull_racing_classic.svg", color: "#001A30", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2018 + i, { url: "/teams/aston_martin_red_bull_racing.svg", color: "#001A30", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2022 + i, { url: "/teams/oracle_red_bull_racing.svg", color: "#041E42", className: "object-contain p-0.5 filter-none" }])),
+  },
+  "Red Bull Racing": {
+    ...Object.fromEntries(Array.from({ length: 13 }, (_, i) => [2005 + i, { url: "/teams/red_bull_racing_classic.svg", color: "#001A30", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2018 + i, { url: "/teams/aston_martin_red_bull_racing.svg", color: "#001A30", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2022 + i, { url: "/teams/oracle_red_bull_racing.svg", color: "#041E42", className: "object-contain p-0.5 filter-none" }])),
+  },
+  "Racing Bulls": {
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2024 + i, { url: "/teams/racing_bulls.svg", color: "#0D1B3E", className: "object-contain p-0.5 filter-none" }])),
+  },
+  "RB": {
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2024 + i, { url: "/teams/racing_bulls.svg", color: "#0D1B3E", className: "object-contain p-0.5 filter-none" }])),
+  },
+  "Visa Cash App RB": {
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2024 + i, { url: "/teams/racing_bulls.svg", color: "#0D1B3E", className: "object-contain p-0.5 filter-none" }])),
   },
   "McLaren": {
     ...Object.fromEntries(Array.from({ length: 19 }, (_, i) => [1966 + i, { url: "/teams/mclaren_classic.svg", color: "#FF1801", className: "object-contain p-0.5 filter-none" }])),
@@ -282,14 +302,6 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [2007 + i, { url: "/mclaren/2007-2017.jpg", className: "bg-white rounded-sm" }])),
     ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [2017 + i, { url: "/mclaren/2017-2021.jpg", className: "bg-white rounded-sm" }])),
     ...Object.fromEntries(Array.from({ length: 15 }, (_, i) => [2021 + i, { url: "/mclaren/2021-Present.jpg", className: "bg-white rounded-sm" }])),
-  },
-  "Red Bull Racing": {
-    ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [2005 + i, { url: "/redbull/2005-2012.jpg", className: "rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2013 + i, { url: "/redbull/2013-2015.jpg", className: "rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 2 }, (_, i) => [2016 + i, { url: "/redbull/2005-2012.jpg", className: "rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2018 + i, { url: "/redbull/2018-2020.jpg", className: "rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 1 }, (_, i) => [2021 + i, { url: "/redbull/2005-2012.jpg", className: "rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 15 }, (_, i) => [2022 + i, { url: "/redbull/2022-Present.jpg", className: "rounded-sm" }])),
   },
   "Renault": {
     ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [1977 + i, { url: "/teams/renault_turbo.svg", color: "#FFD000", className: "object-contain p-0.5 filter-none" }])),
@@ -640,12 +652,24 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
     className: "object-contain p-0.5 filter-none",
   },
   "Red Bull Racing": {
-    url: `${F1_2026_BASE}/redbullracing/2026redbullracinglogowhite.svg`,
-    color: "#3671C6",
+    url: "/teams/oracle_red_bull_racing.svg",
+    color: "#041E42",
+    className: "object-contain p-0.5 filter-none",
   },
   "Red Bull": {
-    url: `${F1_2026_BASE}/redbullracing/2026redbullracinglogowhite.svg`,
-    color: "#3671C6",
+    url: "/teams/oracle_red_bull_racing.svg",
+    color: "#041E42",
+    className: "object-contain p-0.5 filter-none",
+  },
+  "Oracle Red Bull Racing": {
+    url: "/teams/oracle_red_bull_racing.svg",
+    color: "#041E42",
+    className: "object-contain p-0.5 filter-none",
+  },
+  "Aston Martin Red Bull Racing": {
+    url: "/teams/aston_martin_red_bull_racing.svg",
+    color: "#001A30",
+    className: "object-contain p-0.5 filter-none",
   },
   McLaren: {
     url: `${F1_2026_BASE}/mclaren/2026mclarenlogowhite.svg`,
@@ -664,12 +688,24 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
     color: "#005AFF",
   },
   RB: {
-    url: `${F1_2026_BASE}/racingbulls/2026racingbullslogowhite.svg`,
-    color: "#1021C7",
+    url: "/teams/racing_bulls.svg",
+    color: "#0D1B3E",
+    className: "object-contain p-0.5 filter-none",
   },
   "Racing Bulls": {
-    url: `${F1_2026_BASE}/racingbulls/2026racingbullslogowhite.svg`,
-    color: "#1021C7",
+    url: "/teams/racing_bulls.svg",
+    color: "#0D1B3E",
+    className: "object-contain p-0.5 filter-none",
+  },
+  "Visa Cash App RB": {
+    url: "/teams/racing_bulls.svg",
+    color: "#0D1B3E",
+    className: "object-contain p-0.5 filter-none",
+  },
+  "Visa Cash App RB Formula One Team": {
+    url: "/teams/racing_bulls.svg",
+    color: "#0D1B3E",
+    className: "object-contain p-0.5 filter-none",
   },
   Haas: {
     url: "/teams/moneygram_haas.svg",
@@ -1260,6 +1296,74 @@ const TEAM_ALIASES: Record<string, string> = {
 export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   if (!name) return null
   const canonical = TEAM_ALIASES[name.trim().toLowerCase()] || name
+
+  // Mercedes-AMG Petronas F1 Team High-Res Vector Branding (2010-2026 and 1954-1955)
+  if (
+    canonical === "Mercedes" ||
+    canonical === "Mercedes-AMG Petronas" ||
+    canonical === "Mercedes-AMG Petronas F1 Team" ||
+    name.toLowerCase().includes("mercedes")
+  ) {
+    return {
+      url: "/teams/mercedes_amg_petronas.svg",
+      color: "#0A141A",
+      className: "object-contain p-0.5 filter-none",
+    }
+  }
+
+  // Red Bull Racing (2005-2026) High-Res Official Vector Branding
+  if (
+    canonical === "Red Bull" ||
+    canonical === "Red Bull Racing" ||
+    canonical === "Oracle Red Bull Racing" ||
+    canonical === "Aston Martin Red Bull Racing" ||
+    name.toLowerCase().includes("red bull")
+  ) {
+    if (season && season >= 2022) {
+      return {
+        url: "/teams/oracle_red_bull_racing.svg",
+        color: "#041E42",
+        className: "object-contain p-0.5 filter-none",
+      }
+    }
+    if (season && season >= 2018 && season <= 2021) {
+      return {
+        url: "/teams/aston_martin_red_bull_racing.svg",
+        color: "#001A30",
+        className: "object-contain p-0.5 filter-none",
+      }
+    }
+    if (season && season >= 2005 && season <= 2017) {
+      return {
+        url: "/teams/red_bull_racing_classic.svg",
+        color: "#001A30",
+        className: "object-contain p-0.5 filter-none",
+      }
+    }
+    return {
+      url: "/teams/oracle_red_bull_racing.svg",
+      color: "#041E42",
+      className: "object-contain p-0.5 filter-none",
+    }
+  }
+
+  // Racing Bulls / Visa Cash App RB (2024-2026) High-Res Official Vector Branding
+  if (
+    canonical === "Racing Bulls" ||
+    canonical === "RB" ||
+    canonical === "Visa Cash App RB" ||
+    canonical === "Visa Cash App RB Formula One Team" ||
+    name.toLowerCase().includes("racing bulls") ||
+    name.toLowerCase().includes("visa cash app") ||
+    name.toLowerCase().includes("cash app rb") ||
+    name.trim().toLowerCase() === "rb"
+  ) {
+    return {
+      url: "/teams/racing_bulls.svg",
+      color: "#0D1B3E",
+      className: "object-contain p-0.5 filter-none",
+    }
+  }
 
   // Special high-res branding for Rich Energy Haas, Haas F1 Team, and Sauber
   if (

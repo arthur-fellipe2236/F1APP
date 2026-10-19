@@ -1,80 +1,80 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 90" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 80" width="100%" height="100%">
   <defs>
     <!-- 3D Chrome Star - Light Reflections -->
-    <linearGradient id="starChromeLight" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="mbStarLight" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="30%" stop-color="#EAF0F4" />
-      <stop offset="65%" stop-color="#B2BCC4" />
-      <stop offset="100%" stop-color="#727D86" />
+      <stop offset="35%" stop-color="#EFF4F8" />
+      <stop offset="70%" stop-color="#BAC5CD" />
+      <stop offset="100%" stop-color="#7A8690" />
     </linearGradient>
 
     <!-- 3D Chrome Star - Dark Reflections -->
-    <linearGradient id="starChromeDark" x1="100%" y1="100%" x2="0%" y2="0%">
-      <stop offset="0%" stop-color="#2C353D" />
-      <stop offset="45%" stop-color="#4B565E" />
-      <stop offset="80%" stop-color="#808C95" />
-      <stop offset="100%" stop-color="#C5CFD6" />
+    <linearGradient id="mbStarDark" x1="100%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#242B31" />
+      <stop offset="45%" stop-color="#465057" />
+      <stop offset="80%" stop-color="#7C8891" />
+      <stop offset="100%" stop-color="#BDC7CE" />
     </linearGradient>
 
     <!-- Chrome Outer Ring Gradient -->
-    <linearGradient id="chromeRing" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="mbChromeRing" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="25%" stop-color="#9BA6B0" />
-      <stop offset="50%" stop-color="#4E5A64" />
-      <stop offset="75%" stop-color="#B8C3CC" />
-      <stop offset="100%" stop-color="#6A7782" />
+      <stop offset="25%" stop-color="#A2ADB6" />
+      <stop offset="50%" stop-color="#48535C" />
+      <stop offset="75%" stop-color="#BAC5CD" />
+      <stop offset="100%" stop-color="#65717B" />
     </linearGradient>
 
     <!-- Official Petronas Emerald Turquoise Gradient -->
-    <linearGradient id="petronasCyan" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00A19B" />
-      <stop offset="50%" stop-color="#00D2BE" />
+    <linearGradient id="mbPetronasCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00A89F" />
+      <stop offset="60%" stop-color="#00D2BE" />
       <stop offset="100%" stop-color="#00E5D0" />
     </linearGradient>
 
-    <!-- Subtle Drop Shadow -->
-    <filter id="mercedesGlow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.35" />
+    <!-- Drop Shadow -->
+    <filter id="mbShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.8" flood-color="#000000" flood-opacity="0.5" />
     </filter>
   </defs>
 
-  <!-- Chrome Mercedes Star Emblem on Left -->
-  <g transform="translate(4, 0)" filter="url(#mercedesGlow)">
+  <!-- Mercedes Three-Pointed Star Emblem on Left -->
+  <g transform="translate(4, 0)" filter="url(#mbShadow)">
     <!-- Outer Chrome Ring -->
-    <circle cx="44" cy="45" r="34" fill="none" stroke="url(#chromeRing)" stroke-width="4.5" />
-    <circle cx="44" cy="45" r="31.5" fill="none" stroke="#1A2026" stroke-width="0.8" opacity="0.6" />
-    <circle cx="44" cy="45" r="36.5" fill="none" stroke="#FFFFFF" stroke-width="0.6" opacity="0.4" />
+    <circle cx="36" cy="40" r="32" fill="none" stroke="url(#mbChromeRing)" stroke-width="4.2" />
+    <circle cx="36" cy="40" r="29.6" fill="none" stroke="#101518" stroke-width="0.7" opacity="0.7" />
+    <circle cx="36" cy="40" r="34.2" fill="none" stroke="#FFFFFF" stroke-width="0.5" opacity="0.4" />
 
     <!-- Three-Pointed Star Facets -->
     <!-- Top Point -->
-    <polygon points="44,14 42.5,45 44,45" fill="url(#starChromeLight)" />
-    <polygon points="44,14 45.5,45 44,45" fill="url(#starChromeDark)" />
+    <polygon points="36,11 34.6,40 36,40" fill="url(#mbStarLight)" />
+    <polygon points="36,11 37.4,40 36,40" fill="url(#mbStarDark)" />
 
     <!-- Bottom-Right Point -->
-    <polygon points="70.8,60.5 44,43.5 44,45" fill="url(#starChromeLight)" />
-    <polygon points="70.8,60.5 44,46.5 44,45" fill="url(#starChromeDark)" />
+    <polygon points="61.2,54.5 36,38.6 36,40" fill="url(#mbStarLight)" />
+    <polygon points="61.2,54.5 36,41.4 36,40" fill="url(#mbStarDark)" />
 
     <!-- Bottom-Left Point -->
-    <polygon points="17.2,60.5 44,46.5 44,45" fill="url(#starChromeLight)" />
-    <polygon points="17.2,60.5 44,43.5 44,45" fill="url(#starChromeDark)" />
+    <polygon points="10.8,54.5 36,41.4 36,40" fill="url(#mbStarLight)" />
+    <polygon points="10.8,54.5 36,38.6 36,40" fill="url(#mbStarDark)" />
 
     <!-- Center Hub Specular Highlight -->
-    <circle cx="44" cy="45" r="3.2" fill="url(#starChromeLight)" />
-    <circle cx="44" cy="45" r="1.5" fill="#FFFFFF" />
+    <circle cx="36" cy="40" r="3" fill="url(#mbStarLight)" />
+    <circle cx="36" cy="40" r="1.3" fill="#FFFFFF" />
   </g>
 
-  <!-- Mercedes-AMG Petronas Typography on Right -->
-  <g filter="url(#mercedesGlow)">
-    <!-- MERCEDES-AMG in High-Contrast White / Silver Highlight -->
-    <text x="96" y="34" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="21" font-weight="900" fill="#FFFFFF" letter-spacing="0.8">MERCEDES-AMG</text>
+  <!-- Typography Block on Right -->
+  <g filter="url(#mbShadow)">
+    <!-- MERCEDES-AMG -->
+    <text x="78" y="28" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="14.5" font-weight="900" fill="#FFFFFF" letter-spacing="0.6">MERCEDES-AMG</text>
 
-    <!-- PETRONAS in Official Cyan Teal Gradient -->
-    <text x="96" y="60" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="24" font-weight="900" fill="url(#petronasCyan)" letter-spacing="1.5">PETRONAS</text>
+    <!-- PETRONAS -->
+    <text x="78" y="51" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="20" font-weight="900" fill="url(#mbPetronasCyan)" letter-spacing="1.2">PETRONAS</text>
 
-    <!-- FORMULA ONE TEAM in Sleek Tracked Lettering -->
-    <text x="97" y="74" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="8.5" font-weight="700" fill="#9DAAB3" letter-spacing="3.8">FORMULA ONE TEAM</text>
+    <!-- FORMULA ONE TEAM -->
+    <text x="79" y="64" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="7.5" font-weight="800" fill="#9DAAB3" letter-spacing="2.2">FORMULA ONE TEAM</text>
 
     <!-- Aerodynamic Speed Accent Strip -->
-    <path d="M 97 80 L 290 80 L 284 82 L 97 82 Z" fill="url(#petronasCyan)" opacity="0.9" />
+    <path d="M 79 70 L 176 70 L 172 72.5 L 79 72.5 Z" fill="url(#mbPetronasCyan)" opacity="0.95" />
   </g>
 </svg>

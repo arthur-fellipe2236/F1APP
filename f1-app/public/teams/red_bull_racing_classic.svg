@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 95" width="100%" height="100%">
+  <defs>
+    <!-- Sun Gradient -->
+    <radialGradient id="clSunGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF066" />
+      <stop offset="65%" stop-color="#FFCC00" />
+      <stop offset="100%" stop-color="#FF9900" />
+    </radialGradient>
+
+    <!-- Bull Crimson Gradient -->
+    <linearGradient id="clBullRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF1A2A" />
+      <stop offset="50%" stop-color="#E00613" />
+      <stop offset="100%" stop-color="#99000B" />
+    </linearGradient>
+
+    <!-- Horns -->
+    <linearGradient id="clBullGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFE600" />
+      <stop offset="100%" stop-color="#FF7700" />
+    </linearGradient>
+
+    <!-- Classic Blue Speed Streak Gradient -->
+    <linearGradient id="clSpeedBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#002B7F" />
+      <stop offset="50%" stop-color="#0044B8" />
+      <stop offset="100%" stop-color="#0072CE" />
+    </linearGradient>
+
+    <!-- Drop Shadow -->
+    <filter id="clRbShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+
+  <!-- Central Emblem: Dual Bulls and Sun -->
+  <g transform="translate(85, 30) scale(1.05)" filter="url(#clRbShadow)">
+    <!-- Sun Disc -->
+    <circle cx="0" cy="0" r="17.5" fill="url(#clSunGrad)" stroke="#FFE873" stroke-width="0.8" />
+
+    <!-- Left Charging Bull -->
+    <g transform="translate(-19, -4)">
+      <path d="M -16,14 C -14,10 -11,6 -6,4 C -4,0 -1,-2 4,-1 C 6,0 8,2 10,6 C 11,8 13,8 14,7 C 12,10 10,12 8,14 C 5,14 2,12 -1,13 C -4,15 -7,16 -10,17 C -12,18 -15,17 -16,14 Z" fill="url(#clBullRed)" stroke="#FFFFFF" stroke-width="0.7" />
+      <path d="M 6,1 C 8,-3 12,-6 16,-7 C 14,-4 13,-2 10,3 Z" fill="url(#clBullGold)" />
+      <path d="M -11,15 L -14,20 L -12,21 L -8,16 Z" fill="url(#clBullRed)" />
+      <path d="M 2,13 L 5,19 L 7,18 L 4,12 Z" fill="url(#clBullRed)" />
+    </g>
+
+    <!-- Right Charging Bull -->
+    <g transform="translate(19, -4) scale(-1, 1)">
+      <path d="M -16,14 C -14,10 -11,6 -6,4 C -4,0 -1,-2 4,-1 C 6,0 8,2 10,6 C 11,8 13,8 14,7 C 12,10 10,12 8,14 C 5,14 2,12 -1,13 C -4,15 -7,16 -10,17 C -12,18 -15,17 -16,14 Z" fill="url(#clBullRed)" stroke="#FFFFFF" stroke-width="0.7" />
+      <path d="M 6,1 C 8,-3 12,-6 16,-7 C 14,-4 13,-2 10,3 Z" fill="url(#clBullGold)" />
+      <path d="M -11,15 L -14,20 L -12,21 L -8,16 Z" fill="url(#clBullRed)" />
+      <path d="M 2,13 L 5,19 L 7,18 L 4,12 Z" fill="url(#clBullRed)" />
+    </g>
+  </g>
+
+  <!-- Typography: Red Bull RACING Classic -->
+  <g filter="url(#clRbShadow)">
+    <text x="85" y="66" text-anchor="middle" font-family="'Futura', 'Titillium Web', system-ui, Arial Black, sans-serif" font-size="22" font-weight="900" fill="#E00613" stroke="#FFFFFF" stroke-width="1.2" paint-order="stroke fill" letter-spacing="0.5">Red Bull</text>
+
+    <!-- Blue Aerodynamic Speed Bar -->
+    <path d="M 20,74 L 150,74 L 146,76.5 L 20,76.5 Z" fill="url(#clSpeedBlue)" />
+
+    <!-- RACING Subtitle -->
+    <text x="85" y="87" text-anchor="middle" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="11" font-weight="900" fill="#FFFFFF" letter-spacing="5.5">RACING</text>
+  </g>
+</svg>

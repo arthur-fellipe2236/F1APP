@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 95" width="100%" height="100%">
+  <defs>
+    <!-- Sun Gradient -->
+    <radialGradient id="amSunGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF066" />
+      <stop offset="65%" stop-color="#FFCC00" />
+      <stop offset="100%" stop-color="#FF9900" />
+    </radialGradient>
+
+    <!-- Bull Crimson Gradient -->
+    <linearGradient id="amBullRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF1A2A" />
+      <stop offset="50%" stop-color="#E00613" />
+      <stop offset="100%" stop-color="#99000B" />
+    </linearGradient>
+
+    <!-- Bull Horns -->
+    <linearGradient id="amBullGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFE600" />
+      <stop offset="100%" stop-color="#FF7700" />
+    </linearGradient>
+
+    <!-- Aston Martin British Racing Green / Silver -->
+    <linearGradient id="amSilver" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#D0DCE5" />
+      <stop offset="100%" stop-color="#95A2AC" />
+    </linearGradient>
+
+    <!-- Drop Shadow -->
+    <filter id="amRbShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+
+  <!-- Aston Martin Wings Crest Header -->
+  <g transform="translate(85, 11)" filter="url(#amRbShadow)">
+    <!-- Wings stylized -->
+    <path d="M 0,-4 L -22,-6 L -38,-3 L -48,0 L -36,2 L -20,1 L 0,0 L 20,1 L 36,2 L 48,0 L 38,-3 L 22,-6 Z" fill="url(#amSilver)" stroke="#004A36" stroke-width="0.6" />
+    <!-- Wing Feathers Details -->
+    <line x1="-36" y1="-2" x2="-22" y2="0" stroke="#004A36" stroke-width="0.5" />
+    <line x1="-24" y1="-4" x2="-12" y2="0" stroke="#004A36" stroke-width="0.5" />
+    <line x1="36" y1="-2" x2="22" y2="0" stroke="#004A36" stroke-width="0.5" />
+    <line x1="24" y1="-4" x2="12" y2="0" stroke="#004A36" stroke-width="0.5" />
+    <!-- Center Green Plaque -->
+    <rect x="-18" y="-4" width="36" height="6.5" rx="1.5" fill="#005944" stroke="#FFFFFF" stroke-width="0.6" />
+    <text x="0" y="0.8" text-anchor="middle" font-family="'Titillium Web', system-ui, sans-serif" font-size="4.2" font-weight="900" fill="#FFFFFF" letter-spacing="0.5">ASTON MARTIN</text>
+  </g>
+
+  <!-- Central Emblem: Dual Bulls and Sun -->
+  <g transform="translate(85, 41) scale(0.92)" filter="url(#amRbShadow)">
+    <!-- Sun Disc -->
+    <circle cx="0" cy="0" r="16.5" fill="url(#amSunGrad)" stroke="#FFE873" stroke-width="0.8" />
+
+    <!-- Left Charging Bull -->
+    <g transform="translate(-18, -4)">
+      <path d="M -16,14 C -14,10 -11,6 -6,4 C -4,0 -1,-2 4,-1 C 6,0 8,2 10,6 C 11,8 13,8 14,7 C 12,10 10,12 8,14 C 5,14 2,12 -1,13 C -4,15 -7,16 -10,17 C -12,18 -15,17 -16,14 Z" fill="url(#amBullRed)" stroke="#FFFFFF" stroke-width="0.7" />
+      <path d="M 6,1 C 8,-3 12,-6 16,-7 C 14,-4 13,-2 10,3 Z" fill="url(#amBullGold)" />
+      <path d="M -11,15 L -14,20 L -12,21 L -8,16 Z" fill="url(#amBullRed)" />
+      <path d="M 2,13 L 5,19 L 7,18 L 4,12 Z" fill="url(#amBullRed)" />
+    </g>
+
+    <!-- Right Charging Bull -->
+    <g transform="translate(18, -4) scale(-1, 1)">
+      <path d="M -16,14 C -14,10 -11,6 -6,4 C -4,0 -1,-2 4,-1 C 6,0 8,2 10,6 C 11,8 13,8 14,7 C 12,10 10,12 8,14 C 5,14 2,12 -1,13 C -4,15 -7,16 -10,17 C -12,18 -15,17 -16,14 Z" fill="url(#amBullRed)" stroke="#FFFFFF" stroke-width="0.7" />
+      <path d="M 6,1 C 8,-3 12,-6 16,-7 C 14,-4 13,-2 10,3 Z" fill="url(#amBullGold)" />
+      <path d="M -11,15 L -14,20 L -12,21 L -8,16 Z" fill="url(#amBullRed)" />
+      <path d="M 2,13 L 5,19 L 7,18 L 4,12 Z" fill="url(#amBullRed)" />
+    </g>
+  </g>
+
+  <!-- Typography: Red Bull RACING -->
+  <g filter="url(#amRbShadow)">
+    <text x="85" y="69" text-anchor="middle" font-family="'Futura', 'Titillium Web', system-ui, Arial Black, sans-serif" font-size="20" font-weight="900" fill="#E00613" stroke="#FFFFFF" stroke-width="1.1" paint-order="stroke fill" letter-spacing="0.5">Red Bull</text>
+
+    <!-- RACING with British Racing Green Speed Accent -->
+    <text x="85" y="85" text-anchor="middle" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="10.5" font-weight="900" fill="#FFFFFF" letter-spacing="5">RACING</text>
+
+    <polygon points="16,81 26,81 21,85" fill="#005944" />
+    <polygon points="154,81 144,81 149,85" fill="#005944" />
+  </g>
+</svg>

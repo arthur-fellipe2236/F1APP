@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 95" width="100%" height="100%">
+  <defs>
+    <!-- Red Bull Sun Gradient -->
+    <radialGradient id="rbSunGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF066" />
+      <stop offset="65%" stop-color="#FFCC00" />
+      <stop offset="100%" stop-color="#FF9900" />
+    </radialGradient>
+
+    <!-- Bull Crimson Gradient -->
+    <linearGradient id="rbBullRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF1A2A" />
+      <stop offset="50%" stop-color="#E00613" />
+      <stop offset="100%" stop-color="#99000B" />
+    </linearGradient>
+
+    <!-- Bull Amber Highlight -->
+    <linearGradient id="rbBullGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFE600" />
+      <stop offset="100%" stop-color="#FF7700" />
+    </linearGradient>
+
+    <!-- Oracle Banner Gradient -->
+    <linearGradient id="oracleTextGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#E0E8F5" />
+    </linearGradient>
+
+    <!-- Subtle Drop Shadow -->
+    <filter id="rbGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+
+  <!-- ORACLE Header Banner -->
+  <g filter="url(#rbGlow)">
+    <text x="85" y="16" text-anchor="middle" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="12" font-weight="900" fill="url(#oracleTextGrad)" letter-spacing="4.5">ORACLE</text>
+    <line x1="18" y1="21" x2="152" y2="21" stroke="#FFCC00" stroke-width="1.2" opacity="0.8" />
+  </g>
+
+  <!-- Central Iconic Emblem: Dual Bulls and Sun -->
+  <g transform="translate(85, 41) scale(0.92)" filter="url(#rbGlow)">
+    <!-- Sun Disc -->
+    <circle cx="0" cy="0" r="16.5" fill="url(#rbSunGrad)" stroke="#FFE873" stroke-width="0.8" />
+
+    <!-- Left Charging Bull (Heading Right) -->
+    <g transform="translate(-18, -4)">
+      <!-- Bull Body Silhouette -->
+      <path d="M -16,14 C -14,10 -11,6 -6,4 C -4,0 -1,-2 4,-1 C 6,0 8,2 10,6 C 11,8 13,8 14,7 C 12,10 10,12 8,14 C 5,14 2,12 -1,13 C -4,15 -7,16 -10,17 C -12,18 -15,17 -16,14 Z" fill="url(#rbBullRed)" stroke="#FFFFFF" stroke-width="0.7" />
+      <!-- Horn -->
+      <path d="M 6,1 C 8,-3 12,-6 16,-7 C 14,-4 13,-2 10,3 Z" fill="url(#rbBullGold)" />
+      <!-- Muscular Legs -->
+      <path d="M -11,15 L -14,20 L -12,21 L -8,16 Z" fill="url(#rbBullRed)" />
+      <path d="M 2,13 L 5,19 L 7,18 L 4,12 Z" fill="url(#rbBullRed)" />
+    </g>
+
+    <!-- Right Charging Bull (Heading Left) -->
+    <g transform="translate(18, -4) scale(-1, 1)">
+      <!-- Bull Body Silhouette -->
+      <path d="M -16,14 C -14,10 -11,6 -6,4 C -4,0 -1,-2 4,-1 C 6,0 8,2 10,6 C 11,8 13,8 14,7 C 12,10 10,12 8,14 C 5,14 2,12 -1,13 C -4,15 -7,16 -10,17 C -12,18 -15,17 -16,14 Z" fill="url(#rbBullRed)" stroke="#FFFFFF" stroke-width="0.7" />
+      <!-- Horn -->
+      <path d="M 6,1 C 8,-3 12,-6 16,-7 C 14,-4 13,-2 10,3 Z" fill="url(#rbBullGold)" />
+      <!-- Muscular Legs -->
+      <path d="M -11,15 L -14,20 L -12,21 L -8,16 Z" fill="url(#rbBullRed)" />
+      <path d="M 2,13 L 5,19 L 7,18 L 4,12 Z" fill="url(#rbBullRed)" />
+    </g>
+  </g>
+
+  <!-- Typography: Red Bull RACING -->
+  <g filter="url(#rbGlow)">
+    <!-- Red Bull with White Stroke and Crimson Red Center -->
+    <text x="85" y="69" text-anchor="middle" font-family="'Futura', 'Titillium Web', system-ui, Arial Black, sans-serif" font-size="20" font-weight="900" fill="#E00613" stroke="#FFFFFF" stroke-width="1.1" paint-order="stroke fill" letter-spacing="0.5">Red Bull</text>
+
+    <!-- RACING Tracked Subtitle with Red Accents -->
+    <text x="85" y="85" text-anchor="middle" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="10.5" font-weight="900" fill="#FFFFFF" letter-spacing="5">RACING</text>
+
+    <!-- Dynamic Speed Triangles on Sides -->
+    <polygon points="16,81 26,81 21,85" fill="#E00613" />
+    <polygon points="154,81 144,81 149,85" fill="#E00613" />
+  </g>
+</svg>
