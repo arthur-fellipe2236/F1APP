@@ -11,3 +11,4 @@ Pillow>=10.0
 beautifulsoup4>=4.12
 PyJWT>=2.8
 python-dateutil>=2.8
+edge-tts>=7.0.0

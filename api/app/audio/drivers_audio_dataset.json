@@ -1,0 +1,226 @@
+{
+  "version": "1.0.0",
+  "dataset_description": "Banco de Amostras de Voz e Calibração dos Pilotos Brasileiros da F1",
+  "drivers": [
+    {
+      "id": "thalita",
+      "name": "Thalita",
+      "title": "Apresentadora Oficial",
+      "tag": "Estúdio F1",
+      "avatar": "/radio/thalita.svg",
+      "badge_color": "#E10600",
+      "flag": "🎙️",
+      "bio": "Voz neural cristalina oficial do estúdio e telemetria da Fórmula 1.",
+      "voice_settings": {
+        "engine": "edge-tts",
+        "model": "pt-BR-ThalitaMultilingualNeural",
+        "rate": "+2%",
+        "pitch": "+0Hz"
+      },
+      "samples": [
+        {
+          "title": "Boletim Padrão de Estúdio",
+          "context": "Transmissão Oficial de Rádio",
+          "transcript": "Luz verde no pit lane! Olá {first_name}, bem-vindo ao seu giro rápido da Fórmula 1.",
+          "duration_sec": 4.5
+        }
+      ]
+    },
+    {
+      "id": "senna",
+      "name": "Ayrton Senna",
+      "title": "Tricampeão Mundial (1988, 1990, 1991)",
+      "tag": "O Mestre",
+      "avatar": "/radio/senna.jpg",
+      "badge_color": "#FCD116",
+      "flag": "🟡",
+      "bio": "Tom reflexivo, calmo, determinado e focado em superar os próprios limites.",
+      "voice_settings": {
+        "engine": "edge-tts",
+        "model": "pt-BR-AntonioNeural",
+        "rate": "-4%",
+        "pitch": "-2Hz"
+      },
+      "samples": [
+        {
+          "title": "Interlagos 1991 - Rádio da Vitória",
+          "context": "Rádio com a McLaren na bandeirada final com câmbio travado em 6ª marcha",
+          "transcript": "Eu esperei tanto por isso... Eu tinha que dar tudo, até o fim! Deus me deu essa corrida!",
+          "source_url": "https://www.youtube.com/watch?v=Fj7wZ-05a8o",
+          "duration_sec": 14.8,
+          "sample_rate_hz": 44100
+        },
+        {
+          "title": "Suzuka 1988 - Entrevista de Campeão",
+          "context": "Reflexão sobre foco absoluto e fé na conquista do primeiro título mundial",
+          "transcript": "Quando você pensa que atingiu o limite, você descobre que sempre pode ir um pouco mais além.",
+          "source_url": "https://www.youtube.com/watch?v=d_203sJbU1w",
+          "duration_sec": 18.2,
+          "sample_rate_hz": 44100
+        }
+      ]
+    },
+    {
+      "id": "piquet",
+      "name": "Nelson Piquet",
+      "title": "Tricampeão Mundial (1981, 1983, 1987)",
+      "tag": "Tricampeão",
+      "avatar": "/radio/piquet.jpg",
+      "badge_color": "#00A859",
+      "flag": "🏎️",
+      "bio": "Direto, irreverente, irônico e objetivo. Foco na precisão mecânica do carro.",
+      "voice_settings": {
+        "engine": "edge-tts",
+        "model": "pt-BR-AntonioNeural",
+        "rate": "+4%",
+        "pitch": "-4Hz"
+      },
+      "samples": [
+        {
+          "title": "Monza 1987 - Paddock Interview",
+          "context": "Entrevista clássica descontraída comentando a suspensão ativa da Williams-Honda",
+          "transcript": "O negócio é muito simples: se o acerto do carro tiver perfeito a gente ganha de ponta a ponta.",
+          "source_url": "https://www.youtube.com/watch?v=kY9j4LmqtA",
+          "duration_sec": 12.4,
+          "sample_rate_hz": 44100
+        },
+        {
+          "title": "Rio 1986 - Dobradinha com Senna em Jacarepaguá",
+          "context": "Conversa de comemoração após vitória no GP do Brasil",
+          "transcript": "Corrida dura, calor danado, mas o motor respondeu em cada curva. Resultado impecável.",
+          "duration_sec": 15.0,
+          "sample_rate_hz": 44100
+        }
+      ]
+    },
+    {
+      "id": "fittipaldi",
+      "name": "Emerson Fittipaldi",
+      "title": "Bicampeão Mundial (1972, 1974)",
+      "tag": "O Pioneiro",
+      "avatar": "/radio/fittipaldi.jpg",
+      "badge_color": "#002B7F",
+      "flag": "🟢",
+      "bio": "Voz clássica, grave, aveludada, respeitosa e repleta de carinho pelo automobilismo.",
+      "voice_settings": {
+        "engine": "edge-tts",
+        "model": "pt-BR-AntonioNeural",
+        "rate": "-6%",
+        "pitch": "-8Hz"
+      },
+      "samples": [
+        {
+          "title": "Interlagos 1973 - Primeira Vitória no Brasil",
+          "context": "Entrevista histórica após levar a Lotus à glória em São Paulo",
+          "transcript": "Um momento inesquecível para todo o povo brasileiro e para todos os amigos da velocidade.",
+          "source_url": "https://www.youtube.com/watch?v=kY9j4LmqtA",
+          "duration_sec": 16.5,
+          "sample_rate_hz": 44100
+        },
+        {
+          "title": "Monza 1972 - Consagração do Primeiro Título",
+          "context": "Reflexão sobre pilotagem pura nos anos de ouro da F1",
+          "transcript": "No automobilismo é preciso correr com a cabeça fria, precisão máxima e o coração batendo forte.",
+          "duration_sec": 17.0,
+          "sample_rate_hz": 44100
+        }
+      ]
+    },
+    {
+      "id": "barrichello",
+      "name": "Rubens Barrichello",
+      "title": "Vice-campeão Mundial (2002, 2004)",
+      "tag": "Rubinho",
+      "avatar": "/radio/barrichello.jpg",
+      "badge_color": "#E60000",
+      "flag": "🔴",
+      "bio": "Carismático, emotivo, alegre, parceiro da torcida e sempre otimista.",
+      "voice_settings": {
+        "engine": "edge-tts",
+        "model": "pt-BR-AntonioNeural",
+        "rate": "+5%",
+        "pitch": "+3Hz"
+      },
+      "samples": [
+        {
+          "title": "Hockenheim 2000 - Primeira Vitória na Chuva",
+          "context": "Pódio histórico chorando no degrau mais alto pela Scuderia Ferrari",
+          "transcript": "Obrigado a todo mundo, de verdade e do fundo do coração! Essa vitória é nossa!",
+          "duration_sec": 14.2,
+          "sample_rate_hz": 44100
+        },
+        {
+          "title": "Monza 2009 - Vitória com a Brawn GP",
+          "context": "Celebração épica no templo da velocidade",
+          "transcript": "Que momento especial, que fim de semana mágico! O carro estava uma verdadeira bala!",
+          "duration_sec": 15.1,
+          "sample_rate_hz": 44100
+        }
+      ]
+    },
+    {
+      "id": "massa",
+      "name": "Felipe Massa",
+      "title": "Vice-campeão Mundial (2008)",
+      "tag": "Massa",
+      "avatar": "/radio/massa.jpg",
+      "badge_color": "#FFFFFF",
+      "flag": "⚪",
+      "bio": "Enérgico, dinâmico, sotaque paulistano autêntico e focado em ritmo de corrida.",
+      "voice_settings": {
+        "engine": "edge-tts",
+        "model": "pt-BR-AntonioNeural",
+        "rate": "+8%",
+        "pitch": "+5Hz"
+      },
+      "samples": [
+        {
+          "title": "Interlagos 2006 - Vitória Histórica com Macacão Verde e Amarelo",
+          "context": "Festa no topo do pódio vestindo o macacão do Brasil",
+          "transcript": "Vencer em casa com essa torcida cantando e pulando é a melhor sensação da vida!",
+          "duration_sec": 13.9,
+          "sample_rate_hz": 44100
+        },
+        {
+          "title": "Interlagos 2008 - Vitória e Gratidão à Equipe",
+          "context": "Rádio após vencer a última corrida da temporada 2008",
+          "transcript": "Fizemos tudo perfeito, vencemos a prova e podemos nos orgulhar de cada curva dada!",
+          "duration_sec": 15.6,
+          "sample_rate_hz": 44100
+        }
+      ]
+    },
+    {
+      "id": "burti",
+      "name": "Luciano Burti",
+      "title": "Piloto de F1 & Comentarista Técnico",
+      "tag": "Comentarista",
+      "avatar": "/radio/burti.jpg",
+      "badge_color": "#3B82F6",
+      "flag": "🏁",
+      "bio": "Articulação de estúdio televisivo, técnico, detalhista na telemetria e análise dos pneus.",
+      "voice_settings": {
+        "engine": "edge-tts",
+        "model": "pt-BR-AntonioNeural",
+        "rate": "+1%",
+        "pitch": "-1Hz"
+      },
+      "samples": [
+        {
+          "title": "Comentários GP Brasil - Análise de Telemetria",
+          "context": "Comentários ao vivo na transmissão sobre a tangência do Esse do Senna",
+          "transcript": "Repare como ele entra forte na zebra e já traciona em direção ao Curvão do Sol.",
+          "duration_sec": 14.0,
+          "sample_rate_hz": 44100
+        },
+        {
+          "title": "Spa-Francorchamps - Desafio da Eau Rouge",
+          "context": "Explicação técnica sobre a pressão aerodinâmica e o fundo do carro",
+          "transcript": "Neste trecho a força G vertical comprime o carro contra o asfalto, exigindo precisão cirúrgica.",
+          "duration_sec": 16.2,
+          "sample_rate_hz": 44100
+        }
+      ]
+    }
+  ]
+}

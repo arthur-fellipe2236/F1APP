@@ -2,7 +2,7 @@ import { useAppStore } from "@/store"
 import { SeasonSelector } from "@/components/season-selector"
 import { useMemo, useState, type ReactNode } from "react"
 import type { TableColumn } from "react-data-table-component"
-import { Flag, Shield, Trophy } from "lucide-react"
+import { Flag, Shield, Trophy, CheckCircle2, Clock, Gauge } from "lucide-react"
 
 import { CodeBadge } from "@/components/driver-code"
 import { F1DataTable } from "@/components/data-table"
@@ -239,6 +239,46 @@ function TeamBadge({ name, season }: { name: string; season?: number }) {
   )
 }
 
+function SeasonProgressBadge({ completed, total, percentage }: { completed: number; total: number; percentage: number }) {
+  const isCompleted = completed >= total && total > 0
+  return (
+    <div className="relative shrink-0">
+      <div
+        className={cn(
+          "flex h-16 w-20 sm:h-18 sm:w-24 md:h-20 md:w-28 shrink-0 flex-col items-center justify-center rounded-2xl p-2 shadow-md border border-border/50 transition-all overflow-hidden relative group-hover:scale-105 duration-500",
+          isCompleted
+            ? "bg-gradient-to-br from-emerald-950/60 via-zinc-900 to-black ring-2 ring-emerald-500/30"
+            : "bg-gradient-to-br from-zinc-900 via-zinc-900/90 to-black ring-2 ring-primary/30"
+        )}
+      >
+        <div
+          className="absolute inset-0 opacity-15 pointer-events-none"
+          style={{
+            backgroundImage: `radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 1px, transparent 1px)`,
+            backgroundSize: "8px 8px",
+          }}
+        />
+        <div className="relative z-10 flex flex-col items-center justify-center">
+          <Flag className={cn("size-6 sm:size-7 transition-colors drop-shadow", isCompleted ? "text-emerald-400" : "text-primary")} />
+          <span className="text-[10px] sm:text-xs font-mono font-bold tracking-wider mt-1 text-foreground/90 uppercase">
+            ETAPAS
+          </span>
+        </div>
+      </div>
+      <div
+        className={cn(
+          "absolute -bottom-1 -right-1 flex items-center justify-center rounded-full font-mono font-extrabold text-[10px] md:text-xs px-1.5 py-0.5 shadow-md border-2 border-background ring-1",
+          isCompleted
+            ? "bg-emerald-500 text-black ring-emerald-500/30"
+            : "bg-primary text-primary-foreground ring-primary/30"
+        )}
+      >
+        {percentage}%
+      </div>
+    </div>
+  )
+}
+
 function SummaryCard({
   title,
   icon,
@@ -379,6 +419,19 @@ export function DashboardPage() {
     [teamStandingsData],
   )
 
+  const completedRaces = useMemo(() => {
+    const maxDriverRaces = Math.max(...driverStandingsData.map((d: any) => Number(d.races) || 0), 0)
+    const maxTeamRaces = Math.max(...teamStandingsData.map((t: any) => Number(t.races) || 0), 0)
+    const maxStandings = Math.max(maxDriverRaces, maxTeamRaces)
+    if (maxStandings > 0) return Math.min(maxStandings, totalRaces)
+    const currentYear = new Date().getFullYear()
+    if (seasonParam < currentYear && totalRaces > 0) return totalRaces
+    return 0
+  }, [driverStandingsData, teamStandingsData, seasonParam, totalRaces])
+
+  const progressPercentage = totalRaces > 0 ? Math.min(100, Math.round((completedRaces / totalRaces) * 100)) : 0
+  const remainingRaces = Math.max(0, totalRaces - completedRaces)
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -463,19 +516,61 @@ export function DashboardPage() {
 
         <SummaryCard
           title="Corridas disputadas"
-          icon={<Flag className="size-4" />}
+          icon={<Flag className="size-4 text-emerald-500" />}
           loading={races.loading}
         >
           {races.error ? (
             <p className="text-muted-foreground">Indisponível</p>
           ) : (
-            <div className="flex h-14 items-center gap-3">
-              <div className="space-y-1">
-                <div className="text-lg font-semibold font-mono tracking-tight tabular-nums">
-                  {totalRaces}
+            <div className="flex items-center gap-4 py-2">
+              <div className="shrink-0 transition-transform duration-500 group-hover:scale-105">
+                <SeasonProgressBadge
+                  completed={completedRaces}
+                  total={totalRaces}
+                  percentage={progressPercentage}
+                />
+              </div>
+              <div className="min-w-0 flex-1 space-y-1.5">
+                <div className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight font-mono leading-tight flex items-baseline gap-2">
+                  <span>{completedRaces}</span>
+                  <span className="text-xs sm:text-sm font-semibold text-muted-foreground font-sans">
+                    de {totalRaces} GPs
+                  </span>
                 </div>
-                <div className="text-sm text-muted-foreground">
-                  na temporada selecionada
+
+                <div className="h-2 w-full rounded-full bg-secondary/80 overflow-hidden border border-border/40 p-[1px]">
+                  <div
+                    className={cn(
+                      "h-full rounded-full transition-all duration-1000",
+                      progressPercentage === 100
+                        ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"
+                        : "bg-gradient-to-r from-red-500 via-amber-500 to-emerald-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]"
+                    )}
+                    style={{ width: `${Math.max(4, progressPercentage)}%` }}
+                  />
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground pt-0.5">
+                  {completedRaces >= totalRaces && totalRaces > 0 ? (
+                    <span className="inline-flex items-center gap-1 text-[11px] md:text-xs font-semibold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded-md font-mono">
+                      <CheckCircle2 className="size-3" /> Temporada Concluída
+                    </span>
+                  ) : completedRaces === 0 ? (
+                    <span className="inline-flex items-center gap-1 text-[11px] md:text-xs font-semibold text-amber-400 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded-md font-mono">
+                      <Clock className="size-3" /> Aguardando Início
+                    </span>
+                  ) : (
+                    <>
+                      <span className="font-semibold text-foreground text-xs md:text-sm whitespace-nowrap bg-secondary/80 px-2 py-0.5 rounded-md border border-border/40 font-mono flex items-center gap-1">
+                        <Gauge className="size-3 text-red-500" />
+                        {progressPercentage}% Concluído
+                      </span>
+                      <span>·</span>
+                      <span className="text-xs md:text-sm font-mono">
+                        {remainingRaces} {remainingRaces === 1 ? "restante" : "restantes"}
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
