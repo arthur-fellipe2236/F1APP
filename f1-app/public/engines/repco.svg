@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="100%" height="100%">
+  <defs>
+    <linearGradient id="repcoBg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C00000"/>
+      <stop offset="100%" stop-color="#002266"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="4" width="196" height="52" rx="10" fill="url(#repcoBg)" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="100" y="38" font-family="'Impact', 'Arial Black', sans-serif" font-size="28" font-weight="900" font-style="italic" letter-spacing="4" fill="#FFFFFF" text-anchor="middle">REPCO</text>
+</svg>

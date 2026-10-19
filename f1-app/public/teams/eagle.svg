@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="eagleBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A152E"/>
+      <stop offset="100%" stop-color="#040814"/>
+    </linearGradient>
+    <linearGradient id="goldEagle" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E5A823"/>
+      <stop offset="50%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#B8860B"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Plaque -->
+  <rect x="10" y="15" width="480" height="170" rx="26" fill="url(#eagleBg)" stroke="#1A2D5A" stroke-width="3"/>
+  <rect x="18" y="23" width="464" height="154" rx="20" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.2"/>
+
+  <!-- Left: Stylized Aerodynamic Eagle Emblem -->
+  <g transform="translate(30, 35)">
+    <!-- Shield Outline -->
+    <path d="M 50 10 L 95 20 L 90 95 Q 50 130 50 130 Q 50 130 10 95 L 5 20 Z" fill="#0E204A" stroke="url(#goldEagle)" stroke-width="3"/>
+    
+    <!-- Eagle Head & Beak Silhouette -->
+    <path d="M 50 22 C 65 22 78 32 80 48 C 82 58 75 70 65 75 L 85 85 L 68 89 C 60 93 42 98 32 88 C 22 78 28 55 35 42 C 40 32 45 22 50 22 Z" fill="#FFFFFF"/>
+    <!-- Beak -->
+    <path d="M 72 73 Q 88 82 92 85 Q 85 92 68 90 Z" fill="url(#goldEagle)"/>
+    <!-- Eye -->
+    <circle cx="55" cy="48" r="4" fill="#0A152E"/>
+    <circle cx="56" cy="47" r="1.5" fill="#FFD700"/>
+    
+    <!-- Red Accent Streak -->
+    <path d="M 20 85 L 35 112 Q 50 125 50 125 Q 50 125 65 112 L 80 85" fill="none" stroke="#D62828" stroke-width="4"/>
+  </g>
+
+  <!-- Typography -->
+  <text x="305" y="105" font-family="'Impact', 'Arial Black', sans-serif" font-size="70" font-weight="900" letter-spacing="8" fill="#FFFFFF" text-anchor="middle">EAGLE</text>
+  <text x="305" y="138" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="800" letter-spacing="6" fill="url(#goldEagle)" text-anchor="middle">ANGLO AMERICAN RACERS</text>
+  <text x="305" y="158" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="600" letter-spacing="3" fill="#8EA4D2" text-anchor="middle">DAN GURNEY • FORMULA 1</text>
+</svg>

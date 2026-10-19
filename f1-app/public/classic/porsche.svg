@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="porscheBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141416"/>
+      <stop offset="100%" stop-color="#050506"/>
+    </linearGradient>
+    <linearGradient id="porscheGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4AF37"/>
+      <stop offset="50%" stop-color="#FFDF73"/>
+      <stop offset="100%" stop-color="#AA8010"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="10" y="15" width="480" height="170" rx="24" fill="url(#porscheBg)" stroke="#2B2B30" stroke-width="3"/>
+  <rect x="18" y="23" width="464" height="154" rx="18" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.15"/>
+
+  <!-- Left: Porsche Crest -->
+  <g transform="translate(35, 30)">
+    <!-- Crest Shield -->
+    <path d="M 50 10 L 95 20 L 90 95 Q 50 135 50 135 Q 50 135 10 95 L 5 20 Z" fill="url(#porscheGold)" stroke="#111111" stroke-width="2"/>
+    
+    <!-- Red & Black Quarters -->
+    <!-- Antlers (Gold field) top left & bottom right -->
+    <path d="M 12 25 L 48 25 L 48 65 L 10 60 Z" fill="#E69500"/>
+    <path d="M 52 70 L 88 75 L 84 100 Q 52 125 52 125 Z" fill="#E69500"/>
+    <!-- Red & Black stripes top right & bottom left -->
+    <path d="M 52 25 L 88 25 L 88 65 L 52 65 Z" fill="#D62828"/>
+    <rect x="56" y="32" width="28" height="6" fill="#111111"/>
+    <rect x="56" y="48" width="28" height="6" fill="#111111"/>
+    
+    <path d="M 12 70 L 48 70 L 48 125 Q 48 125 16 100 Z" fill="#D62828"/>
+    <rect x="16" y="78" width="28" height="6" fill="#111111"/>
+    <rect x="20" y="94" width="24" height="6" fill="#111111"/>
+
+    <!-- Center Stuttgart Inescutcheon with Horse -->
+    <rect x="36" y="50" width="28" height="38" rx="6" fill="#FFDF73" stroke="#111111" stroke-width="1.5"/>
+    <path d="M 46 80 Q 42 68 47 62 Q 50 58 52 56 Q 54 58 53 64 Q 58 66 57 74 L 54 74 Q 52 70 48 72 Z" fill="#111111"/>
+    
+    <!-- PORSCHE text arch at top -->
+    <rect x="22" y="14" width="56" height="10" rx="3" fill="#111111"/>
+    <text x="50" y="22" font-family="'Helvetica Neue', Arial, sans-serif" font-size="7" font-weight="900" letter-spacing="1.5" fill="url(#porscheGold)" text-anchor="middle">PORSCHE</text>
+  </g>
+
+  <!-- Typography -->
+  <text x="310" y="105" font-family="'Helvetica Neue', 'Arial Black', sans-serif" font-size="52" font-weight="900" letter-spacing="10" fill="#FFFFFF" text-anchor="middle">PORSCHE</text>
+  <text x="310" y="136" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="800" letter-spacing="6" fill="url(#porscheGold)" text-anchor="middle">SYSTEM PORSCHE</text>
+  <text x="310" y="156" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="600" letter-spacing="3" fill="#A0A0A8" text-anchor="middle">GRAND PRIX RACING • 1960–1962</text>
+</svg>

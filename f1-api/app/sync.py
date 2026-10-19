@@ -53,6 +53,29 @@ TEAM_ALIASES = {
     "Copersucar": "Fittipaldi",
     "Copersucar-Fittipaldi": "Fittipaldi",
     "Tyrrell Racing Organisation": "Tyrrell",
+    "Cooper-Climax": "Cooper",
+    "Cooper-Maserati": "Cooper",
+    "Cooper-BRM": "Cooper",
+    "Cooper-Ford": "Cooper",
+    "Cooper-Ferrari": "Cooper",
+    "Cooper-Alfa Romeo": "Cooper",
+    "Cooper-Castellotti": "Cooper",
+    "Cooper-Borgward": "Cooper",
+    "Cooper-ATS": "Cooper",
+    "Lotus-Climax": "Lotus",
+    "Lotus-BRM": "Lotus",
+    "Lotus-Maserati": "Lotus",
+    "Lotus-Borgward": "Lotus",
+    "Brabham-Climax": "Brabham",
+    "Brabham-BRM": "Brabham",
+    "Brabham-Repco": "Brabham",
+    "Matra-Ford": "Matra",
+    "Matra-Cosworth": "Matra",
+    "McLaren-Serenissima": "McLaren",
+    "McLaren-BRM": "McLaren",
+    "Eagle-Climax": "Eagle",
+    "Eagle-Weslake": "Eagle",
+    "Lola-Climax": "Lola",
 }
 
 NATIONALITY_PT = {
@@ -563,7 +586,7 @@ def configured_seasons():
     env = os.environ.get("F1_SYNC_SEASONS")
     if env:
         return [int(part) for part in env.split(",") if part.strip()]
-    return list(range(2026, 1969, -1))
+    return list(range(2026, 1959, -1))
 
 
 def demo_seasons():
@@ -936,8 +959,12 @@ def _sync_jolpica_race(entry, season, round_):
     RaceResult.query.filter_by(race_id=race.id).delete()
     db.session.commit()
     winner_laps = None
+    seen_driver_ids = set()
     for row in entry.get("Results", []):
         driver, team = _upsert_ergast_row(row)
+        if driver.id in seen_driver_ids:
+            continue
+        seen_driver_ids.add(driver.id)
         position = _int_or_none(row.get("position"))
         if position == 1:
             winner_laps = _int_or_none(row.get("laps"))

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="cooperBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#002D15"/>
+      <stop offset="100%" stop-color="#00180B"/>
+    </linearGradient>
+    <linearGradient id="goldTrim" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4AF37"/>
+      <stop offset="50%" stop-color="#FFF2A3"/>
+      <stop offset="100%" stop-color="#AA8010"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Pill -->
+  <rect x="10" y="15" width="480" height="170" rx="30" fill="url(#cooperBg)" stroke="url(#goldTrim)" stroke-width="4"/>
+  <rect x="18" y="23" width="464" height="154" rx="22" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.3"/>
+
+  <!-- Twin Cooper White Bonnet Stripes -->
+  <path d="M 60 25 L 85 25 L 85 175 L 60 175 Z" fill="#FFFFFF" opacity="0.85"/>
+  <path d="M 95 25 L 120 25 L 120 175 L 95 175 Z" fill="#FFFFFF" opacity="0.85"/>
+
+  <!-- Chequered Flag Accent (Left badge) -->
+  <g transform="translate(145, 45) scale(0.7)">
+    <circle cx="40" cy="40" r="35" fill="#002210" stroke="url(#goldTrim)" stroke-width="3"/>
+    <!-- Small laurel leaf arc -->
+    <path d="M 15 40 Q 20 15 40 15 Q 60 15 65 40" fill="none" stroke="#D4AF37" stroke-width="3"/>
+    <text x="40" y="47" font-family="'Impact', 'Arial Black', sans-serif" font-size="28" font-weight="900" fill="#FFFFFF" text-anchor="middle">C</text>
+  </g>
+
+  <!-- COOPER Main Typography -->
+  <text x="315" y="112" font-family="'Arial Black', 'Impact', sans-serif" font-size="64" font-weight="900" font-style="italic" letter-spacing="4" fill="#FFFFFF" text-anchor="middle" stroke="#000000" stroke-width="2">COOPER</text>
+  
+  <!-- Subtitle -->
+  <text x="315" y="145" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="800" letter-spacing="7" fill="url(#goldTrim)" text-anchor="middle">CAR COMPANY</text>
+  <text x="315" y="165" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="600" letter-spacing="3" fill="#A0C4A8" text-anchor="middle">WORLD CHAMPIONS 1959 • 1960</text>
+</svg>
