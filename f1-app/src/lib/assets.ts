@@ -565,8 +565,16 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     1996: { url: "/teams/forti.svg", color: "#FFCC00", className: "object-contain p-0.5" },
   },
   "Pacific": {
-    1994: { url: "/teams/pacific.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
-    1995: { url: "/teams/pacific.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
+    1994: { url: "/teams/pacific.svg", color: "#08162C", className: "object-contain p-0.5 filter-none" },
+    1995: { url: "/teams/pacific.svg", color: "#08162C", className: "object-contain p-0.5 filter-none" },
+  },
+  "Pacific Grand Prix": {
+    1994: { url: "/teams/pacific.svg", color: "#08162C", className: "object-contain p-0.5 filter-none" },
+    1995: { url: "/teams/pacific.svg", color: "#08162C", className: "object-contain p-0.5 filter-none" },
+  },
+  "Pacific Racing": {
+    1994: { url: "/teams/pacific.svg", color: "#08162C", className: "object-contain p-0.5 filter-none" },
+    1995: { url: "/teams/pacific.svg", color: "#08162C", className: "object-contain p-0.5 filter-none" },
   },
   "Simtek": {
     1994: { url: "/teams/mtv_simtek_ford.svg", color: "#160728", className: "object-contain p-0.5 filter-none" },
@@ -964,7 +972,9 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   "Ligier Gitanes Blondes": { url: "/teams/ligier_blondes.svg", color: "#001C42", className: "object-contain p-0.5 filter-none" },
   "Ligier Gitanes": { url: "/teams/ligier_gitanes.svg", color: "#002B7F", className: "object-contain p-0.5 filter-none" },
   Forti: { url: "/teams/forti.svg", color: "#FFCC00", className: "object-contain p-0.5" },
-  Pacific: { url: "/teams/pacific.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
+  Pacific: { url: "/teams/pacific.svg", color: "#08162C", className: "object-contain p-0.5 filter-none" },
+  "Pacific Grand Prix": { url: "/teams/pacific.svg", color: "#08162C", className: "object-contain p-0.5 filter-none" },
+  "Pacific Racing": { url: "/teams/pacific.svg", color: "#08162C", className: "object-contain p-0.5 filter-none" },
   Simtek: { url: "/teams/mtv_simtek_ford.svg", color: "#160728", className: "object-contain p-0.5 filter-none" },
   "MTV Simtek Ford": { url: "/teams/mtv_simtek_ford.svg", color: "#160728", className: "object-contain p-0.5 filter-none" },
   "Simtek Grand Prix": { url: "/teams/mtv_simtek_ford.svg", color: "#160728", className: "object-contain p-0.5 filter-none" },
@@ -1770,6 +1780,9 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
       return { url: "/teams/stewart_1997.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" }
     }
     return { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" }
+  }
+  if (canonical === "Pacific" || name.toLowerCase().includes("pacific")) {
+    return { url: "/teams/pacific.svg", color: "#08162C", className: "object-contain p-0.5 filter-none" }
   }
   if (canonical === "Fondmetal" || name.toLowerCase().includes("fondmetal")) {
     return { url: "/teams/fondmetal.svg", color: "#0E1015", className: "object-contain p-0.5 filter-none" }
