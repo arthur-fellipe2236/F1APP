@@ -420,16 +420,16 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2006 + i, { url: "/teams/superaguri.svg", color: "#FFFFFF", className: "object-contain p-0.5" }])),
   },
   "Spyker": {
-    2007: { url: "/teams/spyker_f1.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
+    2007: { url: "/teams/spyker_f1.svg", color: "#FF7A00", className: "object-contain p-0.5 filter-none" },
   },
   "Spyker F1 Team": {
-    2007: { url: "/teams/spyker_f1.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
+    2007: { url: "/teams/spyker_f1.svg", color: "#FF7A00", className: "object-contain p-0.5 filter-none" },
   },
   "Spyker MF1": {
-    2006: { url: "/teams/spykermf1.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
+    2006: { url: "/teams/spykermf1.svg", color: "#FF7A00", className: "object-contain p-0.5 filter-none" },
   },
   "Spyker MF1 Racing": {
-    2006: { url: "/teams/spykermf1.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
+    2006: { url: "/teams/spykermf1.svg", color: "#FF7A00", className: "object-contain p-0.5 filter-none" },
   },
   "MF1": {
     2006: { url: "/teams/mf1_racing.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
@@ -982,11 +982,11 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   "Benetton Formula United Colors of Benetton": { url: "/teams/benetton_united.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   "Benetton Formula United Colors": { url: "/teams/benetton_united.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   "Benetton United": { url: "/teams/benetton_united.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
-  Spyker: { url: "/teams/spyker_f1.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
-  "Spyker F1": { url: "/teams/spyker_f1.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
-  "Spyker F1 Team": { url: "/teams/spyker_f1.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
-  "Spyker MF1": { url: "/teams/spykermf1.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
-  "Spyker MF1 Racing": { url: "/teams/spykermf1.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
+  Spyker: { url: "/teams/spyker_f1.svg", color: "#FF7A00", className: "object-contain p-0.5 filter-none" },
+  "Spyker F1": { url: "/teams/spyker_f1.svg", color: "#FF7A00", className: "object-contain p-0.5 filter-none" },
+  "Spyker F1 Team": { url: "/teams/spyker_f1.svg", color: "#FF7A00", className: "object-contain p-0.5 filter-none" },
+  "Spyker MF1": { url: "/teams/spykermf1.svg", color: "#FF7A00", className: "object-contain p-0.5 filter-none" },
+  "Spyker MF1 Racing": { url: "/teams/spykermf1.svg", color: "#FF7A00", className: "object-contain p-0.5 filter-none" },
   MF1: { url: "/teams/mf1_racing.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   Midland: { url: "/teams/mf1_racing.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   "Force India": { url: "/teams/forceindia.svg", color: "#F58020", className: "object-contain" },
@@ -1586,9 +1586,9 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   // Spyker & MF1 Era Overrides
   if (canonical === "Spyker" || canonical === "Spyker F1" || canonical === "Spyker F1 Team" || name.toLowerCase().includes("spyker")) {
     if (season === 2006 || name.toLowerCase().includes("mf1")) {
-      return { url: "/teams/spykermf1.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }
+      return { url: "/teams/spykermf1.svg", color: "#FF7A00", className: "object-contain p-0.5 filter-none" }
     }
-    return { url: "/teams/spyker_f1.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }
+    return { url: "/teams/spyker_f1.svg", color: "#FF7A00", className: "object-contain p-0.5 filter-none" }
   }
   if (canonical === "MF1" || canonical === "Midland" || name.toLowerCase().includes("mf1") || name.toLowerCase().includes("midland")) {
     return { url: "/teams/mf1_racing.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }
