@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 85" width="100%" height="100%">
+  <defs>
+    <!-- Manor Racing Vibrant Orange-Red Gradient -->
+    <linearGradient id="manorOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF5A1F" />
+      <stop offset="100%" stop-color="#E53500" />
+    </linearGradient>
+
+    <!-- Manor Electric Cobalt Blue Gradient -->
+    <linearGradient id="manorBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0072E5" />
+      <stop offset="100%" stop-color="#0050B8" />
+    </linearGradient>
+
+    <filter id="manorDrop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Iconic 2016 Manor Geometric Chevron 'M' Emblem on Left -->
+  <g transform="translate(12, 10)" filter="url(#manorDrop)">
+    <!-- Band 1: Left Outer Orange Stroke -->
+    <path d="M 20 0 L 29 0 L 8 62 L -1 62 Z" fill="url(#manorOrange)" />
+    <!-- Band 2: Left Inner Blue Stroke -->
+    <path d="M 33 0 L 42 0 L 21 62 L 12 62 Z" fill="url(#manorBlue)" />
+    <!-- Band 3: Center Apex Orange Chevron -->
+    <path d="M 46 0 L 55 0 L 34 62 L 25 62 Z" fill="url(#manorOrange)" />
+    <!-- Band 4: Right Inner Blue Stroke -->
+    <path d="M 59 0 L 68 0 L 47 62 L 38 62 Z" fill="url(#manorBlue)" />
+    <!-- Band 5: Right Outer Orange Stroke -->
+    <path d="M 72 0 L 81 0 L 60 62 L 51 62 Z" fill="url(#manorOrange)" />
+  </g>
+
+  <!-- Typography: MANOR RACING on Right -->
+  <g transform="translate(104, 0)" filter="url(#manorDrop)">
+    <!-- MANOR in Bold Italic Racing Font -->
+    <text x="0" y="42" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="34" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="1">MANOR</text>
+
+    <!-- RACING in Tracked Electric Blue Subtitle -->
+    <text x="2" y="63" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="800" font-style="italic" fill="url(#manorBlue)" letter-spacing="5">RACING</text>
+
+    <!-- Speed Accent Fin -->
+    <path d="M 108 55 L 122 55 L 118 63 L 104 63 Z" fill="url(#manorOrange)" />
+    <path d="M 125 55 L 135 55 L 131 63 L 121 63 Z" fill="url(#manorBlue)" />
+  </g>
+</svg>

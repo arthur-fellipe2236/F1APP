@@ -408,7 +408,7 @@ export function DashboardPage() {
       teamStandingsData = [fav, ...teamStandingsData]
     }
   }
-  const totalRaces = (seasonParam === 2026 && series === 'f1') ? 18 : isF12021 ? 22 : isF22026 ? 22 : isF32026 ? 19 : (races.data?.meta.total ?? 0)
+  const totalRaces = (seasonParam === 2026 && series === 'f1') ? (races.data?.meta.total || 23) : isF12021 ? 22 : isF22026 ? 22 : isF32026 ? 19 : (races.data?.meta.total ?? 0)
 
   const topDriver = useMemo(
     () => driverStandingsData[0],

@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 95" width="100%" height="100%">
+  <defs>
+    <!-- Osella Italian Dark Carbon Gradient -->
+    <linearGradient id="osellaCarbon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1E26" />
+      <stop offset="50%" stop-color="#0E1117" />
+      <stop offset="100%" stop-color="#05070A" />
+    </linearGradient>
+
+    <!-- Italian Racing Blue Gradient -->
+    <linearGradient id="azurroItalian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0066CC" />
+      <stop offset="50%" stop-color="#004499" />
+      <stop offset="100%" stop-color="#002B66" />
+    </linearGradient>
+
+    <!-- Heraldic Gold Gradient -->
+    <linearGradient id="osellaGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE082" />
+      <stop offset="50%" stop-color="#FFCA28" />
+      <stop offset="100%" stop-color="#FF9800" />
+    </linearGradient>
+
+    <filter id="osellaShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.45" />
+    </filter>
+  </defs>
+
+  <!-- Left Emblem: The Famous Osella Crowned Griffin / Lion Rampant Crest with Italian Tricolore -->
+  <g transform="translate(10, 9)" filter="url(#osellaShadow)">
+    <!-- Base Plate Shield -->
+    <rect x="0" y="0" width="77" height="77" rx="16" fill="url(#osellaCarbon)" stroke="#CE2B37" stroke-width="1.5" />
+    
+    <!-- Outer Italian Tricolore Circular Border -->
+    <circle cx="38.5" cy="38.5" r="27" fill="none" stroke="#FFFFFF" stroke-width="2" />
+    <path d="M11.5,38.5 A27,27 0 0,1 38.5,11.5" fill="none" stroke="#009246" stroke-width="3" />
+    <path d="M38.5,65.5 A27,27 0 0,1 11.5,38.5" fill="none" stroke="#FFFFFF" stroke-width="3" />
+    <path d="M38.5,11.5 A27,27 0 0,1 65.5,38.5" fill="none" stroke="#CE2B37" stroke-width="3" />
+    <path d="M65.5,38.5 A27,27 0 0,1 38.5,65.5" fill="none" stroke="#CE2B37" stroke-width="3" />
+
+    <!-- Center Deep Italian Blue Shield -->
+    <circle cx="38.5" cy="38.5" r="23" fill="url(#azurroItalian)" stroke="url(#osellaGold)" stroke-width="1.2" />
+
+    <!-- Center Emblem: Osella Crowned Lion Rampant / Griffin (Authentic Bezier Vector) -->
+    <g transform="translate(38.5, 39.5)">
+      <!-- Crown -->
+      <polygon points="0,-18 3,-15 6,-18 5,-13 -5,-13 -6,-18 -3,-15" fill="url(#osellaGold)" />
+
+      <!-- Head and Roaring Jaws -->
+      <path d="M-2,-14 C2,-16 5,-13 5,-9 L8,-9 L6,-7 L4,-7 C3,-5 0,-4 -3,-6 Z" fill="url(#osellaGold)" />
+      
+      <!-- Torso and Arched Spine -->
+      <path d="M-3,-6 C-1,-1 -2,4 -4,8 C-2,8 0,7 2,4 C4,1 4,-3 2,-6 Z" fill="url(#osellaGold)" />
+
+      <!-- Raised Forelegs (Attack Posture) -->
+      <path d="M1,-4 L6,-8 L9,-6 L5,-2 Z" fill="url(#osellaGold)" />
+      <path d="M0,-1 L4,-3 L6,-1 L2,1 Z" fill="url(#osellaGold)" />
+
+      <!-- Hind Legs -->
+      <path d="M-4,8 L-7,12 L-4,13 L-1,9 Z" fill="url(#osellaGold)" />
+      <path d="M-2,7 L2,12 L5,11 L1,7 Z" fill="url(#osellaGold)" />
+
+      <!-- Flourishing S-Curved Lion Tail with Tuft -->
+      <path d="M-4,4 C-8,4 -10,-1 -7,-6 C-6,-8 -4,-7 -5,-5 C-6,-2 -4,1 -2,2" 
+            fill="none" stroke="url(#osellaGold)" stroke-width="2" stroke-linecap="round" />
+      <polygon points="-7,-6 -10,-8 -9,-4" fill="url(#osellaGold)" />
+    </g>
+
+    <!-- Star at Base -->
+    <polygon points="38.5,67 39.5,70 42.5,70 40,71.5 41,74.5 38.5,73 36,74.5 37,71.5 34.5,70 37.5,70" fill="url(#osellaGold)" />
+  </g>
+
+  <!-- Right Typography: OSELLA SQUADRA CORSE -->
+  <g transform="translate(98, 13)">
+    <!-- Italian Tricolore Racing Speed Blade -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="38" height="3" rx="1.5" fill="#009246" />
+      <rect x="42" y="0" width="38" height="3" rx="1.5" fill="#FFFFFF" />
+      <rect x="84" y="0" width="38" height="3" rx="1.5" fill="#CE2B37" />
+      <rect x="126" y="0" width="15" height="3" rx="1.5" fill="url(#osellaGold)" />
+    </g>
+
+    <!-- Main Wordmark: OSELLA -->
+    <text x="0" y="28" font-family="'Montserrat', 'Arial Black', sans-serif" 
+          font-weight="900" font-size="26" fill="#FFFFFF" letter-spacing="3">
+      OSELLA
+    </text>
+
+    <!-- Sub-Wordmark: SQUADRA CORSE -->
+    <text x="0" y="47" font-family="'Montserrat', 'Helvetica Neue', Arial, sans-serif" 
+          font-weight="800" font-size="12" fill="url(#osellaGold)" letter-spacing="3.5">
+      SQUADRA CORSE
+    </text>
+
+    <!-- Subtitle: VOLPIANO · TORINO · FORMULA 1 -->
+    <g transform="translate(0, 62)">
+      <rect x="0" y="-8.5" width="3" height="9.5" rx="1" fill="#CE2B37" />
+      <text x="8" y="0" font-family="'Montserrat', 'Helvetica Neue', Arial, sans-serif" 
+            font-weight="700" font-size="8.8" fill="#9BA6B3" letter-spacing="2.2">
+        VOLPIANO · TORINO · FORMULA 1
+      </text>
+    </g>
+  </g>
+</svg>

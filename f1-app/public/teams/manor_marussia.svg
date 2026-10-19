@@ -1,18 +1,42 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 85" width="220" height="85">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 85" width="100%" height="100%">
   <defs>
-    <linearGradient id="manorRed" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#E6001A" />
-      <stop offset="100%" stop-color="#C80015" />
+    <!-- Manor Racing Vivid Red Gradient -->
+    <linearGradient id="manorMarussiaRed" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF1A2A" />
+      <stop offset="50%" stop-color="#E6001A" />
+      <stop offset="100%" stop-color="#B80014" />
     </linearGradient>
+
+    <filter id="manorMShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.35" />
+    </filter>
   </defs>
-  <!-- MANOR Bold Logo Top (with iconic red target O) -->
-  <g transform="translate(14, 10)">
-    <text x="0" y="38" font-family="system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="44" font-weight="900" font-style="italic" fill="url(#manorRed)" letter-spacing="1">MANOR</text>
+
+  <!-- MANOR Wordmark with Iconic Target 'O' -->
+  <g transform="translate(10, 8)" filter="url(#manorMShadow)">
+    <!-- MAN -->
+    <text x="0" y="38" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="44" font-weight="900" font-style="italic" fill="url(#manorMarussiaRed)" letter-spacing="1">MAN</text>
+    
+    <!-- Target 'O' -->
+    <g transform="translate(118, 25)">
+      <circle cx="0" cy="0" r="14" fill="url(#manorMarussiaRed)" />
+      <circle cx="0" cy="0" r="9.5" fill="#FFFFFF" />
+      <circle cx="0" cy="0" r="5" fill="url(#manorMarussiaRed)" />
+    </g>
+
+    <!-- R -->
+    <text x="136" y="38" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="44" font-weight="900" font-style="italic" fill="url(#manorMarussiaRed)" letter-spacing="1">R</text>
   </g>
-  <!-- MARUSSIA F1 TEAM Lower Subtitle with Chevron Winglets -->
-  <g transform="translate(14, 52)">
-    <path d="M 0 10 L 14 10 L 20 15 L 14 20 L 0 20 L 6 15 Z" fill="#E6001A" opacity="0.85" />
-    <text x="25" y="19" font-family="system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="13" font-weight="900" font-style="italic" fill="#222A30" letter-spacing="2">MARUSSIA F1</text>
-    <path d="M 192 10 L 178 10 L 172 15 L 178 20 L 192 20 L 186 15 Z" fill="#E6001A" opacity="0.85" />
+
+  <!-- MARUSSIA F1 TEAM Lower Subtitle with Aerodynamic Chevron Winglets -->
+  <g transform="translate(10, 52)" filter="url(#manorMShadow)">
+    <!-- Left Red Winglet -->
+    <path d="M 0 10 L 16 10 L 22 15 L 16 20 L 0 20 L 6 15 Z" fill="url(#manorMarussiaRed)" />
+    
+    <!-- Crisp White High-Contrast Subtitle -->
+    <text x="28" y="19" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="13" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="2.5">MARUSSIA F1 TEAM</text>
+    
+    <!-- Right Red Winglet -->
+    <path d="M 216 10 L 200 10 L 194 15 L 200 20 L 216 20 L 210 15 Z" fill="url(#manorMarussiaRed)" />
   </g>
 </svg>

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 95" width="100%" height="100%">
+  <defs>
+    <!-- Williams Classic Cyan Gradient -->
+    <linearGradient id="williamsCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00C4FF" />
+      <stop offset="50%" stop-color="#00A2E8" />
+      <stop offset="100%" stop-color="#0080C0" />
+    </linearGradient>
+
+    <!-- Williams Deep Heritage Navy Gradient -->
+    <linearGradient id="williamsNavy" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#002B49" />
+      <stop offset="100%" stop-color="#001424" />
+    </linearGradient>
+
+    <filter id="williamsShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Williams Iconic Slanted Speed 'W' Emblem on Left -->
+  <g transform="translate(10, 10)" filter="url(#williamsShadow)">
+    <!-- Base Plate Shield -->
+    <rect x="0" y="0" width="75" height="75" rx="16" fill="url(#williamsNavy)" stroke="#00A2E8" stroke-width="1.5" />
+    
+    <!-- 4 Forward-Leaning Parallelograms forming the Legendary Williams 'W' -->
+    <!-- Left Wing (Cyan) -->
+    <polygon points="18,58 26,58 40,18 32,18" fill="url(#williamsCyan)" />
+    <!-- Center-Left Wing (White / Specular) -->
+    <polygon points="28,58 36,58 50,18 42,18" fill="#FFFFFF" />
+    <!-- Center-Right Wing (Cyan) -->
+    <polygon points="38,58 46,58 60,18 52,18" fill="url(#williamsCyan)" />
+    <!-- Right Wing (White / Cyan) -->
+    <polygon points="48,58 56,58 70,18 62,18" fill="#FFFFFF" opacity="0.9" />
+
+    <!-- Connecting Base V-cutout details -->
+    <path d="M 22 58 L 34 26 L 46 58 L 58 26 L 66 58" fill="none" stroke="url(#williamsNavy)" stroke-width="2.5" />
+  </g>
+
+  <!-- Typography: WILLIAMS GRAND PRIX ENGINEERING on Right -->
+  <g transform="translate(98, 2)" filter="url(#williamsShadow)">
+    <!-- WILLIAMS in Bold Clean Grotesque -->
+    <text x="0" y="38" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="34" font-weight="900" fill="#FFFFFF" letter-spacing="1">WILLIAMS</text>
+
+    <!-- Cyan Speed Rule Divider -->
+    <path d="M 0 46 L 225 46 L 219 49 L 0 49 Z" fill="url(#williamsCyan)" />
+
+    <!-- GRAND PRIX ENGINEERING in Tracked Grotesque -->
+    <text x="2" y="65" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="11.5" font-weight="800" font-style="italic" fill="#CAD8E5" letter-spacing="3.2">GRAND PRIX ENGINEERING</text>
+
+    <!-- Gold Championship Laurel Star Accent -->
+    <polygon points="212,32 214,26 219,25 215,22 216,16 212,19 208,16 209,22 205,25 210,26" fill="#FFC107" opacity="0.8" />
+  </g>
+</svg>

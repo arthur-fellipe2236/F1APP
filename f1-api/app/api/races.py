@@ -95,7 +95,7 @@ def _next_race_payload():
         },
         {
             "round": 20,
-            "name": "Mexico City Grand Prix", "country": "México", "location": "Cidade do México", "circuit": "Autódromo Hermanos Rodríguez", 
+            "name": "GP do México (Cidade do México)", "country": "México", "location": "Cidade do México", "circuit": "Autódromo Hermanos Rodríguez", 
             "weekend_start": "2026-10-30", "weekend_end": "2026-11-01",
             "sessions": [
                 {"name": "Treino Livre 1", "type": "Practice", "date_start": "2026-10-30T15:30:00-03:00", "date_end": "2026-10-30T16:30:00-03:00"},
@@ -107,12 +107,12 @@ def _next_race_payload():
         },
         {
             "round": 21,
-            "name": "São Paulo Grand Prix", "country": "Brasil", "location": "São Paulo", "circuit": "Autódromo José Carlos Pace", 
+            "name": "GP do Brasil (São Paulo - Interlagos)", "country": "Brasil", "location": "São Paulo", "circuit": "Autódromo José Carlos Pace", 
             "weekend_start": "2026-11-06", "weekend_end": "2026-11-08",
             "sessions": [
-                {"name": "Treino Livre 1", "type": "Practice", "date_start": "2026-11-06T11:30:00-03:00", "date_end": "2026-11-06T12:30:00-03:00"},
-                {"name": "Classificatória Sprint", "type": "Qualifying", "date_start": "2026-11-06T15:30:00-03:00", "date_end": "2026-11-06T16:15:00-03:00"},
-                {"name": "Corrida Sprint", "type": "Race", "date_start": "2026-11-07T11:00:00-03:00", "date_end": "2026-11-07T12:00:00-03:00"},
+                {"name": "Treino Livre 1", "type": "Practice", "date_start": "2026-11-06T12:30:00-03:00", "date_end": "2026-11-06T13:30:00-03:00"},
+                {"name": "Treino Livre 2", "type": "Practice", "date_start": "2026-11-06T16:00:00-03:00", "date_end": "2026-11-06T17:00:00-03:00"},
+                {"name": "Treino Livre 3", "type": "Practice", "date_start": "2026-11-07T11:30:00-03:00", "date_end": "2026-11-07T12:30:00-03:00"},
                 {"name": "Classificação", "type": "Qualifying", "date_start": "2026-11-07T15:00:00-03:00", "date_end": "2026-11-07T16:00:00-03:00"},
                 {"name": "Corrida", "type": "Race", "date_start": "2026-11-08T14:00:00-03:00", "date_end": "2026-11-08T16:00:00-03:00"}
             ]

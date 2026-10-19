@@ -5,7 +5,7 @@ import os
 import re
 import urllib.parse
 import urllib.request
-from flask import Blueprint, jsonify, request, Response
+from flask import Blueprint, jsonify, request, Response, redirect
 from .auth import optional_token
 from .news import f1site, _translate_items
 from ..models import Team, Driver
@@ -15,8 +15,13 @@ _audio_cache: dict[str, bytes] = {}
 
 VOICE_PROFILES = {
     "thalita": {
-        "model": "pt-BR-ThalitaMultilingualNeural",
-        "rate": "+2%",
+        "model": "pt-BR-FranciscaNeural",
+        "rate": "+3%",
+        "pitch": "+0Hz",
+    },
+    "locutora": {
+        "model": "pt-BR-FranciscaNeural",
+        "rate": "+3%",
         "pitch": "+0Hz",
     },
     "senna": {
@@ -77,8 +82,12 @@ DRIVER_PERSONAS = {
         "outro": "Grande abraço, {name}, e fique de olho na telemetria!",
     },
     "thalita": {
-        "intro": "Luz verde no pit lane! Olá {name}, bem-vindo ao seu giro rápido da Fórmula 1. Aqui está o resumo do dia no paddock. ",
-        "outro": "Essas foram as notícias do momento. Acelere fundo e até a próxima!",
+        "intro": "Luz verde no pit lane! Olá {name}, que alegria enorme estar aqui com você na nossa rádio Fórmula Um ponto br! O paddock não para um segundo e o dia hoje tá movimentadíssimo nas garagens. Vamos aos destaques... ",
+        "outro": "Fica ligado aqui na nossa cobertura completa, pé cravado no acelerador e até a próxima volta, {name}!",
+    },
+    "locutora": {
+        "intro": "Luz verde no pit lane! Olá {name}, que alegria enorme estar aqui com você na nossa rádio Fórmula Um ponto br! O paddock não para um segundo e o dia hoje tá movimentadíssimo nas garagens. Vamos aos destaques... ",
+        "outro": "Fica ligado aqui na nossa cobertura completa, pé cravado no acelerador e até a próxima volta, {name}!",
     },
 }
 
@@ -320,10 +329,13 @@ def get_daily_bulletin(current_user):
     series = request.args.get('series', 'f1')
     voice = request.args.get('voice', 'thalita').lower()
     script = generate_bulletin_script(series, current_user, voice=voice)
+    hybrid_drivers = {'senna', 'piquet', 'fittipaldi', 'emerson', 'barrichello', 'massa', 'burti', 'thalita', 'locutora'}
+    driver_folder = 'fittipaldi' if voice == 'emerson' else voice
+    audio_url = f'/audio/{driver_folder}/hibrido.mp3' if voice in hybrid_drivers else f'/api/v1/news/bulletin/audio?series={series}&voice={voice}'
     return jsonify({
         'script': script,
         'voice': voice,
-        'audio_url': f'/api/v1/news/bulletin/audio?series={series}&voice={voice}'
+        'audio_url': audio_url
     })
 
 @bp.get('/news/bulletin/audio')
@@ -331,6 +343,10 @@ def get_daily_bulletin(current_user):
 def get_daily_bulletin_audio(current_user):
     series = request.args.get('series', 'f1')
     voice = request.args.get('voice', 'thalita').lower()
+    hybrid_drivers = {'senna', 'piquet', 'fittipaldi', 'emerson', 'barrichello', 'massa', 'burti', 'thalita', 'locutora'}
+    if voice in hybrid_drivers:
+        driver_folder = 'fittipaldi' if voice == 'emerson' else voice
+        return redirect(f'/audio/{driver_folder}/hibrido.mp3', code=302)
     script = generate_bulletin_script(series, current_user, voice=voice)
     try:
         audio_data = text_to_mp3(script, voice=voice)

@@ -36,6 +36,23 @@ TEAM_ALIASES = {
     "Aston Martin Cognizant": "Aston Martin",
     "Aston Martin Aramco Cognizant": "Aston Martin",
     "BWT Alpine": "Alpine",
+    "Brabham-Alfa Romeo": "Brabham",
+    "Brabham-Ford": "Brabham",
+    "Lotus-Ford": "Lotus",
+    "Lotus-Pratt &amp; Whitney": "Lotus",
+    "Lotus-Pratt & Whitney": "Lotus",
+    "Team Lotus": "Lotus",
+    "March-Alfa Romeo": "March",
+    "March-Ford": "March",
+    "McLaren-Alfa Romeo": "McLaren",
+    "McLaren-Ford": "McLaren",
+    "Shadow-Ford": "Shadow",
+    "Shadow-Matra": "Shadow",
+    "Embassy Hill": "Hill",
+    "Walter Wolf Racing": "Wolf",
+    "Copersucar": "Fittipaldi",
+    "Copersucar-Fittipaldi": "Fittipaldi",
+    "Tyrrell Racing Organisation": "Tyrrell",
 }
 
 NATIONALITY_PT = {
@@ -146,6 +163,33 @@ TEAM_METADATA = {
     "Fittipaldi": ("Reading", "Brasil", "Ford Cosworth", 1974),
     "Ensign": ("Burntwood", "Reino Unido", "Ford Cosworth", 1973),
     "Shadow": ("Northampton", "Reino Unido", "Ford Cosworth", 1969),
+    "BRM": ("Bourne", "Reino Unido", "BRM", 1951),
+    "Matra": ("Vélizy-Villacoublay", "França", "Matra", 1967),
+    "Surtees": ("Edenbridge", "Reino Unido", "Ford Cosworth", 1970),
+    "Hesketh": ("Easton Neston", "Reino Unido", "Ford Cosworth", 1973),
+    "Penske": ("Reading", "Estados Unidos", "Ford Cosworth", 1974),
+    "Wolf": ("Reading", "Reino Unido", "Ford Cosworth", 1977),
+    "Iso Marlboro": ("Camerano", "Itália", "Ford Cosworth", 1973),
+    "Parnelli": ("Torrance", "Estados Unidos", "Ford Cosworth", 1974),
+    "Merzario": ("Cermenate", "Itália", "Ford Cosworth", 1977),
+    "Kauhsen": ("Aachen", "Alemanha", "Ford Cosworth", 1979),
+    "Rebaque": ("Cidade do México", "México", "Ford Cosworth", 1979),
+    "Martini": ("Magny-Cours", "França", "Ford Cosworth", 1978),
+    "Hill": ("London", "Reino Unido", "Ford Cosworth", 1975),
+    "Kojima": ("Kyoto", "Japão", "Ford Cosworth", 1976),
+    "Maki": ("Tóquio", "Japão", "Ford Cosworth", 1974),
+    "Trojan": ("Croydon", "Reino Unido", "Ford Cosworth", 1974),
+    "Token": ("Woking", "Reino Unido", "Ford Cosworth", 1974),
+    "Amon": ("Reading", "Nova Zelândia", "Ford Cosworth", 1974),
+    "Lyncar": ("Slough", "Reino Unido", "Ford Cosworth", 1974),
+    "Connew": ("Chadwell Heath", "Reino Unido", "Ford Cosworth", 1972),
+    "Tecno": ("Bologna", "Itália", "Tecno", 1972),
+    "Eifelland": ("Mayen", "Alemanha", "Ford Cosworth", 1972),
+    "Bellasi": ("Novara", "Itália", "Ford Cosworth", 1970),
+    "De Tomaso": ("Modena", "Itália", "Ford Cosworth", 1970),
+    "Boro": ("Hoorn", "Holanda", "Ford Cosworth", 1976),
+    "Apollon": ("Lausanne", "Suíça", "Ford Cosworth", 1977),
+    "LEC": ("Bognor Regis", "Reino Unido", "Ford Cosworth", 1977),
 }
 
 # Motor especifico por temporada (1980-2026)
@@ -519,7 +563,7 @@ def configured_seasons():
     env = os.environ.get("F1_SYNC_SEASONS")
     if env:
         return [int(part) for part in env.split(",") if part.strip()]
-    return list(range(2026, 1984, -1))
+    return list(range(2026, 1969, -1))
 
 
 def demo_seasons():
@@ -945,20 +989,24 @@ def _sync_season_jolpica(season, force=False):
             continue
         _sync_jolpica_race(race_rows[0], season, round_)
 
-        sprint_rows = ergast.get(f"{season}/{round_}/sprint")
-        if sprint_rows:
-            entries = []
-            for row in sprint_rows[0].get("SprintResults", []):
-                points = float(row.get("points") or 0)
-                if points <= 0:
-                    continue
-                driver, _team = _upsert_ergast_row(row)
-                entries.append(
-                    (driver, points, _int_or_none(row.get("laps")))
-                )
-            race = Race.query.filter_by(season=season, round=round_, series="f1").first()
-            if race is not None:
-                _store_sprint_points(race.id, entries)
+        if season >= 2021:
+            try:
+                sprint_rows = ergast.get(f"{season}/{round_}/sprint")
+                if sprint_rows:
+                    entries = []
+                    for row in sprint_rows[0].get("SprintResults", []):
+                        points = float(row.get("points") or 0)
+                        if points <= 0:
+                            continue
+                        driver, _team = _upsert_ergast_row(row)
+                        entries.append(
+                            (driver, points, _int_or_none(row.get("laps")))
+                        )
+                    race = Race.query.filter_by(season=season, round=round_, series="f1").first()
+                    if race is not None:
+                        _store_sprint_points(race.id, entries)
+            except Exception:
+                pass
         imported += 1
     db.session.commit()
     return imported

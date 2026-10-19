@@ -627,13 +627,23 @@ def live_sessions():
     except openf1.OpenF1Error as exc:
         raise ApiError(f"OpenF1 indisponivel: {exc}", 503)
 
-    # Patch for the 2026 Malaysia GP in the OpenF1 mock data
+    # Patch for 2026 GPs in the OpenF1 mock data
     for m in meetings:
         if m.get("location") == "Kuala Lumpur" or m.get("meeting_key") == 1308:
             m["meeting_name"] = "Bahrain Grand Prix"
             m["location"] = "Sepang"
             m["country_name"] = "Malásia"
             m["circuit_short_name"] = "Sepang"
+        elif m.get("meeting_key") == 1298 or m.get("location") == "Mexico City":
+            m["meeting_name"] = "GP do México (Cidade do México)"
+            m["location"] = "Cidade do México"
+            m["country_name"] = "México"
+            m["circuit_short_name"] = "Autódromo Hermanos Rodríguez"
+        elif m.get("meeting_key") == 1299 or m.get("location") == "São Paulo":
+            m["meeting_name"] = "GP do Brasil (São Paulo - Interlagos)"
+            m["location"] = "São Paulo"
+            m["country_name"] = "Brasil"
+            m["circuit_short_name"] = "Autódromo José Carlos Pace (Interlagos)"
 
     meetings.sort(key=lambda m: m["date_start"])
     by_meeting = {}
@@ -659,7 +669,7 @@ def live_sessions():
                 "sessions": [
                     {
                         "key": s["session_key"],
-                        "name": s.get("session_name"),
+                        "name": SESSION_NAME_PT.get(s.get("session_name"), s.get("session_name")),
                         "type": s.get("session_type"),
                         "date_start": s["date_start"],
                         "date_end": s["date_end"],

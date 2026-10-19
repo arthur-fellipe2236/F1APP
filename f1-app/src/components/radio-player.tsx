@@ -8,11 +8,10 @@ import {
   VolumeX,
   Loader2,
   ExternalLink,
-  ChevronUp,
   ChevronDown,
+  ChevronUp,
   Sparkles,
   Disc3,
-  Check,
 } from "lucide-react"
 import { useAppStore } from "@/store"
 import { cn } from "@/lib/utils"
@@ -36,80 +35,14 @@ export interface RadioVoice {
 export const RADIO_VOICES: RadioVoice[] = [
   {
     id: "thalita",
-    name: "Thalita (Estúdio F1)",
-    shortName: "Thalita",
-    title: "Apresentadora Oficial",
-    tag: "Estúdio",
-    avatar: "/radio/thalita.svg",
+    name: "Mariana",
+    shortName: "Mariana",
+    title: "Locutora Oficial da Rádio F1",
+    tag: "Voz Oficial",
+    avatar: "/radio/logo.png",
     badgeColor: "#E10600",
     flag: "🎙️",
-    quote: "Boletim oficial e telemetria do paddock da F1.",
-  },
-  {
-    id: "senna",
-    name: "Ayrton Senna",
-    shortName: "Senna",
-    title: "Tricampeão Mundial",
-    tag: "O Mestre",
-    avatar: "/radio/senna.jpg",
-    badgeColor: "#FCD116",
-    flag: "🟡",
-    quote: "O importante é dar sempre o seu máximo e buscar o limite.",
-  },
-  {
-    id: "barrichello",
-    name: "Rubens Barrichello",
-    shortName: "Rubinho",
-    title: "Recordista & Vice",
-    tag: "Rubinho",
-    avatar: "/radio/barrichello.jpg",
-    badgeColor: "#E60000",
-    flag: "🔴",
-    quote: "Que beleza ter você aqui! Ninguém dorme no ponto no paddock!",
-  },
-  {
-    id: "massa",
-    name: "Felipe Massa",
-    shortName: "Massa",
-    title: "Vice-campeão Mundial",
-    tag: "Massa",
-    avatar: "/radio/massa.jpg",
-    badgeColor: "#FFFFFF",
-    flag: "⚪",
-    quote: "Paddock fervendo e mecânicos ligando os motores!",
-  },
-  {
-    id: "piquet",
-    name: "Nelson Piquet",
-    shortName: "Piquet",
-    title: "Tricampeão Mundial",
-    tag: "Tricampeão",
-    avatar: "/radio/piquet.jpg",
-    badgeColor: "#00A859",
-    flag: "🏎️",
-    quote: "Direto ao ponto, sem historinha: quem tiver o melhor carro leva.",
-  },
-  {
-    id: "fittipaldi",
-    name: "Emerson Fittipaldi",
-    shortName: "Emerson",
-    title: "Bicampeão Mundial",
-    tag: "O Pioneiro",
-    avatar: "/radio/fittipaldi.jpg",
-    badgeColor: "#002B7F",
-    flag: "🟢",
-    quote: "Um grande abraço a todos os amigos da velocidade!",
-  },
-  {
-    id: "burti",
-    name: "Luciano Burti",
-    shortName: "Burti",
-    title: "Comentarista Técnico",
-    tag: "Comentarista",
-    avatar: "/radio/burti.jpg",
-    badgeColor: "#3B82F6",
-    flag: "🏁",
-    quote: "Análise técnica de telemetria, acerto e desgaste de pneus.",
+    quote: "A voz humana e oficial do paddock: calor, dinamismo e velocidade.",
   },
 ]
 
@@ -160,13 +93,7 @@ export function RadioPlayer() {
   const [scriptSummary, setScriptSummary] = useState<string>("")
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isMusicExpanded, setIsMusicExpanded] = useState(false)
-  const [isVoiceSelectorOpen, setIsVoiceSelectorOpen] = useState(false)
-  const [selectedVoice, setSelectedVoice] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("f1_radio_voice") || "thalita"
-    }
-    return "thalita"
-  })
+  const selectedVoice = "thalita"
 
   const [isMinimized, setIsMinimized] = useState(() => {
     if (typeof window !== "undefined") {
@@ -360,21 +287,6 @@ export function RadioPlayer() {
     }
   }
 
-  const handleSelectVoice = (voiceId: string) => {
-    setSelectedVoice(voiceId)
-    if (typeof window !== "undefined") {
-      localStorage.setItem("f1_radio_voice", voiceId)
-    }
-    setIsVoiceSelectorOpen(false)
-
-    if (isPlaying) {
-      stopAudio()
-      setTimeout(() => {
-        playAudio(voiceId)
-      }, 150)
-    }
-  }
-
   const toggleMute = () => {
     const nextMuted = !isMuted
     setIsMuted(nextMuted)
@@ -414,11 +326,16 @@ export function RadioPlayer() {
             <Disc3 className="h-4 w-4 text-[#1DB954] animate-spin" />
           ) : (
             <div className="relative">
-              <img
-                src={currentVoice.avatar}
-                alt={currentVoice.shortName}
-                className="w-4 h-4 rounded-full object-cover border border-white/30"
-              />
+              <div className="w-5 h-5 rounded-full overflow-hidden border border-white/40 shadow-sm flex items-center justify-center">
+                <img
+                  src={currentVoice.avatar}
+                  alt={currentVoice.shortName}
+                  onError={(e) => {
+                    e.currentTarget.src = "/radio/logo.svg"
+                  }}
+                  className="w-full h-full object-cover scale-[1.32]"
+                />
+              </div>
               {isPlaying && (
                 <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
               )}
@@ -469,31 +386,27 @@ export function RadioPlayer() {
 
         <div className="flex items-center gap-1.5">
           {mode === "news" && (
-            <button
-              onClick={() => setIsVoiceSelectorOpen(!isVoiceSelectorOpen)}
-              className={cn(
-                "px-2 py-0.5 rounded-lg text-[11px] font-medium transition-all flex items-center gap-1.5 border shrink-0",
-                isVoiceSelectorOpen
-                  ? "bg-red-950/80 text-white border-red-500/50 shadow-sm"
-                  : "text-white/80 hover:text-white bg-white/5 border-white/10 hover:border-white/20"
-              )}
-              title="Escolher locutor lendário da F1"
+            <div
+              className="px-2 py-0.5 rounded-lg text-[11px] font-medium flex items-center gap-1.5 border border-white/10 bg-white/5 text-white/90 shrink-0"
+              title="Mariana · Locutora Oficial da Rádio F1"
             >
-              <img
-                src={currentVoice.avatar}
-                alt={currentVoice.shortName}
-                className="w-4 h-4 rounded-full object-cover border border-white/40"
-              />
+              <div className="w-4 h-4 rounded-full overflow-hidden shrink-0 border border-white/40 shadow-sm flex items-center justify-center">
+                <img
+                  src={currentVoice.avatar}
+                  alt={currentVoice.shortName}
+                  onError={(e) => {
+                    e.currentTarget.src = "/radio/logo.svg"
+                  }}
+                  className="w-full h-full object-cover scale-[1.32]"
+                />
+              </div>
               <span className="font-semibold">{currentVoice.shortName}</span>
-              <ChevronDown className={cn("h-3 w-3 text-white/50 transition-transform duration-200", isVoiceSelectorOpen && "rotate-180")} />
-            </button>
+              <span className="text-[10px] text-red-400 font-mono">Oficial</span>
+            </div>
           )}
 
           <button
-            onClick={() => {
-              setIsVoiceSelectorOpen(false)
-              setIsMinimized(true)
-            }}
+            onClick={() => setIsMinimized(true)}
             className="text-white/40 hover:text-white p-1 rounded-md text-xs hover:bg-white/5 transition-colors"
             title="Minimizar Rádio"
           >
@@ -501,71 +414,6 @@ export function RadioPlayer() {
           </button>
         </div>
       </div>
-
-      {/* DRIVER VOICE SELECTOR PANEL */}
-      {mode === "news" && isVoiceSelectorOpen && (
-        <div className="w-full bg-black/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-3 flex flex-col gap-2.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
-          <div className="flex items-center justify-between border-b border-white/10 pb-2">
-            <div className="flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-              <span className="text-xs font-bold text-white font-f1 tracking-wide">
-                ESCOLHA O LOCUTOR DA RÁDIO
-              </span>
-            </div>
-            <span className="text-[10px] text-white/50">
-              Vozes Lendárias do Brasil
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-[260px] overflow-y-auto pr-1">
-            {RADIO_VOICES.map((v) => {
-              const isSelected = v.id === selectedVoice
-              return (
-                <button
-                  key={v.id}
-                  onClick={() => handleSelectVoice(v.id)}
-                  className={cn(
-                    "flex items-center gap-2.5 p-2 rounded-xl border text-left transition-all duration-200 group/btn",
-                    isSelected
-                      ? "bg-white/15 border-white/40 shadow-md ring-1 ring-white/20"
-                      : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20"
-                  )}
-                >
-                  <div className="relative shrink-0">
-                    <img
-                      src={v.avatar}
-                      alt={v.name}
-                      className="w-9 h-9 rounded-full object-cover border border-white/20 group-hover/btn:scale-105 transition-transform"
-                    />
-                    <span className="absolute -bottom-1 -right-1 text-xs">
-                      {v.flag}
-                    </span>
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-bold text-white truncate">
-                        {v.name}
-                      </span>
-                      {isSelected && (
-                        <Check className="h-3 w-3 text-emerald-400 shrink-0" />
-                      )}
-                    </div>
-                    <span className="text-[10px] text-white/50 block truncate">
-                      {v.title}
-                    </span>
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-
-          <div className="text-[10px] text-white/40 border-t border-white/10 pt-1.5 flex items-center justify-between">
-            <span>🗣️ Personalizado com seu nome de login</span>
-            <span className="text-amber-400/90 font-mono">IA Neural F1</span>
-          </div>
-        </div>
-      )}
 
       {/* MODE 1: NOTÍCIAS / BOLETIM DA RÁDIO */}
       {mode === "news" && (
@@ -577,16 +425,18 @@ export function RadioPlayer() {
               : "border-white/10 hover:border-white/20"
           )}
         >
-          {/* Driver Portrait Avatar */}
+          {/* Locutora Portrait Avatar / Logo */}
           <div
-            onClick={() => setIsVoiceSelectorOpen(!isVoiceSelectorOpen)}
-            className="relative flex items-center justify-center h-11 w-11 rounded-full overflow-hidden shrink-0 cursor-pointer group/avatar ring-2 ring-white/20 hover:ring-white/40 transition-all"
-            title={`Locutor: ${currentVoice.name}. Clique para trocar.`}
+            className="relative flex items-center justify-center h-12 w-12 rounded-full overflow-hidden shrink-0 ring-2 ring-red-500/50 shadow-[0_0_12px_rgba(225,6,0,0.3)] bg-black/80 transition-all hover:scale-105 duration-300"
+            title={`Rádio F1 · Locutora Oficial: ${currentVoice.name}`}
           >
             <img
               src={currentVoice.avatar}
               alt={currentVoice.name}
-              className="h-full w-full object-cover group-hover/avatar:scale-110 transition-transform duration-300"
+              onError={(e) => {
+                e.currentTarget.src = "/radio/logo.svg"
+              }}
+              className="h-full w-full object-cover scale-[1.32]"
             />
             {isPlaying && !isMuted && (
               <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-[2px]">
@@ -595,7 +445,7 @@ export function RadioPlayer() {
                 <div className="w-1 bg-[hsl(var(--primary))] animate-[bounce_0.9s_infinite] h-5 rounded-full" />
               </div>
             )}
-            <span className="absolute bottom-0 right-0 text-[10px] bg-black/80 rounded-full px-0.5">
+            <span className="absolute bottom-0 right-0 text-[10px] bg-black/80 rounded-full px-0.5 border border-white/20">
               {currentVoice.flag}
             </span>
           </div>

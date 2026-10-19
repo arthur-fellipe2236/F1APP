@@ -2,7 +2,7 @@ import { ErrorBoundary } from "@/components/error-boundary"
 import { useState, useEffect, useMemo } from "react"
 import { Link, useParams } from "react-router-dom"
 import type { TableColumn } from "react-data-table-component"
-import { ArrowLeft, MapPin, Zap, CircleDashed } from "lucide-react"
+import { ArrowLeft, MapPin, Zap, CircleDashed, CalendarDays, Clock } from "lucide-react"
 
 import { CodeBadge } from "@/components/driver-code"
 import { F1DataTable } from "@/components/data-table"
@@ -272,6 +272,25 @@ function RaceDetailPageInner() {
     return api.raceResults(id, { page: 1, per_page: 50 })
   }, [id])
 
+  const [meetingSessions, setMeetingSessions] = useState<any[] | null>(null)
+
+  useEffect(() => {
+    if (!race.data?.season) return
+    api.liveSessions(race.data.season)
+      .then(res => {
+        if (!res?.data) return
+        const m = res.data.find((item: any) => 
+          (race.data?.circuit_country && item.country?.toLowerCase() === race.data.circuit_country.toLowerCase()) ||
+          (race.data?.name && item.meeting_name?.toLowerCase().includes(race.data.name.toLowerCase())) ||
+          (race.data?.name && race.data.name.toLowerCase().includes(item.meeting_name?.toLowerCase()))
+        )
+        if (m?.sessions && m.sessions.length > 0) {
+          setMeetingSessions(m.sessions)
+        }
+      })
+      .catch(() => {})
+  }, [race.data?.season, race.data?.circuit_country, race.data?.name])
+
   const columns = useMemo(() => getResultColumns(race.data?.season), [race.data?.season])
 
   return (
@@ -319,6 +338,61 @@ function RaceDetailPageInner() {
           </CardHeader>
         </Card>
       ) : null}
+
+      {meetingSessions && meetingSessions.length > 0 && (
+        <Card className="border-red-500/20 bg-gradient-to-br from-red-950/20 to-black/40 overflow-hidden relative">
+          <CardHeader className="pb-3">
+            <CardDescription className="text-red-400 font-bold tracking-widest uppercase text-xs flex items-center gap-1.5">
+              <CalendarDays className="size-4" />
+              Programação Oficial do Fim de Semana
+            </CardDescription>
+            <CardTitle className="text-xl font-bold flex items-center justify-between">
+              <span>Dias e Horários das Sessões (Horário de Brasília)</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              {meetingSessions.map((s: any) => {
+                const sDate = new Date(s.date_start)
+                const isLive = s.state === "live"
+                return (
+                  <div
+                    key={s.key}
+                    className={`p-3.5 rounded-lg border transition-all ${
+                      isLive 
+                        ? "bg-red-500/20 border-red-500/50 text-white shadow-md shadow-red-950/50" 
+                        : "bg-white/5 border-white/10 hover:border-white/20"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-red-400">
+                        {sDate.toLocaleDateString("pt-BR", { weekday: "short" })} ({sDate.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })})
+                      </span>
+                      {isLive && (
+                        <span className="flex h-2 w-2 relative">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                        </span>
+                      )}
+                    </div>
+                    <div className="font-bold text-sm text-foreground mb-2 truncate" title={s.name}>
+                      {s.name}
+                    </div>
+                    <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground flex items-center gap-1">
+                        <Clock className="size-3" /> Início:
+                      </span>
+                      <span className="font-mono font-bold text-sm text-white">
+                        {sDate.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+                      </span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Tabs defaultValue="race" className="w-full">
         <TabsList className="mb-4">

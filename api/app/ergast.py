@@ -34,9 +34,9 @@ def _request(path, params=None):
 
         if response.status_code == 404:
             return None
-        if response.status_code == 429:
+        if response.status_code in {429, 500, 502, 503, 504, 520, 521, 522, 524}:
             if attempt >= MAX_RETRIES:
-                raise JolpicaError("Jolpica limitou as requisicoes (429)")
+                raise JolpicaError(f"Jolpica limitou as requisicoes ({response.status_code})")
             time.sleep(min(2.0 * (2**attempt), 30.0))
             continue
         if response.status_code != 200:

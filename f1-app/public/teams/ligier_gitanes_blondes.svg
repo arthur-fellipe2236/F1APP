@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 95" width="100%" height="100%">
+  <defs>
+    <!-- French Racing Deep Blue Gradient -->
+    <linearGradient id="ligierDeepBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#002D66" />
+      <stop offset="50%" stop-color="#001C42" />
+      <stop offset="100%" stop-color="#000D21" />
+    </linearGradient>
+
+    <!-- Gitanes Blondes Golden Amber Gradient -->
+    <linearGradient id="blondesGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF176" />
+      <stop offset="50%" stop-color="#FFD54F" />
+      <stop offset="100%" stop-color="#FF9800" />
+    </linearGradient>
+
+    <!-- Pure Gold Gradient -->
+    <linearGradient id="pureGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFE082" />
+      <stop offset="100%" stop-color="#FFA000" />
+    </linearGradient>
+
+    <filter id="ligierShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.45" />
+    </filter>
+  </defs>
+
+  <!-- Left Emblem: The Famous Dancing Gypsy (La Gitane) Silhouette in Warm Gold -->
+  <g transform="translate(10, 9)" filter="url(#ligierShadow)">
+    <!-- Base Plate Shield -->
+    <rect x="0" y="0" width="77" height="77" rx="16" fill="url(#ligierDeepBlue)" stroke="url(#pureGold)" stroke-width="1.5" />
+    
+    <!-- Outer French Tricolore Edge -->
+    <path d="M4 16 L4 8 C4 5.8 5.8 4 8 4 L16 4" fill="none" stroke="#0055FF" stroke-width="2" />
+    <path d="M61 4 L69 4 C71.2 4 73 5.8 73 8 L73 16" fill="none" stroke="#EF4135" stroke-width="2" />
+
+    <!-- Center Dancing Gypsy Silhouette & Smoke Ring (Authentic Bezier Vector) -->
+    <g transform="translate(38.5, 38.5)">
+      <!-- Disc Background -->
+      <circle cx="0" cy="0" r="23" fill="#001433" stroke="#0055FF" stroke-width="1" />
+
+      <!-- Smoke Rings / Fan Ribbons Behind Silhouette -->
+      <path d="M-15,-6 C-17,-14 -6,-19 2,-16 C10,-13 14,-5 12,3 C10,11 2,17 -7,15" 
+            fill="none" stroke="url(#pureGold)" stroke-width="1.2" opacity="0.6" stroke-dasharray="2,2" />
+
+      <!-- The Famous Gypsy Dancing Silhouette (La Gitane) in Gold -->
+      <!-- Head and Flowing Hair -->
+      <circle cx="0" cy="-11" r="3" fill="url(#blondesGold)" />
+      <!-- Torso and Raised Dancing Arms with Tambourine/Scarf -->
+      <path d="M-6,-15 C-2,-16 2,-16 6,-14 C7,-12 5,-10 3,-10 C-1,-10 -3,-12 -6,-15 Z" fill="url(#blondesGold)" />
+      <!-- Arching Dancing Body -->
+      <path d="M-1,-8 C2,-6 3,-3 1,2 C-1,7 -4,11 -6,14 L-2,14 C1,9 5,4 4,-2 C3,-6 1,-8 -1,-8 Z" fill="url(#blondesGold)" />
+      <!-- Swirling Gypsy Skirt Layers -->
+      <path d="M-6,7 C-1,5 6,8 10,13 C7,15 1,16 -4,15 C-8,14 -11,11 -6,7 Z" fill="url(#blondesGold)" />
+      <path d="M-4,13 C1,12 8,14 13,18 C8,19 0,19 -5,17 Z" fill="url(#pureGold)" />
+
+      <!-- Jo Schlesser JS Monogram Mini Ribbon -->
+      <path d="M-12,17 L-8,17 M-10,14 L-10,19" stroke="#FFFFFF" stroke-width="1" opacity="0.7" />
+    </g>
+
+    <!-- Laurel Leaves at Base -->
+    <path d="M26 67 C32 64 36 67 38.5 70 C41 67 45 64 51 67" fill="none" stroke="url(#pureGold)" stroke-width="1.2" />
+  </g>
+
+  <!-- Right Typography: GITANES BLONDES Ligier F1 Team -->
+  <g transform="translate(98, 13)">
+    <!-- French Racing Tricolore Speed Accent -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="30" height="3" rx="1.5" fill="#0055FF" />
+      <rect x="34" y="0" width="30" height="3" rx="1.5" fill="#FFFFFF" />
+      <rect x="68" y="0" width="30" height="3" rx="1.5" fill="#EF4135" />
+      <rect x="104" y="0" width="35" height="3" rx="1.5" fill="url(#blondesGold)" />
+    </g>
+
+    <!-- Main Wordmark: GITANES -->
+    <text x="0" y="27" font-family="'Montserrat', 'Arial Black', sans-serif" 
+          font-weight="900" font-size="24" fill="#FFFFFF" letter-spacing="2.5">
+      GITANES
+    </text>
+
+    <!-- Sub-Wordmark: BLONDES (in Signature Blonde Gold) -->
+    <text x="0" y="47" font-family="'Montserrat', 'Helvetica Neue', Arial, sans-serif" 
+          font-weight="900" font-size="16" fill="url(#blondesGold)" font-style="italic" letter-spacing="4">
+      BLONDES
+    </text>
+
+    <!-- Subtitle: LIGIER F1 TEAM -->
+    <g transform="translate(0, 62)">
+      <rect x="0" y="-8.5" width="3" height="9.5" rx="1" fill="url(#pureGold)" />
+      <text x="8" y="0" font-family="'Montserrat', 'Helvetica Neue', Arial, sans-serif" 
+            font-weight="700" font-size="9" fill="#9EC4E8" letter-spacing="2.8">
+        LIGIER FORMULA 1 TEAM
+      </text>
+    </g>
+  </g>
+</svg>

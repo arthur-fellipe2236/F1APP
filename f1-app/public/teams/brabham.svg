@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 95" width="100%" height="100%">
+  <defs>
+    <!-- Brabham Deep Heritage Navy Gradient -->
+    <linearGradient id="brabhamNavy" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#002952" />
+      <stop offset="50%" stop-color="#001633" />
+      <stop offset="100%" stop-color="#000B1A" />
+    </linearGradient>
+
+    <!-- Brabham Parmalat Racing Cyan Gradient -->
+    <linearGradient id="brabhamCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00C4FF" />
+      <stop offset="50%" stop-color="#0088FF" />
+      <stop offset="100%" stop-color="#0055D4" />
+    </linearGradient>
+
+    <!-- Championship Gold Gradient -->
+    <linearGradient id="champGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE082" />
+      <stop offset="50%" stop-color="#FFB300" />
+      <stop offset="100%" stop-color="#FF8F00" />
+    </linearGradient>
+
+    <filter id="brabhamShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.45" />
+    </filter>
+  </defs>
+
+  <!-- Left Emblem: The Iconic Brabham Heraldic Circular Crest -->
+  <g transform="translate(10, 9)" filter="url(#brabhamShadow)">
+    <!-- Base Plate Shield -->
+    <rect x="0" y="0" width="77" height="77" rx="16" fill="url(#brabhamNavy)" stroke="#00A2E8" stroke-width="1.5" />
+    
+    <!-- Outer Golden Laurels Ring -->
+    <circle cx="38.5" cy="38.5" r="26" fill="none" stroke="url(#champGold)" stroke-width="1.5" stroke-dasharray="4,2" />
+
+    <!-- Center Emblem: Coiled Repco-Brabham Dragon / Heraldic Serpent with Crown -->
+    <g transform="translate(38.5, 38.5)">
+      <!-- Inner Dark Disc -->
+      <circle cx="0" cy="0" r="22" fill="#001226" stroke="#00C4FF" stroke-width="1" />
+
+      <!-- Coiled Dragon Body (Bezier Curves) -->
+      <path d="M-8,-11 C-3,-16 9,-14 11,-7 C12,-1 7,5 1,6 C-5,7 -12,2 -11,-4 C-10,-9 -3,-9 1,-6" 
+            fill="none" stroke="url(#champGold)" stroke-width="3" stroke-linecap="round" />
+      
+      <!-- Dragon Head and Crest -->
+      <path d="M11,-7 L15,-10 L16,-6 L13,-4 Z" fill="url(#champGold)" />
+      <!-- Tongue Flame / Arrowhead -->
+      <path d="M15,-10 L19,-11 L16,-8 Z" fill="#FF3344" />
+
+      <!-- Tail Chevron Spear -->
+      <polygon points="1,-6 -2,-8 0,-4" fill="url(#champGold)" />
+
+      <!-- Forward-Leaning Modern 'B' Velocity Wings Accent -->
+      <path d="M-13,9 L-1,9 C5,9 7,7 7,4 C7,2 5,0 0,0 L-7,0 L-7,9" fill="none" stroke="#FFFFFF" stroke-width="1.8" />
+      <path d="M-13,0 L-3,0 C2,0 4,-2 4,-4 C4,-7 2,-8 -3,-8 L-13,-8 Z" fill="none" stroke="#00C4FF" stroke-width="1.8" />
+    </g>
+
+    <!-- Top Crown Accent -->
+    <polygon points="38.5,12 41,16 44,13 42,18 35,18 33,13 36,16" fill="url(#champGold)" />
+  </g>
+
+  <!-- Right Typography: BRABHAM Motor Racing Developments -->
+  <g transform="translate(98, 13)">
+    <!-- Top Speed Blade Accent in Cyan & White -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="85" height="3" rx="1.5" fill="url(#brabhamCyan)" />
+      <rect x="90" y="0" width="35" height="3" rx="1.5" fill="#FFFFFF" opacity="0.8" />
+      <rect x="130" y="0" width="12" height="3" rx="1.5" fill="url(#champGold)" />
+    </g>
+
+    <!-- Main Wordmark: BRABHAM -->
+    <text x="0" y="28" font-family="'Montserrat', 'Arial Black', sans-serif" 
+          font-weight="900" font-size="26" fill="#FFFFFF" letter-spacing="2">
+      BRABHAM
+    </text>
+
+    <!-- Sub-Wordmark: MOTOR RACING DEVELOPMENTS -->
+    <text x="0" y="47" font-family="'Montserrat', 'Helvetica Neue', Arial, sans-serif" 
+          font-weight="800" font-size="10.5" fill="#D3E5F5" letter-spacing="2">
+      MOTOR RACING DEVELOPMENTS
+    </text>
+
+    <!-- Bottom Row: 4 Championship Stars (1966, 1967, 1981, 1983) & F1 TEAM -->
+    <g transform="translate(0, 63)">
+      <!-- 4 Golden Stars -->
+      <g fill="url(#champGold)">
+        <polygon points="4,-6 5,-3 8,-3 6,-1 7,2 4,0 1,2 2,-1 0,-3 3,-3" />
+        <polygon points="16,-6 17,-3 20,-3 18,-1 19,2 16,0 13,2 14,-1 12,-3 15,-3" />
+        <polygon points="28,-6 29,-3 32,-3 30,-1 31,2 28,0 25,2 26,-1 24,-3 27,-3" />
+        <polygon points="40,-6 41,-3 44,-3 42,-1 43,2 40,0 37,2 38,-1 36,-3 39,-3" />
+      </g>
+      <text x="52" y="0" font-family="'Montserrat', 'Helvetica Neue', Arial, sans-serif" 
+            font-weight="700" font-size="9" fill="#00C4FF" letter-spacing="2.5">
+        FORMULA ONE TEAM
+      </text>
+    </g>
+  </g>
+</svg>
