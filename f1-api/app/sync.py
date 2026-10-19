@@ -73,6 +73,13 @@ TEAM_ALIASES = {
     "Matra-Cosworth": "Matra",
     "McLaren-Serenissima": "McLaren",
     "McLaren-BRM": "McLaren",
+    "Cooper-Bristol": "Cooper",
+    "Cooper-Alta": "Cooper",
+    "Lancia-Ferrari": "Ferrari",
+    "Simca-Gordini": "Gordini",
+    "Connaught-Alta": "Connaught",
+    "Connaught-Lea-Francis": "Connaught",
+    "HWM-Alta": "HWM",
     "Eagle-Climax": "Eagle",
     "Eagle-Weslake": "Eagle",
     "Lola-Climax": "Lola",
@@ -586,7 +593,7 @@ def configured_seasons():
     env = os.environ.get("F1_SYNC_SEASONS")
     if env:
         return [int(part) for part in env.split(",") if part.strip()]
-    return list(range(2026, 1959, -1))
+    return list(range(2026, 1949, -1))
 
 
 def demo_seasons():

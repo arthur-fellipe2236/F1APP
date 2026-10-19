@@ -253,8 +253,7 @@ export interface TeamLogoAsset {
 
 export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = {
   "Ferrari": {
-    ...Object.fromEntries(Array.from({ length: 14 }, (_, i) => [1950 + i, { url: "/ferrari/1950-1964.jpg", className: "bg-white rounded-sm" }])),
-    ...Object.fromEntries(Array.from({ length: 25 }, (_, i) => [1960 + i, { url: "/teams/ferrari_classic.svg", color: "#CE2B37", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 35 }, (_, i) => [1950 + i, { url: "/teams/ferrari_classic.svg", color: "#CE2B37", className: "object-contain p-0.5 filter-none" }])),
     ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [1985 + i, { url: "/ferrari/1983-1994.jpg", className: "bg-white rounded-sm" }])),
     ...Object.fromEntries(Array.from({ length: 2 }, (_, i) => [1994 + i, { url: "/ferrari/1994-1996.jpg", className: "bg-white rounded-sm" }])),
     ...Object.fromEntries(Array.from({ length: 11 }, (_, i) => [1996 + i, { url: "/ferrari/1996-2006.jpg", className: "bg-white rounded-sm" }])),
@@ -266,6 +265,8 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [2024 + i, { url: "/ferrari/2024-Present.jpg", className: "bg-white rounded-sm" }])),
   },
   "Mercedes": {
+    1954: { url: "/teams/mercedes_amg_petronas.svg", color: "#0A141A", className: "object-contain p-0.5 filter-none" },
+    1955: { url: "/teams/mercedes_amg_petronas.svg", color: "#0A141A", className: "object-contain p-0.5 filter-none" },
     ...Object.fromEntries(Array.from({ length: 2 }, (_, i) => [2010 + i, { url: "/mercedes/2010-2011.jpg", className: "bg-white rounded-sm" }])),
     ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2012 + i, { url: "/mercedes/2012-2014.jpg", className: "bg-white rounded-sm" }])),
     ...Object.fromEntries(Array.from({ length: 2 }, (_, i) => [2015 + i, { url: "/mercedes/2015-2016.jpg", className: "bg-white rounded-sm" }])),
@@ -567,10 +568,10 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [1970 + i, { url: "/classic/surtees.svg", color: "#002B7F", className: "object-contain p-0.5 filter-none" }])),
   },
   "BRM": {
-    ...Object.fromEntries(Array.from({ length: 18 }, (_, i) => [1960 + i, { url: "/classic/brm.svg", color: "#004225", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 27 }, (_, i) => [1951 + i, { url: "/classic/brm.svg", color: "#004225", className: "object-contain p-0.5 filter-none" }])),
   },
   "British Racing Motors": {
-    ...Object.fromEntries(Array.from({ length: 18 }, (_, i) => [1960 + i, { url: "/classic/brm.svg", color: "#004225", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 27 }, (_, i) => [1951 + i, { url: "/classic/brm.svg", color: "#004225", className: "object-contain p-0.5 filter-none" }])),
   },
   "Matra": {
     ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1968 + i, { url: "/classic/matra.svg", color: "#0038A8", className: "object-contain p-0.5 filter-none" }])),
@@ -579,10 +580,19 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [1968 + i, { url: "/classic/matra.svg", color: "#0038A8", className: "object-contain p-0.5 filter-none" }])),
   },
   "Cooper": {
-    ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [1960 + i, { url: "/classic/cooper.svg", color: "#002D15", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 20 }, (_, i) => [1950 + i, { url: "/classic/cooper.svg", color: "#002D15", className: "object-contain p-0.5 filter-none" }])),
   },
   "Cooper Car Company": {
-    ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [1960 + i, { url: "/classic/cooper.svg", color: "#002D15", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 20 }, (_, i) => [1950 + i, { url: "/classic/cooper.svg", color: "#002D15", className: "object-contain p-0.5 filter-none" }])),
+  },
+  "Maserati": {
+    ...Object.fromEntries(Array.from({ length: 11 }, (_, i) => [1950 + i, { url: "/classic/maserati.svg", color: "#0A1832", className: "object-contain p-0.5 filter-none" }])),
+  },
+  "Officine Alfieri Maserati": {
+    ...Object.fromEntries(Array.from({ length: 11 }, (_, i) => [1950 + i, { url: "/classic/maserati.svg", color: "#0A1832", className: "object-contain p-0.5 filter-none" }])),
+  },
+  "Vanwall": {
+    ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [1954 + i, { url: "/classic/vanwall.svg", color: "#003515", className: "object-contain p-0.5 filter-none" }])),
   },
   "Eagle": {
     ...Object.fromEntries(Array.from({ length: 4 }, (_, i) => [1966 + i, { url: "/classic/eagle.svg", color: "#0A152E", className: "object-contain p-0.5 filter-none" }])),
@@ -916,8 +926,10 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   Cooper: { url: "/classic/cooper.svg", color: "#002D15", className: "object-contain p-0.5 filter-none" },
   "Cooper Car Company": { url: "/classic/cooper.svg", color: "#002D15", className: "object-contain p-0.5 filter-none" },
   Eagle: { url: "/classic/eagle.svg", color: "#0A152E", className: "object-contain p-0.5 filter-none" },
-  "Anglo American Racers": { url: "/classic/eagle.svg", color: "#0A152E", className: "object-contain p-0.5 filter-none" },
   Porsche: { url: "/classic/porsche.svg", color: "#141416", className: "object-contain p-0.5 filter-none" },
+  Maserati: { url: "/classic/maserati.svg", color: "#0A1832", className: "object-contain p-0.5 filter-none" },
+  "Officine Alfieri Maserati": { url: "/classic/maserati.svg", color: "#0A1832", className: "object-contain p-0.5 filter-none" },
+  Vanwall: { url: "/classic/vanwall.svg", color: "#003515", className: "object-contain p-0.5 filter-none" },
 }
 
 const TEAM_ALIASES: Record<string, string> = {
@@ -1240,6 +1252,9 @@ const TEAM_ALIASES: Record<string, string> = {
   modena: "Lambo",
   "andrea moda": "Andrea Moda",
   "andrea moda formula": "Andrea Moda",
+  "maserati": "Maserati",
+  "officine alfieri maserati": "Maserati",
+  "vanwall": "Vanwall",
 }
 
 export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
@@ -1332,8 +1347,20 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   if (season && season >= 1966 && season <= 1984 && (canonical === "McLaren" || name.toLowerCase().includes("mclaren"))) {
     return { url: "/teams/mclaren_classic.svg", color: "#FF1801", className: "object-contain p-0.5 filter-none" }
   }
-  if (season && season >= 1960 && season <= 1984 && (canonical === "Ferrari" || name.toLowerCase().includes("ferrari"))) {
+  if (season && season >= 1950 && season <= 1984 && (canonical === "Ferrari" || name.toLowerCase().includes("ferrari"))) {
     return { url: "/teams/ferrari_classic.svg", color: "#CE2B37", className: "object-contain p-0.5 filter-none" }
+  }
+  if (season && (season === 1954 || season === 1955) && (canonical === "Mercedes" || name.toLowerCase().includes("mercedes"))) {
+    return { url: "/teams/mercedes_amg_petronas.svg", color: "#0A141A", className: "object-contain p-0.5 filter-none" }
+  }
+  if (canonical === "Maserati" || canonical === "Officine Alfieri Maserati" || name.toLowerCase().includes("maserati")) {
+    return { url: "/classic/maserati.svg", color: "#0A1832", className: "object-contain p-0.5 filter-none" }
+  }
+  if (canonical === "Vanwall" || name.toLowerCase().includes("vanwall")) {
+    return { url: "/classic/vanwall.svg", color: "#003515", className: "object-contain p-0.5 filter-none" }
+  }
+  if (season && season <= 1985 && (canonical === "Alfa Romeo" || name.toLowerCase().includes("alfa romeo"))) {
+    return { url: "/teams/alfaromeo.svg", color: "#900000", className: "object-contain p-0.5 filter-none" }
   }
   if (canonical === "Cooper" || canonical === "Cooper Car Company" || name.toLowerCase().includes("cooper")) {
     return { url: "/classic/cooper.svg", color: "#002D15", className: "object-contain p-0.5 filter-none" }
@@ -2842,6 +2869,13 @@ const HISTORICAL_DRIVER_PHOTOS: Record<string, string> = {
   "Phil Hill": "/drivers/phil_hill.jpg",
   "Bruce McLaren": "/drivers/mclaren.jpg",
   "Dan Gurney": "/drivers/gurney.jpg",
+  "Juan Manuel Fangio": "/drivers/fangio.jpg",
+  "Juan Fangio": "/drivers/fangio.jpg",
+  "Alberto Ascari": "/drivers/ascari.jpg",
+  "Nino Farina": "/drivers/farina.jpg",
+  "Giuseppe Farina": "/drivers/farina.jpg",
+  "Mike Hawthorn": "/drivers/hawthorn.jpg",
+  "Stirling Moss": "/drivers/moss.jpg",
 }
 
 export function driverPhoto(
