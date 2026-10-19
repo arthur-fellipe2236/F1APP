@@ -1,67 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 90" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
   <defs>
-    <!-- Toyota Vivid Racing Red Gradient -->
-    <linearGradient id="toyotaRed" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF2638" />
-      <stop offset="50%" stop-color="#E80018" />
-      <stop offset="100%" stop-color="#B30010" />
+    <linearGradient id="ptRedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF1E34" />
+      <stop offset="100%" stop-color="#C20012" />
     </linearGradient>
-
-    <!-- Chrome Specular Gradient for Toyota Emblem -->
-    <linearGradient id="toyotaChrome" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="35%" stop-color="#E6ECF2" />
-      <stop offset="70%" stop-color="#A2AEB8" />
-      <stop offset="100%" stop-color="#606E7A" />
+    <linearGradient id="ptBlueGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0066D6" />
+      <stop offset="100%" stop-color="#0088FF" />
     </linearGradient>
-
-    <!-- Panasonic Luminous Electric Blue Gradient -->
-    <linearGradient id="panasonicBlue" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#006CD8" />
-      <stop offset="50%" stop-color="#0088FF" />
-      <stop offset="100%" stop-color="#269CFF" />
-    </linearGradient>
-
-    <filter id="toyotaGlow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.35" />
+    <filter id="ptDrop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3" />
     </filter>
   </defs>
 
-  <!-- Toyota Official Interlocking Ellipses Emblem on Left -->
-  <g transform="translate(6, 4)" filter="url(#toyotaGlow)">
-    <!-- Red Dynamic Aero Ring / Speed Backplate -->
-    <path d="M 12 66 C 26 78 64 78 76 66 C 82 52 80 28 66 18 C 50 8 28 10 16 22 Z" fill="#0C1218" opacity="0.6" />
-    
-    <!-- Outer Main Ellipse -->
-    <ellipse cx="44" cy="42" rx="36" ry="24" fill="none" stroke="url(#toyotaRed)" stroke-width="4.5" />
-    <ellipse cx="44" cy="42" rx="36" ry="24" fill="none" stroke="url(#toyotaChrome)" stroke-width="1.2" opacity="0.6" />
-
-    <!-- Inner Vertical Ellipse (Heart / Customer & Product unity) -->
-    <ellipse cx="44" cy="42" rx="12" ry="22.5" fill="none" stroke="url(#toyotaRed)" stroke-width="4" />
-    <ellipse cx="44" cy="42" rx="12" ry="22.5" fill="none" stroke="url(#toyotaChrome)" stroke-width="1" opacity="0.6" />
-
-    <!-- Inner Horizontal Ellipse (Forms the iconic T) -->
-    <ellipse cx="44" cy="34" rx="23" ry="11" fill="none" stroke="url(#toyotaRed)" stroke-width="4" />
-    <ellipse cx="44" cy="34" rx="23" ry="11" fill="none" stroke="url(#toyotaChrome)" stroke-width="1" opacity="0.6" />
-
-    <!-- Red & White Racing Speed Flames (Livery motif) -->
-    <path d="M 6 62 Q 22 58 38 68 Q 24 72 6 62 Z" fill="url(#toyotaRed)" />
-    <path d="M 52 68 Q 68 58 84 62 Q 66 72 52 68 Z" fill="#FFFFFF" opacity="0.8" />
+  <!-- Left: Official Triple-Oval Toyota Emblem -->
+  <g transform="translate(6, 12)" filter="url(#ptDrop)">
+    <!-- Outer Horizontal Ellipse -->
+    <ellipse cx="30" cy="30" rx="28" ry="19" fill="none" stroke="url(#ptRedGrad)" stroke-width="4.5" />
+    <!-- Inner Vertical Ellipse -->
+    <ellipse cx="30" cy="30" rx="9.5" ry="18" fill="none" stroke="url(#ptRedGrad)" stroke-width="4" />
+    <!-- Inner Horizontal Ellipse -->
+    <ellipse cx="30" cy="23.5" rx="18" ry="9" fill="none" stroke="url(#ptRedGrad)" stroke-width="4" />
   </g>
 
-  <!-- Panasonic Toyota Racing Wordmark Lockup on Right -->
-  <g transform="translate(94, 0)" filter="url(#toyotaGlow)">
-    <!-- Panasonic in Luminous Electric Blue -->
-    <text x="0" y="30" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="20" font-weight="900" fill="url(#panasonicBlue)" letter-spacing="1">Panasonic</text>
-    
-    <!-- TOYOTA in Bold Racing Italic with White Contrast -->
-    <text x="0" y="58" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="27" font-weight="900" font-style="italic" fill="url(#toyotaRed)" letter-spacing="1.2">TOYOTA</text>
-    
-    <!-- RACING in Tracked White/Silver -->
-    <text x="2" y="74" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="12" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="4.5">RACING</text>
-
-    <!-- Red Racing Accent Underline Fin -->
-    <path d="M 76 68 L 195 68 L 189 71 L 76 71 Z" fill="url(#toyotaRed)" />
-    <path d="M 197 68 L 210 68 L 206 71 L 193 71 Z" fill="#FFFFFF" opacity="0.9" />
+  <!-- Right: Panasonic Toyota Racing Typography -->
+  <g transform="translate(70, 0)">
+    <!-- Panasonic in Electric Blue -->
+    <text x="0" y="27" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="14.5" font-weight="900" fill="url(#ptBlueGrad)" letter-spacing="0.5">Panasonic</text>
+    <!-- TOYOTA in Vivid Red -->
+    <text x="0" y="52" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="24" font-weight="900" font-style="italic" fill="url(#ptRedGrad)" letter-spacing="1">TOYOTA</text>
+    <!-- RACING in Carbon Black / Dark Graphite -->
+    <text x="1" y="69" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="12.5" font-weight="900" font-style="italic" fill="#222222" letter-spacing="3.5">RACING</text>
+    <!-- Racing Speed Accent Bar -->
+    <path d="M 0 74 L 90 74 L 85 77 L 0 77 Z" fill="url(#ptRedGrad)" />
+    <path d="M 87 74 L 96 74 L 93 77 L 85 77 Z" fill="url(#ptBlueGrad)" />
   </g>
 </svg>

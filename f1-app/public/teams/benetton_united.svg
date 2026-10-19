@@ -1,93 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 95" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
   <defs>
-    <!-- Benetton Signature Racing Green Gradient -->
-    <linearGradient id="benettonGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#006E3A" />
-      <stop offset="50%" stop-color="#00502A" />
-      <stop offset="100%" stop-color="#00351B" />
+    <linearGradient id="buGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#007A3E" />
+      <stop offset="100%" stop-color="#004D25" />
     </linearGradient>
-
-    <!-- Emerald Glow Accent -->
-    <linearGradient id="emeraldGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00E676" />
-      <stop offset="100%" stop-color="#00B0FF" />
-    </linearGradient>
-
-    <filter id="benettonShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.45" />
+    <filter id="buDrop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.35" />
     </filter>
   </defs>
 
-  <!-- Left Emblem: The Famous Benetton Wool Stitch / Knot Monogram -->
-  <g transform="translate(10, 9)" filter="url(#benettonShadow)">
-    <!-- Base Plate Shield -->
-    <rect x="0" y="0" width="77" height="77" rx="16" fill="url(#benettonGreen)" stroke="#00E676" stroke-width="1.5" />
-    
-    <!-- Inner subtle ring -->
-    <rect x="4" y="4" width="69" height="69" rx="12" fill="none" stroke="#FFFFFF" stroke-width="0.75" stroke-opacity="0.3" />
-
-    <!-- Stylized Benetton Wool Stitch Knot (Punto Maglia) -->
-    <g transform="translate(38.5, 38.5)">
-      <!-- Upper Loops -->
-      <path d="M-14,-14 C-14,-22 -4,-22 0,-14 C4,-22 14,-22 14,-14 C14,-6 4,-6 0,-14 C-4,-6 -14,-6 -14,-14 Z" 
-            fill="none" stroke="#FFFFFF" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" />
-      
-      <!-- Lower Loops -->
-      <path d="M-14,14 C-14,6 -4,6 0,14 C4,6 14,6 14,14 C14,22 4,22 0,14 C-4,22 -14,22 -14,14 Z" 
-            fill="none" stroke="#FFFFFF" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" />
-
-      <!-- Center Interlock Core Stitch -->
-      <circle cx="0" cy="0" r="3.5" fill="#00E676" stroke="#FFFFFF" stroke-width="1.5" />
-
-      <!-- Iconic 4-Color Benetton Livery Accent Dots -->
-      <circle cx="-24" cy="0" r="2.8" fill="#0055FF" />
-      <circle cx="24" cy="0" r="2.8" fill="#E51937" />
-      <circle cx="0" cy="-25" r="2.8" fill="#FFCC00" />
-      <circle cx="0" cy="25" r="2.8" fill="#00E676" />
-    </g>
+  <!-- Left: The Iconic United Colors Wool Stitch / Knot Monogram -->
+  <g transform="translate(8, 12)" filter="url(#buDrop)">
+    <rect x="0" y="0" width="60" height="60" rx="14" fill="url(#buGreen)" stroke="#00E676" stroke-width="1.5" />
+    <!-- White Knitted Wool Stitch Knot -->
+    <path d="M 30 14 C 23 14 18 19 18 26 C 18 31 21 35 25 37 L 25 43 C 21 41 18 37 18 32 L 13 32 C 13 39 18 45 25 47 L 25 49 L 30 49 L 30 47 C 37 45 42 39 42 32 L 37 32 C 37 37 34 41 30 43 L 30 37 C 34 35 37 31 37 26 C 37 19 32 14 30 14 Z M 30 20 C 33 20 35 22.5 35 26 C 35 29.5 33 32 30 32 C 27 32 25 29.5 25 26 C 25 22.5 27 20 30 20 Z" fill="#FFFFFF" fill-rule="evenodd" />
   </g>
 
-  <!-- Right Typography: BENETTON FORMULA · UNITED COLORS OF BENETTON -->
-  <g transform="translate(98, 11)">
-    <!-- Multicolored Benetton Livery Racing Bar (B186-B190 Iconic Paintwork) -->
-    <g transform="translate(0, 0)">
-      <rect x="0" y="0" width="58" height="3.5" rx="1.75" fill="#0055FF" />
-      <rect x="62" y="0" width="58" height="3.5" rx="1.75" fill="#E51937" />
-      <rect x="124" y="0" width="58" height="3.5" rx="1.75" fill="#FFCC00" />
-      <rect x="186" y="0" width="58" height="3.5" rx="1.75" fill="#00E676" />
-    </g>
-
-    <!-- Top Headline: BENETTON FORMULA 1 -->
-    <g transform="translate(0, 20)">
-      <rect x="0" y="-11" width="3.5" height="12" rx="1.5" fill="#00E676" />
-      <text x="9" y="0" font-family="'Montserrat', 'Arial Black', sans-serif" 
-            font-weight="900" font-size="14.5" fill="#88E8A3" letter-spacing="2.2">
-        BENETTON FORMULA 1
-      </text>
-    </g>
-
-    <!-- Main Wordmark: UNITED COLORS -->
-    <text x="0" y="42" font-family="'Montserrat', 'Arial Black', -apple-system, sans-serif" 
-          font-weight="900" font-size="18.5" fill="#FFFFFF" letter-spacing="1.5">
-      UNITED COLORS
-    </text>
-
-    <!-- Sub-Wordmark: OF BENETTON. -->
-    <text x="0" y="63" font-family="'Montserrat', 'Arial Black', -apple-system, sans-serif" 
-          font-weight="900" font-size="18.5" fill="#FFFFFF" letter-spacing="1.5">
-      OF BENETTON<tspan fill="#00E676">.</tspan>
-    </text>
-
-    <!-- Bottom Multi-Color Micro Bar -->
-    <g transform="translate(0, 71)">
-      <rect x="0" y="0" width="16" height="2" rx="1" fill="#0055FF" />
-      <rect x="18" y="0" width="16" height="2" rx="1" fill="#E51937" />
-      <rect x="36" y="0" width="16" height="2" rx="1" fill="#FFCC00" />
-      <rect x="54" y="0" width="16" height="2" rx="1" fill="#00E676" />
-      <text x="76" y="2" font-family="'Montserrat', 'Helvetica Neue', Arial, sans-serif" 
-            font-weight="700" font-size="8" fill="#90C8A0" letter-spacing="2">
-        ENSTONE · UK
-      </text>
-    </g>
+  <!-- Right: UNITED COLORS OF BENETTON Typography -->
+  <g transform="translate(76, 0)">
+    <text x="0" y="32" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="900" fill="url(#buGreen)" letter-spacing="1">UNITED COLORS</text>
+    <text x="0" y="47" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="10.5" font-weight="900" fill="#444444" letter-spacing="2">OF BENETTON</text>
+    <text x="0" y="68" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="18" font-weight="900" font-style="italic" fill="url(#buGreen)" letter-spacing="1">FORMULA 1</text>
+    <rect x="0" y="73" width="90" height="3" rx="1.5" fill="url(#buGreen)" />
   </g>
 </svg>

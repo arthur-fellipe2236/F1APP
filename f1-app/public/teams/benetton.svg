@@ -1,57 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 95" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
   <defs>
-    <!-- Mild Seven Cerulean Sky Blue Gradient -->
-    <linearGradient id="mildSevenBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="msBlue" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#00B4F5" />
       <stop offset="50%" stop-color="#008BE3" />
       <stop offset="100%" stop-color="#0066C4" />
     </linearGradient>
-
-    <!-- Benetton Green Gradient -->
-    <linearGradient id="benettonGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="benGreen" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#00A843" />
       <stop offset="100%" stop-color="#008535" />
     </linearGradient>
-
-    <filter id="benettonGlow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.35" />
+    <filter id="msDrop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3" />
     </filter>
   </defs>
 
-  <!-- Mild Seven Brand Shield Box on Left -->
-  <g transform="translate(10, 12)" filter="url(#benettonGlow)">
-    <rect x="0" y="0" width="70" height="70" rx="14" fill="url(#mildSevenBlue)" />
-    
-    <!-- Stylized Japanese Mild Seven Sky Arc Motif -->
-    <path d="M 12 18 Q 35 8 58 18 Q 35 13 12 18 Z" fill="#FFFFFF" opacity="0.8" />
-    <circle cx="35" cy="24" r="3.5" fill="#FFFFFF" opacity="0.9" />
-
-    <!-- MILD SEVEN Typography -->
-    <text x="35" y="44" font-family="'Titillium Web', system-ui, -apple-system, Arial Black, sans-serif" font-size="12" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1.5">MILD</text>
-    <text x="35" y="59" font-family="'Titillium Web', system-ui, -apple-system, Arial Black, sans-serif" font-size="12.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1.5">SEVEN</text>
+  <!-- Left: Mild Seven Cerulean Blue Box & Arc -->
+  <g transform="translate(8, 12)" filter="url(#msDrop)">
+    <rect x="0" y="0" width="60" height="60" rx="13" fill="url(#msBlue)" stroke="#FFFFFF" stroke-width="1.2" />
+    <!-- White Stylized Sky Arc -->
+    <path d="M 8 46 C 22 22 42 16 52 24 C 40 22 24 30 14 50 Z" fill="#FFFFFF" />
+    <circle cx="44" cy="20" r="3" fill="#FFFFFF" />
+    <text x="30" y="52" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="8.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">MILD SEVEN</text>
   </g>
 
-  <!-- Benetton Formula 1 Wordmark & Flag Ribbons on Right -->
-  <g transform="translate(94, 6)" filter="url(#benettonGlow)">
-    <!-- BENETTON in Bold Italic High-Contrast White -->
-    <text x="0" y="34" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="28" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="1">Benetton</text>
-
-    <!-- FORMULA 1 in Tracked Italic -->
-    <text x="2" y="58" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="21" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="1.5">Formula 1</text>
-
-    <!-- RACING TEAM Subtitle -->
-    <text x="2" y="73" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="10.5" font-weight="800" font-style="italic" fill="#A4B6C2" letter-spacing="4">RACING TEAM</text>
-
-    <!-- Iconic United Colors Racing Wave Ribbons on Far Right -->
-    <g transform="translate(162, 10)">
-      <!-- Red Wave -->
-      <path d="M 0 6 C 18 0 38 12 62 4 C 52 14 30 6 0 12 Z" fill="#E80018" />
-      <!-- Yellow Wave -->
-      <path d="M 0 18 C 18 12 38 24 62 16 C 52 26 30 18 0 24 Z" fill="#FFD200" />
-      <!-- Green Wave (Benetton Green) -->
-      <path d="M 0 30 C 18 24 38 36 62 28 C 52 38 30 30 0 36 Z" fill="url(#benettonGreen)" />
-      <!-- Blue Wave (Cobalt) -->
-      <path d="M 0 42 C 18 36 38 48 62 40 C 52 50 30 42 0 48 Z" fill="#0033A0" />
-    </g>
+  <!-- Right: BENETTON FORMULA Typography -->
+  <g transform="translate(76, 0)">
+    <text x="0" y="40" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="22" font-weight="900" font-style="italic" fill="url(#benGreen)" letter-spacing="0.5">BENETTON</text>
+    <text x="1" y="60" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="14.5" font-weight="900" font-style="italic" fill="url(#msBlue)" letter-spacing="3.2">FORMULA 1</text>
+    <rect x="0" y="66" width="58" height="3.5" rx="1.5" fill="url(#benGreen)" />
+    <rect x="62" y="66" width="28" height="3.5" rx="1.5" fill="url(#msBlue)" />
   </g>
 </svg>

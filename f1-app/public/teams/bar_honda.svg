@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <!-- Lucky Strike Gold Ring Gradient -->
+    <linearGradient id="barGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F2D179" />
+      <stop offset="50%" stop-color="#C59B3C" />
+      <stop offset="100%" stop-color="#8E6A1B" />
+    </linearGradient>
+    <linearGradient id="barRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF1E28" />
+      <stop offset="100%" stop-color="#B8000C" />
+    </linearGradient>
+    <filter id="barDrop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Left: The Legendary Lucky Strike Target Emblem -->
+  <g transform="translate(8, 10)" filter="url(#barDrop)">
+    <!-- Outer Dark Charcoal Edge -->
+    <circle cx="32" cy="32" r="31" fill="#1C1E20" />
+    <!-- White Gap Ring -->
+    <circle cx="32" cy="32" r="29" fill="#FFFFFF" />
+    <!-- Gold Metallic Ring -->
+    <circle cx="32" cy="32" r="26.5" fill="none" stroke="url(#barGold)" stroke-width="3" />
+    <!-- Solid Crimson Target Roundel -->
+    <circle cx="32" cy="32" r="23" fill="url(#barRed)" />
+    
+    <!-- Lucky Strike Text in Authentic Layout -->
+    <text x="32" y="27" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="8.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">LUCKY</text>
+    <text x="32" y="41" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="8.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">STRIKE</text>
+  </g>
+
+  <!-- Right: BAR HONDA Typography -->
+  <g transform="translate(76, 0)">
+    <!-- B-A-R in bold black italic -->
+    <text x="0" y="38" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="28" font-weight="900" font-style="italic" fill="#111111" letter-spacing="1">B·A·R</text>
+    <text x="1" y="58" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="15" font-weight="900" font-style="italic" fill="url(#barRed)" letter-spacing="2">HONDA</text>
+    <text x="1" y="72" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="8" font-weight="900" fill="#555555" letter-spacing="1.5">BRITISH AMERICAN RACING</text>
+    <!-- Racing Red Speed Bar -->
+    <rect x="0" y="75" width="88" height="3" rx="1.5" fill="url(#barRed)" />
+  </g>
+</svg>

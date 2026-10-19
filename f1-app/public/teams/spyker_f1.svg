@@ -1,29 +1,34 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 85" width="220" height="85">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
   <defs>
-    <linearGradient id="dutchOrange" x1="0%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="spkOrange" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#FF7A00" />
-      <stop offset="100%" stop-color="#EA580C" />
+      <stop offset="100%" stop-color="#E85A00" />
     </linearGradient>
-    <linearGradient id="chromePropeller" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="spkPropChrome" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="50%" stop-color="#C2CCD4" />
-      <stop offset="100%" stop-color="#606F7B" />
+      <stop offset="50%" stop-color="#CAD3DC" />
+      <stop offset="100%" stop-color="#677582" />
     </linearGradient>
+    <filter id="spkDrop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3" />
+    </filter>
   </defs>
-  <!-- Spyker Aircraft Propeller Roundel on Left -->
-  <g transform="translate(12, 11)">
-    <circle cx="31.5" cy="31.5" r="30" fill="#1C2228" stroke="url(#dutchOrange)" stroke-width="3" />
-    <!-- Wire Spoke Wheel -->
-    <circle cx="31.5" cy="31.5" r="24" fill="none" stroke="#606F7B" stroke-width="1" stroke-dasharray="2,3" />
-    <!-- 2-Blade Propeller in Polished Chrome -->
-    <ellipse cx="31.5" cy="31.5" rx="25" ry="6.5" transform="rotate(-35, 31.5, 31.5)" fill="url(#chromePropeller)" />
-    <circle cx="31.5" cy="31.5" r="5.5" fill="#FF7A00" stroke="#FFFFFF" stroke-width="1.5" />
+
+  <!-- Left: Spyker Aircraft Propeller & Wire Wheel Roundel -->
+  <g transform="translate(8, 11)" filter="url(#spkDrop)">
+    <circle cx="31.5" cy="31.5" r="30" fill="#181E24" stroke="url(#spkOrange)" stroke-width="3" />
+    <circle cx="31.5" cy="31.5" r="24" fill="none" stroke="#606F7B" stroke-width="1.2" stroke-dasharray="2.5,2.5" />
+    <!-- 2-Blade Aircraft Propeller -->
+    <ellipse cx="31.5" cy="31.5" rx="25" ry="6.5" transform="rotate(-35, 31.5, 31.5)" fill="url(#spkPropChrome)" stroke="#222" stroke-width="0.5" />
+    <!-- Center Hub -->
+    <circle cx="31.5" cy="31.5" r="5.5" fill="url(#spkOrange)" stroke="#FFFFFF" stroke-width="1.5" />
   </g>
-  <!-- Spyker Script & MF1 Racing on Right -->
-  <g transform="translate(84, 16)">
-    <!-- Spyker signature flowing script -->
-    <text x="0" y="32" font-family="'Brush Script MT', 'Segoe Script', cursive, sans-serif" font-size="34" font-weight="bold" fill="#1A2026" letter-spacing="1">Spyker</text>
-    <!-- MF1 RACING in Dutch Orange -->
-    <text x="2" y="54" font-family="system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="17" font-weight="900" font-style="italic" fill="url(#dutchOrange)" letter-spacing="2">MF1 RACING</text>
+
+  <!-- Right: Spyker F1 Team Typography -->
+  <g transform="translate(74, 0)">
+    <text x="0" y="42" font-family="'Brush Script MT', 'Segoe Script', cursive, sans-serif" font-size="36" font-weight="bold" fill="#181E24" letter-spacing="0.5">Spyker</text>
+    <text x="2" y="64" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="16" font-weight="900" font-style="italic" fill="url(#spkOrange)" letter-spacing="3.2">F1 TEAM</text>
+    <!-- Orange Speed Accent -->
+    <rect x="2" y="70" width="88" height="3.5" rx="1.5" fill="url(#spkOrange)" />
   </g>
 </svg>

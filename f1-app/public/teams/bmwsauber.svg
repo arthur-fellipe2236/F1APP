@@ -1,81 +1,51 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 90" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
   <defs>
-    <!-- BMW Chrome Outer Ring Gradient -->
-    <linearGradient id="bmwChrome" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="bmwRoundelChrome" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="25%" stop-color="#CCD4DC" />
-      <stop offset="50%" stop-color="#7A8894" />
-      <stop offset="75%" stop-color="#BCC6D0" />
-      <stop offset="100%" stop-color="#55626E" />
+      <stop offset="40%" stop-color="#CCD5DE" />
+      <stop offset="100%" stop-color="#5B6774" />
     </linearGradient>
-
-    <!-- BMW Bavarian Blue Gradient -->
-    <linearGradient id="bavarianBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="bmwBavarian" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#0077D4" />
-      <stop offset="100%" stop-color="#00529C" />
+      <stop offset="100%" stop-color="#00509A" />
     </linearGradient>
-
-    <!-- BMW Motorsport Racing Red Gradient -->
-    <linearGradient id="bmwMRed" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#FF1A2A" />
-      <stop offset="100%" stop-color="#D90014" />
-    </linearGradient>
-
-    <!-- BMW Motorsport Dark Navy Gradient -->
-    <linearGradient id="bmwMNavy" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#001F5C" />
-      <stop offset="100%" stop-color="#001238" />
-    </linearGradient>
-
-    <filter id="bmwShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.35" />
+    <filter id="bmwSauberDrop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3" />
     </filter>
   </defs>
 
-  <!-- BMW Official Roundel on Left -->
-  <g transform="translate(6, 4)" filter="url(#bmwShadow)">
-    <!-- Outer Chrome Bezel -->
-    <circle cx="42" cy="41" r="35" fill="#0C1015" stroke="url(#bmwChrome)" stroke-width="3.5" />
-    <circle cx="42" cy="41" r="32.5" fill="none" stroke="#252F38" stroke-width="0.8" />
+  <!-- Left: Official BMW Roundel -->
+  <g transform="translate(8, 11)" filter="url(#bmwSauberDrop)">
+    <!-- Outer Chrome Ring -->
+    <circle cx="31.5" cy="31.5" r="29.5" fill="#0C1014" stroke="url(#bmwRoundelChrome)" stroke-width="2.8" />
+    
+    <!-- B M W Letters -->
+    <text x="17.5" y="20.5" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="9.5" font-weight="900" fill="#FFFFFF" text-anchor="middle">B</text>
+    <text x="31.5" y="15" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="10" font-weight="900" fill="#FFFFFF" text-anchor="middle">M</text>
+    <text x="45.5" y="20.5" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="9.5" font-weight="900" fill="#FFFFFF" text-anchor="middle">W</text>
 
-    <!-- BMW Letters on Outer Ring -->
-    <!-- B -->
-    <text x="24" y="27" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="900" fill="#FFFFFF" text-anchor="middle">B</text>
-    <!-- M -->
-    <text x="42" y="20" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="12" font-weight="900" fill="#FFFFFF" text-anchor="middle">M</text>
-    <!-- W -->
-    <text x="60" y="27" font-family="'Titillium Web', system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="900" fill="#FFFFFF" text-anchor="middle">W</text>
-
-    <!-- Inner Roundel Divided Circle -->
-    <circle cx="42" cy="41" r="22.5" fill="none" stroke="url(#bmwChrome)" stroke-width="1.8" />
-
-    <!-- Top-Left Quarter: Blue -->
-    <path d="M 42 41 L 42 18.5 A 22.5 22.5 0 0 0 19.5 41 Z" fill="url(#bavarianBlue)" />
-    <!-- Top-Right Quarter: White -->
-    <path d="M 42 41 L 64.5 41 A 22.5 22.5 0 0 0 42 18.5 Z" fill="#FFFFFF" />
-    <!-- Bottom-Right Quarter: Blue -->
-    <path d="M 42 41 L 42 63.5 A 22.5 22.5 0 0 0 64.5 41 Z" fill="url(#bavarianBlue)" />
-    <!-- Bottom-Left Quarter: White -->
-    <path d="M 42 41 L 19.5 41 A 22.5 22.5 0 0 0 42 63.5 Z" fill="#FFFFFF" />
-
-    <!-- Center Cross Lines -->
-    <line x1="42" y1="18.5" x2="42" y2="63.5" stroke="#7A8894" stroke-width="0.8" />
-    <line x1="19.5" y1="41" x2="64.5" y2="41" stroke="#7A8894" stroke-width="0.8" />
+    <!-- Inner Divided Roundel -->
+    <circle cx="31.5" cy="31.5" r="19" fill="none" stroke="url(#bmwRoundelChrome)" stroke-width="1.4" />
+    <!-- Top-Left Blue -->
+    <path d="M 31.5 31.5 L 31.5 12.5 A 19 19 0 0 0 12.5 31.5 Z" fill="url(#bmwBavarian)" />
+    <!-- Top-Right White -->
+    <path d="M 31.5 31.5 L 50.5 31.5 A 19 19 0 0 0 31.5 12.5 Z" fill="#FFFFFF" />
+    <!-- Bottom-Right Blue -->
+    <path d="M 31.5 31.5 L 31.5 50.5 A 19 19 0 0 0 50.5 31.5 Z" fill="url(#bmwBavarian)" />
+    <!-- Bottom-Left White -->
+    <path d="M 31.5 31.5 L 12.5 31.5 A 19 19 0 0 0 31.5 50.5 Z" fill="#FFFFFF" />
+    
+    <!-- Quadrant Dividing Cross Lines -->
+    <line x1="31.5" y1="12.5" x2="31.5" y2="50.5" stroke="#7A8894" stroke-width="0.7" />
+    <line x1="12.5" y1="31.5" x2="50.5" y2="31.5" stroke="#7A8894" stroke-width="0.7" />
   </g>
 
-  <!-- Typography: BMW Sauber F1 Team on Right -->
-  <g transform="translate(94, 0)" filter="url(#bmwShadow)">
-    <!-- BMW Sauber in Crisp Bold Titanium White -->
-    <text x="0" y="38" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF" letter-spacing="0.5">BMW Sauber</text>
-
-    <!-- F1.Team Subtitle -->
-    <text x="2" y="60" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="16" font-weight="800" font-style="italic" fill="#C5D3E0" letter-spacing="3.5">F1 TEAM</text>
-
-    <!-- Signature BMW Sauber Livery Red Aerodynamic Swoosh Arc -->
-    <path d="M 104 53 Q 140 48 185 58 Q 145 52 108 57 Z" fill="url(#bmwMRed)" />
-    <!-- Blue Speed Line Underneath -->
-    <path d="M 2 67 L 175 67 L 168 70 L 2 70 Z" fill="url(#bavarianBlue)" />
-    <!-- Red Accent Tick -->
-    <path d="M 178 67 L 196 67 L 192 70 L 175 70 Z" fill="url(#bmwMRed)" />
+  <!-- Right: BMW Sauber F1 Team Typography -->
+  <g transform="translate(74, 0)">
+    <text x="0" y="38" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="22" font-weight="900" fill="#111111" letter-spacing="0.2">BMW Sauber</text>
+    <text x="1" y="58" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="14.5" font-weight="900" font-style="italic" fill="#00509A" letter-spacing="3.2">F1 TEAM</text>
+    <!-- BMW Motorsport Racing Livery Accent: Red & Blue Dynamic Fins -->
+    <path d="M 0 66 L 76 66 L 72 70 L 0 70 Z" fill="#00509A" />
+    <path d="M 74 66 L 90 66 L 86 70 L 71 70 Z" fill="#E10600" />
   </g>
 </svg>
