@@ -159,6 +159,16 @@ function LeaderAvatar({ driver, season }: { driver: DriverStanding; season?: num
   )
 }
 
+function getBadgeLuminance(hexColor: string): number {
+  if (!hexColor) return 0
+  const hex = hexColor.replace("#", "")
+  if (hex.length !== 6) return 0
+  const r = parseInt(hex.substr(0, 2), 16)
+  const g = parseInt(hex.substr(2, 2), 16)
+  const b = parseInt(hex.substr(4, 2), 16)
+  return (r * 299 + g * 587 + b * 114) / 1000
+}
+
 function TeamBadge({ name, season }: { name: string; season?: number }) {
   const [broken, setBroken] = useState(false)
   const logo = teamLogo(name, season)
@@ -177,62 +187,55 @@ function TeamBadge({ name, season }: { name: string; season?: number }) {
     let textColor = "var(--secondary-foreground)"
     if (logo?.color) {
       bgColor = logo.color
-      const hex = logo.color.replace("#", "")
-      if (hex.length === 6) {
-        const r = parseInt(hex.substr(0, 2), 16)
-        const g = parseInt(hex.substr(2, 2), 16)
-        const b = parseInt(hex.substr(4, 2), 16)
-        const yiq = (r * 299 + g * 587 + b * 114) / 1000
-        textColor = yiq >= 140 ? "#000000" : "#ffffff"
-      }
+      textColor = getBadgeLuminance(logo.color) >= 140 ? "#000000" : "#ffffff"
     }
     
     return (
-      <span 
-        className="flex h-16 w-32 md:h-20 md:w-40 shrink-0 items-center justify-center rounded-xl text-2xl font-bold ring-4 ring-background shadow-md"
-        style={{ backgroundColor: bgColor, color: textColor }}
-      >
-        {initials}
-      </span>
+      <div className="relative shrink-0">
+        <span 
+          className="flex h-16 w-20 sm:h-18 sm:w-24 md:h-20 md:w-28 shrink-0 items-center justify-center rounded-2xl text-xl font-bold ring-2 ring-blue-500/30 shadow-md border border-border/50"
+          style={{ backgroundColor: bgColor, color: textColor }}
+        >
+          {initials}
+        </span>
+        <div className="absolute -bottom-1 -right-1 flex items-center justify-center rounded-full bg-blue-500 text-white font-extrabold text-[10px] md:text-xs px-1.5 py-0.5 shadow-md border-2 border-background ring-1 ring-blue-500/30">
+          1º
+        </div>
+      </div>
     )
   }
   
-  let isLightBg = false
-  let isDarkBg = false
-  if (logo.color) {
-    const hex = logo.color.replace("#", "")
-    if (hex.length === 6) {
-      const r = parseInt(hex.substr(0, 2), 16)
-      const g = parseInt(hex.substr(2, 2), 16)
-      const b = parseInt(hex.substr(4, 2), 16)
-      const yiq = (r * 299 + g * 587 + b * 114) / 1000
-      isLightBg = yiq >= 155
-      isDarkBg = yiq <= 40
-    }
-  }
+  const isWhiteMonoLogo = logo.url.includes("logowhite.svg") || logo.className?.includes("make-black")
+  const isLightBg = isWhiteMonoLogo && logo.color && !logo.className?.includes("filter-none") ? getBadgeLuminance(logo.color) >= 155 : false
+  const isDarkBg = logo.color ? getBadgeLuminance(logo.color) <= 40 : false
 
   return (
-    <span 
-      className={cn(
-        "flex h-16 w-28 sm:w-32 md:h-20 md:w-36 shrink-0 items-center justify-center rounded-2xl p-2.5 shadow-md border border-border/50 transition-all",
-        isDarkBg && "ring-1 ring-white/20 dark:border-white/25",
-        !logo.color ? "bg-white text-zinc-900 border-border/70" : undefined
-      )}
-      style={logo.color ? { backgroundColor: logo.color } : undefined}
-    >
-      <img
-        src={logo.url}
-        alt=""
-        aria-hidden
-        loading="lazy"
-        onError={() => setBroken(true)}
+    <div className="relative shrink-0">
+      <span 
         className={cn(
-          "h-full w-full object-contain drop-shadow-xs",
-          isLightBg && "brightness-0",
-          logo.className
+          "flex h-16 w-20 sm:h-18 sm:w-24 md:h-20 md:w-28 shrink-0 items-center justify-center rounded-2xl p-2.5 shadow-md border border-border/50 transition-all",
+          isDarkBg && "ring-1 ring-white/20 dark:border-white/25",
+          !logo.color ? "bg-white text-zinc-900 border-border/70" : undefined
         )}
-      />
-    </span>
+        style={logo.color ? { backgroundColor: logo.color } : undefined}
+      >
+        <img
+          src={logo.url}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          onError={() => setBroken(true)}
+          className={cn(
+            "h-full w-full object-contain drop-shadow-xs",
+            isLightBg && "brightness-0",
+            logo.className
+          )}
+        />
+      </span>
+      <div className="absolute -bottom-1 -right-1 flex items-center justify-center rounded-full bg-blue-500 text-white font-extrabold text-[10px] md:text-xs px-1.5 py-0.5 shadow-md border-2 border-background ring-1 ring-blue-500/30">
+        1º
+      </div>
+    </div>
   )
 }
 
