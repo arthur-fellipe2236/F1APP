@@ -85,7 +85,12 @@ def text_to_mp3(text: str) -> bytes:
     return res
 
 def generate_bulletin_script(series: str, current_user) -> str:
-    username = current_user.username if current_user else "fã de velocidade"
+    if current_user:
+        raw_name = getattr(current_user, 'name', None) or getattr(current_user, 'username', None) or "fã de velocidade"
+        first_name = raw_name.strip().split()[0].capitalize()
+    else:
+        first_name = "fã de velocidade"
+    username = first_name
 
     if series in ('f2', 'f3'):
         try:
@@ -95,7 +100,7 @@ def generate_bulletin_script(series: str, current_user) -> str:
             rss_items = []
 
         series_name = "Fórmula 2" if series == "f2" else "Fórmula 3"
-        script = f"Olá {username}, bem-vindo à Rádio {series_name}. "
+        script = f"Luz verde no pit lane! Olá {first_name}, bem-vindo ao seu giro rápido da {series_name}. "
 
         if rss_items:
             script += "Aqui estão as principais notícias da categoria. "
@@ -118,9 +123,9 @@ def generate_bulletin_script(series: str, current_user) -> str:
             return script
         else:
             if series == 'f2':
-                return f"Olá {username}, bem-vindo à Rádio Fórmula 2. A estrada para a glória. No momento, as equipes e as academias de pilotos estão focadas nos preparativos aerodinâmicos para a próxima rodada. Fique ligado no painel para acompanhar os talentos que em breve subirão para a categoria principal. Acelere fundo e até a próxima!"
+                return f"Luz verde no pit lane! Olá {first_name}, bem-vindo ao seu giro rápido da Fórmula 2. A estrada para a glória. No momento, as equipes e as academias de pilotos estão focadas nos preparativos aerodinâmicos para a próxima rodada. Fique ligado no painel para acompanhar os talentos que em breve subirão para a categoria principal. Acelere fundo e até a próxima!"
             else:
-                return f"Olá {username}, você está na Rádio Fórmula 3. O berço do automobilismo. O paddock da F3 amanheceu agitado com os testes dos novatos e o ajuste fino dos motores Mechachrome. Não deixe de conferir a aba de Classificação para ver quem lidera o campeonato. Acelere fundo e até a próxima!"
+                return f"Luz verde no pit lane! Olá {first_name}, bem-vindo ao seu giro rápido da Fórmula 3. O berço do automobilismo. O paddock da F3 amanheceu agitado com os testes dos novatos e o ajuste fino dos motores Mechachrome. Não deixe de conferir a aba de Classificação para ver quem lidera o campeonato. Acelere fundo e até a próxima!"
 
     # Fetch latest F1 news
     try:
@@ -161,7 +166,7 @@ def generate_bulletin_script(series: str, current_user) -> str:
     # Translate selected news
     translated = _translate_items(selected)
 
-    script = f"Olá {username}, aqui é a sua Rádio F1. "
+    script = f"Luz verde no pit lane! Olá {first_name}, bem-vindo ao seu giro rápido da Fórmula 1. "
     if priority_news:
         if team_name:
             script += f"Temos atualizações quentes da {team_name} para você! "
