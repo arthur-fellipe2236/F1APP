@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="lamboMidnight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A152E" />
+      <stop offset="50%" stop-color="#060E20" />
+      <stop offset="100%" stop-color="#02050D" />
+    </linearGradient>
+
+    <linearGradient id="lamboGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE066" />
+      <stop offset="50%" stop-color="#D4AF37" />
+      <stop offset="100%" stop-color="#997715" />
+    </linearGradient>
+
+    <linearGradient id="lamboNeonRed" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF1E38" />
+      <stop offset="100%" stop-color="#D9001D" />
+    </linearGradient>
+
+    <filter id="lamboShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+
+  <!-- Fundo Azul Meia-Noite Metálico Lambo 291 -->
+  <rect x="0" y="0" width="170" height="85" rx="10" fill="url(#lamboMidnight)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#1E2F52" stroke-width="1.2" opacity="0.8" />
+
+  <!-- Dynamic Lambo 291 Racing Streaks -->
+  <path d="M 148 2 L 168 2 L 168 83 L 136 83 Z" fill="url(#lamboNeonRed)" opacity="0.85" />
+  <polygon points="144,2 147,2 135,83 132,83" fill="url(#lamboGold)" opacity="0.9" />
+  <polygon points="140,2 142,2 130,83 128,83" fill="#FFFFFF" opacity="0.7" />
+
+  <!-- Left: Official Lamborghini Shield with Golden Charging Bull (Toro Scatenato) -->
+  <g transform="translate(10, 12)" filter="url(#lamboShadow)">
+    <path d="M 7 5 L 43 5 L 38 45 L 25 58 L 12 45 Z" fill="#0C0D10" stroke="url(#lamboGold)" stroke-width="2" />
+    <path d="M 10 8 L 40 8 L 35 43 L 25 54 L 15 43 Z" fill="#14161C" stroke="url(#lamboGold)" stroke-width="0.8" opacity="0.7" />
+
+    <!-- LAMBORGHINI Banner on Shield -->
+    <rect x="11" y="9" width="28" height="6.5" rx="1" fill="url(#lamboGold)" />
+    <text x="25" y="14.2" fill="#0A0B0E" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="4.2" letter-spacing="0.8" text-anchor="middle">LAMBORGHINI</text>
+
+    <!-- Charging Bull Silhouette (Toro Scatenato) -->
+    <g transform="translate(14, 18)" fill="url(#lamboGold)">
+      <path d="M 18 10 C 19 8, 20 6, 22 5 C 21 6, 20 8, 20 9 C 22 9, 23 10, 24 12 C 22 13, 20 14, 18 14 C 17 15, 17 17, 16 20 L 14 20 L 14 16 C 13 16, 12 17, 11 19 L 9 19 L 10 15 C 8 15, 6 13, 5 11 C 3 13, 2 16, 1 18 L 0 18 C 1 15, 2 11, 4 9 C 6 7, 9 7, 11 8 C 12 7, 14 7, 15 8 C 16 8, 17 9, 18 10 Z" />
+      <polygon points="17,6 20,4 18,7" fill="#FFE580" />
+      <polygon points="21,7 23,5 21,8" fill="#FFE580" />
+    </g>
+  </g>
+
+  <!-- Right: MODENA TEAM LAMBO Typography -->
+  <g transform="translate(58, 17)" filter="url(#lamboShadow)">
+    <text x="0" y="17" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="12.5" letter-spacing="1.2">MODENA TEAM</text>
+
+    <!-- LAMBO in High-Impact Neon Red & Gold Outline -->
+    <g transform="translate(0, 22)">
+      <text x="0" y="21" fill="url(#lamboNeonRed)" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-style="italic" font-size="22" letter-spacing="2">LAMBO</text>
+    </g>
+
+    <!-- FORMULA 1 • V12 Subtitle -->
+    <g transform="translate(1, 49)">
+      <text x="0" y="8" fill="url(#lamboGold)" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="7.5" letter-spacing="2.2">FORMULA 1 • V12</text>
+    </g>
+  </g>
+</svg>

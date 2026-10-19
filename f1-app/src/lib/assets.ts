@@ -509,9 +509,34 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     2001: { url: "/teams/prost_acer.svg", color: "#002060", className: "object-contain p-0.5 filter-none" },
   },
   "Stewart": {
-    1997: { url: "/teams/stewart_1997.svg", color: "#0C2340", className: "object-contain p-0.5" },
-    1998: { url: "/teams/stewart_1997.svg", color: "#0C2340", className: "object-contain p-0.5" },
-    1999: { url: "/teams/stewart.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+    1997: { url: "/teams/stewart_1997.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
+    1998: { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
+    1999: { url: "/teams/stewart.png", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
+  },
+  "Stewart Grand Prix": {
+    1997: { url: "/teams/stewart_1997.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
+    1998: { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
+    1999: { url: "/teams/stewart.png", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
+  },
+  "Stewart Grand Prix MCI Worldcom": {
+    1998: { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
+  },
+  "Fondmetal": {
+    1991: { url: "/teams/fondmetal.svg", color: "#0E1015", className: "object-contain p-0.5 filter-none" },
+    1992: { url: "/teams/fondmetal.svg", color: "#0E1015", className: "object-contain p-0.5 filter-none" },
+  },
+  "Fondmetal Corse": {
+    1991: { url: "/teams/fondmetal.svg", color: "#0E1015", className: "object-contain p-0.5 filter-none" },
+    1992: { url: "/teams/fondmetal.svg", color: "#0E1015", className: "object-contain p-0.5 filter-none" },
+  },
+  "Lambo": {
+    1991: { url: "/teams/lambo.svg", color: "#0A152E", className: "object-contain p-0.5 filter-none" },
+  },
+  "Modena Team": {
+    1991: { url: "/teams/lambo.svg", color: "#0A152E", className: "object-contain p-0.5 filter-none" },
+  },
+  "Modena Team Lambo": {
+    1991: { url: "/teams/lambo.svg", color: "#0A152E", className: "object-contain p-0.5 filter-none" },
   },
   "Tyrrell": {
     ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [1970 + i, { url: "/teams/tyrrell.svg", color: "#002B7F", className: "object-contain p-0.5 filter-none" }])),
@@ -928,7 +953,9 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   "Footwork Arrows": { url: "/teams/footwork_arrows.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   Benetton: { url: "/teams/benetton_mild_seven.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   Prost: { url: "/teams/prost.svg", color: "#002060", className: "object-contain p-0.5 filter-none" },
-  Stewart: { url: "/teams/stewart.png", color: "#FFFFFF", className: "object-contain p-0.5" },
+  Stewart: { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
+  "Stewart Grand Prix": { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
+  "Stewart Grand Prix MCI Worldcom": { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
   Tyrrell: { url: "/teams/tyrrell_candy_braun.svg", color: "#00142A", className: "object-contain p-0.5 filter-none" },
   "Tyrrell Candy Braun": { url: "/teams/tyrrell_candy_braun.svg", color: "#00142A", className: "object-contain p-0.5 filter-none" },
   "Tyrrell Racing": { url: "/teams/tyrrell.svg", color: "#002B7F", className: "object-contain p-1" },
@@ -944,9 +971,11 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   "Williams Grand Prix Engineering": { url: "/teams/williams_grand_prix.svg", color: "#001B36", className: "object-contain p-0.5 filter-none" },
   "Leyton House": { url: "/teams/leytonhouse.svg", color: "#071017", className: "object-contain p-0.5 filter-none" },
   "Leyton House Racing": { url: "/teams/leytonhouse.svg", color: "#071017", className: "object-contain p-0.5 filter-none" },
-  Fondmetal: { url: "/teams/fondmetal.svg", color: "#FFFFFF", className: "object-contain p-0.5" },
-  Lambo: { url: "/teams/lambo.svg", color: "#0D1322", className: "object-contain p-0.5" },
-  "Modena Team": { url: "/teams/lambo.svg", color: "#0D1322", className: "object-contain p-0.5" },
+  Fondmetal: { url: "/teams/fondmetal.svg", color: "#0E1015", className: "object-contain p-0.5 filter-none" },
+  "Fondmetal Corse": { url: "/teams/fondmetal.svg", color: "#0E1015", className: "object-contain p-0.5 filter-none" },
+  Lambo: { url: "/teams/lambo.svg", color: "#0A152E", className: "object-contain p-0.5 filter-none" },
+  "Modena Team": { url: "/teams/lambo.svg", color: "#0A152E", className: "object-contain p-0.5 filter-none" },
+  "Modena Team Lambo": { url: "/teams/lambo.svg", color: "#0A152E", className: "object-contain p-0.5 filter-none" },
   "Andrea Moda": { url: "/teams/andreamoda.svg", color: "#111111", className: "object-contain p-0.5" },
   Minardi: { url: "/teams/minardi.svg", color: "#0A0D12", className: "object-contain p-0.5 filter-none" },
   "Minardi F1 Team": { url: "/teams/minardi.svg", color: "#0A0D12", className: "object-contain p-0.5 filter-none" },
@@ -1733,8 +1762,20 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   if (season === 1997 && (canonical === "Prost" || name.toLowerCase().includes("prost"))) {
     return { url: "/teams/prost.svg", color: "#002060", className: "object-contain p-0.5 filter-none" }
   }
-  if (season && (season === 1997 || season === 1998) && (canonical === "Stewart" || name.toLowerCase().includes("stewart"))) {
-    return { url: "/teams/stewart_1997.svg", color: "#0C2340", className: "object-contain p-0.5" }
+  if (season && (canonical === "Stewart" || name.toLowerCase().includes("stewart"))) {
+    if (season === 1998 || name.toLowerCase().includes("mci worldcom")) {
+      return { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" }
+    }
+    if (season === 1997) {
+      return { url: "/teams/stewart_1997.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" }
+    }
+    return { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" }
+  }
+  if (canonical === "Fondmetal" || name.toLowerCase().includes("fondmetal")) {
+    return { url: "/teams/fondmetal.svg", color: "#0E1015", className: "object-contain p-0.5 filter-none" }
+  }
+  if (canonical === "Lambo" || name.toLowerCase().includes("modena team") || name.toLowerCase().includes("lambo")) {
+    return { url: "/teams/lambo.svg", color: "#0A152E", className: "object-contain p-0.5 filter-none" }
   }
   if (season && (season === 1995 || season === 1996) && (canonical === "Forti" || name.toLowerCase().includes("forti"))) {
     return { url: "/teams/forti.svg", color: "#FFCC00", className: "object-contain p-0.5" }

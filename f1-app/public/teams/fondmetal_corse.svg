@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="fondmetalBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14171E" />
+      <stop offset="50%" stop-color="#0E1015" />
+      <stop offset="100%" stop-color="#060709" />
+    </linearGradient>
+
+    <linearGradient id="fondmetalRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF1A26" />
+      <stop offset="100%" stop-color="#C00713" />
+    </linearGradient>
+
+    <linearGradient id="fondmetalGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD000" />
+      <stop offset="100%" stop-color="#E59400" />
+    </linearGradient>
+
+    <linearGradient id="wheelRim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#A0AAB8" />
+      <stop offset="100%" stop-color="#606B78" />
+    </linearGradient>
+
+    <filter id="fondmetalShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+
+  <!-- Fundo Carbono Deep Anthracite -->
+  <rect x="0" y="0" width="170" height="85" rx="10" fill="url(#fondmetalBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#2D3545" stroke-width="1.2" opacity="0.8" />
+
+  <!-- Top Italian Tricolore Racing Stripe -->
+  <g opacity="0.9">
+    <rect x="15" y="2" width="46" height="3" fill="#009246" rx="1" />
+    <rect x="61" y="2" width="48" height="3" fill="#FFFFFF" rx="1" />
+    <rect x="109" y="2" width="46" height="3" fill="#CE2B37" rx="1" />
+  </g>
+
+  <!-- Left: Authentic Fondmetal High-Tech Racing Alloy Wheel Emblem -->
+  <g transform="translate(10, 14)" filter="url(#fondmetalShadow)">
+    <circle cx="28" cy="28" r="26" fill="#08090C" stroke="url(#wheelRim)" stroke-width="2.2" />
+    <circle cx="28" cy="28" r="23" fill="none" stroke="url(#fondmetalRed)" stroke-width="1.5" />
+    
+    <!-- 5-Spoke Wheel Geometry -->
+    <path d="M 28 9 L 32 23 L 24 23 Z" fill="url(#wheelRim)" />
+    <path d="M 28 10 L 30 22 L 28 22 Z" fill="url(#fondmetalGold)" />
+    <path d="M 46 22 L 32 26 L 29 20 Z" fill="url(#wheelRim)" />
+    <path d="M 44 23 L 32 26 L 31 22 Z" fill="url(#fondmetalGold)" />
+    <path d="M 39 44 L 29 32 L 34 28 Z" fill="url(#wheelRim)" />
+    <path d="M 38 42 L 30 32 L 33 29 Z" fill="url(#fondmetalGold)" />
+    <path d="M 17 44 L 22 28 L 27 32 Z" fill="url(#wheelRim)" />
+    <path d="M 18 42 L 23 29 L 26 32 Z" fill="url(#fondmetalGold)" />
+    <path d="M 10 22 L 27 20 L 24 26 Z" fill="url(#wheelRim)" />
+    <path d="M 12 23 L 25 22 L 24 26 Z" fill="url(#fondmetalGold)" />
+
+    <!-- Center Hub Lock Nut in Italian Racing Red & Gold -->
+    <circle cx="28" cy="28" r="8" fill="url(#fondmetalRed)" stroke="#FFFFFF" stroke-width="1.2" />
+    <circle cx="28" cy="28" r="4.5" fill="#111111" stroke="url(#fondmetalGold)" stroke-width="1" />
+    <text x="28" y="30.5" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="6" text-anchor="middle">F</text>
+  </g>
+
+  <!-- Right: FONDMETAL CORSE Typography -->
+  <g transform="translate(71, 16)" filter="url(#fondmetalShadow)">
+    <text x="0" y="24" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="16.5" letter-spacing="1.2">FONDMETAL</text>
+
+    <!-- CORSE Badge in Vibrant Gold & Red Frame -->
+    <g transform="translate(0, 31)">
+      <rect x="0" y="0" width="90" height="18" rx="3.5" fill="url(#fondmetalRed)" />
+      <rect x="1" y="1" width="88" height="16" rx="2.5" fill="#13161C" />
+      <text x="45" y="12.5" fill="url(#fondmetalGold)" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="11" letter-spacing="5" text-anchor="middle">CORSE</text>
+    </g>
+
+    <!-- Subtitle: FORMULA 1 TEAM -->
+    <text x="1" y="58" fill="#8C98A8" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="6.5" letter-spacing="2.8">FORMULA 1 TEAM</text>
+  </g>
+</svg>

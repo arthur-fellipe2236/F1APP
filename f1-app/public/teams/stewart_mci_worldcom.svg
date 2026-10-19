@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <!-- Deep Stewart Navy Blue Gradient -->
+    <linearGradient id="stewartNavy" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0E284B" />
+      <stop offset="50%" stop-color="#0C2340" />
+      <stop offset="100%" stop-color="#061222" />
+    </linearGradient>
+
+    <!-- Royal Stewart Tartan Pattern -->
+    <pattern id="stewartTartan" width="32" height="32" patternUnits="userSpaceOnUse">
+      <rect width="32" height="32" fill="#BA121A" />
+      <rect x="0" y="8" width="32" height="6" fill="#0C2340" opacity="0.85" />
+      <rect x="8" y="0" width="6" height="32" fill="#0C2340" opacity="0.85" />
+      <rect x="0" y="22" width="32" height="6" fill="#154B28" opacity="0.75" />
+      <rect x="22" y="0" width="6" height="32" fill="#154B28" opacity="0.75" />
+      <line x1="0" y1="11" x2="32" y2="11" stroke="#FFD100" stroke-width="1.2" />
+      <line x1="11" y1="0" x2="11" y2="32" stroke="#FFD100" stroke-width="1.2" />
+      <line x1="0" y1="25" x2="32" y2="25" stroke="#FFFFFF" stroke-width="1.2" />
+      <line x1="25" y1="0" x2="25" y2="32" stroke="#FFFFFF" stroke-width="1.2" />
+      <line x1="0" y1="2" x2="32" y2="2" stroke="#000000" stroke-width="0.8" opacity="0.5" />
+      <line x1="2" y1="0" x2="2" y2="32" stroke="#000000" stroke-width="0.8" opacity="0.5" />
+    </pattern>
+
+    <!-- Ford Blue Oval Gradient -->
+    <linearGradient id="fordBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#003580" />
+      <stop offset="100%" stop-color="#001F52" />
+    </linearGradient>
+
+    <!-- MCI WorldCom Orange Gradient -->
+    <linearGradient id="mciOrange" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF5A00" />
+      <stop offset="100%" stop-color="#FF7A1A" />
+    </linearGradient>
+
+    <filter id="stewartShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <!-- Fundo Principal Stewart Midnight Navy -->
+  <rect x="0" y="0" width="170" height="85" rx="10" fill="url(#stewartNavy)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#254A7A" stroke-width="1.2" opacity="0.7" />
+
+  <!-- Top Authentic Royal Stewart Tartan Banner -->
+  <g filter="url(#stewartShadow)">
+    <rect x="2" y="2" width="166" height="13" rx="8" fill="url(#stewartTartan)" />
+    <rect x="2" y="9" width="166" height="6" fill="url(#stewartTartan)" />
+    <line x1="2" y1="15" x2="168" y2="15" stroke="#FFD100" stroke-width="1.2" opacity="0.9" />
+  </g>
+
+  <!-- Left: Jackie Stewart Tartan Shield + Ford Factory Works Oval -->
+  <g transform="translate(10, 21)" filter="url(#stewartShadow)">
+    <circle cx="24" cy="24" r="22" fill="url(#stewartTartan)" stroke="#FFFFFF" stroke-width="2" />
+    <circle cx="24" cy="24" r="18" fill="none" stroke="#FFD100" stroke-width="1.2" opacity="0.9" />
+    <ellipse cx="24" cy="24" rx="13" ry="7.5" fill="url(#fordBlue)" stroke="#FFFFFF" stroke-width="1.2" />
+    <text x="24" y="27" fill="#FFFFFF" font-family="'Georgia', serif" font-style="italic" font-weight="bold" font-size="7.5" text-anchor="middle">Ford</text>
+    <path d="M 18 10 L 24 6 L 30 10 L 27 12 L 21 12 Z" fill="#FFD100" opacity="0.9" />
+  </g>
+
+  <!-- Center/Right: STEWART GRAND PRIX & MCI WORLDCOM -->
+  <g transform="translate(62, 19)">
+    <!-- STEWART Typography -->
+    <text x="0" y="21" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-style="italic" font-size="20" letter-spacing="1">STEWART</text>
+
+    <!-- GRAND PRIX Typography -->
+    <text x="1" y="32" fill="#D2E2F5" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="7.5" letter-spacing="3.8">GRAND PRIX</text>
+
+    <!-- Divider Line -->
+    <line x1="1" y1="36" x2="102" y2="36" stroke="#254A7A" stroke-width="1" />
+    <line x1="1" y1="36" x2="35" y2="36" stroke="#FF5A00" stroke-width="1.5" />
+
+    <!-- MCI WORLDCOM Official Sponsor Block -->
+    <g transform="translate(1, 41)">
+      <!-- MCI Pill in Orange -->
+      <rect x="0" y="0" width="26" height="15" rx="3" fill="url(#mciOrange)" />
+      <text x="13" y="11" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="9.5" letter-spacing="0.8" text-anchor="middle">MCI</text>
+
+      <!-- WORLDCOM Typography -->
+      <text x="32" y="11.5" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="9.5" letter-spacing="1.2">WORLDCOM</text>
+      <path d="M 32 3 Q 66 -2 98 4" fill="none" stroke="#FF7A1A" stroke-width="1.4" stroke-linecap="round" />
+    </g>
+  </g>
+</svg>
