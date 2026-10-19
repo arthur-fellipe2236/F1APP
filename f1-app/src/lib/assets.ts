@@ -456,17 +456,17 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
     ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2000 + i, { url: "/teams/jaguar.svg", color: "#004225", className: "object-contain p-0.5" }])),
   },
   "Arrows": {
-    ...Object.fromEntries(Array.from({ length: 13 }, (_, i) => [1978 + i, { url: "/teams/arrows_classic.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 13 }, (_, i) => [1978 + i, { url: "/teams/arrows_classic.svg", color: "#FF6600", className: "object-contain p-0.5 filter-none" }])),
     ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1991 + i, { url: "/teams/footwork_arrows.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1997 + i, { url: "/teams/arrows.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2000 + i, { url: "/teams/orange_arrows.svg", color: "#000000", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1997 + i, { url: "/teams/arrows.svg", color: "#FF6600", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2000 + i, { url: "/teams/orange_arrows.svg", color: "#FF6600", className: "object-contain p-0.5 filter-none" }])),
   },
   "Arrows Grand Prix": {
-    ...Object.fromEntries(Array.from({ length: 13 }, (_, i) => [1978 + i, { url: "/teams/arrows_classic.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1997 + i, { url: "/teams/arrows.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 13 }, (_, i) => [1978 + i, { url: "/teams/arrows_classic.svg", color: "#FF6600", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [1997 + i, { url: "/teams/arrows.svg", color: "#FF6600", className: "object-contain p-0.5 filter-none" }])),
   },
   "Orange Arrows": {
-    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2000 + i, { url: "/teams/orange_arrows.svg", color: "#000000", className: "object-contain p-0.5 filter-none" }])),
+    ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [2000 + i, { url: "/teams/orange_arrows.svg", color: "#FF6600", className: "object-contain p-0.5 filter-none" }])),
   },
   "Footwork": {
     ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1991 + i, { url: "/teams/footwork_arrows.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }])),
@@ -921,8 +921,8 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
 
   // Historical / Classic Teams
   Jaguar: { url: "/teams/jaguar.svg", color: "#004225", className: "object-contain p-0.5" },
-  Arrows: { url: "/teams/arrows.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
-  "Arrows Grand Prix": { url: "/teams/arrows.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
+  Arrows: { url: "/teams/arrows.svg", color: "#FF6600", className: "object-contain p-0.5 filter-none" },
+  "Arrows Grand Prix": { url: "/teams/arrows.svg", color: "#FF6600", className: "object-contain p-0.5 filter-none" },
   Footwork: { url: "/teams/footwork_arrows.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   "Arrows Footwork": { url: "/teams/footwork_arrows.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   "Footwork Arrows": { url: "/teams/footwork_arrows.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
@@ -984,7 +984,7 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   "BAR Honda": { url: "/teams/bar.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   "Lucky Strike BAR Honda": { url: "/teams/bar.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
   "British American Racing": { url: "/teams/bar.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" },
-  "Orange Arrows": { url: "/teams/orange_arrows.svg", color: "#000000", className: "object-contain p-0.5 filter-none" },
+  "Orange Arrows": { url: "/teams/orange_arrows.svg", color: "#FF6600", className: "object-contain p-0.5 filter-none" },
   "Prost Grand Prix": { url: "/teams/prost.svg", color: "#002060", className: "object-contain p-0.5 filter-none" },
   "Prost Grand Prix Acer": { url: "/teams/prost_acer.svg", color: "#002060", className: "object-contain p-0.5 filter-none" },
   "Benetton Formula": { url: "/teams/benetton_mild_seven.svg", color: "#008BE3", className: "object-contain p-0.5 filter-none" },
@@ -1545,16 +1545,16 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   }
   // Arrows and Footwork Era Overrides
   if (canonical === "Orange Arrows" || (season && season >= 2000 && season <= 2002 && name.toLowerCase().includes("arrows"))) {
-    return { url: "/teams/orange_arrows.svg", color: "#000000", className: "object-contain p-0.5 filter-none" }
+    return { url: "/teams/orange_arrows.svg", color: "#FF6600", className: "object-contain p-0.5 filter-none" }
   }
   if (canonical === "Footwork" || canonical === "Arrows Footwork" || canonical === "Footwork Arrows" || (season && season >= 1991 && season <= 1996 && name.toLowerCase().includes("arrows"))) {
     return { url: "/teams/footwork_arrows.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }
   }
   if (season && season >= 1997 && season <= 1999 && (canonical === "Arrows" || name.toLowerCase().includes("arrows"))) {
-    return { url: "/teams/arrows.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }
+    return { url: "/teams/arrows.svg", color: "#FF6600", className: "object-contain p-0.5 filter-none" }
   }
   if (season && season >= 1978 && season <= 1990 && (canonical === "Arrows" || name.toLowerCase().includes("arrows"))) {
-    return { url: "/teams/arrows_classic.svg", color: "#FFFFFF", className: "object-contain p-0.5 filter-none" }
+    return { url: "/teams/arrows_classic.svg", color: "#FF6600", className: "object-contain p-0.5 filter-none" }
   }
 
   // Jordan Grand Prix Era Overrides

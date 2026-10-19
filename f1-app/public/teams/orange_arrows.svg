@@ -1,25 +1,34 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
   <defs>
-    <linearGradient id="oArrowsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF7500" />
+    <linearGradient id="oArrBgOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF7A00" />
+      <stop offset="50%" stop-color="#FF5F00" />
       <stop offset="100%" stop-color="#E64500" />
     </linearGradient>
-    <filter id="oArrowsDrop" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3" />
+
+    <filter id="oArrDrop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.4" />
     </filter>
   </defs>
 
-  <!-- Left: Iconic Orange Telecom Rounded Square -->
-  <g transform="translate(8, 12)" filter="url(#oArrowsDrop)">
-    <rect x="0" y="0" width="60" height="60" rx="14" fill="url(#oArrowsGrad)" stroke="#CC3D00" stroke-width="1.5" />
-    <text x="30" y="37" font-family="'Helvetica Neue', Helvetica, system-ui, -apple-system, sans-serif" font-size="15.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="-0.5">orange</text>
+  <!-- Fundo Laranja Oficial Arrows -->
+  <rect x="0" y="0" width="170" height="85" rx="10" fill="url(#oArrBgOrange)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#FFA34D" stroke-width="1.2" opacity="0.6" />
+
+  <!-- Left: Iconic Orange Telecom Rounded Square in Black with White Text -->
+  <g transform="translate(8, 11)" filter="url(#oArrDrop)">
+    <rect x="0" y="0" width="60" height="62" rx="14" fill="#111111" stroke="#FFFFFF" stroke-width="2" />
+    <text x="30" y="38" font-family="'Helvetica Neue', Helvetica, system-ui, -apple-system, sans-serif" font-size="15.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="-0.5">orange</text>
   </g>
 
-  <!-- Right: ARROWS Typography & Speed Arrowhead -->
-  <g transform="translate(76, 0)">
+  <!-- Right: Letras em Preto e Branco -->
+  <g transform="translate(76, 0)" filter="url(#oArrDrop)">
+    <!-- ARROWS em Preto Profundo -->
     <text x="0" y="44" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="28" font-weight="900" font-style="italic" fill="#111111" letter-spacing="0.5">ARROWS</text>
-    <text x="1" y="64" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="13.5" font-weight="900" font-style="italic" fill="url(#oArrowsGrad)" letter-spacing="3.5">F1 TEAM</text>
-    <!-- Arrowhead Fin in Vibrant Orange -->
-    <path d="M 0 70 L 74 70 L 84 72 L 74 74 L 0 74 Z" fill="url(#oArrowsGrad)" />
+    <!-- F1 TEAM em Branco Puro -->
+    <text x="1" y="64" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="3.5">F1 TEAM</text>
+    <!-- Arrowhead Fin in Black & White -->
+    <path d="M 0 70 L 60 70 L 70 72 L 60 74 L 0 74 Z" fill="#111111" />
+    <path d="M 72 70 L 84 70 L 88 72 L 84 74 L 72 74 Z" fill="#FFFFFF" />
   </g>
 </svg>

@@ -1,27 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
   <defs>
-    <linearGradient id="arrClassicGold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F5D061" />
-      <stop offset="50%" stop-color="#D4A72C" />
-      <stop offset="100%" stop-color="#9C7514" />
+    <!-- Vibrant Arrows Racing Orange Gradient -->
+    <linearGradient id="arrowsBgOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF7A00" />
+      <stop offset="50%" stop-color="#FF5F00" />
+      <stop offset="100%" stop-color="#E64500" />
     </linearGradient>
-    <filter id="arrDrop" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3" />
+
+    <filter id="arrowsShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.4" />
     </filter>
   </defs>
 
-  <!-- Left: Classic Arrows Dynamic Arrow Roundel -->
-  <g transform="translate(8, 11)" filter="url(#arrDrop)">
-    <circle cx="31.5" cy="31.5" r="30" fill="#00162B" stroke="url(#arrClassicGold)" stroke-width="2.5" />
-    <!-- Stylized "A" Arrow pointing forward -->
-    <path d="M 31.5 12 L 48 46 L 39 46 L 31.5 30 L 24 46 L 15 46 Z" fill="url(#arrClassicGold)" />
-    <polygon points="31.5,35 36,44 27,44" fill="#00162B" />
+  <!-- Fundo Laranja Oficial Arrows Preenchido de Borda a Borda -->
+  <rect x="0" y="0" width="170" height="85" rx="10" fill="url(#arrowsBgOrange)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#FFA34D" stroke-width="1.2" opacity="0.6" />
+
+  <!-- Left: Classic Arrows "A" Arrowhead Emblem in Black and White -->
+  <g transform="translate(8, 10)" filter="url(#arrowsShadow)">
+    <!-- Base Circular Plate in Deep Carbon Black with White Trim -->
+    <circle cx="31.5" cy="31.5" r="30" fill="#111111" stroke="#FFFFFF" stroke-width="2.5" />
+    <!-- Stylized "A" Arrow pointing forward in Pure White -->
+    <path d="M 31.5 11 L 49 48 L 40 48 L 31.5 30 L 23 48 L 14 48 Z" fill="#FFFFFF" />
+    <polygon points="31.5,35 36.5,45 26.5,45" fill="#111111" />
   </g>
 
-  <!-- Right: ARROWS GRAND PRIX Typography -->
-  <g transform="translate(74, 0)">
-    <text x="0" y="42" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="28" font-weight="900" font-style="italic" fill="#00162B" letter-spacing="1">ARROWS</text>
-    <text x="1" y="62" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="13" font-weight="900" font-style="italic" fill="#D4A72C" letter-spacing="3.5">GRAND PRIX</text>
-    <rect x="0" y="68" width="88" height="3.5" rx="1.5" fill="url(#arrClassicGold)" />
+  <!-- Right: Letras em Branco e Preto -->
+  <g transform="translate(76, 0)" filter="url(#arrowsShadow)">
+    <!-- ARROWS em Preto Profundo com Sombra Nítida -->
+    <text x="0" y="42" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial Black, sans-serif" font-size="28" font-weight="900" font-style="italic" fill="#111111" letter-spacing="1">ARROWS</text>
+    <!-- GRAND PRIX em Branco Puro -->
+    <text x="1" y="63" font-family="'Titillium Web', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="3.5">GRAND PRIX</text>
+    <!-- Barras de velocidade em preto e branco -->
+    <rect x="0" y="69" width="56" height="3.5" rx="1.5" fill="#111111" />
+    <rect x="60" y="69" width="28" height="3.5" rx="1.5" fill="#FFFFFF" />
   </g>
 </svg>
