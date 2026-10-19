@@ -64,11 +64,11 @@ function remainingUntil(target: string): Remaining {
 
 function CountdownBlock({ value, label }: { value: number; label: string }) {
   return (
-    <div className="flex min-w-14 flex-col items-center rounded-lg bg-secondary px-2 py-1.5">
-      <span className="text-xl font-bold font-mono tracking-tight tabular-nums">
+    <div className="flex min-w-[50px] sm:min-w-[54px] flex-col items-center justify-center rounded-lg border border-white/10 bg-black/45 px-2.5 py-1.5 shadow-inner backdrop-blur-md transition-all duration-300 group-hover:border-primary/40">
+      <span className="text-xl sm:text-2xl font-black font-mono tracking-tight tabular-nums text-foreground drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
         {String(value).padStart(2, "0")}
       </span>
-      <span className="text-[10px] tracking-wide text-muted-foreground uppercase">
+      <span className="text-[9px] font-bold tracking-widest text-muted-foreground uppercase mt-0.5">
         {label}
       </span>
     </div>
@@ -91,8 +91,8 @@ function Countdown({
 
   if (remaining.done) {
     return (
-      <Badge variant="destructive" className="gap-1.5 text-sm">
-        <span className="size-1.5 animate-pulse rounded-full bg-current" />
+      <Badge variant="destructive" className="gap-1.5 text-sm font-bold tracking-wide uppercase shadow-lg">
+        <span className="size-2 animate-pulse rounded-full bg-current" />
         {doneLabel}
       </Badge>
     )
@@ -126,19 +126,20 @@ function SessionPill({
         new Date(session.date_start),
       )}${live ? " · ao vivo" : ""}`}
       className={cn(
-        "flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-semibold font-mono tracking-tight tabular-nums",
+        "flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[11px] font-semibold font-mono tracking-tight tabular-nums transition-all duration-200",
         finished &&
-          "border-transparent bg-secondary text-muted-foreground line-through opacity-60",
-        live && "border-emerald-500/40 bg-emerald-500/10 text-emerald-600",
+          "border-white/5 bg-secondary/40 text-muted-foreground/60 line-through opacity-70",
+        live && "border-emerald-500/60 bg-emerald-500/15 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.3)] animate-pulse",
         !finished &&
           !live &&
           next &&
-          "border-primary/40 bg-primary/[0.07] ring-1 ring-primary/25",
-        !finished && !live && !next && "border-border text-muted-foreground",
+          "border-primary/60 bg-primary/15 text-foreground ring-1 ring-primary/40 shadow-[0_0_12px_rgba(var(--primary-rgb),0.25)] font-bold",
+        !finished && !live && !next && "border-white/10 bg-background/40 text-muted-foreground hover:border-white/20",
       )}
     >
+      {live && <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />}
       {sessionLabel(session)}
-      <span className="font-normal">
+      <span className="font-normal opacity-85">
         {timeFmt.format(new Date(session.date_start))}
       </span>
     </span>
@@ -203,16 +204,18 @@ export function NextRaceCard({
   const flag = mediaUrl(flagFromCountry(data.country, 640), 640)
 
   return (
-    <Card className="dark relative overflow-hidden border-white/10 bg-card text-card-foreground shadow-md h-full flex flex-col">
+    <Card className="dark relative overflow-hidden border-white/10 bg-card/90 backdrop-blur-xl text-card-foreground shadow-lg h-full flex flex-col group transition-all duration-500 hover:shadow-2xl hover:border-primary/40">
+      <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent z-20 opacity-80 group-hover:opacity-100 transition-opacity" />
       {flag ? (
         <>
           <img
             src={flag}
             alt=""
             aria-hidden
-            className="pointer-events-none absolute inset-0 size-full object-cover opacity-30 dark:opacity-40"
+            className="pointer-events-none absolute inset-0 size-full object-cover opacity-25 dark:opacity-35 scale-100 transition-transform duration-1000 group-hover:scale-105"
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-card via-card/90 to-card/10 dark:to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-card via-card/90 to-card/25 dark:to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent opacity-80" />
         </>
       ) : null}
       <CardHeader className="relative z-10">
@@ -224,33 +227,32 @@ export function NextRaceCard({
             className="h-5 w-auto object-contain rounded-sm"
           />
           {data.round ? (
-            <Badge variant="outline" className="ml-1">
+            <Badge variant="outline" className="ml-1 font-mono uppercase tracking-wider text-[11px] border-white/20 bg-black/20 backdrop-blur-xs">
               Etapa {data.round}
             </Badge>
           ) : null}
-
         </CardTitle>
       </CardHeader>
       <CardContent className="relative z-10 flex flex-wrap items-stretch justify-between gap-4 flex-1">
         <div>
-          <div className="text-xl font-semibold tracking-tight">
+          <div className="text-xl sm:text-2xl font-black tracking-tight text-foreground">
             {data.name ?? data.circuit ?? "—"}
           </div>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-xs sm:text-sm text-muted-foreground mt-0.5 font-medium">
             {[data.circuit, data.location, data.country]
               .filter(Boolean)
               .join(" · ")}
           </div>
           {nextSession ? (
-            <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
-              <CalendarDays className="size-3" />
+            <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground/90 font-mono">
+              <CalendarDays className="size-3.5 text-primary" />
               {nextSession.name === "Race"
                 ? `Largada em ${dateTimeFmt.format(new Date(nextSession.date_start))}`
                 : `${nextSession.name} em ${dateTimeFmt.format(new Date(nextSession.date_start))}`}
             </div>
           ) : null}
           {sessions.length > 0 ? (
-            <div className="mt-3 flex flex-wrap gap-1.5">
+            <div className="mt-3.5 flex flex-wrap gap-1.5">
               {sessions.map((session: LiveSessionEntry) => (
                 <SessionPill
                   key={session.key}
@@ -262,10 +264,10 @@ export function NextRaceCard({
           ) : null}
         </div>
         {target ? (
-          <div className="flex flex-col items-end justify-end mt-auto ml-auto gap-1">
-            <span className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Timer className="size-3" />
-              {targetIsRace ? "largada em" : "próxima sessão em"}
+          <div className="flex flex-col items-end justify-end mt-auto ml-auto gap-1.5">
+            <span className="flex items-center gap-1 text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-semibold">
+              <Timer className="size-3 text-primary animate-pulse" />
+              {targetIsRace ? "Largada em" : "Próxima sessão em"}
             </span>
             <Countdown
               target={target}

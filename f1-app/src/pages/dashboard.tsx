@@ -250,7 +250,8 @@ function SummaryCard({
   background?: { url: string; className?: string } | null
 }) {
   return (
-    <Card className="relative flex h-full flex-col group overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 hover:border-primary/30">
+    <Card className="relative flex h-full flex-col group overflow-hidden border-white/10 bg-card/90 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 hover:border-primary/40">
+      <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent z-20 opacity-70 group-hover:opacity-100 transition-opacity" />
       {background ? (
         <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-xl">
           <img

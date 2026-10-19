@@ -119,8 +119,14 @@
 
 .dark [data-slot="card"],
 .dark .bg-card {
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: rgba(255, 255, 255, 0.10);
+}
+
+html.theme-active [data-slot="card"]:hover {
+  border-color: color-mix(in srgb, var(--primary) 45%, rgba(255, 255, 255, 0.20));
+  box-shadow: 0 10px 30px -10px var(--team-glow, rgba(0,0,0,0.5));
 }
 
 

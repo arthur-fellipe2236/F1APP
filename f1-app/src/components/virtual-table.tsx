@@ -29,15 +29,35 @@ export function VirtualDataTable<T>({ data, columns, rowHeight = 60, getRowColor
     <>
       {/* MOBILE LIST */}
       {renderMobileCard && (
-        <div className="md:hidden flex flex-col gap-3 w-full">
+        <div className="md:hidden flex flex-col gap-3.5 w-full">
           {data.map((row, idx) => {
             const accentColor = getRowColor ? getRowColor(row) : undefined
             return (
-              <div key={idx} className="relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm hover:border-primary/50 transition-colors">
-                {accentColor && (
-                  <div className="absolute left-0 top-0 bottom-0 w-1.5 z-10" style={{ backgroundColor: accentColor }} />
+              <div
+                key={idx}
+                onClick={() => onRowClicked?.(row)}
+                className={cn(
+                  "relative overflow-hidden rounded-xl border border-white/10 bg-card/90 backdrop-blur-md text-card-foreground shadow-sm hover:border-primary/50 transition-all duration-300 hover:shadow-md",
+                  onRowClicked && "cursor-pointer active:scale-[0.99]"
                 )}
-                <div className="p-4 pl-5 flex flex-col gap-2">
+              >
+                {/* Aero Accent / Team Ribbon */}
+                {accentColor ? (
+                  <>
+                    <div className="absolute left-0 top-0 bottom-0 w-1.5 z-10 rounded-l" style={{ backgroundColor: accentColor }} />
+                    <div
+                      className="absolute inset-y-0 left-0 w-28 opacity-15 pointer-events-none"
+                      style={{ background: `linear-gradient(to right, ${accentColor}, transparent)` }}
+                    />
+                  </>
+                ) : (
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/40 z-10" />
+                )}
+
+                {/* Top subtle highlight */}
+                <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
+
+                <div className="p-4 pl-5 flex flex-col gap-2 relative z-10">
                   {renderMobileCard(row)}
                 </div>
               </div>

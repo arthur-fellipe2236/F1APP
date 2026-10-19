@@ -79,10 +79,14 @@ export function F1DataTable<T>(props: F1DataTableProps<T>) {
   return (
     <>
       {renderMobileCard && data && (
-        <div className="md:hidden flex flex-col gap-3 w-full mb-6">
+        <div className="md:hidden flex flex-col gap-3.5 w-full mb-6">
           {data.map((row, idx) => (
-            <div key={idx} className="relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm hover:border-primary/50 transition-colors">
-              <div className="p-4 flex flex-col gap-2">
+            <div
+              key={idx}
+              className="relative overflow-hidden rounded-xl border border-white/10 bg-card/90 backdrop-blur-md text-card-foreground shadow-sm hover:border-primary/50 transition-all duration-300 hover:shadow-md"
+            >
+              <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
+              <div className="p-4 flex flex-col gap-2 relative z-10">
                 {renderMobileCard(row)}
               </div>
             </div>
