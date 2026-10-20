@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="elderBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081E3B" /><stop offset="50%" stop-color="#041021" /><stop offset="100%" stop-color="#02070E" />
+    </linearGradient>
+    <filter id="eldersh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#elderBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#123B75" stroke-width="1.2" />
+  <rect x="12" y="2" width="146" height="3" fill="#60A5FA" rx="1" />
+  <g transform="translate(12, 16)" filter="url(#eldersh)">
+    <circle cx="25" cy="25" r="23" fill="#030A17" stroke="#60A5FA" stroke-width="2" /><text x="25" y="32" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="14" text-anchor="middle">E</text>
+  </g>
+  <g transform="translate(68, 20)" filter="url(#eldersh)">
+    <text x="0" y="23" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-style="normal" font-size="22" letter-spacing="1.5">ELDER</text>
+    <text x="1" y="34" fill="#60A5FA" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="7.5" letter-spacing="2.8">ELDER OFFENHAUSER</text>
+    <line x1="1" y1="39" x2="88" y2="39" stroke="#60A5FA" stroke-width="1.2" opacity="0.8" />
+    <text x="1" y="49" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="6.5" letter-spacing="1.8">INDIANAPOLIS 500 • 1959</text>
+  </g>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="connaughtBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#042817" /><stop offset="50%" stop-color="#02160C" /><stop offset="100%" stop-color="#010A05" />
+    </linearGradient>
+    <filter id="connaughtsh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#connaughtBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#0E5E36" stroke-width="1.2" />
+  <rect x="12" y="2" width="146" height="3" fill="#FFD100" rx="1" />
+  <g transform="translate(12, 16)" filter="url(#connaughtsh)">
+    <circle cx="25" cy="25" r="23" fill="#020E08" stroke="#FFD100" stroke-width="2" /><path d="M 18 16 C 13 22, 13 28, 18 34 C 23 34, 25 31, 25 31 C 25 31, 23 30, 20 28 C 17 25, 17 22, 21 19 C 24 17, 26 19, 26 19 Z" fill="#FFD100" /><path d="M 23 23 L 36 17 L 34 23 L 36 29 Z" fill="#FFFFFF" />
+  </g>
+  <g transform="translate(68, 20)" filter="url(#connaughtsh)">
+    <text x="0" y="23" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-style="normal" font-size="17" letter-spacing="1.5">CONNAUGHT</text>
+    <text x="1" y="34" fill="#FFD100" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="7.5" letter-spacing="2.8">CONNAUGHT ENGINEERING</text>
+    <line x1="1" y1="39" x2="88" y2="39" stroke="#FFD100" stroke-width="1.2" opacity="0.8" />
+    <text x="1" y="49" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="6.5" letter-spacing="1.8">TONY BROOKS • SYRACUSE GP</text>
+  </g>
+</svg>

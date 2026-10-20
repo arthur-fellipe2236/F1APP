@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="astonbutterworthBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#04281A" /><stop offset="50%" stop-color="#02160E" /><stop offset="100%" stop-color="#010A06" />
+    </linearGradient>
+    <filter id="astonbutterworthsh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#astonbutterworthBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#0E5939" stroke-width="1.2" />
+  <rect x="12" y="2" width="146" height="3" fill="#CBD5E1" rx="1" />
+  <g transform="translate(12, 16)" filter="url(#astonbutterworthsh)">
+    <circle cx="25" cy="25" r="23" fill="#020E08" stroke="#CBD5E1" stroke-width="2" /><text x="25" y="27" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="8" text-anchor="middle">ASTON</text><text x="25" y="35" fill="#CBD5E1" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="6" text-anchor="middle">FLAT-4</text>
+  </g>
+  <g transform="translate(68, 20)" filter="url(#astonbutterworthsh)">
+    <text x="0" y="23" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-style="normal" font-size="22" letter-spacing="1.5">ASTON</text>
+    <text x="1" y="34" fill="#CBD5E1" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="7.5" letter-spacing="2.8">ASTON BUTTERWORTH F1</text>
+    <line x1="1" y1="39" x2="88" y2="39" stroke="#CBD5E1" stroke-width="1.2" opacity="0.8" />
+    <text x="1" y="49" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="6.5" letter-spacing="1.8">BILL ASTON • ARCHIE BUTTERWORTH</text>
+  </g>
+</svg>
