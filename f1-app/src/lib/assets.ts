@@ -538,6 +538,30 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
   "Modena Team Lambo": {
     1991: { url: "/teams/lambo.svg", color: "#0A152E", className: "object-contain p-0.5 filter-none" },
   },
+  "Adams": {
+    1950: { url: "/teams/adams.svg", color: "#0A1F3F", className: "object-contain p-0.5 filter-none" },
+  },
+  "Langley": {
+    1950: { url: "/teams/langley.svg", color: "#200407", className: "object-contain p-0.5 filter-none" },
+  },
+  "Milano": {
+    1950: { url: "/teams/milano.svg", color: "#1F0407", className: "object-contain p-0.5 filter-none" },
+  },
+  "Scuderia Milano": {
+    1950: { url: "/teams/milano.svg", color: "#1F0407", className: "object-contain p-0.5 filter-none" },
+  },
+  "Olson": {
+    1950: { url: "/teams/olson.svg", color: "#042616", className: "object-contain p-0.5 filter-none" },
+  },
+  "Rae": {
+    1950: { url: "/teams/rae.svg", color: "#091D42", className: "object-contain p-0.5 filter-none" },
+  },
+  "Snowberger": {
+    1950: { url: "/teams/snowberger.svg", color: "#181400", className: "object-contain p-0.5 filter-none" },
+  },
+  "Wetteroth": {
+    1950: { url: "/teams/wetteroth.svg", color: "#1C1400", className: "object-contain p-0.5 filter-none" },
+  },
   "Connaught": {
     ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [1952 + i, { url: "/teams/connaught.svg", color: "#042817", className: "object-contain p-0.5 filter-none" }])),
   },
@@ -1309,6 +1333,14 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   Stewart: { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
   "Stewart Grand Prix": { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
   "Stewart Grand Prix MCI Worldcom": { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
+  Adams: { url: "/teams/adams.svg", color: "#0A1F3F", className: "object-contain p-0.5 filter-none" },
+  Langley: { url: "/teams/langley.svg", color: "#200407", className: "object-contain p-0.5 filter-none" },
+  Milano: { url: "/teams/milano.svg", color: "#1F0407", className: "object-contain p-0.5 filter-none" },
+  "Scuderia Milano": { url: "/teams/milano.svg", color: "#1F0407", className: "object-contain p-0.5 filter-none" },
+  Olson: { url: "/teams/olson.svg", color: "#042616", className: "object-contain p-0.5 filter-none" },
+  Rae: { url: "/teams/rae.svg", color: "#091D42", className: "object-contain p-0.5 filter-none" },
+  Snowberger: { url: "/teams/snowberger.svg", color: "#181400", className: "object-contain p-0.5 filter-none" },
+  Wetteroth: { url: "/teams/wetteroth.svg", color: "#1C1400", className: "object-contain p-0.5 filter-none" },
   Connaught: { url: "/teams/connaught.svg", color: "#042817", className: "object-contain p-0.5 filter-none" },
   Dunn: { url: "/teams/dunn.svg", color: "#0A2044", className: "object-contain p-0.5 filter-none" },
   Elder: { url: "/teams/elder.svg", color: "#081E3B", className: "object-contain p-0.5 filter-none" },
@@ -1838,6 +1870,14 @@ const TEAM_ALIASES: Record<string, string> = {
   "leyton house": "Leyton House",
   "leyton house racing": "Leyton House",
   "leyton house formula one racing team": "Leyton House",
+  adams: "Adams",
+  langley: "Langley",
+  milano: "Milano",
+  "scuderia milano": "Milano",
+  olson: "Olson",
+  rae: "Rae",
+  snowberger: "Snowberger",
+  wetteroth: "Wetteroth",
   connaught: "Connaught",
   "connaught engineering": "Connaught",
   dunn: "Dunn",
