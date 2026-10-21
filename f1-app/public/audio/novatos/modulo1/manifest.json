@@ -1,0 +1,42 @@
+{
+  "cena01": {
+    "duration": 16.2,
+    "size_kb": 316.9,
+    "url": "/audio/novatos/modulo1/cena01.mp3"
+  },
+  "cena02": {
+    "duration": 22.9,
+    "size_kb": 447.7,
+    "url": "/audio/novatos/modulo1/cena02.mp3"
+  },
+  "cena03": {
+    "duration": 22.66,
+    "size_kb": 443.0,
+    "url": "/audio/novatos/modulo1/cena03.mp3"
+  },
+  "cena04": {
+    "duration": 32.59,
+    "size_kb": 637.1,
+    "url": "/audio/novatos/modulo1/cena04.mp3"
+  },
+  "cena05": {
+    "duration": 21.43,
+    "size_kb": 419.1,
+    "url": "/audio/novatos/modulo1/cena05.mp3"
+  },
+  "cena06": {
+    "duration": 26.09,
+    "size_kb": 510.0,
+    "url": "/audio/novatos/modulo1/cena06.mp3"
+  },
+  "cena07": {
+    "duration": 23.04,
+    "size_kb": 450.5,
+    "url": "/audio/novatos/modulo1/cena07.mp3"
+  },
+  "cena08": {
+    "duration": 21.43,
+    "size_kb": 419.1,
+    "url": "/audio/novatos/modulo1/cena08.mp3"
+  }
+}

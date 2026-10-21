@@ -1,6 +1,7 @@
 import { useAppStore } from "@/store"
 import { SeasonSelector } from "@/components/season-selector"
 import { useMemo, useState, type ReactNode } from "react"
+import { Link } from "react-router-dom"
 import type { TableColumn } from "react-data-table-component"
 import { Flag, Shield, Trophy, CheckCircle2, Clock, Gauge } from "lucide-react"
 
@@ -434,6 +435,36 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      <Link
+        to="/novatos"
+        className="group relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl border border-[#E10600]/40 bg-gradient-to-r from-[#0A0A0D] via-[#13141B] to-[#1A0808] p-4 sm:px-6 sm:py-4 text-white shadow-[0_10px_30px_rgba(0,0,0,0.5)] transition-all duration-300 hover:border-[#E10600] hover:shadow-[0_0_28px_rgba(225,6,0,0.3)] overflow-hidden"
+      >
+        <div className="flex items-center gap-3.5 relative z-10">
+          <img
+            src="/radio/mariana.png"
+            alt="Mariana da Rádio F1"
+            className="size-11 rounded-full object-cover border-2 border-[#E10600] shrink-0 shadow-md"
+          />
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#E10600]/20 border border-[#E10600]/50 px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase tracking-widest text-[#FF6B66]">
+                <span className="size-1.5 rounded-full bg-[#E10600] animate-ping" />
+                NOVATOS NA F1 • MÓDULO 1
+              </span>
+              <span className="text-[11px] font-mono text-zinc-400">
+                Locução: Mariana da Rádio F1
+              </span>
+            </div>
+            <h3 className="mt-1 font-f1 text-sm sm:text-base font-bold uppercase tracking-wide text-white group-hover:text-[#FF8580] transition-colors">
+              O que é a Fórmula 1? — Aula Interativa Cinematográfica (8 Cenas + Áudio + Quiz)
+            </h3>
+          </div>
+        </div>
+        <span className="relative z-10 inline-flex items-center gap-2 rounded-xl bg-[#E10600] px-4 py-2 font-f1 text-xs font-bold uppercase tracking-wider text-white shadow-[0_0_16px_rgba(225,6,0,0.5)] transition-transform group-hover:scale-105 shrink-0">
+          Começar do Zero →
+        </span>
+      </Link>
+
       <PageHeader
         title="Próximas Corridas"
       />

@@ -35,6 +35,9 @@ const AdminPage = lazy(() =>
 const ComparePage = lazy(() =>
   import("@/pages/compare").then((m) => ({ default: m.ComparePage })),
 )
+const NovatosPage = lazy(() =>
+  import("@/pages/novatos").then((m) => ({ default: m.NovatosPage })),
+)
 
 function NotFoundPage() {
   return (
@@ -84,6 +87,7 @@ export default function App() {
             <Route path="live" element={<LiveTimingPage />} />
             <Route path="bolao" element={<FantasyPage />} />
             <Route path="comparar" element={<ComparePage />} />
+            <Route path="novatos" element={<NovatosPage />} />
             <Route path="admin" element={<AdminPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>

@@ -12,6 +12,7 @@ import {
   Sparkles,
   GitCompare,
   ShieldAlert,
+  BookOpen,
 } from "lucide-react"
 
 import { api } from "@/lib/api"
@@ -33,6 +34,7 @@ const navItems = [
   { to: "/live", label: "Ao Vivo", icon: Radio, isLive: true },
   { to: "/bolao", label: "Bolão", icon: Sparkles },
   { to: "/comparar", label: "Comparar", icon: GitCompare },
+  { to: "/novatos", label: "Novatos na F1", icon: BookOpen },
 ]
 
 
