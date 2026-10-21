@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="schroederBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#26050A" />
+      <stop offset="50%" stop-color="#160205" />
+      <stop offset="100%" stop-color="#0A0103" />
+    </linearGradient>
+    <filter id="schroedersh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <!-- Background & Outer Border -->
+  <rect width="170" height="85" rx="10" fill="url(#schroederBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#7F1D1D" stroke-width="1.2" />
+  
+  <!-- Vintage Gold Racing Accent Bar -->
+  <rect x="12" y="2" width="146" height="3" fill="#F59E0B" rx="1" />
+  
+  <!-- Left Emblem: Classic Indy Roadster Shield & S Monogram -->
+  <g transform="translate(13, 16)" filter="url(#schroedersh)">
+    <!-- Outer Shield -->
+    <polygon points="12,5 38,5 35,37 25,45 15,37" fill="#130103" stroke="#F59E0B" stroke-width="2" />
+    <!-- Inner Pinstripe Shield -->
+    <polygon points="15,8 35,8 32,34 25,40 18,34" fill="none" stroke="#FFFFFF" stroke-width="0.8" opacity="0.6" />
+    <!-- Vintage Gold Star -->
+    <path d="M 25,11 L 26.2,14.5 L 29.8,14.5 L 26.9,16.6 L 28,20.1 L 25,18 L 22,20.1 L 23.1,16.6 L 20.2,14.5 L 23.8,14.5 Z" fill="#F59E0B" />
+    <!-- Bold Roadster S -->
+    <text x="25" y="33" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="15" text-anchor="middle">S</text>
+  </g>
+  
+  <!-- Right Typography Block -->
+  <g transform="translate(66, 19)" filter="url(#schroedersh)">
+    <text x="0" y="22" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="18.5" letter-spacing="1.2">SCHROEDER</text>
+    <text x="1" y="33" fill="#F59E0B" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="7.2" letter-spacing="2.2">SCHROEDER SPECIAL</text>
+    <line x1="1" y1="38" x2="93" y2="38" stroke="#F59E0B" stroke-width="1.2" opacity="0.8" />
+    <text x="1" y="48" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="6.3" letter-spacing="1.6">INDIANAPOLIS 500 • 1951-1955</text>
+  </g>
+</svg>

@@ -541,6 +541,20 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
   "Adams": {
     1950: { url: "/teams/adams.svg", color: "#0A1F3F", className: "object-contain p-0.5 filter-none" },
   },
+  "AFM": {
+    1952: { url: "/teams/afm.svg", color: "#0D223F", className: "object-contain p-0.5 filter-none" },
+    1953: { url: "/teams/afm.svg", color: "#0D223F", className: "object-contain p-0.5 filter-none" },
+  },
+  "Schroeder": {
+    1951: { url: "/teams/schroeder.svg", color: "#26050A", className: "object-contain p-0.5 filter-none" },
+    1953: { url: "/teams/schroeder.svg", color: "#26050A", className: "object-contain p-0.5 filter-none" },
+    1954: { url: "/teams/schroeder.svg", color: "#26050A", className: "object-contain p-0.5 filter-none" },
+    1955: { url: "/teams/schroeder.svg", color: "#26050A", className: "object-contain p-0.5 filter-none" },
+  },
+  "Turner": {
+    1953: { url: "/teams/turner.svg", color: "#081D40", className: "object-contain p-0.5 filter-none" },
+  },
+
   "Langley": {
     1950: { url: "/teams/langley.svg", color: "#200407", className: "object-contain p-0.5 filter-none" },
   },
@@ -1334,6 +1348,12 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   "Stewart Grand Prix": { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
   "Stewart Grand Prix MCI Worldcom": { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
   Adams: { url: "/teams/adams.svg", color: "#0A1F3F", className: "object-contain p-0.5 filter-none" },
+  AFM: { url: "/teams/afm.svg", color: "#0D223F", className: "object-contain p-0.5 filter-none" },
+  "Alex von Falkenhausen Motorenbau": { url: "/teams/afm.svg", color: "#0D223F", className: "object-contain p-0.5 filter-none" },
+  Schroeder: { url: "/teams/schroeder.svg", color: "#26050A", className: "object-contain p-0.5 filter-none" },
+  "Schroeder Special": { url: "/teams/schroeder.svg", color: "#26050A", className: "object-contain p-0.5 filter-none" },
+  Turner: { url: "/teams/turner.svg", color: "#081D40", className: "object-contain p-0.5 filter-none" },
+  "Turner Special": { url: "/teams/turner.svg", color: "#081D40", className: "object-contain p-0.5 filter-none" },
   Langley: { url: "/teams/langley.svg", color: "#200407", className: "object-contain p-0.5 filter-none" },
   Milano: { url: "/teams/milano.svg", color: "#1F0407", className: "object-contain p-0.5 filter-none" },
   "Scuderia Milano": { url: "/teams/milano.svg", color: "#1F0407", className: "object-contain p-0.5 filter-none" },
@@ -1871,6 +1891,13 @@ const TEAM_ALIASES: Record<string, string> = {
   "leyton house racing": "Leyton House",
   "leyton house formula one racing team": "Leyton House",
   adams: "Adams",
+  afm: "AFM",
+  "alex von falkenhausen": "AFM",
+  "alex von falkenhausen motorenbau": "AFM",
+  schroeder: "Schroeder",
+  "schroeder special": "Schroeder",
+  turner: "Turner",
+  "turner special": "Turner",
   langley: "Langley",
   milano: "Milano",
   "scuderia milano": "Milano",
