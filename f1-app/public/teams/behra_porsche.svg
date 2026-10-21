@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="behraporscheBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14161A" /><stop offset="50%" stop-color="#0B0C0F" /><stop offset="100%" stop-color="#040506" />
+    </linearGradient>
+    <filter id="behraporschesh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#behraporscheBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#5A5F6B" stroke-width="1.2" />
+  <rect x="12" y="2" width="46" height="3" fill="#002395" rx="1" /><rect x="62" y="2" width="46" height="3" fill="#FFFFFF" rx="1" /><rect x="112" y="2" width="46" height="3" fill="#ED2939" rx="1" />
+  <g transform="translate(12, 16)" filter="url(#behraporschesh)">
+    <polygon points="12,5 38,5 37,32 25,45 13,32" fill="#0A0B0D" stroke="#C9A227" stroke-width="2" />
+    <rect x="16" y="9" width="8" height="10" fill="#C9A227" /><rect x="26" y="9" width="8" height="10" fill="#B91C1C" />
+    <rect x="16" y="21" width="8" height="10" fill="#B91C1C" /><rect x="26" y="21" width="8" height="10" fill="#C9A227" />
+    <circle cx="25" cy="20" r="6" fill="#0A0B0D" stroke="#FFFFFF" stroke-width="0.8" />
+    <text x="25" y="23" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="8" text-anchor="middle">B</text>
+  </g>
+  <g transform="translate(68, 19)" filter="url(#behraporschesh)">
+    <text x="0" y="22" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="21" letter-spacing="1.4">BEHRA</text>
+    <text x="1" y="33" fill="#C9A227" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="7" letter-spacing="2">BEHRA-PORSCHE • RSK F2</text>
+    <line x1="1" y1="38" x2="90" y2="38" stroke="#C9A227" stroke-width="1.2" opacity="0.8" />
+    <text x="1" y="48" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="6.2" letter-spacing="1.5">JEAN BEHRA • 1960</text>
+  </g>
+</svg>

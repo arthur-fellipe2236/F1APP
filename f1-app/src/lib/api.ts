@@ -111,6 +111,8 @@ export interface TeamStanding {
 export interface Standings<T> {
   season: number | null
   data: T[]
+  official?: boolean
+  note?: string
 }
 
 export interface NextRace {

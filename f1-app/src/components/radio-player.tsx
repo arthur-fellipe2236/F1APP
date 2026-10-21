@@ -21,6 +21,8 @@ import {
   Check,
   Copy,
   X,
+  Eye,
+  EyeOff,
 } from "lucide-react"
 import { useAppStore } from "@/store"
 import { cn } from "@/lib/utils"
@@ -42,6 +44,9 @@ import {
   fetchUserPlaylists,
   fetchUserTopTracks,
   parseSpotifyUriOrUrl,
+  bindSpotifySessionOwner,
+  getSpotifyPrivacyMode,
+  setSpotifyPrivacyMode,
 } from "@/lib/spotify"
 
 const OFFICIAL_F1_PLAYLIST_ID = "1gH4FFUMWSI98MKPeBaa8x"
@@ -120,7 +125,7 @@ function playRadioChirp(type: "start" | "end" = "start") {
 }
 
 export function RadioPlayer() {
-  const { series, token } = useAppStore()
+  const { series, token, user: appUser } = useAppStore()
   const [mode, setMode] = useState<"news" | "music">("news")
   const [isPlaying, setIsPlaying] = useState(false)
   const [isMuted, setIsMuted] = useState(false)
@@ -144,6 +149,14 @@ export function RadioPlayer() {
   const [spotifyPlaylists, setSpotifyPlaylists] = useState<SpotifyPlaylist[]>([])
   const [spotifyTopTracks, setSpotifyTopTracks] = useState<SpotifyTrack[]>([])
   const [isSpotifyLoading, setIsSpotifyLoading] = useState(false)
+  const [spotifyPrivate, setSpotifyPrivate] = useState<boolean>(() => getSpotifyPrivacyMode())
+  const spotifyDisplayName = spotifyPrivate ? "Spotify Privado" : spotifyUser?.display_name || "Spotify"
+  const toggleSpotifyPrivacy = () => {
+    setSpotifyPrivate((prev) => {
+      setSpotifyPrivacyMode(!prev)
+      return !prev
+    })
+  }
   const [musicSubTab, setMusicSubTab] = useState<"playlists" | "top" | "official" | "custom">("official")
   const [activeMediaTitle, setActiveMediaTitle] = useState<string>("F1 Tracks 2026")
   const [activeMediaSubtitle, setActiveMediaSubtitle] = useState<string>("Playlist oficial da F1")
@@ -191,6 +204,18 @@ export function RadioPlayer() {
       setIsSpotifyLoading(false)
     }
   }, [])
+
+  // Isola a sessao do Spotify por usuario do app: se outra conta logar
+  // neste navegador, a sessao anterior e descartada imediatamente.
+  const ownerId = appUser?.id != null ? `user:${appUser.id}` : "guest"
+  useEffect(() => {
+    if (bindSpotifySessionOwner(ownerId)) {
+      setSpotifyUser(null)
+      setSpotifyPlaylists([])
+      setSpotifyTopTracks([])
+      setMusicSubTab("official")
+    }
+  }, [ownerId])
 
   // Check OAuth callback or existing token on mount
   useEffect(() => {
@@ -575,20 +600,30 @@ export function RadioPlayer() {
             {mode === "music" && spotifyUser && (
               <div
                 className="px-2 py-0.5 rounded-lg text-[11px] font-medium flex items-center gap-1.5 border border-[#1DB954]/30 bg-[#1DB954]/10 text-white shrink-0"
-                title={`Spotify Conectado: ${spotifyUser.display_name}`}
+                title={spotifyPrivate ? "Spotify conectado (modo privado)" : `Spotify Conectado: ${spotifyUser.display_name}`}
               >
-                {spotifyUser.images?.[0]?.url ? (
+                {!spotifyPrivate && spotifyUser.images?.[0]?.url ? (
                   <img
                     src={spotifyUser.images[0].url}
-                    alt={spotifyUser.display_name}
+                    alt=""
+                    referrerPolicy="no-referrer"
                     className="w-4 h-4 rounded-full object-cover"
                   />
                 ) : (
                   <SpotifyIcon className="w-3.5 h-3.5 text-[#1DB954]" />
                 )}
                 <span className="font-semibold text-xs max-w-[80px] truncate">
-                  {spotifyUser.display_name.split(" ")[0]}
+                  {spotifyPrivate ? "Privado" : spotifyUser.display_name.split(" ")[0]}
                 </span>
+                <button
+                  type="button"
+                  onClick={toggleSpotifyPrivacy}
+                  className="text-white/50 hover:text-white"
+                  title={spotifyPrivate ? "Mostrar meus dados (só você vê)" : "Ocultar meus dados"}
+                  aria-label={spotifyPrivate ? "Mostrar dados do Spotify" : "Ocultar dados do Spotify"}
+                >
+                  {spotifyPrivate ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                </button>
               </div>
             )}
 
@@ -1031,7 +1066,7 @@ export function RadioPlayer() {
             <div className="flex items-center justify-between text-[10px] text-white/40 pt-1 border-t border-white/5">
               <span className="flex items-center gap-1 truncate">
                 <Sparkles className="w-3 h-3 text-[#1DB954] shrink-0" />
-                {spotifyUser ? `Conectado como ${spotifyUser.display_name}` : "Player Oficial Integrado"}
+                {spotifyUser ? `Conectado como ${spotifyDisplayName}` : "Player Oficial Integrado"}
               </span>
               <button
                 onClick={handlePlayOfficialF1}

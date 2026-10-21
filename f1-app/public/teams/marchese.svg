@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 85" width="170" height="85">
+  <defs>
+    <linearGradient id="marcheseBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1205" /><stop offset="50%" stop-color="#100B03" /><stop offset="100%" stop-color="#070501" />
+    </linearGradient>
+    <filter id="marchesesh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect width="170" height="85" rx="10" fill="url(#marcheseBg)" />
+  <rect x="1.5" y="1.5" width="167" height="82" rx="8.5" fill="none" stroke="#8A6A1F" stroke-width="1.2" />
+  <rect x="12" y="2" width="146" height="3" fill="#E9B949" rx="1" />
+  <g transform="translate(12, 16)" filter="url(#marchesesh)">
+    <circle cx="25" cy="25" r="22" fill="#0B0702" stroke="#E9B949" stroke-width="2" />
+    <circle cx="25" cy="25" r="17.5" fill="none" stroke="#FFFFFF" stroke-width="0.8" opacity="0.55" />
+    <path d="M 9,30 L 15,30 M 7,25 L 14,25 M 9,20 L 15,20" stroke="#E9B949" stroke-width="1.6" stroke-linecap="round" />
+    <text x="27" y="31" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="17" text-anchor="middle">M</text>
+  </g>
+  <g transform="translate(68, 19)" filter="url(#marchesesh)">
+    <text x="0" y="22" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="18.5" letter-spacing="1.4">MARCHESE</text>
+    <text x="1" y="33" fill="#E9B949" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="7" letter-spacing="2">MARCHESE SPECIAL</text>
+    <line x1="1" y1="38" x2="90" y2="38" stroke="#E9B949" stroke-width="1.2" opacity="0.8" />
+    <text x="1" y="48" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="6.2" letter-spacing="1.5">MILWAUKEE • INDY 500 1950-51</text>
+  </g>
+</svg>

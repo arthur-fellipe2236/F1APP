@@ -20,6 +20,9 @@ def create_app(config_overrides=None):
 
     app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    from .security import resolve_secret_key, init_security
+
+    app.config["SECRET_KEY"] = resolve_secret_key(db_uri)
     app.json.sort_keys = False
 
     if config_overrides:
@@ -44,6 +47,7 @@ def create_app(config_overrides=None):
     from .api import register_api
     from .api.openapi import init_swagger
 
+    init_security(app)
     register_api(app)
     init_swagger(app)
     register_error_handlers(app)

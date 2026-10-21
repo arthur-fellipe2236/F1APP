@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { clearSpotifySession } from "@/lib/spotify"
 import { User, LogOut } from "lucide-react"
 import { useAppStore } from "@/store"
 import { api } from "@/lib/api"
@@ -29,6 +30,8 @@ export function UserProfile() {
   const [isLogin, setIsLogin] = useState(true)
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  // Honeypot anti-bot: campo invisivel que humanos nunca preenchem
+  const [website, setWebsite] = useState("")
   const [error, setError] = useState("")
 
   const [drivers, setDrivers] = useState<any[]>([])
@@ -57,10 +60,11 @@ export function UserProfile() {
         setUser(data.user)
         setIsOpen(false)
       } else {
+        if (password.length < 8) throw new Error("A senha deve ter pelo menos 8 caracteres")
         const res = await fetch("/api/v1/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password })
+          body: JSON.stringify({ username, password, website })
         })
         const data = await res.json()
         if (!res.ok) throw new Error(data.message)
@@ -93,6 +97,8 @@ export function UserProfile() {
   }
 
   const logout = () => {
+    // Privacidade: encerra tambem a sessao do Spotify deste navegador
+    clearSpotifySession()
     setToken(null)
     setUser(null)
   }
@@ -184,7 +190,26 @@ export function UserProfile() {
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Senha</Label>
-            <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              autoComplete={isLogin ? "current-password" : "new-password"}
+              minLength={isLogin ? undefined : 8}
+              maxLength={128}
+              required
+            />
+            <input
+              type="text"
+              name="website"
+              value={website}
+              onChange={e => setWebsite(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              style={{ position: "absolute", left: "-10000px", width: 1, height: 1, opacity: 0 }}
+            />
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <Button type="submit">{isLogin ? "Entrar" : "Registrar"}</Button>

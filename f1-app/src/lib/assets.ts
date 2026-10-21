@@ -538,6 +538,16 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
   "Modena Team Lambo": {
     1991: { url: "/teams/lambo.svg", color: "#0A152E", className: "object-contain p-0.5 filter-none" },
   },
+  "Marchese": {
+    1950: { url: "/teams/marchese.svg", color: "#1A1205", className: "object-contain p-0.5 filter-none" },
+    1951: { url: "/teams/marchese.svg", color: "#1A1205", className: "object-contain p-0.5 filter-none" },
+  },
+  "Behra-Porsche": {
+    1960: { url: "/teams/behra_porsche.svg", color: "#14161A", className: "object-contain p-0.5 filter-none" },
+  },
+  "BRM-Ford": {
+    1969: { url: "/classic/brm.svg", color: "#004225", className: "object-contain p-0.5 filter-none" },
+  },
   "Adams": {
     1950: { url: "/teams/adams.svg", color: "#0A1F3F", className: "object-contain p-0.5 filter-none" },
   },
@@ -1347,6 +1357,9 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
   Stewart: { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
   "Stewart Grand Prix": { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
   "Stewart Grand Prix MCI Worldcom": { url: "/teams/stewart_mci_worldcom.svg", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
+  Marchese: { url: "/teams/marchese.svg", color: "#1A1205", className: "object-contain p-0.5 filter-none" },
+  "Behra-Porsche": { url: "/teams/behra_porsche.svg", color: "#14161A", className: "object-contain p-0.5 filter-none" },
+  "BRM-Ford": { url: "/classic/brm.svg", color: "#004225", className: "object-contain p-0.5 filter-none" },
   Adams: { url: "/teams/adams.svg", color: "#0A1F3F", className: "object-contain p-0.5 filter-none" },
   AFM: { url: "/teams/afm.svg", color: "#0D223F", className: "object-contain p-0.5 filter-none" },
   "Alex von Falkenhausen Motorenbau": { url: "/teams/afm.svg", color: "#0D223F", className: "object-contain p-0.5 filter-none" },
@@ -1890,6 +1903,10 @@ const TEAM_ALIASES: Record<string, string> = {
   "leyton house": "Leyton House",
   "leyton house racing": "Leyton House",
   "leyton house formula one racing team": "Leyton House",
+  marchese: "Marchese",
+  "behra-porsche": "Behra-Porsche",
+  "behra porsche": "Behra-Porsche",
+  "brm-ford": "BRM-Ford",
   adams: "Adams",
   afm: "AFM",
   "alex von falkenhausen": "AFM",

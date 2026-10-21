@@ -662,6 +662,11 @@ export function DashboardPage() {
           )}
         </TabsContent>
         <TabsContent value="teams">
+          {!isF12021 && teamStandings.data?.official === false && teamStandings.data?.note && (
+            <div className="mb-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
+              ⚠️ {teamStandings.data.note}
+            </div>
+          )}
           {teamStandings.error ? (
             <ErrorState
               message={teamStandings.error}

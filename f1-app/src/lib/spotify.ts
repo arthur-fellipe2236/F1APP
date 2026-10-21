@@ -40,20 +40,18 @@ const STORAGE_KEYS = {
   VERIFIER: "f1_spotify_code_verifier",
   CLIENT_ID: "f1_spotify_client_id",
   ACTIVE_URI: "f1_spotify_active_uri",
+  OWNER: "f1_spotify_owner",
+  OAUTH_STATE: "f1_spotify_oauth_state",
+  PRIVACY_MODE: "f1_spotify_privacy_mode",
 }
 
+// Privacidade: apenas escopos de LEITURA estritamente necessarios.
+// Nada de e-mail, controle de reproducao ou biblioteca do usuario.
 const DEFAULT_SCOPES = [
-  "user-read-private",
-  "user-read-email",
   "playlist-read-private",
   "playlist-read-collaborative",
   "user-top-read",
   "user-read-recently-played",
-  "user-library-read",
-  "user-read-playback-state",
-  "user-modify-playback-state",
-  "user-read-currently-playing",
-  "streaming",
 ].join(" ")
 
 export function getStoredClientId(): string {
@@ -95,6 +93,38 @@ export function clearSpotifySession(): void {
   localStorage.removeItem(STORAGE_KEYS.EXPIRES_AT)
   localStorage.removeItem(STORAGE_KEYS.VERIFIER)
   localStorage.removeItem(STORAGE_KEYS.ACTIVE_URI)
+  localStorage.removeItem(STORAGE_KEYS.OWNER)
+  sessionStorage.removeItem(STORAGE_KEYS.OAUTH_STATE)
+}
+
+/**
+ * Vincula a sessao do Spotify ao usuario logado no app (ou "guest").
+ * Se outra pessoa logar no mesmo navegador, a sessao anterior e apagada,
+ * garantindo que os dados do Spotify so aparecam para o proprio dono.
+ * Retorna true se uma sessao de outro usuario foi descartada.
+ */
+export function bindSpotifySessionOwner(ownerId: string): boolean {
+  if (typeof window === "undefined") return false
+  const current = localStorage.getItem(STORAGE_KEYS.OWNER)
+  const hasSession = !!localStorage.getItem(STORAGE_KEYS.TOKEN)
+  if (hasSession && current && current !== ownerId) {
+    clearSpotifySession()
+    localStorage.setItem(STORAGE_KEYS.OWNER, ownerId)
+    return true
+  }
+  localStorage.setItem(STORAGE_KEYS.OWNER, ownerId)
+  return false
+}
+
+/** Modo privado: oculta nome e foto do Spotify na interface (ativo por padrao). */
+export function getSpotifyPrivacyMode(): boolean {
+  if (typeof window === "undefined") return true
+  return localStorage.getItem(STORAGE_KEYS.PRIVACY_MODE) !== "off"
+}
+
+export function setSpotifyPrivacyMode(enabled: boolean): void {
+  if (typeof window === "undefined") return
+  localStorage.setItem(STORAGE_KEYS.PRIVACY_MODE, enabled ? "on" : "off")
 }
 
 function generateRandomString(length: number = 64): string {
@@ -138,7 +168,10 @@ export async function initiateSpotifyLogin(customClientId?: string): Promise<voi
   authUrl.searchParams.append("code_challenge_method", "S256")
   authUrl.searchParams.append("code_challenge", challenge)
   authUrl.searchParams.append("scope", DEFAULT_SCOPES)
-  authUrl.searchParams.append("state", "radio_f1_spotify")
+  // State aleatorio protege o retorno do OAuth contra ataques CSRF
+  const state = generateRandomString(32)
+  sessionStorage.setItem(STORAGE_KEYS.OAUTH_STATE, state)
+  authUrl.searchParams.append("state", state)
 
   window.location.href = authUrl.toString()
 }
@@ -156,6 +189,16 @@ export async function handleSpotifyCallback(): Promise<boolean> {
   }
 
   if (!code) return false
+
+  const returnedState = params.get("state")
+  const expectedState = sessionStorage.getItem(STORAGE_KEYS.OAUTH_STATE)
+  sessionStorage.removeItem(STORAGE_KEYS.OAUTH_STATE)
+  if (!returnedState || !expectedState || returnedState !== expectedState) {
+    console.warn("Retorno do Spotify rejeitado: state invalido")
+    localStorage.removeItem(STORAGE_KEYS.VERIFIER)
+    window.history.replaceState({}, document.title, window.location.pathname)
+    return false
+  }
 
   const verifier = localStorage.getItem(STORAGE_KEYS.VERIFIER)
   const clientId = getStoredClientId()
