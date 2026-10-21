@@ -645,24 +645,33 @@ export function NovatosPage() {
       stopAllAudio(true)
       setCountdownCanceled(false)
 
-      // Channel A: Mariana Narration
-      const narAudio = new Audio(targetScene.audioUrl)
+      // Channel A: Mariana Narration (reuse DOM <audio> element for mobile unlock persistence)
+      const narAudio = narrationAudioRef.current ?? new Audio()
       narrationAudioRef.current = narAudio
+      if (!narAudio.src.endsWith(targetScene.audioUrl)) {
+        narAudio.src = targetScene.audioUrl
+      }
+      narAudio.currentTime = 0
       narAudio.volume = isMutedAll ? 0 : narrationVolume
       setDuration(targetScene.durationSec)
 
       // Channel B: Cinematic Instrumental Track (persistent across scenes for smooth transition)
-      if (!musicAudioRef.current) {
-        const mus = new Audio(CINEMATIC_MUSIC_URL)
-        mus.loop = true
-        musicAudioRef.current = mus
+      const musAudio = musicAudioRef.current ?? new Audio(CINEMATIC_MUSIC_URL)
+      musAudio.loop = true
+      if (!musAudio.src.endsWith(CINEMATIC_MUSIC_URL)) {
+        musAudio.src = CINEMATIC_MUSIC_URL
       }
-      musicAudioRef.current.volume =
+      musicAudioRef.current = musAudio
+      musAudio.volume =
         isMutedAll || !musicEnabled ? 0 : Math.min(1, musicVolume * 0.42)
 
       // Channel C: Scene-Specific Ambient & Track Audio
-      const ambAudio = new Audio(targetScene.ambientAudioUrl)
+      const ambAudio = ambientAudioRef.current ?? new Audio()
       ambAudio.loop = true
+      if (!ambAudio.src.endsWith(targetScene.ambientAudioUrl)) {
+        ambAudio.src = targetScene.ambientAudioUrl
+      }
+      ambAudio.currentTime = 0
       ambientAudioRef.current = ambAudio
       ambAudio.volume =
         isMutedAll || !ambientEnabled ? 0 : Math.min(1, ambientVolume * 0.45)
@@ -695,7 +704,7 @@ export function NovatosPage() {
       }
 
       if (musicEnabled && !isMutedAll) {
-        musicAudioRef.current.play().catch(() => {})
+        musAudio.play().catch(() => {})
       }
       if (ambientEnabled && !isMutedAll) {
         ambAudio.play().catch(() => {})
@@ -740,27 +749,25 @@ export function NovatosPage() {
       if (channel === "music") {
         setMusicEnabled(true)
         if (ambientAudioRef.current && !isPlaying) ambientAudioRef.current.pause()
-        if (!musicAudioRef.current) {
-          const mus = new Audio(CINEMATIC_MUSIC_URL)
-          mus.loop = true
-          musicAudioRef.current = mus
+        const mus = musicAudioRef.current ?? new Audio(CINEMATIC_MUSIC_URL)
+        mus.loop = true
+        if (!mus.src.endsWith(CINEMATIC_MUSIC_URL)) {
+          mus.src = CINEMATIC_MUSIC_URL
         }
-        musicAudioRef.current.volume = Math.max(0.15, Math.min(1, musicVolume * 0.92))
-        await musicAudioRef.current.play().catch(() => {})
+        musicAudioRef.current = mus
+        mus.volume = Math.max(0.15, Math.min(1, musicVolume * 0.92))
+        await mus.play().catch(() => {})
       } else {
         setAmbientEnabled(true)
         if (musicAudioRef.current && !isPlaying) musicAudioRef.current.pause()
-        if (
-          !ambientAudioRef.current ||
-          !ambientAudioRef.current.src.endsWith(currentScene.ambientAudioUrl)
-        ) {
-          if (ambientAudioRef.current) ambientAudioRef.current.pause()
-          const amb = new Audio(currentScene.ambientAudioUrl)
-          amb.loop = true
-          ambientAudioRef.current = amb
+        const amb = ambientAudioRef.current ?? new Audio(currentScene.ambientAudioUrl)
+        amb.loop = true
+        if (!amb.src.endsWith(currentScene.ambientAudioUrl)) {
+          amb.src = currentScene.ambientAudioUrl
         }
-        ambientAudioRef.current.volume = Math.max(0.15, Math.min(1, ambientVolume * 0.95))
-        await ambientAudioRef.current.play().catch(() => {})
+        ambientAudioRef.current = amb
+        amb.volume = Math.max(0.15, Math.min(1, ambientVolume * 0.95))
+        await amb.play().catch(() => {})
       }
     },
     [soloTestingChannel, isPlaying, musicVolume, ambientVolume, currentScene.ambientAudioUrl]
@@ -914,6 +921,31 @@ export function NovatosPage() {
 
   return (
     <div className="min-h-[82vh] rounded-2xl bg-[#080A0F] text-white border border-white/10 shadow-2xl overflow-x-hidden relative">
+      {/* Persistent 3-Channel HTML5 Audio Elements (unlocked on first user gesture for mobile Safari/Chrome) */}
+      <audio
+        ref={narrationAudioRef}
+        src={currentScene.audioUrl}
+        preload="auto"
+        data-channel="narration"
+        className="hidden"
+      />
+      <audio
+        ref={musicAudioRef}
+        src={CINEMATIC_MUSIC_URL}
+        preload="auto"
+        loop
+        data-channel="music"
+        className="hidden"
+      />
+      <audio
+        ref={ambientAudioRef}
+        src={currentScene.ambientAudioUrl}
+        preload="auto"
+        loop
+        data-channel="ambient"
+        className="hidden"
+      />
+
       {/* ==================================================================== */}
       {/* CSS KEYFRAMES FOR SUBTLE 2.5D CAR/TRACK MOTION & VISUAL EFFECTS      */}
       {/* ==================================================================== */}
