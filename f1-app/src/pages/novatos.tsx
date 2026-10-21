@@ -18,6 +18,10 @@ import {
   X,
   Check,
   AlertCircle,
+  Clock,
+  FastForward,
+  Music,
+  Radio,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -111,6 +115,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
 // ============================================================================
 export interface CarComponentHotspot {
   id: number
+  shortLabel: string
   name: string
   shortDesc: string
   x: number // % horizontal position on image
@@ -121,6 +126,7 @@ export interface CarComponentHotspot {
 export const CAR_COMPONENTS_SCENE_04: CarComponentHotspot[] = [
   {
     id: 1,
+    shortLabel: "1",
     name: "1. Asa dianteira",
     shortDesc: "Direciona o fluxo de ar na frente do carro e cola o bico no asfalto.",
     x: 24,
@@ -129,6 +135,7 @@ export const CAR_COMPONENTS_SCENE_04: CarComponentHotspot[] = [
   },
   {
     id: 2,
+    shortLabel: "2",
     name: "2. Asa traseira",
     shortDesc: "Gera pressão aerodinâmica (downforce) para estabilidade em alta velocidade.",
     x: 78,
@@ -137,41 +144,46 @@ export const CAR_COMPONENTS_SCENE_04: CarComponentHotspot[] = [
   },
   {
     id: 3,
+    shortLabel: "3",
     name: "3. Pneus",
     shortDesc: "Único ponto de contato com o asfalto; determinam aderência e estratégia.",
     x: 42,
-    y: 68,
+    y: 70,
     appearAtSec: 11.2,
   },
   {
     id: 4,
+    shortLabel: "4",
     name: "4. Freios",
     shortDesc: "Discos de carbono que suportam altíssimas temperaturas nas desacelerações.",
-    x: 36,
-    y: 62,
+    x: 34,
+    y: 60,
     appearAtSec: 14.5,
   },
   {
     id: 5,
+    shortLabel: "5",
     name: "5. Halo",
     shortDesc: "Estrutura de titânio ultra-resistente que protege a cabeça do piloto.",
-    x: 50,
-    y: 41,
+    x: 49,
+    y: 39,
     appearAtSec: 17.8,
   },
   {
     id: 6,
+    shortLabel: "6",
     name: "6. Cockpit",
     shortDesc: "Habitáculo de fibra de carbono onde o piloto conduz o carro.",
-    x: 55,
-    y: 46,
+    x: 56,
+    y: 48,
     appearAtSec: 20.0,
   },
   {
     id: 7,
+    shortLabel: "7",
     name: "7. Unidade de potência",
     shortDesc: "Combina motor a combustão V6 turbo com sistemas elétricos de recuperação de energia.",
-    x: 67,
+    x: 68,
     y: 44,
     appearAtSec: 22.2,
   },
@@ -188,6 +200,8 @@ export interface ModuleScene {
   durationSec: number
   imageUrl: string
   audioUrl: string
+  ambientAudioUrl: string
+  ambientDescription: string
   shortSummary: string
   narrationTranscript: string
   visualEffectType:
@@ -199,16 +213,9 @@ export interface ModuleScene {
     | "starting_grid"
     | "telemetry_wall"
     | "checkered_finish"
-  ambientProfile:
-    | "opening_idle"
-    | "vintage_archive"
-    | "track_acceleration"
-    | "tech_scanner"
-    | "pitstop_tools"
-    | "race_start"
-    | "telemetry_beeps"
-    | "finish_flyby"
 }
+
+export const CINEMATIC_MUSIC_URL = "/audio/novatos/modulo1/trilha_cinematografica.mp3"
 
 export const MODULE_1_SCENES: ModuleScene[] = [
   {
@@ -219,12 +226,13 @@ export const MODULE_1_SCENES: ModuleScene[] = [
     durationSec: 16.2,
     imageUrl: "/backgrounds/bg-ferrari.webp",
     audioUrl: "/audio/novatos/modulo1/cena01.mp3",
+    ambientAudioUrl: "/audio/novatos/modulo1/ambiente_cena01.mp3",
+    ambientDescription: "Motor V6 híbrido em marcha lenta no circuito noturno, vento e arquibancada",
     shortSummary:
       "Velocidade, estratégia, talento e trabalho em equipe se encontram. Vamos entender tudo, curva por curva.",
     narrationTranscript:
       "Você está prestes a conhecer um dos esportes a motor mais tecnológicos do mundo. Aqui, velocidade, estratégia, talento e trabalho em equipe se encontram. E você não precisa saber nada sobre automobilismo para começar. Vamos entender tudo, curva por curva.",
     visualEffectType: "rear_shimmer",
-    ambientProfile: "opening_idle",
   },
   {
     number: 2,
@@ -234,12 +242,13 @@ export const MODULE_1_SCENES: ModuleScene[] = [
     durationSec: 22.9,
     imageUrl: "/novatos/modulo1/cena02_1950.jpg",
     audioUrl: "/audio/novatos/modulo1/cena02.mp3",
+    ambientAudioUrl: "/audio/novatos/modulo1/ambiente_cena02.mp3",
+    ambientDescription: "Projetor cinematográfico histórico de 1950 e motores clássicos de época",
     shortSummary:
       "Em 1950 nasceu o Campeonato Mundial de Pilotos de Fórmula 1, organizado pela FIA.",
     narrationTranscript:
       "Imagine uma época em que os carros de corrida eram muito diferentes dos que conhecemos hoje. Em 1950, nasceu o Campeonato Mundial de Pilotos de Fórmula 1, organizado pela Federação Internacional do Automóvel, a FIA. Desde então, pilotos e equipes passaram a disputar corridas em diferentes circuitos pelo mundo, buscando velocidade, precisão e vitória.",
     visualEffectType: "vintage_1950",
-    ambientProfile: "vintage_archive",
   },
   {
     number: 3,
@@ -249,12 +258,13 @@ export const MODULE_1_SCENES: ModuleScene[] = [
     durationSec: 22.66,
     imageUrl: "/backgrounds/bg-mclaren.webp",
     audioUrl: "/audio/novatos/modulo1/cena03.mp3",
+    ambientAudioUrl: "/audio/novatos/modulo1/ambiente_cena03.mp3",
+    ambientDescription: "Aceleração de F1 em reta, trocas de marcha em alta rotação e passagem na pista",
     shortSummary:
       "‘Fórmula’ é o conjunto de regras técnicas e esportivas; ‘1’ identifica a categoria de topo.",
     narrationTranscript:
       "O nome tem um significado interessante. A palavra ‘Fórmula’ representa o conjunto de regras técnicas e esportivas que todos precisam respeitar. Já o número um identifica a categoria de topo dentro dessa fórmula de competição. Ou seja: não basta construir um carro rápido. É preciso construir um carro capaz de vencer respeitando as mesmas regras que os adversários.",
     visualEffectType: "parallax_track",
-    ambientProfile: "track_acceleration",
   },
   {
     number: 4,
@@ -264,12 +274,13 @@ export const MODULE_1_SCENES: ModuleScene[] = [
     durationSec: 32.59,
     imageUrl: "/backgrounds/bg-redbull.webp",
     audioUrl: "/audio/novatos/modulo1/cena04.mp3",
+    ambientAudioUrl: "/audio/novatos/modulo1/ambiente_cena04.mp3",
+    ambientDescription: "Túnel de vento aerodinâmico, telemetria dos 7 componentes e giro da unidade de potência",
     shortSummary:
       "Conheça os 7 elementos fundamentais que trabalham no limite: asas, pneus, freios, halo, cockpit e unidade de potência.",
     narrationTranscript:
       "Um carro de Fórmula 1 é uma máquina projetada para trabalhar no limite. A aerodinâmica, com a asa dianteira e a asa traseira, ajuda a controlar o fluxo de ar e a gerar pressão sobre o carro, aumentando a aderência nas curvas. Os pneus fornecem contato com o asfalto, enquanto os freios ajudam a controlar a velocidade. O halo protege a cabeça do piloto dentro do cockpit. E a unidade de potência combina um motor de combustão com sistemas elétricos. Tudo precisa funcionar em conjunto para que o piloto consiga extrair o máximo desempenho.",
     visualEffectType: "machine_hotspots",
-    ambientProfile: "tech_scanner",
   },
   {
     number: 5,
@@ -279,12 +290,13 @@ export const MODULE_1_SCENES: ModuleScene[] = [
     durationSec: 21.43,
     imageUrl: "/backgrounds/bg-mercedes.webp",
     audioUrl: "/audio/novatos/modulo1/cena05.mp3",
+    ambientAudioUrl: "/audio/novatos/modulo1/ambiente_cena05.mp3",
+    ambientDescription: "Ambiente de boxes, pistolas pneumáticas de pit stop e saída do carro",
     shortSummary:
       "Duas disputas simultâneas: o Campeonato de Pilotos e o Campeonato de Construtores.",
     narrationTranscript:
       "Na Fórmula 1, existem duas disputas acontecendo ao mesmo tempo. Os pilotos lutam pelo campeonato individual, enquanto as equipes acumulam pontos para o campeonato de construtores. E a corrida não é decidida apenas pelo pé do piloto no acelerador: estratégia, comunicação, escolha dos pneus e trabalho dos mecânicos também fazem diferença.",
     visualEffectType: "pitstop_team",
-    ambientProfile: "pitstop_tools",
   },
   {
     number: 6,
@@ -294,12 +306,13 @@ export const MODULE_1_SCENES: ModuleScene[] = [
     durationSec: 26.09,
     imageUrl: "/backgrounds/bg-alpine.webp",
     audioUrl: "/audio/novatos/modulo1/cena06.mp3",
+    ambientAudioUrl: "/audio/novatos/modulo1/ambiente_cena06.mp3",
+    ambientDescription: "Grid de largada, bipes oficiais das 5 luzes vermelhas e arrancada dos carros",
     shortSummary:
       "Treinos, classificação, corrida Sprint em etapas específicas e a aguardada largada do Grande Prêmio.",
     narrationTranscript:
       "Um fim de semana de Fórmula 1 pode incluir treinos, classificação e corrida principal. Em determinados fins de semana, também existe uma corrida Sprint. A classificação ajuda a definir as posições de largada. Depois da preparação, os pilotos alinham seus carros e aguardam o sinal de partida. Ao longo da corrida, disputam posições, administram os pneus e seguem as estratégias de suas equipes até a bandeirada final.",
     visualEffectType: "starting_grid",
-    ambientProfile: "race_start",
   },
   {
     number: 7,
@@ -309,12 +322,13 @@ export const MODULE_1_SCENES: ModuleScene[] = [
     durationSec: 23.04,
     imageUrl: "/backgrounds/bg-williams.webp",
     audioUrl: "/audio/novatos/modulo1/cena07.mp3",
+    ambientAudioUrl: "/audio/novatos/modulo1/ambiente_cena07.mp3",
+    ambientDescription: "Passagens na reta principal, sinais de telemetria e estratégia de pit wall",
     shortSummary:
       "Posição, diferença de tempo, compostos de pneus, ritmo de volta e janelas estratégicas de pit stop.",
     narrationTranscript:
       "Quando você assistir a uma corrida, observe a posição de cada piloto, a diferença de tempo para os adversários, os pneus utilizados e as paradas nos boxes. Repare também no ritmo dos carros e nas decisões das equipes. Esses detalhes ajudam a entender por que um piloto pode ganhar posições sem necessariamente ultrapassar na pista e como a estratégia influencia o resultado.",
     visualEffectType: "telemetry_wall",
-    ambientProfile: "telemetry_beeps",
   },
   {
     number: 8,
@@ -324,12 +338,13 @@ export const MODULE_1_SCENES: ModuleScene[] = [
     durationSec: 21.43,
     imageUrl: "/backgrounds/bg-aston.webp",
     audioUrl: "/audio/novatos/modulo1/cena08.mp3",
+    ambientAudioUrl: "/audio/novatos/modulo1/ambiente_cena08.mp3",
+    ambientDescription: "Passagem final em alta velocidade, bandeira quadriculada e vibração do público",
     shortSummary:
       "Agora você enxerga estratégia, trabalho em equipe e tecnologia a cada volta até a bandeira quadriculada!",
     narrationTranscript:
       "A partir de agora, quando você acompanhar uma corrida, vai começar a perceber muito mais do que carros dando voltas. Vai enxergar decisões estratégicas, disputas por posição, trabalho em equipe e tecnologia. E esse é só o começo. Na próxima aula, vamos conhecer o carro de Fórmula 1 e descobrir o que faz essa máquina ser tão especial.",
     visualEffectType: "checkered_finish",
-    ambientProfile: "finish_flyby",
   },
 ]
 
@@ -462,19 +477,25 @@ export function NovatosPage() {
   const [duration, setDuration] = useState(MODULE_1_SCENES[0].durationSec)
   const [resourcesReady, setResourcesReady] = useState(false)
 
-  // 3 Independent Audio Channels
+  // 3 Independent Audio Channels (with clearly audible default levels & auto-ducking)
   const [narrationVolume, setNarrationVolume] = useState(1.0)
-  const [musicVolume, setMusicVolume] = useState(0.22)
-  const [ambientVolume, setAmbientVolume] = useState(0.35)
+  const [musicVolume, setMusicVolume] = useState(0.45)
+  const [ambientVolume, setAmbientVolume] = useState(0.55)
   const [musicEnabled, setMusicEnabled] = useState(true)
+  const [ambientEnabled, setAmbientEnabled] = useState(true)
   const [isMutedAll, setIsMutedAll] = useState(false)
+  const [soloTestingChannel, setSoloTestingChannel] = useState<"music" | "ambient" | null>(null)
+
+  // 5-Second Post-Narration Countdown State
+  const [countdownSeconds, setCountdownSeconds] = useState<number | null>(null)
+  const [countdownCanceled, setCountdownCanceled] = useState<boolean>(false)
 
   // UI & Accessibility toggles
   const [showTranscript, setShowTranscript] = useState(true)
   const [showAudioMixer, setShowAudioMixer] = useState(false)
   const [showGlossary, setShowGlossary] = useState(false)
   const [glossaryQuery, setGlossaryQuery] = useState("")
-  const [selectedHotspot, setSelectedHotspot] = useState<number | null>(null)
+  const [selectedHotspot, setSelectedHotspot] = useState<number | null>(1)
   const [reduceMotion, setReduceMotion] = useState<boolean>(() => {
     if (typeof window !== "undefined" && window.matchMedia) {
       return window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -486,12 +507,11 @@ export function NovatosPage() {
   const [quizAnswers, setQuizAnswers] = useState<Record<number, "A" | "B" | "C" | "D">>({})
   const [quizSubmitted, setQuizSubmitted] = useState(false)
 
-  // Refs for audio engines
+  // Refs for HTML5 Audio channels & timers
   const narrationAudioRef = useRef<HTMLAudioElement | null>(null)
   const musicAudioRef = useRef<HTMLAudioElement | null>(null)
-  const webAudioCtxRef = useRef<AudioContext | null>(null)
-  const ambientNodesRef = useRef<{ stop: () => void; setGain: (v: number) => void } | null>(null)
-  const triggeredEventsRef = useRef<Set<string>>(new Set())
+  const ambientAudioRef = useRef<HTMLAudioElement | null>(null)
+  const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const currentScene = MODULE_1_SCENES[sceneIndex] || MODULE_1_SCENES[0]
 
@@ -511,7 +531,7 @@ export function NovatosPage() {
     img.src = MODULE_1_SCENES[0].imageUrl
     img.onload = () => setResourcesReady(true)
     img.onerror = () => setResourcesReady(true)
-    const timer = setTimeout(() => setResourcesReady(true), 800)
+    const timer = setTimeout(() => setResourcesReady(true), 600)
     return () => clearTimeout(timer)
   }, [])
 
@@ -522,197 +542,59 @@ export function NovatosPage() {
     return scenesPart + quizPart
   }, [persisted])
 
-  // Stop Web Audio ambient synthesis cleanly
-  const stopAmbientEngine = useCallback(() => {
-    if (ambientNodesRef.current) {
-      try {
-        ambientNodesRef.current.stop()
-      } catch {
-        // ignore
-      }
-      ambientNodesRef.current = null
+  // Helper to clear any active 5-second countdown timer
+  const clearCountdownTimer = useCallback(() => {
+    if (countdownTimerRef.current) {
+      clearInterval(countdownTimerRef.current)
+      countdownTimerRef.current = null
     }
+    setCountdownSeconds(null)
   }, [])
 
-  // Start Web Audio ambient synthesis tailored to current scene profile
-  const startAmbientEngine = useCallback(
-    (profile: ModuleScene["ambientProfile"], effectiveGain: number) => {
-      stopAmbientEngine()
-      if (typeof window === "undefined") return
-      try {
-        const AudioCtx =
-          window.AudioContext ||
-          (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
-        if (!AudioCtx) return
-        if (!webAudioCtxRef.current) {
-          webAudioCtxRef.current = new AudioCtx()
-        }
-        const ctx = webAudioCtxRef.current
-        if (ctx.state === "suspended") {
-          ctx.resume().catch(() => {})
-        }
-
-        const masterGain = ctx.createGain()
-        masterGain.gain.setValueAtTime(Math.max(0.0001, effectiveGain * 0.14), ctx.currentTime)
-        masterGain.connect(ctx.destination)
-
-        const osc1 = ctx.createOscillator()
-        const osc2 = ctx.createOscillator()
-        const filter = ctx.createBiquadFilter()
-        filter.type = "lowpass"
-
-        if (profile === "vintage_archive") {
-          // Warm vintage projector hum
-          osc1.type = "triangle"
-          osc1.frequency.setValueAtTime(62, ctx.currentTime)
-          osc2.type = "sine"
-          osc2.frequency.setValueAtTime(124, ctx.currentTime)
-          filter.frequency.setValueAtTime(220, ctx.currentTime)
-        } else if (profile === "track_acceleration" || profile === "finish_flyby") {
-          // F1 V6 Hybrid engine harmonic sweep
-          osc1.type = "sawtooth"
-          osc1.frequency.setValueAtTime(105, ctx.currentTime)
-          osc1.frequency.linearRampToValueAtTime(185, ctx.currentTime + 12)
-          osc2.type = "triangle"
-          osc2.frequency.setValueAtTime(210, ctx.currentTime)
-          osc2.frequency.linearRampToValueAtTime(370, ctx.currentTime + 12)
-          filter.frequency.setValueAtTime(420, ctx.currentTime)
-        } else {
-          // Subtle paddock / telemetry / idle engine bed
-          osc1.type = "sawtooth"
-          osc1.frequency.setValueAtTime(82, ctx.currentTime)
-          osc2.type = "sine"
-          osc2.frequency.setValueAtTime(164, ctx.currentTime)
-          filter.frequency.setValueAtTime(260, ctx.currentTime)
-        }
-
-        osc1.connect(filter)
-        osc2.connect(filter)
-        filter.connect(masterGain)
-        osc1.start()
-        osc2.start()
-
-        ambientNodesRef.current = {
-          stop: () => {
-            try {
-              masterGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.15)
-              setTimeout(() => {
-                try {
-                  osc1.stop()
-                  osc2.stop()
-                  osc1.disconnect()
-                  osc2.disconnect()
-                } catch {
-                  // ignore
-                }
-              }, 160)
-            } catch {
-              // ignore
-            }
-          },
-          setGain: (val: number) => {
-            try {
-              masterGain.gain.setTargetAtTime(Math.max(0.0001, val * 0.14), ctx.currentTime, 0.1)
-            } catch {
-              // ignore
-            }
-          },
-        }
-      } catch {
-        // ignore autoplay restrictions
-      }
-    },
-    [stopAmbientEngine]
-  )
-
-  // Trigger synchronized discrete sound cue (Channel C) aligned with visual timeline events
-  const playSynchronizedCue = useCallback(
-    (cueType: "hotspot_ping" | "wheel_gun" | "start_light" | "start_launch" | "telemetry_beep") => {
-      if (isMutedAll || ambientVolume <= 0.01 || typeof window === "undefined") return
-      try {
-        const AudioCtx =
-          window.AudioContext ||
-          (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
-        if (!AudioCtx) return
-        if (!webAudioCtxRef.current) {
-          webAudioCtxRef.current = new AudioCtx()
-        }
-        const ctx = webAudioCtxRef.current
-        const now = ctx.currentTime
-        const osc = ctx.createOscillator()
-        const g = ctx.createGain()
-        const level = Math.min(0.12, ambientVolume * 0.16)
-
-        if (cueType === "hotspot_ping" || cueType === "telemetry_beep") {
-          osc.type = "sine"
-          osc.frequency.setValueAtTime(cueType === "hotspot_ping" ? 1320 : 1046, now)
-          g.gain.setValueAtTime(level * 0.6, now)
-          g.gain.exponentialRampToValueAtTime(0.0001, now + 0.12)
-          osc.connect(g)
-          g.connect(ctx.destination)
-          osc.start(now)
-          osc.stop(now + 0.12)
-        } else if (cueType === "start_light") {
-          osc.type = "sine"
-          osc.frequency.setValueAtTime(880, now)
-          g.gain.setValueAtTime(level * 0.85, now)
-          g.gain.exponentialRampToValueAtTime(0.0001, now + 0.18)
-          osc.connect(g)
-          g.connect(ctx.destination)
-          osc.start(now)
-          osc.stop(now + 0.18)
-        } else if (cueType === "start_launch") {
-          osc.type = "sawtooth"
-          osc.frequency.setValueAtTime(140, now)
-          osc.frequency.exponentialRampToValueAtTime(340, now + 0.65)
-          g.gain.setValueAtTime(level * 0.9, now)
-          g.gain.exponentialRampToValueAtTime(0.0001, now + 0.7)
-          osc.connect(g)
-          g.connect(ctx.destination)
-          osc.start(now)
-          osc.stop(now + 0.7)
-        } else if (cueType === "wheel_gun") {
-          osc.type = "triangle"
-          osc.frequency.setValueAtTime(420, now)
-          osc.frequency.setValueAtTime(580, now + 0.06)
-          osc.frequency.setValueAtTime(460, now + 0.12)
-          g.gain.setValueAtTime(level * 0.75, now)
-          g.gain.exponentialRampToValueAtTime(0.0001, now + 0.22)
-          osc.connect(g)
-          g.connect(ctx.destination)
-          osc.start(now)
-          osc.stop(now + 0.22)
-        }
-      } catch {
-        // ignore
-      }
-    },
-    [ambientVolume, isMutedAll]
-  )
+  const handleCancelCountdown = useCallback(() => {
+    if (countdownTimerRef.current) {
+      clearInterval(countdownTimerRef.current)
+      countdownTimerRef.current = null
+    }
+    setCountdownSeconds(null)
+    setCountdownCanceled(true)
+  }, [])
 
   // Stop all audio channels cleanly (prevents overlap between scenes)
-  const stopAllAudio = useCallback(() => {
-    if (narrationAudioRef.current) {
-      narrationAudioRef.current.pause()
-      narrationAudioRef.current.currentTime = 0
-    }
-    if (musicAudioRef.current) {
-      musicAudioRef.current.pause()
-    }
-    stopAmbientEngine()
-    setIsPlaying(false)
-    setIsPaused(false)
-    setCurrentTime(0)
-    triggeredEventsRef.current.clear()
-  }, [stopAmbientEngine])
+  const stopAllAudio = useCallback(
+    (keepBackgroundMusic = false) => {
+      clearCountdownTimer()
+      setSoloTestingChannel(null)
+      if (narrationAudioRef.current) {
+        narrationAudioRef.current.onended = null
+        narrationAudioRef.current.ontimeupdate = null
+        narrationAudioRef.current.pause()
+        narrationAudioRef.current.currentTime = 0
+      }
+      if (ambientAudioRef.current) {
+        ambientAudioRef.current.pause()
+        ambientAudioRef.current.currentTime = 0
+      }
+      if (!keepBackgroundMusic && musicAudioRef.current) {
+        musicAudioRef.current.pause()
+      }
+      setIsPlaying(false)
+      setIsPaused(false)
+      setCurrentTime(0)
+    },
+    [clearCountdownTimer]
+  )
 
-  // Sync live volumes & Auto-Ducking across Channels A, B, and C
+  // Compute effective volumes & apply Auto-Ducking across Channels A, B, and C
   useEffect(() => {
     const narGain = isMutedAll ? 0 : narrationVolume
-    // Auto-ducking: while Mariana is speaking (isPlaying), music & ambient duck smoothly to 35% of user slider
-    const duckFactor = isPlaying ? 0.35 : 0.85
-    const musGain = isMutedAll || !musicEnabled ? 0 : musicVolume * duckFactor
-    const ambGain = isMutedAll ? 0 : ambientVolume * duckFactor
+    // Auto-ducking: while Mariana is speaking (isPlaying), music & ambient duck smoothly to 42%-45% of slider
+    // When narration finishes (e.g. during 5s countdown) or during channel test, they play at full slider volume
+    const musicDuck = isPlaying && soloTestingChannel !== "music" ? 0.42 : 0.92
+    const ambientDuck = isPlaying && soloTestingChannel !== "ambient" ? 0.45 : 0.95
+
+    const musGain = isMutedAll || !musicEnabled ? 0 : Math.min(1, musicVolume * musicDuck)
+    const ambGain = isMutedAll || !ambientEnabled ? 0 : Math.min(1, ambientVolume * ambientDuck)
 
     if (narrationAudioRef.current) {
       narrationAudioRef.current.volume = Math.max(0, Math.min(1, narGain))
@@ -721,96 +603,106 @@ export function NovatosPage() {
       musicAudioRef.current.volume = Math.max(0, Math.min(1, musGain))
       if (!musicEnabled || isMutedAll) {
         musicAudioRef.current.pause()
-      } else if (isPlaying && musicAudioRef.current.paused) {
+      } else if ((isPlaying || soloTestingChannel === "music") && musicAudioRef.current.paused) {
         musicAudioRef.current.play().catch(() => {})
       }
     }
-    if (ambientNodesRef.current) {
-      ambientNodesRef.current.setGain(ambGain)
+    if (ambientAudioRef.current) {
+      ambientAudioRef.current.volume = Math.max(0, Math.min(1, ambGain))
+      if (!ambientEnabled || isMutedAll) {
+        ambientAudioRef.current.pause()
+      } else if (
+        (isPlaying || soloTestingChannel === "ambient") &&
+        ambientAudioRef.current.paused
+      ) {
+        ambientAudioRef.current.play().catch(() => {})
+      }
     }
-  }, [narrationVolume, musicVolume, ambientVolume, musicEnabled, isMutedAll, isPlaying])
+  }, [
+    narrationVolume,
+    musicVolume,
+    ambientVolume,
+    musicEnabled,
+    ambientEnabled,
+    isMutedAll,
+    isPlaying,
+    soloTestingChannel,
+  ])
 
-  // Play or restart current scene narration + synchronized channels
+  // Start the 5-second countdown after Mariana's narration genuinely finishes
+  const startPostNarrationCountdown = useCallback(() => {
+    if (countdownTimerRef.current) {
+      clearInterval(countdownTimerRef.current)
+      countdownTimerRef.current = null
+    }
+    setCountdownCanceled(false)
+    setCountdownSeconds(5)
+  }, [])
+
+  // Play or restart current scene narration + synchronized cinematic music & scene ambient track
   const playSceneAudio = useCallback(
     async (targetScene: ModuleScene) => {
-      stopAllAudio()
+      stopAllAudio(true)
+      setCountdownCanceled(false)
 
-      const audio = new Audio(targetScene.audioUrl)
-      narrationAudioRef.current = audio
-      audio.volume = isMutedAll ? 0 : narrationVolume
+      // Channel A: Mariana Narration
+      const narAudio = new Audio(targetScene.audioUrl)
+      narrationAudioRef.current = narAudio
+      narAudio.volume = isMutedAll ? 0 : narrationVolume
       setDuration(targetScene.durationSec)
 
-      audio.ontimeupdate = () => {
-        const t = audio.currentTime
-        setCurrentTime(t)
+      // Channel B: Cinematic Instrumental Track (persistent across scenes for smooth transition)
+      if (!musicAudioRef.current) {
+        const mus = new Audio(CINEMATIC_MUSIC_URL)
+        mus.loop = true
+        musicAudioRef.current = mus
+      }
+      musicAudioRef.current.volume =
+        isMutedAll || !musicEnabled ? 0 : Math.min(1, musicVolume * 0.42)
 
-        // Synchronized timeline cues per scene
+      // Channel C: Scene-Specific Ambient & Track Audio
+      const ambAudio = new Audio(targetScene.ambientAudioUrl)
+      ambAudio.loop = true
+      ambientAudioRef.current = ambAudio
+      ambAudio.volume =
+        isMutedAll || !ambientEnabled ? 0 : Math.min(1, ambientVolume * 0.45)
+
+      narAudio.ontimeupdate = () => {
+        const t = narAudio.currentTime
+        setCurrentTime(t)
+        // Auto-highlight corresponding car component in Scene 04 as Mariana speaks
         if (targetScene.number === 4) {
+          let activeId = 1
           for (const comp of CAR_COMPONENTS_SCENE_04) {
-            const key = `c4_${comp.id}`
-            if (t >= comp.appearAtSec && !triggeredEventsRef.current.has(key)) {
-              triggeredEventsRef.current.add(key)
-              playSynchronizedCue("hotspot_ping")
+            if (t >= comp.appearAtSec) {
+              activeId = comp.id
             }
           }
-        } else if (targetScene.number === 5) {
-          if (t >= 13.5 && !triggeredEventsRef.current.has("c5_gun1")) {
-            triggeredEventsRef.current.add("c5_gun1")
-            playSynchronizedCue("wheel_gun")
-          }
-          if (t >= 16.5 && !triggeredEventsRef.current.has("c5_gun2")) {
-            triggeredEventsRef.current.add("c5_gun2")
-            playSynchronizedCue("wheel_gun")
-          }
-        } else if (targetScene.number === 6) {
-          for (let l = 1; l <= 5; l++) {
-            const key = `c6_light_${l}`
-            if (t >= 11.5 + l * 1.0 && !triggeredEventsRef.current.has(key)) {
-              triggeredEventsRef.current.add(key)
-              playSynchronizedCue("start_light")
-            }
-          }
-          if (t >= 17.5 && !triggeredEventsRef.current.has("c6_launch")) {
-            triggeredEventsRef.current.add("c6_launch")
-            playSynchronizedCue("start_launch")
-          }
-        } else if (targetScene.number === 7) {
-          for (const sec of [4.0, 9.0, 14.5]) {
-            const key = `c7_beep_${sec}`
-            if (t >= sec && !triggeredEventsRef.current.has(key)) {
-              triggeredEventsRef.current.add(key)
-              playSynchronizedCue("telemetry_beep")
-            }
-          }
+          setSelectedHotspot(activeId)
         }
       }
 
-      audio.onended = () => {
+      narAudio.onended = () => {
         setIsPlaying(false)
         setIsPaused(false)
-        stopAmbientEngine()
-        if (musicAudioRef.current) {
-          musicAudioRef.current.pause()
-        }
+        // Keep subtle ambient & music fading during the 5s transition window, then stop on transition
+        startPostNarrationCountdown()
       }
 
-      // Channel B: Cinematic Instrumental Track
+      narAudio.onerror = () => {
+        setIsPlaying(false)
+        setIsPaused(false)
+      }
+
       if (musicEnabled && !isMutedAll) {
-        if (!musicAudioRef.current) {
-          musicAudioRef.current = new Audio("/radio/f1_theme.mp3")
-          musicAudioRef.current.loop = true
-        }
-        musicAudioRef.current.volume = Math.max(0, Math.min(1, musicVolume * 0.35))
         musicAudioRef.current.play().catch(() => {})
       }
-
-      // Channel C: Ambient Track
-      if (!isMutedAll && ambientVolume > 0.01) {
-        startAmbientEngine(targetScene.ambientProfile, ambientVolume * 0.35)
+      if (ambientEnabled && !isMutedAll) {
+        ambAudio.play().catch(() => {})
       }
 
       try {
-        await audio.play()
+        await narAudio.play()
         setIsPlaying(true)
         setIsPaused(false)
       } catch {
@@ -824,32 +716,78 @@ export function NovatosPage() {
       narrationVolume,
       musicEnabled,
       musicVolume,
+      ambientEnabled,
       ambientVolume,
-      startAmbientEngine,
-      stopAmbientEngine,
-      playSynchronizedCue,
+      startPostNarrationCountdown,
     ]
   )
 
+  // Toggle standalone channel test so user can verify Canal B or Canal C individually
+  const handleToggleTestChannel = useCallback(
+    async (channel: "music" | "ambient") => {
+      if (soloTestingChannel === channel) {
+        setSoloTestingChannel(null)
+        if (!isPlaying) {
+          if (channel === "music" && musicAudioRef.current) musicAudioRef.current.pause()
+          if (channel === "ambient" && ambientAudioRef.current) ambientAudioRef.current.pause()
+        }
+        return
+      }
+
+      setSoloTestingChannel(channel)
+      setIsMutedAll(false)
+
+      if (channel === "music") {
+        setMusicEnabled(true)
+        if (ambientAudioRef.current && !isPlaying) ambientAudioRef.current.pause()
+        if (!musicAudioRef.current) {
+          const mus = new Audio(CINEMATIC_MUSIC_URL)
+          mus.loop = true
+          musicAudioRef.current = mus
+        }
+        musicAudioRef.current.volume = Math.max(0.15, Math.min(1, musicVolume * 0.92))
+        await musicAudioRef.current.play().catch(() => {})
+      } else {
+        setAmbientEnabled(true)
+        if (musicAudioRef.current && !isPlaying) musicAudioRef.current.pause()
+        if (
+          !ambientAudioRef.current ||
+          !ambientAudioRef.current.src.endsWith(currentScene.ambientAudioUrl)
+        ) {
+          if (ambientAudioRef.current) ambientAudioRef.current.pause()
+          const amb = new Audio(currentScene.ambientAudioUrl)
+          amb.loop = true
+          ambientAudioRef.current = amb
+        }
+        ambientAudioRef.current.volume = Math.max(0.15, Math.min(1, ambientVolume * 0.95))
+        await ambientAudioRef.current.play().catch(() => {})
+      }
+    },
+    [soloTestingChannel, isPlaying, musicVolume, ambientVolume, currentScene.ambientAudioUrl]
+  )
+
   const handlePauseAudio = () => {
+    clearCountdownTimer()
     if (narrationAudioRef.current && isPlaying) {
       narrationAudioRef.current.pause()
       if (musicAudioRef.current) musicAudioRef.current.pause()
-      stopAmbientEngine()
+      if (ambientAudioRef.current) ambientAudioRef.current.pause()
       setIsPlaying(false)
       setIsPaused(true)
     }
   }
 
   const handleResumeAudio = async () => {
+    clearCountdownTimer()
+    setCountdownCanceled(false)
     if (narrationAudioRef.current && isPaused) {
       try {
         await narrationAudioRef.current.play()
         if (musicEnabled && !isMutedAll && musicAudioRef.current) {
           musicAudioRef.current.play().catch(() => {})
         }
-        if (!isMutedAll && ambientVolume > 0.01) {
-          startAmbientEngine(currentScene.ambientProfile, ambientVolume * 0.35)
+        if (ambientEnabled && !isMutedAll && ambientAudioRef.current) {
+          ambientAudioRef.current.play().catch(() => {})
         }
         setIsPlaying(true)
         setIsPaused(false)
@@ -862,6 +800,8 @@ export function NovatosPage() {
   }
 
   const handleReplayScene = () => {
+    clearCountdownTimer()
+    setCountdownCanceled(false)
     playSceneAudio(currentScene)
   }
 
@@ -869,9 +809,10 @@ export function NovatosPage() {
   const goToScene = useCallback(
     (idx: number, autoStartAudio = false) => {
       const clamped = Math.max(0, Math.min(MODULE_1_SCENES.length - 1, idx))
-      stopAllAudio()
+      stopAllAudio(autoStartAudio)
+      setCountdownCanceled(false)
       setSceneIndex(clamped)
-      setSelectedHotspot(null)
+      setSelectedHotspot(1)
       setDuration(MODULE_1_SCENES[clamped].durationSec)
       setPersisted((prev) => {
         const sceneNum = MODULE_1_SCENES[clamped].number
@@ -887,16 +828,41 @@ export function NovatosPage() {
       if (autoStartAudio) {
         setTimeout(() => {
           playSceneAudio(MODULE_1_SCENES[clamped])
-        }, 60)
+        }, 80)
       }
     },
     [stopAllAudio, playSceneAudio]
   )
 
+  // Manage the 5-second countdown tick & automatic transition
+  useEffect(() => {
+    if (countdownSeconds === null) return
+
+    if (countdownSeconds <= 0) {
+      clearCountdownTimer()
+      if (sceneIndex < MODULE_1_SCENES.length - 1) {
+        goToScene(sceneIndex + 1, true)
+      } else {
+        stopAllAudio(false)
+        setViewStage("quiz")
+      }
+      return
+    }
+
+    const timer = setInterval(() => {
+      setCountdownSeconds((prev) => (prev !== null ? prev - 1 : null))
+    }, 1000)
+    countdownTimerRef.current = timer
+
+    return () => {
+      clearInterval(timer)
+    }
+  }, [countdownSeconds, sceneIndex, clearCountdownTimer, goToScene, stopAllAudio])
+
   // Clean up on unmount
   useEffect(() => {
     return () => {
-      stopAllAudio()
+      stopAllAudio(false)
     }
   }, [stopAllAudio])
 
@@ -947,8 +913,66 @@ export function NovatosPage() {
   }, [currentScene.number, isPlaying, currentTime])
 
   return (
-    <div className="min-h-[82vh] rounded-2xl bg-[#080A0F] text-white border border-white/10 shadow-2xl overflow-hidden relative">
-      {/* SVG Filter Definitions for Heat Shimmer (Prompt 1) & Film Grain (Prompt 3) */}
+    <div className="min-h-[82vh] rounded-2xl bg-[#080A0F] text-white border border-white/10 shadow-2xl overflow-x-hidden relative">
+      {/* ==================================================================== */}
+      {/* CSS KEYFRAMES FOR SUBTLE 2.5D CAR/TRACK MOTION & VISUAL EFFECTS      */}
+      {/* ==================================================================== */}
+      <style>{`
+        @keyframes f1TrackBgPan {
+          0% { transform: translate3d(-2.2%, 0, 0) scale(1.08); }
+          50% { transform: translate3d(2.2%, -0.6%, 0) scale(1.10); }
+          100% { transform: translate3d(-2.2%, 0, 0) scale(1.08); }
+        }
+        @keyframes f1CarTrackGlide {
+          0% { transform: translate3d(0%, 0%, 0) scale(1.035); }
+          35% { transform: translate3d(-1.3%, 0.35%, 0) scale(1.055); }
+          70% { transform: translate3d(0.9%, -0.25%, 0) scale(1.045); }
+          100% { transform: translate3d(0%, 0%, 0) scale(1.035); }
+        }
+        @keyframes f1RearLockedBreath {
+          0%, 100% { transform: translate3d(0, 0, 0) scale(1.02); }
+          50% { transform: translate3d(0, -0.35%, 0) scale(1.035); }
+        }
+        @keyframes f1SpeedStreaks {
+          0% { background-position: 0px 0px; opacity: 0.22; }
+          50% { opacity: 0.38; }
+          100% { background-position: -480px 0px; opacity: 0.22; }
+        }
+        @keyframes f1BodySheen {
+          0% { transform: translateX(-130%) skewX(-25deg); }
+          45%, 100% { transform: translateX(230%) skewX(-25deg); }
+        }
+        @keyframes f1TireSmokePuff {
+          0%, 100% { transform: translate3d(0, 0, 0) scale(0.85); opacity: 0.12; }
+          50% { transform: translate3d(-14px, -6px, 0) scale(1.25); opacity: 0.34; }
+        }
+        @keyframes f1RainLightPulse {
+          0%, 100% { transform: translate(-50%, -50%) scale(0.92); opacity: 0.55; }
+          50% { transform: translate(-50%, -50%) scale(1.18); opacity: 0.98; }
+        }
+        @keyframes f1SparkRise {
+          0% { transform: translate3d(0, 18px, 0) scale(0.8); opacity: 0; }
+          30% { opacity: 0.85; }
+          100% { transform: translate3d(-12px, -38px, 0) scale(1.15); opacity: 0; }
+        }
+        @keyframes f1ProjectorFlicker {
+          0%, 100% { opacity: 0.14; }
+          25% { opacity: 0.24; }
+          50% { opacity: 0.10; }
+          75% { opacity: 0.28; }
+        }
+        @keyframes f1AeroStream {
+          0% { stroke-dashoffset: 240; opacity: 0.25; }
+          50% { opacity: 0.70; }
+          100% { stroke-dashoffset: 0; opacity: 0.25; }
+        }
+        @keyframes f1FlagWave {
+          0%, 100% { transform: perspective(300px) rotateY(0deg) skewY(0deg); }
+          50% { transform: perspective(300px) rotateY(-12deg) skewY(3deg); }
+        }
+      `}</style>
+
+      {/* SVG Filter Definitions for Heat Shimmer (Prompt 1) */}
       <svg className="sr-only" aria-hidden="true">
         <defs>
           <filter id="f1-heat-shimmer" x="-10%" y="-10%" width="120%" height="120%">
@@ -962,36 +986,50 @@ export function NovatosPage() {
               {!reduceMotion && (
                 <animate
                   attributeName="baseFrequency"
-                  values="0.025 0.08;0.032 0.11;0.025 0.08"
-                  dur="2.8s"
+                  values="0.025 0.08;0.035 0.12;0.025 0.08"
+                  dur="2.4s"
                   repeatCount="indefinite"
                 />
               )}
             </feTurbulence>
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={reduceMotion ? 0 : 5} />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale={reduceMotion ? 0 : 6} />
           </filter>
         </defs>
       </svg>
 
-      {/* TOP BAR — MODULE HEADER, PROGRESS, GLOSSARY & ACCESSIBILITY CONTROLS */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-6 py-3.5 bg-[#0D1017] border-b border-white/10">
-        <div className="flex items-center gap-3">
-          <span className="px-2.5 py-1 rounded-md bg-[#E10600] text-white font-black text-xs tracking-wider uppercase shadow-[0_0_15px_rgba(225,6,0,0.5)]">
-            NOVATOS NA F1
-          </span>
-          <span className="text-xs sm:text-sm font-semibold text-white/90">
-            Módulo 1: O que é a Fórmula 1?
-          </span>
+      {/* ==================================================================== */}
+      {/* 1 & 2. CABEÇALHO COMPACTO + IDENTIFICAÇÃO DO MÓDULO E PROGRESSO      */}
+      {/* ==================================================================== */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 px-3.5 sm:px-6 py-3 bg-[#0D1017] border-b border-white/10">
+        <div className="flex items-center justify-between sm:justify-start gap-2.5 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="px-2.5 py-1 rounded-md bg-[#E10600] text-white font-black text-[11px] sm:text-xs tracking-wider uppercase shadow-[0_0_15px_rgba(225,6,0,0.5)] shrink-0">
+              NOVATOS NA F1
+            </span>
+            <span className="text-xs sm:text-sm font-bold text-white/95 truncate">
+              Módulo 1: O que é a Fórmula 1?
+            </span>
+          </div>
+
+          {/* Mobile compact Glossary trigger */}
+          <button
+            type="button"
+            onClick={() => setShowGlossary(true)}
+            className="sm:hidden px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-white/10 hover:bg-[#E10600] text-white border border-white/15 transition-colors flex items-center gap-1 shrink-0 cursor-pointer"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-[#E10600]" />
+            Glossário
+          </button>
         </div>
 
         {/* Course Progress + Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2">
           <div
-            className="flex items-center gap-2 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs"
+            className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[11px] sm:text-xs"
             title="Progresso real do Módulo 1"
           >
             <span className="text-white/60">Progresso:</span>
-            <div className="w-20 h-2 rounded-full bg-white/10 overflow-hidden">
+            <div className="w-16 sm:w-20 h-2 rounded-full bg-white/10 overflow-hidden">
               <div
                 className="h-full bg-[#E10600] transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
@@ -1000,53 +1038,55 @@ export function NovatosPage() {
             <span className="font-mono font-bold text-white">{progressPercent}%</span>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setReduceMotion((prev) => !prev)}
-            className={cn(
-              "px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors flex items-center gap-1.5",
-              reduceMotion
-                ? "bg-amber-500/15 border-amber-500/40 text-amber-200"
-                : "bg-white/5 border-white/10 text-white/80 hover:text-white hover:border-white/25"
-            )}
-            title="Ativar ou reduzir animações visuais"
-          >
-            <Eye className="w-3.5 h-3.5" />
-            {reduceMotion ? "Animações: Reduzidas" : "Animações: Ativas"}
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setReduceMotion((prev) => !prev)}
+              className={cn(
+                "px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium border transition-colors flex items-center gap-1 cursor-pointer",
+                reduceMotion
+                  ? "bg-amber-500/15 border-amber-500/40 text-amber-200"
+                  : "bg-white/5 border-white/10 text-white/80 hover:text-white hover:border-white/25"
+              )}
+              title="Ativar ou reduzir animações visuais"
+            >
+              <Eye className="w-3.5 h-3.5" />
+              <span>{reduceMotion ? "Movimento: Reduzido" : "Movimento: Ativo"}</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setShowAudioMixer((prev) => !prev)}
-            className={cn(
-              "px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors flex items-center gap-1.5",
-              showAudioMixer
-                ? "bg-[#E10600]/20 border-[#E10600] text-white"
-                : "bg-white/5 border-white/10 text-white/80 hover:text-white hover:border-[#E10600]/60"
-            )}
-          >
-            <Sliders className="w-3.5 h-3.5 text-[#E10600]" />
-            Mixer de Áudio
-          </button>
+            <button
+              type="button"
+              onClick={() => setShowAudioMixer((prev) => !prev)}
+              className={cn(
+                "px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium border transition-colors flex items-center gap-1 cursor-pointer",
+                showAudioMixer
+                  ? "bg-[#E10600]/20 border-[#E10600] text-white"
+                  : "bg-white/5 border-white/10 text-white/80 hover:text-white hover:border-[#E10600]/60"
+              )}
+            >
+              <Sliders className="w-3.5 h-3.5 text-[#E10600]" />
+              <span>Mixer</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setShowGlossary(true)}
-            className="px-3 py-1 rounded-lg text-xs font-semibold bg-white/10 hover:bg-[#E10600] text-white border border-white/15 transition-colors flex items-center gap-1.5"
-          >
-            <BookOpen className="w-3.5 h-3.5" />
-            Glossário ({GLOSSARY_TERMS.length})
-          </button>
+            <button
+              type="button"
+              onClick={() => setShowGlossary(true)}
+              className="hidden sm:flex px-3 py-1 rounded-lg text-xs font-semibold bg-white/10 hover:bg-[#E10600] text-white border border-white/15 transition-colors items-center gap-1.5 cursor-pointer"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              Glossário ({GLOSSARY_TERMS.length})
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* COLLAPSIBLE 3-CHANNEL AUDIO MIXER PANEL */}
+      {/* COLLAPSIBLE TOP 3-CHANNEL AUDIO MIXER PANEL */}
       {showAudioMixer && (
-        <div className="px-4 sm:px-6 py-3.5 bg-[#121621] border-b border-white/10 grid grid-cols-1 sm:grid-cols-4 gap-4 items-center text-xs">
-          <div>
-            <div className="flex justify-between mb-1">
+        <div className="px-3.5 sm:px-6 py-3.5 bg-[#121621] border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 items-center text-xs">
+          <div className="p-2.5 rounded-xl bg-black/40 border border-white/10">
+            <div className="flex justify-between mb-1.5">
               <span className="font-semibold text-white">🎙️ Canal A: Narração (Mariana)</span>
-              <span className="font-mono text-white/70">{Math.round(narrationVolume * 100)}%</span>
+              <span className="font-mono text-white/80">{Math.round(narrationVolume * 100)}%</span>
             </div>
             <input
               type="range"
@@ -1055,17 +1095,31 @@ export function NovatosPage() {
               step={0.05}
               value={narrationVolume}
               onChange={(e) => setNarrationVolume(parseFloat(e.target.value))}
-              className="w-full accent-[#E10600]"
+              className="w-full accent-[#E10600] cursor-pointer"
               aria-label="Volume da Narração"
             />
           </div>
 
-          <div>
-            <div className="flex justify-between mb-1">
-              <span className="font-semibold text-white">🎵 Canal B: Trilha Cinematográfica</span>
-              <span className="font-mono text-white/70">
-                {musicEnabled ? `${Math.round(musicVolume * 100)}%` : "Desligada"}
-              </span>
+          <div className="p-2.5 rounded-xl bg-black/40 border border-white/10">
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <span className="font-semibold text-white truncate">🎵 Canal B: Trilha Cinematográfica</span>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handleToggleTestChannel("music")}
+                  className={cn(
+                    "px-2 py-0.5 rounded text-[10px] font-bold border transition-colors cursor-pointer",
+                    soloTestingChannel === "music"
+                      ? "bg-[#E10600] border-white text-white"
+                      : "bg-white/10 border-white/20 text-white/80 hover:text-white"
+                  )}
+                >
+                  {soloTestingChannel === "music" ? "Parar Teste" : "Ouvir Trilha"}
+                </button>
+                <span className="font-mono text-white/80">
+                  {musicEnabled ? `${Math.round(musicVolume * 100)}%` : "Off"}
+                </span>
+              </div>
             </div>
             <input
               type="range"
@@ -1075,15 +1129,31 @@ export function NovatosPage() {
               value={musicVolume}
               onChange={(e) => setMusicVolume(parseFloat(e.target.value))}
               disabled={!musicEnabled}
-              className="w-full accent-[#E10600]"
-              aria-label="Volume da Música"
+              className="w-full accent-[#E10600] cursor-pointer"
+              aria-label="Volume da Trilha Cinematográfica"
             />
           </div>
 
-          <div>
-            <div className="flex justify-between mb-1">
-              <span className="font-semibold text-white">🏎️ Canal C: Sons Ambientes / Pista</span>
-              <span className="font-mono text-white/70">{Math.round(ambientVolume * 100)}%</span>
+          <div className="p-2.5 rounded-xl bg-black/40 border border-white/10">
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <span className="font-semibold text-white truncate">🏎️ Canal C: Sons Ambientes / Pista</span>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handleToggleTestChannel("ambient")}
+                  className={cn(
+                    "px-2 py-0.5 rounded text-[10px] font-bold border transition-colors cursor-pointer",
+                    soloTestingChannel === "ambient"
+                      ? "bg-[#E10600] border-white text-white"
+                      : "bg-white/10 border-white/20 text-white/80 hover:text-white"
+                  )}
+                >
+                  {soloTestingChannel === "ambient" ? "Parar Teste" : "Ouvir Pista"}
+                </button>
+                <span className="font-mono text-white/80">
+                  {ambientEnabled ? `${Math.round(ambientVolume * 100)}%` : "Off"}
+                </span>
+              </div>
             </div>
             <input
               type="range"
@@ -1092,17 +1162,18 @@ export function NovatosPage() {
               step={0.05}
               value={ambientVolume}
               onChange={(e) => setAmbientVolume(parseFloat(e.target.value))}
-              className="w-full accent-[#E10600]"
+              disabled={!ambientEnabled}
+              className="w-full accent-[#E10600] cursor-pointer"
               aria-label="Volume dos Sons Ambientes"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2">
+          <div className="flex flex-wrap items-center justify-end gap-2">
             <button
               type="button"
               onClick={() => setMusicEnabled((p) => !p)}
               className={cn(
-                "px-2.5 py-1.5 rounded-lg border font-medium transition-colors",
+                "px-2.5 py-1.5 rounded-lg border font-medium transition-colors cursor-pointer",
                 musicEnabled
                   ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-200"
                   : "bg-white/5 border-white/10 text-white/60"
@@ -1112,80 +1183,90 @@ export function NovatosPage() {
             </button>
             <button
               type="button"
+              onClick={() => setAmbientEnabled((p) => !p)}
+              className={cn(
+                "px-2.5 py-1.5 rounded-lg border font-medium transition-colors cursor-pointer",
+                ambientEnabled
+                  ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-200"
+                  : "bg-white/5 border-white/10 text-white/60"
+              )}
+            >
+              {ambientEnabled ? "Ambiente: Ativo" : "Ambiente: Off"}
+            </button>
+            <button
+              type="button"
               onClick={() => setIsMutedAll((p) => !p)}
               className={cn(
-                "px-2.5 py-1.5 rounded-lg border font-medium flex items-center gap-1 transition-colors",
+                "px-2.5 py-1.5 rounded-lg border font-medium flex items-center gap-1 transition-colors cursor-pointer",
                 isMutedAll
                   ? "bg-rose-600/30 border-rose-500 text-rose-200"
                   : "bg-white/5 border-white/10 text-white/80 hover:text-white"
               )}
             >
               {isMutedAll ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-              {isMutedAll ? "Silenciado" : "Silenciar Tudo"}
+              {isMutedAll ? "Silenciado" : "Silenciar"}
             </button>
           </div>
         </div>
       )}
 
       {/* ==================================================================== */}
-      {/* STAGE 1: TELA DE ABERTURA CINEMATOGRÁFICA                            */}
+      {/* STAGE 1: TELA DE ABERTURA CINEMATOGRÁFICA (RESPONSIVA MOBILE/DESKTOP)*/}
       {/* ==================================================================== */}
       {viewStage === "opening" && (
-        <div className="relative min-h-[72vh] flex flex-col justify-between p-6 sm:p-12 overflow-hidden">
-          {/* Background Rear F1 Car with Subtle 2.5D Depth, Heat Shimmer & Pulsing Rain Light */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="relative flex flex-col justify-between p-4 sm:p-10 lg:p-12 overflow-hidden">
+          {/* Desktop full-bleed background / Mobile dedicated top hero visual */}
+          <div className="relative sm:absolute sm:inset-0 h-52 sm:h-auto rounded-2xl sm:rounded-none overflow-hidden mb-4 sm:mb-0 border border-white/15 sm:border-0 pointer-events-none">
             <img
               src="/backgrounds/bg-ferrari.webp"
               alt="Carro moderno de Fórmula 1 visto de trás em circuito noturno"
-              className={cn(
-                "w-full h-full object-cover object-center brightness-[0.55] transition-transform duration-1000",
-                !reduceMotion && "animate-[pulse_12s_ease-in-out_infinite] scale-[1.02]"
-              )}
+              className="w-full h-full object-cover object-center sm:brightness-[0.52]"
+              style={{
+                animation: reduceMotion ? "none" : "f1RearLockedBreath 9s ease-in-out infinite",
+              }}
             />
             {/* Heat Shimmer Distortion Zone behind Rear Wing */}
             <div
-              className="absolute left-1/2 top-[22%] -translate-x-1/2 w-[320px] h-[130px] rounded-full opacity-55"
+              className="absolute left-1/2 top-[22%] -translate-x-1/2 w-56 sm:w-80 h-24 sm:h-32 rounded-full opacity-65"
               style={{
                 filter: reduceMotion ? "none" : "url(#f1-heat-shimmer)",
                 background:
-                  "radial-gradient(ellipse at center, rgba(255,110,30,0.22) 0%, rgba(225,6,0,0.06) 60%, transparent 100%)",
+                  "radial-gradient(ellipse at center, rgba(255,110,30,0.28) 0%, rgba(225,6,0,0.08) 60%, transparent 100%)",
               }}
             />
             {/* Pulsing Red Rear Rain Light */}
             <div
-              className={cn(
-                "absolute left-1/2 top-[60%] -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full pointer-events-none",
-                !reduceMotion && "animate-pulse"
-              )}
+              className="absolute left-1/2 top-[60%] w-16 h-16 sm:w-24 sm:h-24 rounded-full pointer-events-none"
               style={{
                 background:
-                  "radial-gradient(circle, rgba(255,25,25,0.85) 0%, rgba(225,6,0,0.35) 45%, transparent 75%)",
+                  "radial-gradient(circle, rgba(255,30,30,0.92) 0%, rgba(225,6,0,0.40) 45%, transparent 75%)",
+                animation: reduceMotion ? "none" : "f1RainLightPulse 2.2s ease-in-out infinite",
               }}
             />
-            {/* Dark Cinematic Vignette */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#080A0F] via-[#080A0F]/60 to-[#080A0F]/80" />
+            {/* Dark Cinematic Vignette on Desktop */}
+            <div className="hidden sm:block absolute inset-0 bg-gradient-to-t from-[#080A0F] via-[#080A0F]/65 to-[#080A0F]/80" />
           </div>
 
           {/* Top Opening Status Pill */}
-          <div className="relative z-10 flex flex-wrap items-center justify-between gap-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 border border-white/15 backdrop-blur-md text-xs">
-              <span className="w-2 h-2 rounded-full bg-[#E10600] animate-ping" />
+          <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/80 border border-white/15 backdrop-blur-md text-[11px] sm:text-xs">
+              <span className="w-2 h-2 rounded-full bg-[#E10600] animate-ping shrink-0" />
               <span className="font-semibold text-white">MÓDULO 1 • O QUE É A FÓRMULA 1?</span>
-              <span className="text-white/50">|</span>
-              <span className="text-white/75">8 Cenas Interativas + Questionário</span>
             </div>
 
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 border border-white/10 text-xs text-emerald-300">
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
-              {resourcesReady
-                ? "Recursos prontos · Voz Oficial: Mariana (Rádio F1)"
-                : "Carregando recursos de áudio e imagem…"}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/80 border border-white/10 text-[11px] sm:text-xs text-emerald-300">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+              <span>
+                {resourcesReady
+                  ? "Áudio 3 Canais + Voz Mariana Prontos"
+                  : "Carregando recursos de áudio e imagem…"}
+              </span>
             </div>
           </div>
 
           {/* Center Hero Title, Subtitle & CTA */}
-          <div className="relative z-10 max-w-3xl my-auto py-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#E10600]/20 border border-[#E10600]/50 text-red-200 text-xs font-semibold mb-4">
+          <div className="relative z-10 max-w-3xl my-auto py-2 sm:py-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#E10600]/20 border border-[#E10600]/50 text-red-200 text-xs font-semibold mb-3">
               <img
                 src="/radio/mariana.png"
                 alt="Mariana"
@@ -1194,23 +1275,23 @@ export function NovatosPage() {
               Guiado por Mariana — Locutora Oficial da Rádio F1
             </div>
 
-            <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white mb-4 leading-none">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white mb-3 leading-tight">
               NOVATOS NA <span className="text-[#E10600]">F1</span>
             </h1>
 
-            <p className="text-base sm:text-xl text-slate-200 leading-relaxed mb-8 max-w-2xl">
+            <p className="text-sm sm:text-xl text-slate-200 font-medium leading-relaxed mb-6 max-w-2xl">
               Você não precisa entender de automobilismo para começar. Nós explicamos tudo, curva
               por curva.
             </p>
 
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-wrap items-center gap-3">
               <button
                 type="button"
                 onClick={() => {
                   setViewStage("lesson")
                   goToScene(0, true)
                 }}
-                className="px-7 py-4 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white font-black text-sm sm:text-base tracking-wide uppercase shadow-[0_0_30px_rgba(225,6,0,0.65)] hover:shadow-[0_0_40px_rgba(225,6,0,0.9)] transition-all flex items-center gap-3 cursor-pointer"
+                className="w-full sm:w-auto justify-center px-6 py-3.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white font-black text-sm sm:text-base tracking-wide uppercase shadow-[0_0_30px_rgba(225,6,0,0.65)] hover:shadow-[0_0_40px_rgba(225,6,0,0.9)] transition-all flex items-center gap-2.5 cursor-pointer"
               >
                 <Play className="w-5 h-5 fill-white" />
                 COMEÇAR DO ZERO
@@ -1221,27 +1302,28 @@ export function NovatosPage() {
                   type="button"
                   onClick={() => {
                     setViewStage("lesson")
-                    goToScene(persisted.lastSceneIndex, false)
+                    goToScene(persisted.lastSceneIndex, true)
                   }}
-                  className="px-5 py-4 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-sm border border-white/15 transition-all cursor-pointer"
+                  className="w-full sm:w-auto justify-center px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs sm:text-sm border border-white/20 transition-all flex items-center gap-2 cursor-pointer"
                 >
-                  Continuar da Cena {persisted.lastSceneIndex + 1} de 8
+                  Continuar da Cena 0{MODULE_1_SCENES[persisted.lastSceneIndex]?.number || 1}
+                  <ChevronRight className="w-4 h-4" />
                 </button>
               )}
 
               <button
                 type="button"
-                onClick={() => setShowGlossary(true)}
-                className="px-5 py-4 rounded-xl bg-black/60 hover:bg-white/10 text-slate-200 font-medium text-sm border border-white/15 transition-all flex items-center gap-2 cursor-pointer"
+                onClick={() => setViewStage("quiz")}
+                className="w-full sm:w-auto justify-center px-4 py-3.5 rounded-xl bg-black/70 hover:bg-white/10 text-white/85 hover:text-white font-semibold text-xs sm:text-sm border border-white/15 transition-all flex items-center gap-2 cursor-pointer"
               >
-                <BookOpen className="w-4 h-4 text-[#E10600]" />
-                Explorar Glossário Inicial
+                <Award className="w-4 h-4 text-[#E10600]" />
+                Ir ao Questionário
               </button>
             </div>
           </div>
 
-          {/* Bottom Scene Preview Strip */}
-          <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 pt-4 border-t border-white/10">
+          {/* Bottom 8-Scene Quick Overview Strip */}
+          <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 pt-5 mt-5 border-t border-white/10">
             {MODULE_1_SCENES.map((sc, idx) => {
               const done = persisted.visitedScenes.includes(sc.number)
               return (
@@ -1250,16 +1332,16 @@ export function NovatosPage() {
                   type="button"
                   onClick={() => {
                     setViewStage("lesson")
-                    goToScene(idx, false)
+                    goToScene(idx, true)
                   }}
                   className={cn(
                     "text-left p-2.5 rounded-lg border transition-all cursor-pointer",
                     done
                       ? "bg-[#E10600]/15 border-[#E10600]/50 text-white"
-                      : "bg-black/50 border-white/10 text-white/70 hover:text-white hover:border-white/25"
+                      : "bg-black/60 border-white/10 text-white/75 hover:text-white hover:border-white/25"
                   )}
                 >
-                  <div className="flex items-center justify-between text-[10px] font-mono text-white/50 mb-0.5">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-white/55 mb-0.5">
                     <span>CENA 0{sc.number}</span>
                     {done && <CheckCircle2 className="w-3 h-3 text-emerald-400" />}
                   </div>
@@ -1272,13 +1354,13 @@ export function NovatosPage() {
       )}
 
       {/* ==================================================================== */}
-      {/* STAGE 2: AS 8 CENAS SEQUENCIAIS DO MÓDULO 1                          */}
+      {/* STAGE 2: AS 8 CENAS SEQUENCIAIS DO MÓDULO 1 (MOBILE-FIRST & DESKTOP) */}
       {/* ==================================================================== */}
       {viewStage === "lesson" && (
-        <div className="p-4 sm:p-6 space-y-5">
-          {/* Scene Navigation Pills (Cena 1 de 8 .. Cena 8 de 8) */}
-          <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1">
-            <div className="flex items-center gap-1.5">
+        <div className="p-3.5 sm:p-6 space-y-4 sm:space-y-5">
+          {/* 3. BOTÕES DE NAVEGAÇÃO ENTRE CENAS */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
               {MODULE_1_SCENES.map((sc, idx) => {
                 const isCurrent = idx === sceneIndex
                 const isDone = persisted.visitedScenes.includes(sc.number)
@@ -1286,9 +1368,9 @@ export function NovatosPage() {
                   <button
                     key={sc.id}
                     type="button"
-                    onClick={() => goToScene(idx, false)}
+                    onClick={() => goToScene(idx, true)}
                     className={cn(
-                      "px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer border",
+                      "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer border min-h-[36px]",
                       isCurrent
                         ? "bg-[#E10600] text-white border-[#E10600] shadow-[0_0_15px_rgba(225,6,0,0.5)]"
                         : isDone
@@ -1297,107 +1379,213 @@ export function NovatosPage() {
                     )}
                   >
                     <span>0{sc.number}</span>
-                    <span className="hidden md:inline truncate max-w-[110px]">{sc.title}</span>
+                    <span className="hidden lg:inline truncate max-w-[110px]">{sc.title}</span>
                   </button>
                 )
               })}
             </div>
 
-            <span className="text-xs font-mono font-bold text-white/80 shrink-0 px-2.5 py-1 rounded bg-white/5 border border-white/10">
-              Cena {currentScene.number} de {MODULE_1_SCENES.length}
-            </span>
+            <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0">
+              <span className="text-xs font-mono font-bold text-white/90 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10">
+                Cena {currentScene.number} de {MODULE_1_SCENES.length}
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => goToScene(sceneIndex - 1, true)}
+                  disabled={sceneIndex === 0}
+                  className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 disabled:opacity-35 text-white text-xs font-bold flex items-center gap-1 border border-white/10 cursor-pointer min-h-[34px]"
+                  title="Cena Anterior"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span className="sm:hidden">Ant.</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    sceneIndex < MODULE_1_SCENES.length - 1
+                      ? goToScene(sceneIndex + 1, true)
+                      : setViewStage("quiz")
+                  }
+                  className="px-2.5 py-1 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-bold flex items-center gap-1 cursor-pointer min-h-[34px]"
+                  title="Próxima Cena"
+                >
+                  <span className="sm:hidden">Próx.</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* MAIN CINEMATIC VISUAL STAGE (NO TRADITIONAL VIDEO — LAYERED 2.5D + SVG/CSS) */}
-          <div className="relative rounded-2xl overflow-hidden border border-white/15 bg-black aspect-[16/9] max-h-[540px] w-full shadow-2xl">
-            {/* Base High-Definition Photograph with Scene-Specific Motion Rule */}
+          {/* ================================================================ */}
+          {/* 4. IMAGEM PRINCIPAL ANIMADA (DEDICATED STAGE, ZERO TEXT OVERLAP) */}
+          {/* ================================================================ */}
+          <div className="relative rounded-2xl overflow-hidden border border-white/15 bg-[#05070B] aspect-[16/10] sm:aspect-[16/9] max-h-[500px] w-full shadow-2xl">
+            {/* Layer 1: 2.5D Blurred Background Track/Grandstand Parallax Layer */}
+            {currentScene.visualEffectType !== "vintage_1950" && (
+              <img
+                src={currentScene.imageUrl}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full object-cover object-center opacity-45 blur-[2px] select-none pointer-events-none"
+                style={{
+                  animation: reduceMotion ? "none" : "f1TrackBgPan 11s ease-in-out infinite",
+                }}
+              />
+            )}
+
+            {/* Layer 2: Foreground Sharp F1 Car with Trajectory Glide or Locked Rear Shimmer */}
             <img
               key={currentScene.id}
               src={currentScene.imageUrl}
               alt={`Cena 0${currentScene.number} — ${currentScene.title}`}
               className={cn(
-                "w-full h-full object-cover object-center select-none transition-transform duration-700",
-                !reduceMotion &&
-                  currentScene.visualEffectType === "parallax_track" &&
-                  "scale-[1.03]",
-                !reduceMotion &&
-                  currentScene.visualEffectType === "vintage_1950" &&
-                  "sepia-[0.25] contrast-125"
+                "relative z-[1] w-full h-full object-cover object-center select-none",
+                currentScene.visualEffectType === "vintage_1950" && "sepia-[0.22] contrast-115"
               )}
+              style={{
+                animation: reduceMotion
+                  ? "none"
+                  : currentScene.visualEffectType === "vintage_1950"
+                  ? "none"
+                  : currentScene.visualEffectType === "rear_shimmer"
+                  ? "f1RearLockedBreath 8s ease-in-out infinite"
+                  : "f1CarTrackGlide 7.5s ease-in-out infinite",
+              }}
             />
 
-            {/* SCENE 01 OVERLAY: Rear Wing Heat Shimmer + Pulsing Red Rain Light + Sparks */}
-            {currentScene.visualEffectType === "rear_shimmer" && (
-              <>
+            {/* Layer 3: Subtle Asphalt Speed Lines on Track Scenes */}
+            {!reduceMotion &&
+              (currentScene.visualEffectType === "parallax_track" ||
+                currentScene.visualEffectType === "starting_grid" ||
+                currentScene.visualEffectType === "telemetry_wall" ||
+                currentScene.visualEffectType === "checkered_finish") && (
                 <div
-                  className="absolute left-1/2 top-[22%] -translate-x-1/2 w-[300px] h-[120px] rounded-full pointer-events-none"
+                  className="absolute inset-x-0 bottom-0 h-[38%] z-[2] pointer-events-none"
+                  style={{
+                    backgroundImage:
+                      "repeating-linear-gradient(90deg, transparent 0px, transparent 110px, rgba(255,255,255,0.16) 110px, rgba(225,6,0,0.28) 145px, transparent 145px)",
+                    backgroundSize: "480px 2px",
+                    backgroundRepeat: "repeat",
+                    maskImage: "linear-gradient(to top, rgba(0,0,0,0.85), transparent)",
+                    WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0.85), transparent)",
+                    animation: "f1SpeedStreaks 1.3s linear infinite",
+                  }}
+                />
+              )}
+
+            {/* Layer 4: Subtle Bodywork Specular Light Reflection Sweep */}
+            {!reduceMotion && currentScene.visualEffectType !== "vintage_1950" && (
+              <div className="absolute inset-0 z-[2] overflow-hidden pointer-events-none">
+                <div
+                  className="w-1/3 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                  style={{
+                    animation: "f1BodySheen 6.5s ease-in-out infinite",
+                  }}
+                />
+              </div>
+            )}
+
+            {/* SCENE 01 OVERLAY: Rear Wing Heat Shimmer + Pulsing Red Rain Light + Rising Sparks */}
+            {currentScene.visualEffectType === "rear_shimmer" && (
+              <div className="absolute inset-0 z-[3] pointer-events-none">
+                <div
+                  className="absolute left-1/2 top-[22%] -translate-x-1/2 w-48 sm:w-72 h-20 sm:h-28 rounded-full"
                   style={{
                     filter: reduceMotion ? "none" : "url(#f1-heat-shimmer)",
                     background:
-                      "radial-gradient(ellipse at center, rgba(255,120,40,0.22) 0%, transparent 75%)",
+                      "radial-gradient(ellipse at center, rgba(255,120,40,0.26) 0%, transparent 75%)",
                   }}
                 />
                 <div
-                  className={cn(
-                    "absolute left-1/2 top-[62%] -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full pointer-events-none",
-                    !reduceMotion && "animate-pulse"
-                  )}
+                  className="absolute left-1/2 top-[62%] w-14 h-14 sm:w-20 sm:h-20 rounded-full"
                   style={{
                     background:
-                      "radial-gradient(circle, rgba(255,20,20,0.85) 0%, rgba(225,6,0,0.3) 50%, transparent 75%)",
+                      "radial-gradient(circle, rgba(255,25,25,0.9) 0%, rgba(225,6,0,0.35) 50%, transparent 75%)",
+                    animation: reduceMotion ? "none" : "f1RainLightPulse 2s ease-in-out infinite",
                   }}
                 />
-              </>
+                {!reduceMotion &&
+                  [18, 34, 52, 66, 80].map((leftPct, i) => (
+                    <span
+                      key={leftPct}
+                      className="absolute bottom-[18%] w-1.5 h-1.5 rounded-full bg-red-400 shadow-[0_0_8px_#E10600]"
+                      style={{
+                        left: `${leftPct}%`,
+                        animation: `f1SparkRise ${2.2 + i * 0.4}s ease-out infinite`,
+                        animationDelay: `${i * 0.35}s`,
+                      }}
+                    />
+                  ))}
+              </div>
             )}
 
             {/* SCENE 02 OVERLAY: 1950 Documentary Film Grain, Dust Scratches & Projector Flicker */}
             {currentScene.visualEffectType === "vintage_1950" && (
               <div
-                className={cn(
-                  "absolute inset-0 pointer-events-none",
-                  !reduceMotion && "animate-[pulse_4s_ease-in-out_infinite]"
-                )}
+                className="absolute inset-0 z-[3] pointer-events-none"
                 style={{
                   backgroundImage:
-                    "repeating-linear-gradient(90deg, transparent 0, transparent 180px, rgba(255,240,200,0.07) 181px, transparent 182px)",
-                  boxShadow: "inset 0 0 90px rgba(0,0,0,0.75)",
+                    "repeating-linear-gradient(90deg, transparent 0, transparent 160px, rgba(255,240,200,0.09) 161px, transparent 162px)",
+                  boxShadow: "inset 0 0 80px rgba(0,0,0,0.75)",
+                  animation: reduceMotion ? "none" : "f1ProjectorFlicker 3.2s infinite",
                 }}
-              >
-                <div className="absolute top-3 left-3 px-3 py-1 rounded bg-amber-950/80 border border-amber-400/40 text-amber-200 text-xs font-mono">
-                  🎞️ ARQUIVO HISTÓRICO 1950 • FIA WORLD CHAMPIONSHIP
-                </div>
-              </div>
+              />
             )}
 
-            {/* SCENE 03 OVERLAY: Why Formula 1? 2.5D Parallax + Formula & 1 Badges */}
-            {currentScene.visualEffectType === "parallax_track" && (
-              <div className="absolute inset-x-4 top-4 flex flex-wrap justify-between gap-3 pointer-events-none">
-                <div className="px-4 py-2.5 rounded-xl bg-black/80 border border-[#E10600]/60 backdrop-blur-md max-w-xs">
-                  <div className="text-[11px] font-mono text-[#E10600] font-bold">
-                    TERMO 1 • &ldquo;FÓRMULA&rdquo;
-                  </div>
-                  <div className="text-xs text-white font-medium mt-0.5">
-                    Conjunto de regras técnicas e esportivas obrigatórias para todas as equipes.
-                  </div>
+            {/* SCENE 03 & 05 & 06: Subtle Tire Smoke Puff near Rear/Front Wheels */}
+            {!reduceMotion &&
+              (currentScene.visualEffectType === "parallax_track" ||
+                currentScene.visualEffectType === "pitstop_team" ||
+                (currentScene.visualEffectType === "starting_grid" && activeStartLights === -1)) && (
+                <div className="absolute inset-0 z-[3] pointer-events-none">
+                  <div
+                    className="absolute left-[28%] bottom-[16%] w-24 sm:w-36 h-12 sm:h-16 rounded-full blur-md"
+                    style={{
+                      background:
+                        "radial-gradient(circle, rgba(240,245,255,0.34) 0%, transparent 70%)",
+                      animation: "f1TireSmokePuff 2.6s ease-in-out infinite",
+                    }}
+                  />
+                  <div
+                    className="absolute right-[22%] bottom-[18%] w-28 sm:w-40 h-14 sm:h-20 rounded-full blur-md"
+                    style={{
+                      background:
+                        "radial-gradient(circle, rgba(240,245,255,0.28) 0%, transparent 70%)",
+                      animation: "f1TireSmokePuff 3.1s ease-in-out infinite",
+                      animationDelay: "0.8s",
+                    }}
+                  />
                 </div>
-                <div className="px-4 py-2.5 rounded-xl bg-black/80 border border-white/25 backdrop-blur-md max-w-xs">
-                  <div className="text-[11px] font-mono text-emerald-400 font-bold">
-                    TERMO 2 • &ldquo;NÚMERO 1&rdquo;
-                  </div>
-                  <div className="text-xs text-white font-medium mt-0.5">
-                    Identifica a categoria máxima de topo dentro dessa fórmula de competição.
-                  </div>
-                </div>
-              </div>
-            )}
+              )}
 
-            {/* SCENE 04 OVERLAY: THE MACHINE — 7 SYNCHRONIZED INTERACTIVE HOTSPOTS */}
+            {/* SCENE 04 OVERLAY: Aerodynamic Wind-Tunnel Streamlines + Compact Hotspot Pins */}
             {currentScene.visualEffectType === "machine_hotspots" && (
-              <div className="absolute inset-0">
-                <div className="absolute top-3 left-3 px-3 py-1.5 rounded-lg bg-black/80 border border-white/15 text-xs text-white/90 backdrop-blur-md">
-                  🔍 <strong>7 Componentes da Máquina:</strong> Acompanhe em sincronia com a Mariana
-                  ou clique em cada ponto
-                </div>
+              <div className="absolute inset-0 z-[3]">
+                {!reduceMotion && (
+                  <svg
+                    viewBox="0 0 800 450"
+                    className="absolute inset-0 w-full h-full pointer-events-none opacity-65"
+                  >
+                    <path
+                      d="M 60 310 Q 240 260, 420 190 T 740 140"
+                      fill="none"
+                      stroke="#E10600"
+                      strokeWidth="2"
+                      strokeDasharray="18 14"
+                      style={{ animation: "f1AeroStream 2.4s linear infinite" }}
+                    />
+                    <path
+                      d="M 90 340 Q 280 300, 470 235 T 760 185"
+                      fill="none"
+                      stroke="#38BDF8"
+                      strokeWidth="1.5"
+                      strokeDasharray="14 18"
+                      style={{ animation: "f1AeroStream 2.8s linear infinite" }}
+                    />
+                  </svg>
+                )}
+
                 {CAR_COMPONENTS_SCENE_04.map((comp) => {
                   const isHighlightedByTime =
                     !isPlaying || currentTime === 0 || currentTime >= comp.appearAtSec
@@ -1409,102 +1597,57 @@ export function NovatosPage() {
                       onClick={() => setSelectedHotspot(comp.id)}
                       style={{ left: `${comp.x}%`, top: `${comp.y}%` }}
                       className={cn(
-                        "absolute -translate-x-1/2 -translate-y-1/2 group transition-all duration-500 cursor-pointer",
-                        isHighlightedByTime ? "opacity-100 scale-100" : "opacity-35 scale-90"
+                        "absolute -translate-x-1/2 -translate-y-1/2 group transition-all duration-300 cursor-pointer",
+                        isHighlightedByTime ? "opacity-100 scale-100" : "opacity-45 scale-90"
                       )}
+                      aria-label={comp.name}
                     >
                       <span
                         className={cn(
-                          "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border shadow-lg backdrop-blur-md transition-all",
+                          "flex items-center justify-center gap-1 px-2 py-1 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-bold border shadow-lg backdrop-blur-md transition-all",
                           isSelected
-                            ? "bg-[#E10600] text-white border-white scale-110"
+                            ? "bg-[#E10600] text-white border-white scale-110 shadow-[0_0_15px_#E10600]"
                             : "bg-black/85 text-white border-[#E10600] hover:bg-[#E10600]"
                         )}
                       >
-                        <span className="w-2 h-2 rounded-full bg-[#E10600] group-hover:bg-white animate-ping" />
-                        {comp.name}
+                        <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                        <span className="md:hidden">{comp.shortLabel}</span>
+                        <span className="hidden md:inline">{comp.name}</span>
                       </span>
                     </button>
                   )
                 })}
-
-                {/* Active Component Detail Card */}
-                {selectedHotspot !== null && (
-                  <div className="absolute bottom-16 left-4 right-4 sm:left-auto sm:right-4 sm:w-96 p-3.5 rounded-xl bg-black/90 border border-[#E10600] text-xs shadow-2xl backdrop-blur-md">
-                    {(() => {
-                      const item = CAR_COMPONENTS_SCENE_04.find((c) => c.id === selectedHotspot)
-                      if (!item) return null
-                      return (
-                        <>
-                          <div className="flex items-center justify-between font-bold text-white mb-1">
-                            <span className="text-[#E10600]">{item.name}</span>
-                            <button
-                              type="button"
-                              onClick={() => setSelectedHotspot(null)}
-                              className="text-white/50 hover:text-white"
-                            >
-                              ✕
-                            </button>
-                          </div>
-                          <p className="text-slate-200 leading-relaxed">{item.shortDesc}</p>
-                        </>
-                      )
-                    })()}
-                  </div>
-                )}
               </div>
             )}
 
-            {/* SCENE 05 OVERLAY: PILOTOS E EQUIPES (DUAL CHAMPIONSHIP & PIT STOP) */}
-            {currentScene.visualEffectType === "pitstop_team" && (
-              <div className="absolute inset-x-4 top-4 flex flex-wrap justify-between gap-3 pointer-events-none">
-                <div className="px-4 py-2.5 rounded-xl bg-black/80 border border-[#E10600]/60 backdrop-blur-md max-w-xs">
-                  <div className="text-[11px] font-mono text-[#E10600] font-bold">
-                    🏆 DISPUTA 1: CAMPEONATO DE PILOTOS
-                  </div>
-                  <div className="text-xs text-white mt-0.5">
-                    Cada piloto soma pontos individualmente em busca do título mundial.
-                  </div>
-                </div>
-                <div className="px-4 py-2.5 rounded-xl bg-black/80 border border-sky-400/50 backdrop-blur-md max-w-xs">
-                  <div className="text-[11px] font-mono text-sky-300 font-bold">
-                    🛠️ DISPUTA 2: CAMPEONATO DE CONSTRUTORES
-                  </div>
-                  <div className="text-xs text-white mt-0.5">
-                    As equipes somam os pontos de seus pilotos; pit stops e estratégia são decisivos.
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* SCENE 06 OVERLAY: STARTING LIGHTS GANTRY SIMULATION */}
+            {/* SCENE 06 OVERLAY: COMPACT STARTING LIGHTS SEMAPHORE AT TOP OF FRAME */}
             {currentScene.visualEffectType === "starting_grid" && (
-              <div className="absolute inset-x-0 top-3 flex flex-col items-center pointer-events-none px-4">
-                <div className="px-4 py-2.5 rounded-2xl bg-[#0B0D13]/95 border border-white/20 shadow-2xl flex flex-col items-center gap-2">
-                  <div className="text-[10px] font-mono uppercase tracking-widest text-white/60">
-                    Simulação Gráfica Didática • Semáforo Oficial de Largada
-                  </div>
-                  <div className="flex items-center gap-3">
+              <div className="absolute inset-x-0 top-2.5 z-[3] flex justify-center pointer-events-none px-2">
+                <div className="px-3 py-1.5 rounded-xl bg-[#0B0D13]/90 border border-white/20 shadow-xl flex items-center gap-2 backdrop-blur-md">
+                  <span className="hidden sm:inline text-[10px] font-mono uppercase tracking-wider text-white/70">
+                    Semáforo FIA:
+                  </span>
+                  <div className="flex items-center gap-1.5 sm:gap-2">
                     {[1, 2, 3, 4, 5].map((lightNum) => {
                       const isLit = activeStartLights >= lightNum
                       return (
                         <div
                           key={lightNum}
-                          className="w-8 h-12 rounded-lg bg-black border border-white/15 flex flex-col items-center justify-around p-1"
+                          className="w-5 h-7 sm:w-6 sm:h-9 rounded bg-black border border-white/15 flex flex-col items-center justify-around p-0.5"
                         >
                           <span
                             className={cn(
-                              "w-4 h-4 rounded-full transition-all duration-200",
+                              "w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all duration-150",
                               isLit
-                                ? "bg-[#E10600] shadow-[0_0_14px_#E10600]"
+                                ? "bg-[#E10600] shadow-[0_0_10px_#E10600]"
                                 : "bg-red-950/40"
                             )}
                           />
                           <span
                             className={cn(
-                              "w-4 h-4 rounded-full transition-all duration-200",
+                              "w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all duration-150",
                               isLit
-                                ? "bg-[#E10600] shadow-[0_0_14px_#E10600]"
+                                ? "bg-[#E10600] shadow-[0_0_10px_#E10600]"
                                 : "bg-red-950/40"
                             )}
                           />
@@ -1512,26 +1655,177 @@ export function NovatosPage() {
                       )
                     })}
                   </div>
-                  <div className="text-xs font-bold text-emerald-400">
+                  <span className="text-[10px] sm:text-xs font-bold text-emerald-400">
                     {activeStartLights === -1
-                      ? "🟢 LUZES APAGADAS — LARGADA AUTORIZADA!"
-                      : `Aguardando sinal de partida (${Math.max(0, activeStartLights)}/5 luzes)…`}
+                      ? "🟢 LARGADA!"
+                      : `${Math.max(0, activeStartLights)}/5`}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* SCENE 08 OVERLAY: ANIMATED WAVING CHECKERED FLAG BADGE */}
+            {currentScene.visualEffectType === "checkered_finish" && (
+              <div className="absolute top-3 right-3 z-[3] pointer-events-none">
+                <div
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/85 border border-emerald-400/50 text-emerald-300 text-[11px] sm:text-xs font-bold shadow-lg backdrop-blur-md"
+                  style={{
+                    animation: reduceMotion ? "none" : "f1FlagWave 2.2s ease-in-out infinite",
+                  }}
+                >
+                  <Flag className="w-3.5 h-3.5 text-white" />
+                  <span>BANDEIRA QUADRICULADA</span>
+                </div>
+              </div>
+            )}
+
+            {/* Discrete Top-Left Scene Badge (Short, Never Overlaps Car) */}
+            {currentScene.visualEffectType !== "starting_grid" && (
+              <div className="absolute top-2.5 left-2.5 z-[3] pointer-events-none max-w-[75%]">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/75 border border-white/15 backdrop-blur-md text-[10px] sm:text-xs font-mono text-white/90 truncate">
+                  <span className="w-2 h-2 rounded-full bg-[#E10600] shrink-0" />
+                  <span className="truncate">
+                    CENA 0{currentScene.number} • {currentScene.title}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* ================================================================ */}
+          {/* 5. NÚMERO, TÍTULO, DURAÇÃO E DESTAQUES DIDÁTICOS (ABAIXO DA FOTO)*/}
+          {/* ================================================================ */}
+          <div className="rounded-2xl bg-[#0E121B] border border-white/15 p-4 sm:p-5 shadow-lg space-y-3.5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="text-[11px] sm:text-xs font-mono uppercase tracking-wider text-[#E10600] font-bold">
+                CENA 0{currentScene.number} DE 08 • DURAÇÃO ESTIMADA:{" "}
+                {currentScene.estimatedDurationLabel}
+              </span>
+              <span className="text-[11px] font-mono text-white/60 flex items-center gap-1">
+                <Radio className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="truncate max-w-[240px] sm:max-w-none">
+                  Ambiente: {currentScene.ambientDescription}
+                </span>
+              </span>
+            </div>
+
+            <div>
+              <h2 className="text-lg sm:text-2xl font-black text-white leading-snug">
+                {currentScene.title}
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">
+                {currentScene.shortSummary}
+              </p>
+            </div>
+
+            {/* SCENE-SPECIFIC DIDACTIC CARDS BELOW IMAGE (NO MOBILE OVERLAP!) */}
+            {currentScene.visualEffectType === "vintage_1950" && (
+              <div className="p-3 rounded-xl bg-amber-950/30 border border-amber-400/30 text-amber-200 text-xs flex items-center gap-2">
+                <span>🎞️</span>
+                <span>
+                  <strong>Arquivo Histórico 1950:</strong> Primeiro Campeonato Mundial de Pilotos da
+                  FIA, preservando a identidade histórica da imagem com textura de película.
+                </span>
+              </div>
+            )}
+
+            {currentScene.visualEffectType === "parallax_track" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                <div className="p-3 rounded-xl bg-black/60 border border-[#E10600]/50">
+                  <div className="text-[11px] font-mono text-[#E10600] font-bold">
+                    TERMO 1 • &ldquo;FÓRMULA&rdquo;
+                  </div>
+                  <div className="text-xs text-slate-200 mt-1 leading-relaxed">
+                    Conjunto de regras técnicas e esportivas obrigatórias que todas as equipes
+                    precisam respeitar.
+                  </div>
+                </div>
+                <div className="p-3 rounded-xl bg-black/60 border border-emerald-400/40">
+                  <div className="text-[11px] font-mono text-emerald-400 font-bold">
+                    TERMO 2 • &ldquo;NÚMERO 1&rdquo;
+                  </div>
+                  <div className="text-xs text-slate-200 mt-1 leading-relaxed">
+                    Identifica a categoria máxima de topo dentro dessa fórmula mundial de
+                    competição.
                   </div>
                 </div>
               </div>
             )}
 
-            {/* SCENE 07 OVERLAY: ILLUSTRATIVE TELEMETRY & STRATEGY MONITOR */}
+            {currentScene.visualEffectType === "machine_hotspots" && (
+              <div className="space-y-2.5 pt-1">
+                <div className="text-xs text-white/80 font-medium">
+                  🔍 <strong>Toque em qualquer um dos 7 componentes</strong> (na imagem ou abaixo)
+                  para ver sua função:
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {CAR_COMPONENTS_SCENE_04.map((comp) => (
+                    <button
+                      key={comp.id}
+                      type="button"
+                      onClick={() => setSelectedHotspot(comp.id)}
+                      className={cn(
+                        "px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer",
+                        selectedHotspot === comp.id
+                          ? "bg-[#E10600] text-white border-white"
+                          : "bg-black/60 text-white/80 border-white/15 hover:border-[#E10600]"
+                      )}
+                    >
+                      {comp.name}
+                    </button>
+                  ))}
+                </div>
+                {selectedHotspot !== null && (
+                  <div className="p-3 rounded-xl bg-black/75 border border-[#E10600]/60 text-xs">
+                    {(() => {
+                      const item =
+                        CAR_COMPONENTS_SCENE_04.find((c) => c.id === selectedHotspot) ||
+                        CAR_COMPONENTS_SCENE_04[0]
+                      return (
+                        <div>
+                          <span className="font-bold text-[#E10600] mr-2">{item.name}:</span>
+                          <span className="text-slate-200">{item.shortDesc}</span>
+                        </div>
+                      )
+                    })()}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {currentScene.visualEffectType === "pitstop_team" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                <div className="p-3 rounded-xl bg-black/60 border border-[#E10600]/50">
+                  <div className="text-[11px] font-mono text-[#E10600] font-bold">
+                    🏆 DISPUTA 1: CAMPEONATO DE PILOTOS
+                  </div>
+                  <div className="text-xs text-slate-200 mt-1 leading-relaxed">
+                    Cada piloto soma pontos individualmente a cada corrida em busca do título
+                    mundial.
+                  </div>
+                </div>
+                <div className="p-3 rounded-xl bg-black/60 border border-sky-400/40">
+                  <div className="text-[11px] font-mono text-sky-300 font-bold">
+                    🛠️ DISPUTA 2: CAMPEONATO DE CONSTRUTORES
+                  </div>
+                  <div className="text-xs text-slate-200 mt-1 leading-relaxed">
+                    As equipes acumulam os pontos de seus pilotos; pit stops rápidos e estratégia
+                    fazem a diferença.
+                  </div>
+                </div>
+              </div>
+            )}
+
             {currentScene.visualEffectType === "telemetry_wall" && (
-              <div className="absolute inset-x-4 top-4 flex flex-wrap justify-between gap-3 pointer-events-none">
-                <div className="p-3.5 rounded-xl bg-black/85 border border-white/20 backdrop-blur-md text-xs w-72">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                <div className="p-3 rounded-xl bg-black/60 border border-white/15 text-xs">
                   <div className="flex items-center justify-between text-[10px] font-mono text-amber-300 mb-2">
                     <span>TORRE DE POSIÇÕES & PNEUS</span>
                     <span className="px-1.5 py-0.5 rounded bg-amber-500/20 border border-amber-400/40">
-                      Exemplo Ilustrativo
+                      Exemplo Didático
                     </span>
                   </div>
-                  <div className="space-y-1.5 font-mono text-xs">
+                  <div className="space-y-1 font-mono text-xs">
                     <div className="flex justify-between items-center bg-white/5 px-2 py-1 rounded">
                       <span className="font-bold text-white">1. PILOTO A</span>
                       <span className="text-red-400">● Macio</span>
@@ -1550,78 +1844,178 @@ export function NovatosPage() {
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-black/85 border border-emerald-500/40 backdrop-blur-md text-xs max-w-xs">
+                <div className="p-3 rounded-xl bg-black/60 border border-emerald-500/40 text-xs flex flex-col justify-center">
                   <div className="text-[10px] font-mono text-emerald-400 font-bold mb-1">
-                    📈 RITMO E JANELA DE PARADA (EXEMPLO ILUSTRATIVO)
+                    📈 RITMO E JANELA DE PARADA
                   </div>
                   <p className="text-slate-200 leading-relaxed">
-                    Parar no momento certo para colocar pneus novos permite ganhar posições sem
-                    precisar ultrapassar diretamente na pista.
+                    Parar no momento certo para colocar pneus novos permite ganhar posições pela
+                    estratégia (undercut/overcut) sem precisar ultrapassar diretamente na pista.
                   </p>
                 </div>
               </div>
             )}
+          </div>
 
-            {/* SCENE 08 OVERLAY: CHECKERED FLAG & FINISH CTA */}
-            {currentScene.visualEffectType === "checkered_finish" && (
-              <div className="absolute inset-x-4 top-4 flex items-center justify-between pointer-events-none">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-black/85 border border-emerald-400/50 text-emerald-300 text-xs font-bold shadow-lg">
-                  <Flag className="w-4 h-4" />
-                  BANDEIRA QUADRICULADA • FIM DAS 8 CENAS DO MÓDULO 1
+          {/* ================================================================ */}
+          {/* 9. CRONÔMETRO DE 5 SEGUNDOS (QUANDO A NARRAÇÃO TERMINA)          */}
+          {/* ================================================================ */}
+          {countdownSeconds !== null && (
+            <div
+              className="rounded-2xl bg-gradient-to-r from-[#1A090D] via-[#131824] to-[#0E121B] border-2 border-[#E10600] p-4 sm:p-5 shadow-[0_0_30px_rgba(225,6,0,0.35)] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              role="status"
+              aria-live="polite"
+            >
+              <div className="flex items-start sm:items-center gap-3.5">
+                <div className="w-11 h-11 rounded-xl bg-[#E10600] text-white font-black text-xl flex items-center justify-center shrink-0 shadow-[0_0_15px_#E10600]">
+                  {countdownSeconds}
                 </div>
+                <div>
+                  {currentScene.number < 8 ? (
+                    <>
+                      <div className="text-sm sm:text-base font-black text-white flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-[#E10600]" />
+                        Próxima cena em {countdownSeconds}{" "}
+                        {countdownSeconds === 1 ? "segundo" : "segundos"}…
+                      </div>
+                      <p className="text-xs text-slate-300 mt-0.5">
+                        Avançando automaticamente para a{" "}
+                        <strong>
+                          Cena 0{currentScene.number + 1} —{" "}
+                          {MODULE_1_SCENES[sceneIndex + 1]?.title}
+                        </strong>
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-sm sm:text-base font-black text-emerald-300">
+                        🏁 Módulo concluído. Vamos testar o que você aprendeu?
+                      </div>
+                      <p className="text-xs text-slate-200 mt-0.5">
+                        Abrindo o questionário final em{" "}
+                        <strong>
+                          {countdownSeconds} {countdownSeconds === 1 ? "segundo" : "segundos"}
+                        </strong>
+                        …
+                      </p>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                {currentScene.number < 8 ? (
+                  <button
+                    type="button"
+                    onClick={() => goToScene(sceneIndex + 1, true)}
+                    className="flex-1 sm:flex-initial justify-center px-4 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black flex items-center gap-1.5 cursor-pointer min-h-[40px]"
+                  >
+                    <FastForward className="w-3.5 h-3.5" />
+                    Próxima cena agora
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      clearCountdownTimer()
+                      stopAllAudio(false)
+                      setViewStage("quiz")
+                    }}
+                    className="flex-1 sm:flex-initial justify-center px-4 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black flex items-center gap-1.5 cursor-pointer min-h-[40px]"
+                  >
+                    <Award className="w-4 h-4" />
+                    Fazer questionário
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handleCancelCountdown}
+                  className="flex-1 sm:flex-initial justify-center px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold border border-white/20 cursor-pointer min-h-[40px]"
+                >
+                  Cancelar contagem
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Last scene completion card when countdown was canceled */}
+          {countdownSeconds === null && countdownCanceled && currentScene.number === 8 && (
+            <div className="rounded-2xl bg-[#101923] border border-emerald-500/40 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <div className="text-sm font-black text-emerald-300">
+                  🏁 Módulo concluído. Vamos testar o que você aprendeu?
+                </div>
+                <p className="text-xs text-slate-300 mt-0.5">
+                  Transição automática cancelada. Quando quiser, clique ao lado para iniciar o
+                  questionário.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  stopAllAudio(false)
+                  setViewStage("quiz")
+                }}
+                className="px-5 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black flex items-center justify-center gap-2 cursor-pointer min-h-[40px]"
+              >
+                <Award className="w-4 h-4" />
+                Fazer questionário
+              </button>
+            </div>
+          )}
+
+          {/* ================================================================ */}
+          {/* 6, 7 & 8. TRANSCRIÇÃO + CONTROLES DA MARIANA + TRILHA E AMBIENTE */}
+          {/* ================================================================ */}
+          <div className="rounded-2xl bg-[#0E121B] border-2 border-[#E10600]/60 p-4 sm:p-5 shadow-xl space-y-4">
+            {/* 6. TEXTO EXPLICATIVO / TRANSCRIÇÃO SINCRONIZADA */}
+            {showTranscript && (
+              <div className="p-3.5 rounded-xl bg-black/50 border border-white/10">
+                <div className="text-[11px] font-mono uppercase tracking-wider text-red-400 font-bold mb-1">
+                  📝 Narração e Transcrição da Cena 0{currentScene.number} (Voz: Mariana):
+                </div>
+                <p className="text-sm sm:text-base text-slate-100 leading-relaxed break-words">
+                  &ldquo;{currentScene.narrationTranscript}&rdquo;
+                </p>
               </div>
             )}
 
-            {/* Bottom Scene Title Overlay inside Picture Frame */}
-            <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/95 via-black/70 to-transparent flex flex-wrap items-end justify-between gap-2">
-              <div>
-                <div className="text-[11px] font-mono uppercase tracking-wider text-[#E10600] font-bold">
-                  CENA 0{currentScene.number} DE 08 • DURAÇÃO ESTIMADA: {currentScene.estimatedDurationLabel}
-                </div>
-                <h2 className="text-lg sm:text-2xl font-black text-white">{currentScene.title}</h2>
-                <p className="text-xs sm:text-sm text-slate-300 mt-0.5 max-w-3xl">
-                  {currentScene.shortSummary}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* MARIANA NARRATION DECK + CONTROLS + SYNCHRONIZED TRANSCRIPT */}
-          <div className="rounded-2xl bg-[#0E121B] border-2 border-[#E10600]/60 p-4 sm:p-5 shadow-xl space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-4">
+            {/* 7. CONTROLES DA NARRAÇÃO DA MARIANA */}
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5">
               {/* Mariana Avatar & Voice Identity Badge */}
               <div className="flex items-center gap-3">
-                <div className="relative">
+                <div className="relative shrink-0">
                   <img
                     src="/radio/mariana.png"
                     alt="Mariana — Locutora Oficial da Rádio F1"
-                    className="w-12 h-12 rounded-full object-cover border-2 border-[#E10600]"
+                    className="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-[#E10600]"
                   />
                   {isPlaying && (
                     <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-black animate-pulse" />
                   )}
                 </div>
-                <div>
+                <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-sm sm:text-base text-white">
+                    <span className="font-bold text-xs sm:text-sm text-white">
                       Mariana — Locutora Oficial da Rádio F1
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-[#E10600]/20 border border-[#E10600]/50 text-[11px] font-semibold text-red-200">
-                      🎙️ Voz Oficial Preservada
+                    <span className="px-2 py-0.5 rounded bg-[#E10600]/20 border border-[#E10600]/50 text-[10px] font-semibold text-red-200">
+                      🎙️ Voz Oficial
                     </span>
                   </div>
-                  <p className="text-xs text-white/60">
-                    Narração sincronizada com auto-ducking de trilha e ambiente
+                  <p className="text-[11px] text-white/60 mt-0.5">
+                    Auto-ducking ativo: trilha e pista reduzem suavemente durante a fala
                   </p>
                 </div>
               </div>
 
               {/* Dedicated Audio Playback Buttons: Reproduzir, Pausar, Retomar, Repetir */}
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2">
                 <button
                   type="button"
                   onClick={() => playSceneAudio(currentScene)}
-                  className="px-3.5 py-2 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="px-3.5 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer min-h-[40px]"
                 >
                   <Play className="w-3.5 h-3.5 fill-white" />
                   Reproduzir
@@ -1631,7 +2025,7 @@ export function NovatosPage() {
                   type="button"
                   onClick={handlePauseAudio}
                   disabled={!isPlaying}
-                  className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 disabled:opacity-40 text-white text-xs font-semibold flex items-center gap-1.5 border border-white/10 transition-colors cursor-pointer"
+                  className="px-3 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 disabled:opacity-40 text-white text-xs font-semibold flex items-center justify-center gap-1.5 border border-white/10 transition-colors cursor-pointer min-h-[40px]"
                 >
                   <Pause className="w-3.5 h-3.5" />
                   Pausar
@@ -1641,7 +2035,7 @@ export function NovatosPage() {
                   type="button"
                   onClick={handleResumeAudio}
                   disabled={isPlaying}
-                  className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 disabled:opacity-40 text-white text-xs font-semibold flex items-center gap-1.5 border border-white/10 transition-colors cursor-pointer"
+                  className="px-3 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 disabled:opacity-40 text-white text-xs font-semibold flex items-center justify-center gap-1.5 border border-white/10 transition-colors cursor-pointer min-h-[40px]"
                 >
                   <Play className="w-3.5 h-3.5" />
                   Retomar
@@ -1650,24 +2044,24 @@ export function NovatosPage() {
                 <button
                   type="button"
                   onClick={handleReplayScene}
-                  className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white text-xs font-semibold flex items-center gap-1.5 border border-white/10 transition-colors cursor-pointer"
+                  className="px-3 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold flex items-center justify-center gap-1.5 border border-white/10 transition-colors cursor-pointer min-h-[40px]"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
-                  Repetir Cena
+                  Repetir
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setShowTranscript((prev) => !prev)}
                   className={cn(
-                    "px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition-colors cursor-pointer",
+                    "col-span-2 sm:col-span-1 px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 border transition-colors cursor-pointer min-h-[40px]",
                     showTranscript
                       ? "bg-white/15 border-white/30 text-white"
                       : "bg-white/5 border-white/10 text-white/70 hover:text-white"
                   )}
                 >
                   <FileText className="w-3.5 h-3.5 text-[#E10600]" />
-                  TRANSCRIÇÃO
+                  {showTranscript ? "Ocultar Texto" : "Mostrar Texto"}
                 </button>
               </div>
             </div>
@@ -1684,6 +2078,7 @@ export function NovatosPage() {
                 step={0.1}
                 value={Math.min(currentTime, duration || 20)}
                 onChange={(e) => {
+                  clearCountdownTimer()
                   const nextT = parseFloat(e.target.value)
                   setCurrentTime(nextT)
                   if (narrationAudioRef.current) {
@@ -1698,41 +2093,142 @@ export function NovatosPage() {
               </span>
             </div>
 
-            {/* Accessible Written Transcript */}
-            {showTranscript && (
-              <div className="pt-3 border-t border-white/10">
-                <div className="text-[11px] font-mono uppercase tracking-wider text-red-400 font-bold mb-1">
-                  📝 Transcrição Completa da Narração (Cena 0{currentScene.number}):
+            {/* 8. CONTROLES DA TRILHA CINEMATOGRÁFICA E DOS SONS AMBIENTES */}
+            <div className="pt-3 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-semibold text-white flex items-center gap-1.5">
+                    🎙️ Voz Mariana
+                  </span>
+                  <span className="font-mono text-white/75">
+                    {Math.round(narrationVolume * 100)}%
+                  </span>
                 </div>
-                <p className="text-sm sm:text-base text-slate-100 leading-relaxed">
-                  &ldquo;{currentScene.narrationTranscript}&rdquo;
-                </p>
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.05}
+                  value={narrationVolume}
+                  onChange={(e) => setNarrationVolume(parseFloat(e.target.value))}
+                  className="w-full accent-[#E10600] cursor-pointer"
+                  aria-label="Controle de volume da narração"
+                />
               </div>
-            )}
+
+              <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 flex flex-col justify-between">
+                <div className="flex items-center justify-between gap-1 mb-1">
+                  <span className="font-semibold text-white flex items-center gap-1 truncate">
+                    <Music className="w-3.5 h-3.5 text-[#E10600] shrink-0" />
+                    <span className="truncate">Trilha Cinematográfica</span>
+                  </span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleToggleTestChannel("music")}
+                      className={cn(
+                        "px-2 py-0.5 rounded text-[10px] font-bold border transition-colors cursor-pointer",
+                        soloTestingChannel === "music"
+                          ? "bg-[#E10600] border-white text-white"
+                          : "bg-white/10 border-white/20 text-white/85 hover:text-white"
+                      )}
+                    >
+                      {soloTestingChannel === "music" ? "Parar" : "Testar"}
+                    </button>
+                    <span className="font-mono text-white/75">
+                      {musicEnabled ? `${Math.round(musicVolume * 100)}%` : "Off"}
+                    </span>
+                  </div>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.05}
+                  value={musicVolume}
+                  onChange={(e) => {
+                    setMusicEnabled(true)
+                    setMusicVolume(parseFloat(e.target.value))
+                  }}
+                  className="w-full accent-[#E10600] cursor-pointer"
+                  aria-label="Controle de volume da trilha cinematográfica"
+                />
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 flex flex-col justify-between">
+                <div className="flex items-center justify-between gap-1 mb-1">
+                  <span className="font-semibold text-white flex items-center gap-1 truncate">
+                    <Radio className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span className="truncate">Sons Ambientes / Pista</span>
+                  </span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleToggleTestChannel("ambient")}
+                      className={cn(
+                        "px-2 py-0.5 rounded text-[10px] font-bold border transition-colors cursor-pointer",
+                        soloTestingChannel === "ambient"
+                          ? "bg-[#E10600] border-white text-white"
+                          : "bg-white/10 border-white/20 text-white/85 hover:text-white"
+                      )}
+                    >
+                      {soloTestingChannel === "ambient" ? "Parar" : "Testar"}
+                    </button>
+                    <span className="font-mono text-white/75">
+                      {ambientEnabled ? `${Math.round(ambientVolume * 100)}%` : "Off"}
+                    </span>
+                  </div>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.05}
+                  value={ambientVolume}
+                  onChange={(e) => {
+                    setAmbientEnabled(true)
+                    setAmbientVolume(parseFloat(e.target.value))
+                  }}
+                  className="w-full accent-[#E10600] cursor-pointer"
+                  aria-label="Controle de volume dos sons ambientes e pista"
+                />
+              </div>
+            </div>
           </div>
 
-          {/* SCENE NAVIGATION FOOTER + SCENE 08 FINAL CTAs */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+          {/* ================================================================ */}
+          {/* 10. NAVEGAÇÃO INFERIOR, GLOSSÁRIO E QUESTIONÁRIO                 */}
+          {/* ================================================================ */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => {
-                  stopAllAudio()
+                  stopAllAudio(false)
                   setViewStage("opening")
                 }}
-                className="px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-white text-xs font-semibold border border-white/10 transition-colors cursor-pointer"
+                className="flex-1 sm:flex-initial justify-center px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-white text-xs font-semibold border border-white/10 transition-colors cursor-pointer min-h-[42px]"
               >
                 Voltar ao Início
               </button>
 
               <button
                 type="button"
-                onClick={() => goToScene(sceneIndex - 1, false)}
+                onClick={() => goToScene(sceneIndex - 1, true)}
                 disabled={sceneIndex === 0}
-                className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 disabled:opacity-35 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 border border-white/10 transition-colors cursor-pointer"
+                className="flex-1 sm:flex-initial justify-center px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 disabled:opacity-35 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 border border-white/10 transition-colors cursor-pointer min-h-[42px]"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Anterior
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowGlossary(true)}
+                className="flex-1 sm:flex-initial justify-center px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/85 hover:text-white text-xs font-semibold border border-white/10 flex items-center gap-1.5 transition-colors cursor-pointer min-h-[42px]"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-[#E10600]" />
+                Glossário
               </button>
             </div>
 
@@ -1741,7 +2237,7 @@ export function NovatosPage() {
                 <button
                   type="button"
                   onClick={() => goToScene(sceneIndex + 1, true)}
-                  className="px-5 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs sm:text-sm font-black flex items-center gap-1.5 shadow-[0_0_20px_rgba(225,6,0,0.5)] transition-all cursor-pointer"
+                  className="w-full sm:w-auto justify-center px-5 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs sm:text-sm font-black flex items-center gap-1.5 shadow-[0_0_20px_rgba(225,6,0,0.5)] transition-all cursor-pointer min-h-[42px]"
                 >
                   Próxima Cena (0{currentScene.number + 1})
                   <ChevronRight className="w-4 h-4" />
@@ -1750,18 +2246,18 @@ export function NovatosPage() {
                 <>
                   <button
                     type="button"
-                    onClick={() => goToScene(0, false)}
-                    className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs sm:text-sm font-bold border border-white/15 transition-colors cursor-pointer"
+                    onClick={() => goToScene(0, true)}
+                    className="flex-1 sm:flex-initial justify-center px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs sm:text-sm font-bold border border-white/15 transition-colors cursor-pointer min-h-[42px]"
                   >
                     REVISAR A AULA
                   </button>
                   <button
                     type="button"
                     onClick={() => {
-                      stopAllAudio()
+                      stopAllAudio(false)
                       setViewStage("quiz")
                     }}
-                    className="px-6 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs sm:text-sm font-black flex items-center gap-2 shadow-[0_0_25px_rgba(225,6,0,0.7)] transition-all cursor-pointer"
+                    className="flex-1 sm:flex-initial justify-center px-6 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs sm:text-sm font-black flex items-center gap-2 shadow-[0_0_25px_rgba(225,6,0,0.7)] transition-all cursor-pointer min-h-[42px]"
                   >
                     <Award className="w-4 h-4" />
                     FAZER QUESTIONÁRIO
@@ -1777,7 +2273,7 @@ export function NovatosPage() {
       {/* STAGE 3: QUESTIONÁRIO FINAL ("TESTE SEU CONHECIMENTO")               */}
       {/* ==================================================================== */}
       {viewStage === "quiz" && (
-        <div className="p-6 sm:p-10 max-w-4xl mx-auto space-y-6">
+        <div className="p-4 sm:p-10 max-w-4xl mx-auto space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-5">
             <div>
               <span className="px-2.5 py-1 rounded bg-[#E10600]/20 border border-[#E10600]/50 text-red-300 text-xs font-bold uppercase">
@@ -1797,37 +2293,38 @@ export function NovatosPage() {
                 setViewStage("lesson")
                 goToScene(0, false)
               }}
-              className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold border border-white/15 cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold border border-white/15 cursor-pointer min-h-[40px]"
             >
               Revisar as Cenas
             </button>
           </div>
 
           {/* 5 Multiple-Choice Questions with Immediate Feedback */}
-          <div className="space-y-5">
+          <div className="space-y-4 sm:space-y-5">
             {QUIZ_QUESTIONS.map((q) => {
               const chosen = quizAnswers[q.id]
               const isCorrect = chosen === q.correctLetter
               return (
                 <div
                   key={q.id}
-                  className="p-5 rounded-2xl bg-[#10141F] border border-white/10 space-y-3"
+                  className="p-4 sm:p-5 rounded-2xl bg-[#10141F] border border-white/10 space-y-3"
                 >
-                  <h3 className="text-sm sm:text-base font-bold text-white">{q.question}</h3>
+                  <h3 className="text-sm sm:text-base font-bold text-white leading-snug">
+                    {q.question}
+                  </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {q.options.map((opt) => {
                       const isThisSelected = chosen === opt.letter
                       const showCorrectGreen =
                         chosen !== undefined && opt.letter === q.correctLetter
-                      const showWrongRed =
-                        isThisSelected && opt.letter !== q.correctLetter
+                      const showWrongRed = isThisSelected && opt.letter !== q.correctLetter
                       return (
                         <button
                           key={opt.letter}
                           type="button"
                           onClick={() => handleSelectQuizOption(q.id, opt.letter)}
                           className={cn(
-                            "text-left p-3 rounded-xl border text-xs sm:text-sm font-medium transition-all flex items-center justify-between gap-2 cursor-pointer",
+                            "text-left p-3 rounded-xl border text-xs sm:text-sm font-medium transition-all flex items-center justify-between gap-2 cursor-pointer min-h-[44px]",
                             showCorrectGreen
                               ? "bg-emerald-500/20 border-emerald-400 text-emerald-100"
                               : showWrongRed
@@ -1841,8 +2338,12 @@ export function NovatosPage() {
                             <strong className="mr-1.5">{opt.letter})</strong>
                             {opt.text}
                           </span>
-                          {showCorrectGreen && <Check className="w-4 h-4 text-emerald-400 shrink-0" />}
-                          {showWrongRed && <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />}
+                          {showCorrectGreen && (
+                            <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                          )}
+                          {showWrongRed && (
+                            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                          )}
                         </button>
                       )
                     })}
@@ -1873,7 +2374,7 @@ export function NovatosPage() {
           </div>
 
           {/* Quiz Completion / Score Box */}
-          <div className="p-6 rounded-2xl bg-[#131824] border-2 border-[#E10600]/60 flex flex-wrap items-center justify-between gap-4">
+          <div className="p-5 sm:p-6 rounded-2xl bg-[#131824] border-2 border-[#E10600]/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               {quizSubmitted ? (
                 <>
@@ -1899,13 +2400,13 @@ export function NovatosPage() {
               )}
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2.5">
               {!quizSubmitted ? (
                 <button
                   type="button"
                   disabled={Object.keys(quizAnswers).length < QUIZ_QUESTIONS.length}
                   onClick={handleFinalizeQuiz}
-                  className="px-6 py-3 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] disabled:opacity-40 text-white font-black text-xs sm:text-sm uppercase cursor-pointer"
+                  className="w-full sm:w-auto justify-center px-6 py-3 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] disabled:opacity-40 text-white font-black text-xs sm:text-sm uppercase cursor-pointer min-h-[44px]"
                 >
                   Confirmar e Concluir Módulo 1
                 </button>
@@ -1914,7 +2415,7 @@ export function NovatosPage() {
                   <button
                     type="button"
                     onClick={handleResetQuiz}
-                    className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold border border-white/15 cursor-pointer"
+                    className="flex-1 sm:flex-initial justify-center px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold border border-white/15 cursor-pointer min-h-[40px]"
                   >
                     Refazer Questionário
                   </button>
@@ -1924,14 +2425,14 @@ export function NovatosPage() {
                       setViewStage("lesson")
                       goToScene(0, false)
                     }}
-                    className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold border border-white/15 cursor-pointer"
+                    className="flex-1 sm:flex-initial justify-center px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold border border-white/15 cursor-pointer min-h-[40px]"
                   >
                     Revisar as Cenas
                   </button>
                   <button
                     type="button"
                     onClick={() => setViewStage("opening")}
-                    className="px-4 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-bold cursor-pointer"
+                    className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-bold cursor-pointer min-h-[40px]"
                   >
                     Voltar ao Início
                   </button>
@@ -1947,28 +2448,30 @@ export function NovatosPage() {
       {/* ==================================================================== */}
       {showGlossary && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4"
           role="dialog"
           aria-modal="true"
           aria-label="Glossário Inicial de Fórmula 1"
         >
           <div className="bg-[#0E121B] border border-white/15 rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+            <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 sm:py-4 border-b border-white/10">
               <div className="flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-[#E10600]" />
-                <h2 className="text-lg font-black text-white">Glossário Inicial — Novatos na F1</h2>
+                <h2 className="text-base sm:text-lg font-black text-white">
+                  Glossário Inicial — Novatos na F1
+                </h2>
               </div>
               <button
                 type="button"
                 onClick={() => setShowGlossary(false)}
-                className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10"
+                className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 cursor-pointer"
                 aria-label="Fechar glossário"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-4 border-b border-white/10">
+            <div className="p-3.5 sm:p-4 border-b border-white/10">
               <div className="relative">
                 <Search className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
@@ -1976,12 +2479,12 @@ export function NovatosPage() {
                   value={glossaryQuery}
                   onChange={(e) => setGlossaryQuery(e.target.value)}
                   placeholder="Pesquisar termo (ex.: Pit stop, Aerodinâmica, Construtores)…"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/60 border border-white/15 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-[#E10600]"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/60 border border-white/15 text-xs sm:text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-[#E10600]"
                 />
               </div>
             </div>
 
-            <div className="p-5 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="p-4 sm:p-5 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-3">
               {filteredGlossary.map((item) => (
                 <div
                   key={item.id}
