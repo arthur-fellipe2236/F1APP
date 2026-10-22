@@ -540,8 +540,6 @@ export function NovatosPage() {
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const currentScene = MODULE_1_SCENES[sceneIndex] || MODULE_1_SCENES[0]
-  const activeComponentObj =
-    CAR_COMPONENTS_SCENE_04.find((c) => c.id === selectedHotspot) || CAR_COMPONENTS_SCENE_04[0]
 
   // Save persisted state
   useEffect(() => {
@@ -1702,7 +1700,7 @@ export function NovatosPage() {
             {/* ============================================================== */}
             {currentScene.visualEffectType === "machine_hotspots" && (
               <div
-                className="lg:col-span-5 rounded-2xl bg-[#0D111A] border border-white/15 p-3 sm:p-4 space-y-2.5 shadow-xl"
+                className="lg:col-span-5 rounded-2xl bg-[#0D111A] border border-white/15 p-3 sm:p-4 space-y-2 shadow-xl"
                 data-testid="scene04-component-list"
               >
                 <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
@@ -1711,20 +1709,6 @@ export function NovatosPage() {
                     Componentes do Carro (1 a 7)
                   </span>
                   <span className="text-[11px] text-white/60">Toque em um número</span>
-                </div>
-
-                {/* Destaque do componente selecionado no momento */}
-                <div
-                  className="p-2.5 sm:p-3 rounded-xl bg-[#E10600]/15 border border-[#E10600] text-xs sm:text-sm"
-                  data-testid="scene04-active-component-card"
-                >
-                  <div className="font-black text-white">
-                    {activeComponentObj.id}. {activeComponentObj.title}
-                  </div>
-                  <p className="text-slate-200 text-xs leading-relaxed mt-0.5">
-                    <strong className="text-white">{activeComponentObj.title}</strong> —{" "}
-                    {activeComponentObj.shortDesc}
-                  </p>
                 </div>
 
                 {/* Lista compacta e organizada das 7 identificações */}
