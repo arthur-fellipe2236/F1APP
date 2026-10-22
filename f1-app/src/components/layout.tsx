@@ -34,7 +34,7 @@ const navItems = [
   { to: "/live", label: "Ao Vivo", icon: Radio, isLive: true },
   { to: "/bolao", label: "Bolão", icon: Sparkles },
   { to: "/comparar", label: "Comparar", icon: GitCompare },
-  { to: "/novatos", label: "Novatos na F1", icon: BookOpen },
+  { to: "/novatos", label: "Novatos na F1", icon: BookOpen, isHighlight: true },
 ]
 
 
@@ -237,20 +237,27 @@ export function Layout() {
           </Link>
 
           {/* CÁPSULA PILL DE NAVEGAÇÃO FLUTUANTE */}
-          <div className="w-full max-w-5xl">
-            <nav className="w-full h-12 rounded-full bg-[#101015]/85 border border-white/15 backdrop-blur-xl px-5 lg:px-6 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
-              <div className="flex items-center gap-4 lg:gap-6 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <div className="w-full max-w-6xl">
+            <nav className="w-full h-12 rounded-full bg-[#101015]/85 border border-white/15 backdrop-blur-xl px-4 lg:px-5 flex items-center justify-between gap-2 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+              <div className="flex items-center gap-2.5 lg:gap-4 xl:gap-5 min-w-0">
                 {navItems.map((item) => (
                   <NavLink
                     key={item.to}
                     to={item.to}
                     className={({ isActive }) =>
                       cn(
-                        "flex items-center font-f1 uppercase text-xs lg:text-sm tracking-wider font-semibold transition-all hover:text-white shrink-0",
-                        isActive ? "text-white font-bold" : "text-white/70"
+                        "flex items-center gap-1.5 font-f1 uppercase text-[11px] lg:text-xs xl:text-[13px] tracking-wider transition-all shrink-0 whitespace-nowrap",
+                        item.isHighlight
+                          ? isActive
+                            ? "px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-[#E10600] text-white font-black border border-amber-200 shadow-[0_0_18px_rgba(245,158,11,0.65)]"
+                            : "px-3 py-1 rounded-full bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 hover:text-amber-200 font-extrabold border border-amber-400/50 shadow-[0_0_12px_rgba(245,158,11,0.28)]"
+                          : isActive
+                          ? "text-white font-bold"
+                          : "text-white/70 font-semibold hover:text-white"
                       )
                     }
                   >
+                    {item.isHighlight && <BookOpen className="w-3.5 h-3.5 text-amber-300 shrink-0" />}
                     {item.label}
                   </NavLink>
                 ))}
@@ -259,7 +266,7 @@ export function Layout() {
                     to="/admin"
                     className={({ isActive }) =>
                       cn(
-                        "flex items-center font-f1 uppercase text-xs lg:text-sm tracking-wider font-semibold transition-all hover:text-amber-500 shrink-0",
+                        "flex items-center font-f1 uppercase text-[11px] lg:text-xs tracking-wider font-semibold transition-all hover:text-amber-500 shrink-0 whitespace-nowrap",
                         isActive ? "text-amber-500 font-bold" : "text-amber-500/70"
                       )
                     }
@@ -269,7 +276,7 @@ export function Layout() {
                 )}
               </div>
 
-              <div className="ml-auto flex items-center gap-2.5 shrink-0 pl-3">
+              <div className="ml-auto flex items-center gap-2 shrink-0 pl-2">
                 <HealthBadge />
                 <UserProfile />
                 <TeamThemeSelector />
@@ -337,7 +344,11 @@ export function Layout() {
                       className={({ isActive }) =>
                         cn(
                           "flex items-center justify-between px-4 py-3.5 rounded-xl text-base font-semibold transition-all duration-200",
-                          isActive
+                          item.isHighlight
+                            ? isActive
+                              ? "bg-gradient-to-r from-amber-500/30 to-[#E10600]/30 text-amber-200 font-bold border-l-4 border-amber-400 shadow-sm"
+                              : "bg-amber-500/10 text-amber-300 border border-amber-400/30 hover:bg-amber-500/20"
+                            : isActive
                             ? "bg-white/15 text-white font-bold border-l-4 border-[hsl(var(--primary))] shadow-sm"
                             : "text-white/70 hover:text-white hover:bg-white/5 active:bg-white/10"
                         )
