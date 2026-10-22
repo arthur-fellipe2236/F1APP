@@ -2980,7 +2980,7 @@ export function NovatosPage() {
       )}
 
       {/* ==================================================================== */}
-      {/* MODAL DE TELA CHEIA DA IMAGEM (PORTAL NO BODY P/ COBRIR HEADER FIXO) */}
+      {/* MODAL DE TELA CHEIA COMPLETA (PREENCHE 100% DA TELA PONTA A PONTA)   */}
       {/* ==================================================================== */}
       {isImageFullscreen &&
         typeof document !== "undefined" &&
@@ -2992,38 +2992,12 @@ export function NovatosPage() {
             aria-modal="true"
             aria-label="Visualização da imagem em tela cheia"
             onClick={handleCloseImageFullscreen}
-            className="fixed inset-0 z-[9999] w-screen h-dvh bg-[#04060A]/98 backdrop-blur-xl flex flex-col items-center justify-center p-2 sm:p-6 select-none overflow-hidden"
+            className="fixed inset-0 z-[9999] w-screen h-dvh bg-black select-none overflow-hidden"
           >
-            {/* Top Bar in Fullscreen Mode: Scene Title + Close Button */}
+            {/* Full-Bleed 100% Screen Image Stage */}
             <div
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-6xl flex items-center justify-between gap-3 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-black/80 border border-white/15 backdrop-blur-md mb-2 sm:mb-3 shrink-0 z-10"
-            >
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="px-2 py-0.5 rounded bg-[#E10600] text-white font-mono text-[10px] sm:text-xs font-black uppercase shrink-0">
-                  {viewStage === "opening" ? "ABERTURA" : `CENA 0${currentScene.number}`}
-                </span>
-                <span className="text-xs sm:text-sm font-bold text-white truncate">
-                  {viewStage === "opening" ? "Novatos na F1" : currentScene.title}
-                </span>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleCloseImageFullscreen}
-                data-testid="btn-close-fullscreen"
-                aria-label="Fechar tela cheia"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wide border border-white/20 shadow-lg transition-all cursor-pointer min-h-[38px] shrink-0"
-              >
-                <Minimize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                <span>Fechar</span>
-              </button>
-            </div>
-
-            {/* Responsive Image Stage (object-contain adapts to Portrait & Landscape without cropping) */}
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="relative flex-1 w-full max-w-6xl flex items-center justify-center overflow-hidden rounded-xl"
+              className="relative w-screen h-dvh overflow-hidden"
             >
               <img
                 src={
@@ -3036,12 +3010,45 @@ export function NovatosPage() {
                 }
                 data-testid="fullscreen-expanded-img"
                 className={cn(
-                  "max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl select-none",
+                  "w-screen h-dvh object-cover object-center select-none",
+                  !reduceMotion &&
+                    (viewStage === "opening"
+                      ? "f1-scene-motion-1"
+                      : `f1-scene-motion-${currentScene.number}`),
                   viewStage === "lesson" &&
                     currentScene.visualEffectType === "vintage_1950" &&
                     "sepia-[0.22] contrast-115"
                 )}
               />
+
+              {/* Subtle top vignette for header readability without borders */}
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/70 via-black/25 to-transparent" />
+            </div>
+
+            {/* Floating Overlay Top Bar: Scene Badge + Close Button */}
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="pointer-events-none absolute top-3 inset-x-3 sm:top-5 sm:inset-x-6 z-20 flex items-center justify-between gap-3"
+            >
+              <div className="pointer-events-auto inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-black/75 border border-white/15 backdrop-blur-md shadow-xl min-w-0">
+                <span className="px-2 py-0.5 rounded bg-[#E10600] text-white font-mono text-[10px] sm:text-xs font-black uppercase shrink-0">
+                  {viewStage === "opening" ? "ABERTURA" : `CENA 0${currentScene.number}`}
+                </span>
+                <span className="text-xs sm:text-sm font-extrabold uppercase tracking-wide text-white truncate">
+                  {viewStage === "opening" ? "Novatos na F1" : currentScene.title}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleCloseImageFullscreen}
+                data-testid="btn-close-fullscreen"
+                aria-label="Fechar tela cheia"
+                className="pointer-events-auto inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs sm:text-sm font-black uppercase tracking-wide border border-white/25 shadow-[0_0_24px_rgba(225,6,0,0.65)] transition-all cursor-pointer min-h-[40px] shrink-0"
+              >
+                <Minimize2 className="w-4 h-4" />
+                <span>Fechar</span>
+              </button>
             </div>
           </div>,
           document.body
