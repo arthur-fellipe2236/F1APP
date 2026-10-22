@@ -151,8 +151,8 @@ export const CAR_COMPONENTS_SCENE_04: CarComponentHotspot[] = [
     shortLabel: "3",
     title: "Pneus",
     name: "3. Pneus",
-    markerX: 50.0,
-    markerY: 88.0,
+    markerX: 49.5,
+    markerY: 84.5,
     targetX: 49.5,
     targetY: 69.0,
     appearAtSec: 11.2,
@@ -1658,7 +1658,7 @@ export function NovatosPage() {
                   <div
                     data-testid="scene05-driver-standings"
                     className={cn(
-                      "f1-broadcast-panel pointer-events-auto w-[132px] sm:w-[196px] rounded-lg bg-[#07090E]/90 backdrop-blur-md border transition-all duration-300 overflow-hidden shadow-xl",
+                      "f1-broadcast-panel pointer-events-auto origin-top-left max-sm:scale-[0.76] w-[142px] sm:w-[196px] rounded-lg bg-[#07090E]/90 backdrop-blur-md border transition-all duration-300 overflow-hidden shadow-xl",
                       activeScene05Table === "drivers"
                         ? "border-[#E10600] ring-1 ring-[#E10600] shadow-[0_0_20px_rgba(225,6,0,0.45)]"
                         : "border-white/15"
@@ -1667,9 +1667,6 @@ export function NovatosPage() {
                     <div className="bg-gradient-to-r from-[#E10600] to-[#9E0400] px-2 py-1 flex items-center justify-between gap-1">
                       <span className="font-mono text-[8px] sm:text-[10px] font-black tracking-wider uppercase text-white truncate">
                         DRIVER STANDINGS
-                      </span>
-                      <span className="px-1 py-0.2 rounded bg-black/45 text-[7px] sm:text-[8px] font-mono font-bold text-white/90 shrink-0">
-                        2026 TV
                       </span>
                     </div>
                     <div className="px-2 py-0.5 bg-black/60 border-b border-white/10 flex items-center justify-between text-[7px] sm:text-[9px] font-mono font-bold text-white/55 uppercase">
@@ -1714,7 +1711,7 @@ export function NovatosPage() {
                   <div
                     data-testid="scene05-constructor-standings"
                     className={cn(
-                      "f1-broadcast-panel pointer-events-auto w-[142px] sm:w-[214px] rounded-lg bg-[#07090E]/90 backdrop-blur-md border transition-all duration-300 overflow-hidden shadow-xl",
+                      "f1-broadcast-panel pointer-events-auto origin-top-right max-sm:scale-[0.76] w-[148px] sm:w-[214px] rounded-lg bg-[#07090E]/90 backdrop-blur-md border transition-all duration-300 overflow-hidden shadow-xl",
                       activeScene05Table === "constructors"
                         ? "border-[#E10600] ring-1 ring-[#E10600] shadow-[0_0_20px_rgba(225,6,0,0.45)]"
                         : "border-white/15"
@@ -1822,7 +1819,7 @@ export function NovatosPage() {
                   )}
 
                   <div
-                    className="absolute top-2 left-2 sm:top-3.5 sm:left-3.5 z-[4] w-[148px] sm:w-[218px] rounded-lg bg-[#07090E]/92 backdrop-blur-md border border-white/15 shadow-2xl overflow-hidden f1-broadcast-panel"
+                    className="absolute top-2 left-2 sm:top-3.5 sm:left-3.5 z-[4] origin-top-left max-sm:scale-[0.76] w-[156px] sm:w-[218px] rounded-lg bg-[#07090E]/92 backdrop-blur-md border border-white/15 shadow-2xl overflow-hidden f1-broadcast-panel"
                     data-testid="scene07-race-timing-tower"
                   >
                     {/* Broadcast Header */}
