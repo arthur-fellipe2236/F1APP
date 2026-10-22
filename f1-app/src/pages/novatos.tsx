@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react"
+import { createPortal } from "react-dom"
 import {
   Play,
   Pause,
@@ -2979,67 +2980,72 @@ export function NovatosPage() {
       )}
 
       {/* ==================================================================== */}
-      {/* MODAL DE TELA CHEIA DA IMAGEM (CELULAR VERTICAL/HORIZONTAL E PC)     */}
+      {/* MODAL DE TELA CHEIA DA IMAGEM (PORTAL NO BODY P/ COBRIR HEADER FIXO) */}
       {/* ==================================================================== */}
-      {isImageFullscreen && (
-        <div
-          ref={fullscreenContainerRef}
-          data-testid="fullscreen-image-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Visualização da imagem em tela cheia"
-          onClick={handleCloseImageFullscreen}
-          className="fixed inset-0 z-[100] bg-[#04060A]/98 backdrop-blur-xl flex flex-col items-center justify-center p-2 sm:p-6 select-none overflow-hidden"
-        >
-          {/* Top Bar in Fullscreen Mode: Scene Title + Close Button */}
+      {isImageFullscreen &&
+        typeof document !== "undefined" &&
+        createPortal(
           <div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-6xl flex items-center justify-between gap-3 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-black/75 border border-white/15 backdrop-blur-md mb-2 sm:mb-3 shrink-0 z-10"
+            ref={fullscreenContainerRef}
+            data-testid="fullscreen-image-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Visualização da imagem em tela cheia"
+            onClick={handleCloseImageFullscreen}
+            className="fixed inset-0 z-[9999] w-screen h-dvh bg-[#04060A]/98 backdrop-blur-xl flex flex-col items-center justify-center p-2 sm:p-6 select-none overflow-hidden"
           >
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="px-2 py-0.5 rounded bg-[#E10600] text-white font-mono text-[10px] sm:text-xs font-black uppercase shrink-0">
-                {viewStage === "opening" ? "ABERTURA" : `CENA 0${currentScene.number}`}
-              </span>
-              <span className="text-xs sm:text-sm font-bold text-white truncate">
-                {viewStage === "opening" ? "Novatos na F1" : currentScene.title}
-              </span>
+            {/* Top Bar in Fullscreen Mode: Scene Title + Close Button */}
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-6xl flex items-center justify-between gap-3 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-black/80 border border-white/15 backdrop-blur-md mb-2 sm:mb-3 shrink-0 z-10"
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="px-2 py-0.5 rounded bg-[#E10600] text-white font-mono text-[10px] sm:text-xs font-black uppercase shrink-0">
+                  {viewStage === "opening" ? "ABERTURA" : `CENA 0${currentScene.number}`}
+                </span>
+                <span className="text-xs sm:text-sm font-bold text-white truncate">
+                  {viewStage === "opening" ? "Novatos na F1" : currentScene.title}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleCloseImageFullscreen}
+                data-testid="btn-close-fullscreen"
+                aria-label="Fechar tela cheia"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wide border border-white/20 shadow-lg transition-all cursor-pointer min-h-[38px] shrink-0"
+              >
+                <Minimize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span>Fechar</span>
+              </button>
             </div>
 
-            <button
-              type="button"
-              onClick={handleCloseImageFullscreen}
-              data-testid="btn-close-fullscreen"
-              aria-label="Fechar tela cheia"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wide border border-white/20 shadow-lg transition-all cursor-pointer min-h-[38px] shrink-0"
+            {/* Responsive Image Stage (object-contain adapts to Portrait & Landscape without cropping) */}
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="relative flex-1 w-full max-w-6xl flex items-center justify-center overflow-hidden rounded-xl"
             >
-              <Minimize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span>Fechar</span>
-            </button>
-          </div>
-
-          {/* Responsive Image Stage (object-contain adapts to Portrait & Landscape without cropping) */}
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="relative flex-1 w-full max-w-6xl flex items-center justify-center overflow-hidden rounded-xl"
-          >
-            <img
-              src={viewStage === "opening" ? "/backgrounds/bg-ferrari.webp" : currentScene.imageUrl}
-              alt={
-                viewStage === "opening"
-                  ? "Novatos na F1 — Imagem em tela cheia"
-                  : `Cena 0${currentScene.number} — ${currentScene.title}`
-              }
-              data-testid="fullscreen-expanded-img"
-              className={cn(
-                "max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl select-none",
-                viewStage === "lesson" &&
-                  currentScene.visualEffectType === "vintage_1950" &&
-                  "sepia-[0.22] contrast-115"
-              )}
-            />
-          </div>
-        </div>
-      )}
+              <img
+                src={
+                  viewStage === "opening" ? "/backgrounds/bg-ferrari.webp" : currentScene.imageUrl
+                }
+                alt={
+                  viewStage === "opening"
+                    ? "Novatos na F1 — Imagem em tela cheia"
+                    : `Cena 0${currentScene.number} — ${currentScene.title}`
+                }
+                data-testid="fullscreen-expanded-img"
+                className={cn(
+                  "max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl select-none",
+                  viewStage === "lesson" &&
+                    currentScene.visualEffectType === "vintage_1950" &&
+                    "sepia-[0.22] contrast-115"
+                )}
+              />
+            </div>
+          </div>,
+          document.body
+        )}
 
       {/* ==================================================================== */}
       {/* MODAL DO GLOSSÁRIO INICIAL PESQUISÁVEL (12 TERMOS)                   */}
