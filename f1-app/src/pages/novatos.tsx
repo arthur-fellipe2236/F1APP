@@ -109,15 +109,18 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
 ]
 
 // ============================================================================
-// COMPONENTES DESTACADOS NA CENA 04 — A MÁQUINA (7 PEÇAS SINCRONIZADAS)
+// COMPONENTES DO CARRO NA CENA 04 — IDENTIFICAÇÃO NUMERADA DE 1 A 7
 // ============================================================================
 export interface CarComponentHotspot {
   id: number
   shortLabel: string
+  title: string
   name: string
   shortDesc: string
-  x: number // % horizontal position on image
-  y: number // % vertical position on image
+  markerX: number // % horizontal position of numbered badge on 16:9 image
+  markerY: number // % vertical position of numbered badge on 16:9 image
+  targetX: number // % exact horizontal target point on the F1 car part
+  targetY: number // % exact vertical target point on the F1 car part
   appearAtSec: number // synchronized with Mariana narration
 }
 
@@ -125,64 +128,89 @@ export const CAR_COMPONENTS_SCENE_04: CarComponentHotspot[] = [
   {
     id: 1,
     shortLabel: "1",
+    title: "Asa dianteira",
     name: "1. Asa dianteira",
-    shortDesc: "Direciona o fluxo de ar na frente do carro e cola o bico no asfalto.",
-    x: 24,
-    y: 66,
+    shortDesc:
+      "ajuda a controlar o fluxo de ar na parte frontal do carro e contribui para o equilíbrio aerodinâmico.",
+    markerX: 15.5,
+    markerY: 63.5,
+    targetX: 23.5,
+    targetY: 63.5,
     appearAtSec: 3.2,
   },
   {
     id: 2,
     shortLabel: "2",
+    title: "Asa traseira",
     name: "2. Asa traseira",
-    shortDesc: "Gera pressão aerodinâmica (downforce) para estabilidade em alta velocidade.",
-    x: 78,
-    y: 34,
+    shortDesc:
+      "contribui para o equilíbrio aerodinâmico e para a geração de carga aerodinâmica.",
+    markerX: 64.5,
+    markerY: 36.5,
+    targetX: 62.5,
+    targetY: 53.5,
     appearAtSec: 5.4,
   },
   {
     id: 3,
     shortLabel: "3",
+    title: "Pneus",
     name: "3. Pneus",
-    shortDesc: "Único ponto de contato com o asfalto; determinam aderência e estratégia.",
-    x: 42,
-    y: 70,
+    shortDesc:
+      "são o contato do carro com o asfalto e influenciam a aderência, a frenagem e a estratégia.",
+    markerX: 49.5,
+    markerY: 85.0,
+    targetX: 49.5,
+    targetY: 69.0,
     appearAtSec: 11.2,
   },
   {
     id: 4,
     shortLabel: "4",
+    title: "Freios",
     name: "4. Freios",
-    shortDesc: "Discos de carbono que suportam altíssimas temperaturas nas desacelerações.",
-    x: 34,
-    y: 60,
+    shortDesc: "permitem reduzir a velocidade e controlar a frenagem nas curvas.",
+    markerX: 27.5,
+    markerY: 45.0,
+    targetX: 27.5,
+    targetY: 62.5,
     appearAtSec: 14.5,
   },
   {
     id: 5,
     shortLabel: "5",
+    title: "Halo",
     name: "5. Halo",
-    shortDesc: "Estrutura de titânio ultra-resistente que protege a cabeça do piloto.",
-    x: 49,
-    y: 39,
+    shortDesc: "estrutura de proteção que ajuda a proteger a cabeça do piloto.",
+    markerX: 37.5,
+    markerY: 38.0,
+    targetX: 41.0,
+    targetY: 53.0,
     appearAtSec: 17.8,
   },
   {
     id: 6,
     shortLabel: "6",
+    title: "Cockpit",
     name: "6. Cockpit",
-    shortDesc: "Habitáculo de fibra de carbono onde o piloto conduz o carro.",
-    x: 56,
-    y: 48,
+    shortDesc: "compartimento onde o piloto se senta e controla o carro.",
+    markerX: 46.0,
+    markerY: 37.5,
+    targetX: 44.0,
+    targetY: 56.0,
     appearAtSec: 20.0,
   },
   {
     id: 7,
     shortLabel: "7",
+    title: "Unidade de potência",
     name: "7. Unidade de potência",
-    shortDesc: "Combina motor a combustão V6 turbo com sistemas elétricos de recuperação de energia.",
-    x: 68,
-    y: 44,
+    shortDesc:
+      "conjunto que inclui o motor de combustão interna e os sistemas elétricos de propulsão.",
+    markerX: 55.0,
+    markerY: 37.5,
+    targetX: 52.0,
+    targetY: 55.0,
     appearAtSec: 22.2,
   },
 ]
@@ -486,12 +514,15 @@ export function NovatosPage() {
   const [countdownSeconds, setCountdownSeconds] = useState<number | null>(null)
   const [countdownCanceled, setCountdownCanceled] = useState<boolean>(false)
 
+  // Scene 06 idle light cycle so the starting semaphore is visibly alive even when audio is paused
+  const [idleLightCycle, setIdleLightCycle] = useState<number>(3)
+
   // UI & Accessibility toggles (Transcript collapsed by default per audiovisual design)
   const [showTranscript, setShowTranscript] = useState(false)
   const [showAudioMixer, setShowAudioMixer] = useState(false)
   const [showGlossary, setShowGlossary] = useState(false)
   const [glossaryQuery, setGlossaryQuery] = useState("")
-  const [selectedHotspot, setSelectedHotspot] = useState<number | null>(1)
+  const [selectedHotspot, setSelectedHotspot] = useState<number>(1)
   const [reduceMotion, setReduceMotion] = useState<boolean>(() => {
     if (typeof window !== "undefined" && window.matchMedia) {
       return window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -509,6 +540,8 @@ export function NovatosPage() {
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const currentScene = MODULE_1_SCENES[sceneIndex] || MODULE_1_SCENES[0]
+  const activeComponentObj =
+    CAR_COMPONENTS_SCENE_04.find((c) => c.id === selectedHotspot) || CAR_COMPONENTS_SCENE_04[0]
 
   // Save persisted state
   useEffect(() => {
@@ -529,6 +562,19 @@ export function NovatosPage() {
     const timer = setTimeout(() => setResourcesReady(true), 600)
     return () => clearTimeout(timer)
   }, [])
+
+  // Cycle Scene 06 starting lights automatically when narration is not actively driving them
+  useEffect(() => {
+    if (currentScene.number !== 6 || reduceMotion || isPlaying) return
+    const timer = setInterval(() => {
+      setIdleLightCycle((prev) => {
+        if (prev >= 5) return -1
+        if (prev === -1) return 1
+        return prev + 1
+      })
+    }, 1100)
+    return () => clearInterval(timer)
+  }, [currentScene.number, reduceMotion, isPlaying])
 
   // Calculate real course progress (8 scenes = 80%, quiz completed = +20% -> 100% only after real quiz completion)
   const progressPercent = useMemo(() => {
@@ -579,8 +625,6 @@ export function NovatosPage() {
   // Compute effective volumes & apply Auto-Ducking across Narration and Cinematic Soundtrack
   useEffect(() => {
     const narGain = isMutedAll ? 0 : narrationVolume
-    // Auto-ducking: while Mariana is speaking (isPlaying), music ducks smoothly to 42% of slider
-    // When narration finishes (e.g. during 5s countdown) or during music test, it plays at full slider volume
     const musicDuck = isPlaying && !testingMusic ? 0.42 : 0.92
     const musGain = isMutedAll || !musicEnabled ? 0 : Math.min(1, musicVolume * musicDuck)
 
@@ -651,14 +695,13 @@ export function NovatosPage() {
               activeId = comp.id
             }
           }
-          setSelectedHotspot(activeId)
+          setSelectedHotspot((prev) => (prev === activeId ? prev : activeId))
         }
       }
 
       narAudio.onended = () => {
         setIsPlaying(false)
         setIsPaused(false)
-        // Keep cinematic soundtrack playing during the 5s transition window
         startPostNarrationCountdown()
       }
 
@@ -842,18 +885,17 @@ export function NovatosPage() {
     setQuizSubmitted(false)
   }
 
-  // Starting lights state for Scene 06 (synchronized with narration time or interactive preview)
+  // Starting lights state for Scene 06 (synchronized with narration time or automatic idle cycle)
   const activeStartLights = useMemo(() => {
     if (currentScene.number !== 6) return 0
-    if (!isPlaying && currentTime === 0) return 3 // static preview when audio isn't running
-    if (currentTime < 12.0) return 0
-    if (currentTime < 13.0) return 1
-    if (currentTime < 14.0) return 2
-    if (currentTime < 15.0) return 3
-    if (currentTime < 16.0) return 4
-    if (currentTime < 17.5) return 5
-    return -1 // -1 means LIGHTS OUT (PARTIDA!)
-  }, [currentScene.number, isPlaying, currentTime])
+    if (!isPlaying && currentTime === 0) return idleLightCycle
+    if (currentTime < 12.0) return 1
+    if (currentTime < 13.0) return 2
+    if (currentTime < 14.0) return 3
+    if (currentTime < 15.0) return 4
+    if (currentTime < 16.5) return 5
+    return -1 // -1 means LIGHTS OUT (LARGADA!)
+  }, [currentScene.number, isPlaying, currentTime, idleLightCycle])
 
   return (
     <div className="min-h-[82vh] rounded-2xl bg-[#080A0F] text-white border border-white/10 shadow-2xl overflow-x-hidden relative">
@@ -875,87 +917,136 @@ export function NovatosPage() {
       />
 
       {/* ==================================================================== */}
-      {/* CSS KEYFRAMES FOR SUBTLE 2.5D CAR/TRACK MOTION & VISUAL EFFECTS      */}
+      {/* GPU-ACCELERATED CSS KEYFRAMES & MOBILE-COMPATIBLE MOTION CLASSES     */}
       {/* ==================================================================== */}
       <style>{`
-        @keyframes f1TrackBgPan {
-          0% { transform: translate3d(-2.2%, 0, 0) scale(1.08); }
-          50% { transform: translate3d(2.2%, -0.6%, 0) scale(1.10); }
-          100% { transform: translate3d(-2.2%, 0, 0) scale(1.08); }
+        @keyframes f1RearIdleMotion {
+          0%, 100% { transform: translate3d(0%, 0%, 0) scale(1.03); }
+          25% { transform: translate3d(-0.6%, -0.4%, 0) scale(1.045); }
+          50% { transform: translate3d(0.5%, -0.8%, 0) scale(1.055); }
+          75% { transform: translate3d(-0.3%, -0.3%, 0) scale(1.04); }
+        }
+        @keyframes f1VintageArchivePan {
+          0%, 100% { transform: translate3d(-1.4%, -0.5%, 0) scale(1.06); }
+          50% { transform: translate3d(1.4%, 0.6%, 0) scale(1.09); }
         }
         @keyframes f1CarTrackGlide {
-          0% { transform: translate3d(0%, 0%, 0) scale(1.035); }
-          35% { transform: translate3d(-1.3%, 0.35%, 0) scale(1.055); }
-          70% { transform: translate3d(0.9%, -0.25%, 0) scale(1.045); }
-          100% { transform: translate3d(0%, 0%, 0) scale(1.035); }
+          0% { transform: translate3d(-2.6%, 0.6%, 0) scale(1.065) rotate(-0.45deg); }
+          35% { transform: translate3d(1.8%, -0.6%, 0) scale(1.09) rotate(0.35deg); }
+          70% { transform: translate3d(-1.2%, -0.3%, 0) scale(1.075) rotate(-0.2deg); }
+          100% { transform: translate3d(-2.6%, 0.6%, 0) scale(1.065) rotate(-0.45deg); }
         }
-        @keyframes f1RearLockedBreath {
-          0%, 100% { transform: translate3d(0, 0, 0) scale(1.02); }
-          50% { transform: translate3d(0, -0.35%, 0) scale(1.035); }
+        @keyframes f1WindTunnelFloat {
+          0%, 100% { transform: translate3d(0%, 0%, 0) scale(1.015); }
+          50% { transform: translate3d(-0.9%, -0.7%, 0) scale(1.032); }
+        }
+        @keyframes f1PitBoxAction {
+          0%, 100% { transform: translate3d(-1.8%, 0.4%, 0) scale(1.06); }
+          45% { transform: translate3d(1.6%, -0.7%, 0) scale(1.088); }
+          80% { transform: translate3d(0.4%, 0.5%, 0) scale(1.07); }
+        }
+        @keyframes f1GridLaunchMotion {
+          0%, 100% { transform: translate3d(-2.2%, 0.5%, 0) scale(1.06); }
+          50% { transform: translate3d(2.2%, -0.6%, 0) scale(1.095); }
+        }
+        @keyframes f1HeatWaveRise {
+          0% { transform: translate3d(-50%, 6px, 0) scaleX(0.92) scaleY(0.95); opacity: 0.35; }
+          50% { transform: translate3d(-48%, -10px, 0) scaleX(1.12) scaleY(1.15); opacity: 0.78; }
+          100% { transform: translate3d(-52%, -24px, 0) scaleX(0.96) scaleY(0.92); opacity: 0.25; }
         }
         @keyframes f1SpeedStreaks {
-          0% { background-position: 0px 0px; opacity: 0.22; }
-          50% { opacity: 0.38; }
-          100% { background-position: -480px 0px; opacity: 0.22; }
+          0% { background-position: 0px 0px; opacity: 0.45; }
+          50% { opacity: 0.75; }
+          100% { background-position: -360px 0px; opacity: 0.45; }
         }
         @keyframes f1BodySheen {
-          0% { transform: translateX(-130%) skewX(-25deg); }
-          45%, 100% { transform: translateX(230%) skewX(-25deg); }
+          0% { transform: translate3d(-140%, 0, 0) skewX(-25deg); }
+          55%, 100% { transform: translate3d(260%, 0, 0) skewX(-25deg); }
         }
         @keyframes f1TireSmokePuff {
-          0%, 100% { transform: translate3d(0, 0, 0) scale(0.85); opacity: 0.12; }
-          50% { transform: translate3d(-14px, -6px, 0) scale(1.25); opacity: 0.34; }
+          0%, 100% { transform: translate3d(0, 0, 0) scale(0.85); opacity: 0.22; }
+          50% { transform: translate3d(-18px, -10px, 0) scale(1.35); opacity: 0.58; }
         }
         @keyframes f1RainLightPulse {
-          0%, 100% { transform: translate(-50%, -50%) scale(0.92); opacity: 0.55; }
-          50% { transform: translate(-50%, -50%) scale(1.18); opacity: 0.98; }
+          0%, 100% { transform: translate3d(-50%, -50%, 0) scale(0.85); opacity: 0.45; }
+          50% { transform: translate3d(-50%, -50%, 0) scale(1.28); opacity: 1; }
         }
         @keyframes f1SparkRise {
-          0% { transform: translate3d(0, 18px, 0) scale(0.8); opacity: 0; }
-          30% { opacity: 0.85; }
-          100% { transform: translate3d(-12px, -38px, 0) scale(1.15); opacity: 0; }
+          0% { transform: translate3d(0, 16px, 0) scale(0.75); opacity: 0; }
+          30% { opacity: 0.95; }
+          100% { transform: translate3d(-18px, -48px, 0) scale(1.25); opacity: 0; }
         }
         @keyframes f1ProjectorFlicker {
-          0%, 100% { opacity: 0.14; }
-          25% { opacity: 0.24; }
-          50% { opacity: 0.10; }
-          75% { opacity: 0.28; }
+          0%, 100% { opacity: 0.16; transform: translate3d(0, 0, 0); }
+          25% { opacity: 0.34; transform: translate3d(-3px, 1px, 0); }
+          50% { opacity: 0.12; transform: translate3d(2px, -1px, 0); }
+          75% { opacity: 0.38; transform: translate3d(-2px, 0, 0); }
         }
         @keyframes f1AeroStream {
-          0% { stroke-dashoffset: 240; opacity: 0.25; }
-          50% { opacity: 0.70; }
-          100% { stroke-dashoffset: 0; opacity: 0.25; }
+          0% { stroke-dashoffset: 240; opacity: 0.35; }
+          50% { opacity: 0.9; }
+          100% { stroke-dashoffset: 0; opacity: 0.35; }
+        }
+        @keyframes f1HudScanline {
+          0% { transform: translate3d(0, -100%, 0); opacity: 0.25; }
+          50% { opacity: 0.65; }
+          100% { transform: translate3d(0, 320%, 0); opacity: 0.25; }
         }
         @keyframes f1FlagWave {
-          0%, 100% { transform: perspective(300px) rotateY(0deg) skewY(0deg); }
-          50% { transform: perspective(300px) rotateY(-12deg) skewY(3deg); }
+          0%, 100% { transform: perspective(300px) rotateY(0deg) skewY(0deg) scale(1); }
+          50% { transform: perspective(300px) rotateY(-16deg) skewY(4deg) scale(1.06); }
+        }
+
+        .f1-scene-motion-1 {
+          will-change: transform;
+          animation: f1RearIdleMotion 5.2s ease-in-out infinite;
+        }
+        .f1-scene-motion-2 {
+          will-change: transform;
+          animation: f1VintageArchivePan 7.5s ease-in-out infinite;
+        }
+        .f1-scene-motion-3 {
+          will-change: transform;
+          animation: f1CarTrackGlide 5.6s ease-in-out infinite;
+        }
+        .f1-scene-motion-4 {
+          will-change: transform;
+          animation: f1WindTunnelFloat 6.2s ease-in-out infinite;
+        }
+        .f1-scene-motion-5 {
+          will-change: transform;
+          animation: f1PitBoxAction 5.4s ease-in-out infinite;
+        }
+        .f1-scene-motion-6 {
+          will-change: transform;
+          animation: f1GridLaunchMotion 5.0s ease-in-out infinite;
+        }
+        .f1-scene-motion-7 {
+          will-change: transform;
+          animation: f1CarTrackGlide 5.2s ease-in-out infinite;
+        }
+        .f1-scene-motion-8 {
+          will-change: transform;
+          animation: f1CarTrackGlide 4.8s ease-in-out infinite;
+        }
+        .f1-motion-paused {
+          animation: none !important;
+          transform: none !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .f1-scene-motion-1,
+          .f1-scene-motion-2,
+          .f1-scene-motion-3,
+          .f1-scene-motion-4,
+          .f1-scene-motion-5,
+          .f1-scene-motion-6,
+          .f1-scene-motion-7,
+          .f1-scene-motion-8 {
+            animation: none !important;
+            transform: none !important;
+          }
         }
       `}</style>
-
-      {/* SVG Filter Definitions for Heat Shimmer (Prompt 1) */}
-      <svg className="sr-only" aria-hidden="true">
-        <defs>
-          <filter id="f1-heat-shimmer" x="-10%" y="-10%" width="120%" height="120%">
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.025 0.08"
-              numOctaves="2"
-              seed="3"
-              result="noise"
-            >
-              {!reduceMotion && (
-                <animate
-                  attributeName="baseFrequency"
-                  values="0.025 0.08;0.035 0.12;0.025 0.08"
-                  dur="2.4s"
-                  repeatCount="indefinite"
-                />
-              )}
-            </feTurbulence>
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={reduceMotion ? 0 : 6} />
-          </filter>
-        </defs>
-      </svg>
 
       {/* ==================================================================== */}
       {/* 1 & 2. CABEÇALHO COMPACTO + IDENTIFICAÇÃO DO MÓDULO E PROGRESSO      */}
@@ -1130,31 +1221,44 @@ export function NovatosPage() {
       {viewStage === "opening" && (
         <div className="relative flex flex-col justify-between p-4 sm:p-10 lg:p-12 overflow-hidden">
           {/* Desktop full-bleed background / Mobile dedicated top hero visual */}
-          <div className="relative sm:absolute sm:inset-0 h-52 sm:h-auto rounded-2xl sm:rounded-none overflow-hidden mb-4 sm:mb-0 border border-white/15 sm:border-0 pointer-events-none">
+          <div className="relative sm:absolute sm:inset-0 aspect-video sm:aspect-auto rounded-2xl sm:rounded-none overflow-hidden mb-4 sm:mb-0 border border-white/15 sm:border-0 pointer-events-none">
             <img
               src="/backgrounds/bg-ferrari.webp"
               alt="Carro moderno de Fórmula 1 visto de trás em circuito noturno"
-              className="w-full h-full object-cover object-center sm:brightness-[0.52]"
-              style={{
-                animation: reduceMotion ? "none" : "f1RearLockedBreath 9s ease-in-out infinite",
-              }}
+              data-testid="opening-hero-img"
+              className={cn(
+                "w-full h-full object-cover object-center sm:brightness-[0.52]",
+                reduceMotion ? "f1-motion-paused" : "f1-scene-motion-1"
+              )}
             />
-            {/* Heat Shimmer Distortion Zone behind Rear Wing */}
-            <div
-              className="absolute left-1/2 top-[22%] -translate-x-1/2 w-56 sm:w-80 h-24 sm:h-32 rounded-full opacity-65"
-              style={{
-                filter: reduceMotion ? "none" : "url(#f1-heat-shimmer)",
-                background:
-                  "radial-gradient(ellipse at center, rgba(255,110,30,0.28) 0%, rgba(225,6,0,0.08) 60%, transparent 100%)",
-              }}
-            />
+            {/* Pure CSS Heat Shimmer Distortion Waves behind Rear Wing */}
+            {!reduceMotion && (
+              <>
+                <div
+                  className="absolute left-1/2 top-[22%] w-48 sm:w-72 h-16 sm:h-24 rounded-full pointer-events-none blur-md"
+                  style={{
+                    background:
+                      "radial-gradient(ellipse at center, rgba(255,120,30,0.34) 0%, rgba(225,6,0,0.14) 55%, transparent 80%)",
+                    animation: "f1HeatWaveRise 2.1s ease-in-out infinite",
+                  }}
+                />
+                <div
+                  className="absolute left-1/2 top-[28%] w-40 sm:w-64 h-14 sm:h-20 rounded-full pointer-events-none blur-sm"
+                  style={{
+                    background:
+                      "radial-gradient(ellipse at center, rgba(255,190,100,0.24) 0%, transparent 75%)",
+                    animation: "f1HeatWaveRise 1.6s ease-in-out infinite 0.5s",
+                  }}
+                />
+              </>
+            )}
             {/* Pulsing Red Rear Rain Light */}
             <div
               className="absolute left-1/2 top-[60%] w-16 h-16 sm:w-24 sm:h-24 rounded-full pointer-events-none"
               style={{
                 background:
-                  "radial-gradient(circle, rgba(255,30,30,0.92) 0%, rgba(225,6,0,0.40) 45%, transparent 75%)",
-                animation: reduceMotion ? "none" : "f1RainLightPulse 2.2s ease-in-out infinite",
+                  "radial-gradient(circle, rgba(255,30,30,0.95) 0%, rgba(225,6,0,0.45) 45%, transparent 75%)",
+                animation: reduceMotion ? "none" : "f1RainLightPulse 1.8s ease-in-out infinite",
               }}
             />
             {/* Dark Cinematic Vignette on Desktop */}
@@ -1273,271 +1377,394 @@ export function NovatosPage() {
       {viewStage === "lesson" && (
         <div className="p-3 sm:p-6 space-y-3.5 sm:space-y-4">
           {/* ================================================================ */}
-          {/* IMAGEM PRINCIPAL ANIMADA (PALCO VISUAL LIMPO, SEM FRASES EXTRAS) */}
+          {/* PALCO VISUAL DA CENA (COM PAINEL LATERAL NA CENA 04 NO DESKTOP)  */}
           {/* ================================================================ */}
-          <div className="relative rounded-2xl overflow-hidden border border-white/15 bg-[#05070B] aspect-[16/10] sm:aspect-[16/9] max-h-[520px] w-full shadow-2xl">
-            {/* Layer 1: 2.5D Blurred Background Track/Grandstand Parallax Layer */}
-            {currentScene.visualEffectType !== "vintage_1950" && (
-              <img
-                src={currentScene.imageUrl}
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 w-full h-full object-cover object-center opacity-45 blur-[2px] select-none pointer-events-none"
-                style={{
-                  animation: reduceMotion ? "none" : "f1TrackBgPan 11s ease-in-out infinite",
-                }}
-              />
+          <div
+            className={cn(
+              currentScene.visualEffectType === "machine_hotspots"
+                ? "grid grid-cols-1 lg:grid-cols-12 gap-4 items-start"
+                : "max-w-5xl mx-auto"
             )}
-
-            {/* Layer 2: Foreground Sharp F1 Car with Trajectory Glide or Locked Rear Shimmer */}
-            <img
-              key={currentScene.id}
-              src={currentScene.imageUrl}
-              alt={`Cena 0${currentScene.number} — ${currentScene.title}`}
+          >
+            {/* IMAGEM PRINCIPAL ANIMADA (PROPORÇÃO 16:9 FIXA PARA PRECISÃO DE COORDENADAS) */}
+            <div
               className={cn(
-                "relative z-[1] w-full h-full object-cover object-center select-none",
-                currentScene.visualEffectType === "vintage_1950" && "sepia-[0.22] contrast-115"
+                "relative rounded-2xl overflow-hidden border border-white/15 bg-[#05070B] aspect-video w-full shadow-2xl",
+                currentScene.visualEffectType === "machine_hotspots" && "lg:col-span-7"
               )}
-              style={{
-                animation: reduceMotion
-                  ? "none"
-                  : currentScene.visualEffectType === "vintage_1950"
-                  ? "none"
-                  : currentScene.visualEffectType === "rear_shimmer"
-                  ? "f1RearLockedBreath 8s ease-in-out infinite"
-                  : "f1CarTrackGlide 7.5s ease-in-out infinite",
-              }}
-            />
-
-            {/* Layer 3: Subtle Asphalt Speed Lines on Track Scenes */}
-            {!reduceMotion &&
-              (currentScene.visualEffectType === "parallax_track" ||
-                currentScene.visualEffectType === "starting_grid" ||
-                currentScene.visualEffectType === "telemetry_wall" ||
-                currentScene.visualEffectType === "checkered_finish") && (
-                <div
-                  className="absolute inset-x-0 bottom-0 h-[38%] z-[2] pointer-events-none"
-                  style={{
-                    backgroundImage:
-                      "repeating-linear-gradient(90deg, transparent 0px, transparent 110px, rgba(255,255,255,0.16) 110px, rgba(225,6,0,0.28) 145px, transparent 145px)",
-                    backgroundSize: "480px 2px",
-                    backgroundRepeat: "repeat",
-                    maskImage: "linear-gradient(to top, rgba(0,0,0,0.85), transparent)",
-                    WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0.85), transparent)",
-                    animation: "f1SpeedStreaks 1.3s linear infinite",
-                  }}
-                />
-              )}
-
-            {/* Layer 4: Subtle Bodywork Specular Light Reflection Sweep */}
-            {!reduceMotion && currentScene.visualEffectType !== "vintage_1950" && (
-              <div className="absolute inset-0 z-[2] overflow-hidden pointer-events-none">
-                <div
-                  className="w-1/3 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent"
-                  style={{
-                    animation: "f1BodySheen 6.5s ease-in-out infinite",
-                  }}
-                />
-              </div>
-            )}
-
-            {/* SCENE 01 OVERLAY: Rear Wing Heat Shimmer + Pulsing Red Rain Light + Rising Sparks */}
-            {currentScene.visualEffectType === "rear_shimmer" && (
-              <div className="absolute inset-0 z-[3] pointer-events-none">
-                <div
-                  className="absolute left-1/2 top-[22%] -translate-x-1/2 w-48 sm:w-72 h-20 sm:h-28 rounded-full"
-                  style={{
-                    filter: reduceMotion ? "none" : "url(#f1-heat-shimmer)",
-                    background:
-                      "radial-gradient(ellipse at center, rgba(255,120,40,0.26) 0%, transparent 75%)",
-                  }}
-                />
-                <div
-                  className="absolute left-1/2 top-[62%] w-14 h-14 sm:w-20 sm:h-20 rounded-full"
-                  style={{
-                    background:
-                      "radial-gradient(circle, rgba(255,25,25,0.9) 0%, rgba(225,6,0,0.35) 50%, transparent 75%)",
-                    animation: reduceMotion ? "none" : "f1RainLightPulse 2s ease-in-out infinite",
-                  }}
-                />
-                {!reduceMotion &&
-                  [18, 34, 52, 66, 80].map((leftPct, i) => (
-                    <span
-                      key={leftPct}
-                      className="absolute bottom-[18%] w-1.5 h-1.5 rounded-full bg-red-400 shadow-[0_0_8px_#E10600]"
-                      style={{
-                        left: `${leftPct}%`,
-                        animation: `f1SparkRise ${2.2 + i * 0.4}s ease-out infinite`,
-                        animationDelay: `${i * 0.35}s`,
-                      }}
-                    />
-                  ))}
-              </div>
-            )}
-
-            {/* SCENE 02 OVERLAY: 1950 Documentary Film Grain, Dust Scratches & Projector Flicker */}
-            {currentScene.visualEffectType === "vintage_1950" && (
+              data-testid="scene-visual-stage"
+            >
+              {/* UNIFIED ANIMATED CANVAS: Car + Scene 04 Markers move together in lockstep */}
               <div
-                className="absolute inset-0 z-[3] pointer-events-none"
-                style={{
-                  backgroundImage:
-                    "repeating-linear-gradient(90deg, transparent 0, transparent 160px, rgba(255,240,200,0.09) 161px, transparent 162px)",
-                  boxShadow: "inset 0 0 80px rgba(0,0,0,0.75)",
-                  animation: reduceMotion ? "none" : "f1ProjectorFlicker 3.2s infinite",
-                }}
-              />
-            )}
+                key={`motion-${currentScene.id}`}
+                data-testid="scene-animated-layer"
+                data-scene-number={currentScene.number}
+                className={cn(
+                  "relative w-full h-full",
+                  reduceMotion
+                    ? "f1-motion-paused"
+                    : `f1-scene-motion-${currentScene.number}`
+                )}
+              >
+                <img
+                  src={currentScene.imageUrl}
+                  alt={`Cena 0${currentScene.number} — ${currentScene.title}`}
+                  data-testid="scene-main-img"
+                  className={cn(
+                    "w-full h-full object-cover object-center select-none pointer-events-none",
+                    currentScene.visualEffectType === "vintage_1950" && "sepia-[0.22] contrast-115"
+                  )}
+                />
 
-            {/* SCENE 03 & 05 & 06: Subtle Tire Smoke Puff near Rear/Front Wheels */}
-            {!reduceMotion &&
-              (currentScene.visualEffectType === "parallax_track" ||
-                currentScene.visualEffectType === "pitstop_team" ||
-                (currentScene.visualEffectType === "starting_grid" && activeStartLights === -1)) && (
-                <div className="absolute inset-0 z-[3] pointer-events-none">
+                {/* SCENE 04 OVERLAY: Aerodynamic Streamlines + SVG Connectors + Markers 1 to 7 */}
+                {currentScene.visualEffectType === "machine_hotspots" && (
+                  <div className="absolute inset-0 z-[4]">
+                    {/* Animated Wind-Tunnel Streamlines */}
+                    {!reduceMotion && (
+                      <svg
+                        viewBox="0 0 800 450"
+                        className="absolute inset-0 w-full h-full pointer-events-none opacity-65"
+                      >
+                        <path
+                          d="M 55 300 Q 230 250, 410 190 T 745 145"
+                          fill="none"
+                          stroke="#E10600"
+                          strokeWidth="2.2"
+                          strokeDasharray="18 14"
+                          style={{ animation: "f1AeroStream 2.1s linear infinite" }}
+                        />
+                        <path
+                          d="M 85 335 Q 275 290, 465 235 T 760 190"
+                          fill="none"
+                          stroke="#38BDF8"
+                          strokeWidth="1.8"
+                          strokeDasharray="14 18"
+                          style={{ animation: "f1AeroStream 2.5s linear infinite" }}
+                        />
+                      </svg>
+                    )}
+
+                    {/* SVG Connector Lines & Target Dots on the Exact Car Parts */}
+                    <svg
+                      viewBox="0 0 100 100"
+                      preserveAspectRatio="none"
+                      className="absolute inset-0 w-full h-full pointer-events-none"
+                    >
+                      {CAR_COMPONENTS_SCENE_04.map((comp) => {
+                        const isSelected = selectedHotspot === comp.id
+                        return (
+                          <g key={`line-${comp.id}`}>
+                            <line
+                              x1={comp.markerX}
+                              y1={comp.markerY}
+                              x2={comp.targetX}
+                              y2={comp.targetY}
+                              stroke={isSelected ? "#E10600" : "rgba(255,255,255,0.68)"}
+                              strokeWidth={isSelected ? "0.7" : "0.38"}
+                              strokeDasharray={isSelected ? "none" : "1.1 0.8"}
+                            />
+                            <circle
+                              cx={comp.targetX}
+                              cy={comp.targetY}
+                              r={isSelected ? "1.35" : "0.85"}
+                              fill={isSelected ? "#E10600" : "#FFFFFF"}
+                              stroke="#080A0F"
+                              strokeWidth="0.3"
+                            />
+                          </g>
+                        )
+                      })}
+                    </svg>
+
+                    {/* Discrete Numbered Markers 1 to 7 on the Image */}
+                    {CAR_COMPONENTS_SCENE_04.map((comp) => {
+                      const isHighlightedByTime =
+                        !isPlaying || currentTime === 0 || currentTime >= comp.appearAtSec
+                      const isSelected = selectedHotspot === comp.id
+                      return (
+                        <button
+                          key={comp.id}
+                          type="button"
+                          data-component-marker={comp.id}
+                          onClick={() => setSelectedHotspot(comp.id)}
+                          style={{ left: `${comp.markerX}%`, top: `${comp.markerY}%` }}
+                          className={cn(
+                            "absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-200 cursor-pointer z-10",
+                            isHighlightedByTime ? "opacity-100" : "opacity-65"
+                          )}
+                          aria-label={`${comp.id}. ${comp.title}`}
+                        >
+                          <span
+                            className={cn(
+                              "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[11px] sm:text-xs font-black border-2 shadow-lg transition-transform",
+                              isSelected
+                                ? "bg-[#E10600] text-white border-white scale-125 shadow-[0_0_16px_#E10600]"
+                                : "bg-[#0B0E17]/90 text-white border-[#E10600] hover:bg-[#E10600] hover:scale-110"
+                            )}
+                          >
+                            {comp.shortLabel}
+                          </span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Layer 3: Visible Asphalt Speed Lines on Track Scenes */}
+              {!reduceMotion &&
+                (currentScene.visualEffectType === "parallax_track" ||
+                  currentScene.visualEffectType === "starting_grid" ||
+                  currentScene.visualEffectType === "telemetry_wall" ||
+                  currentScene.visualEffectType === "checkered_finish") && (
                   <div
-                    className="absolute left-[28%] bottom-[16%] w-24 sm:w-36 h-12 sm:h-16 rounded-full blur-md"
+                    data-testid="scene-speed-streaks"
+                    className="absolute inset-x-0 bottom-0 h-[36%] z-[2] pointer-events-none"
                     style={{
-                      background:
-                        "radial-gradient(circle, rgba(240,245,255,0.34) 0%, transparent 70%)",
-                      animation: "f1TireSmokePuff 2.6s ease-in-out infinite",
+                      backgroundImage:
+                        "repeating-linear-gradient(90deg, transparent 0px, transparent 65px, rgba(255,255,255,0.28) 65px, rgba(225,6,0,0.48) 105px, transparent 105px)",
+                      backgroundSize: "360px 100%",
+                      maskImage: "linear-gradient(to top, rgba(0,0,0,0.92), transparent)",
+                      WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0.92), transparent)",
+                      animation: "f1SpeedStreaks 0.95s linear infinite",
                     }}
                   />
+                )}
+
+              {/* Layer 4: Continuous Bodywork Specular Light Reflection Sweep */}
+              {!reduceMotion && currentScene.visualEffectType !== "vintage_1950" && (
+                <div className="absolute inset-0 z-[2] overflow-hidden pointer-events-none">
                   <div
-                    className="absolute right-[22%] bottom-[18%] w-28 sm:w-40 h-14 sm:h-20 rounded-full blur-md"
+                    data-testid="scene-body-sheen"
+                    className="w-1/3 h-full bg-gradient-to-r from-transparent via-white/15 to-transparent"
                     style={{
-                      background:
-                        "radial-gradient(circle, rgba(240,245,255,0.28) 0%, transparent 70%)",
-                      animation: "f1TireSmokePuff 3.1s ease-in-out infinite",
-                      animationDelay: "0.8s",
+                      animation: "f1BodySheen 4.8s ease-in-out infinite",
                     }}
                   />
                 </div>
               )}
 
-            {/* SCENE 04 OVERLAY: Aerodynamic Wind-Tunnel Streamlines + Short Technical Labels */}
-            {currentScene.visualEffectType === "machine_hotspots" && (
-              <div className="absolute inset-0 z-[3]">
-                {!reduceMotion && (
-                  <svg
-                    viewBox="0 0 800 450"
-                    className="absolute inset-0 w-full h-full pointer-events-none opacity-65"
-                  >
-                    <path
-                      d="M 60 310 Q 240 260, 420 190 T 740 140"
-                      fill="none"
-                      stroke="#E10600"
-                      strokeWidth="2"
-                      strokeDasharray="18 14"
-                      style={{ animation: "f1AeroStream 2.4s linear infinite" }}
+              {/* SCENE 01 OVERLAY: Pure-CSS Rear Wing Heat Shimmer + Pulsing Red Rain Light + Rising Sparks */}
+              {currentScene.visualEffectType === "rear_shimmer" && (
+                <div className="absolute inset-0 z-[3] pointer-events-none">
+                  {!reduceMotion && (
+                    <>
+                      <div
+                        className="absolute left-1/2 top-[22%] w-48 sm:w-72 h-20 sm:h-28 rounded-full blur-md"
+                        style={{
+                          background:
+                            "radial-gradient(ellipse at center, rgba(255,120,40,0.36) 0%, rgba(225,6,0,0.14) 55%, transparent 80%)",
+                          animation: "f1HeatWaveRise 2s ease-in-out infinite",
+                        }}
+                      />
+                      <div
+                        className="absolute left-1/2 top-[28%] w-36 sm:w-56 h-14 sm:h-20 rounded-full blur-sm"
+                        style={{
+                          background:
+                            "radial-gradient(ellipse at center, rgba(255,200,110,0.26) 0%, transparent 75%)",
+                          animation: "f1HeatWaveRise 1.5s ease-in-out infinite 0.4s",
+                        }}
+                      />
+                    </>
+                  )}
+                  <div
+                    className="absolute left-1/2 top-[62%] w-14 h-14 sm:w-20 sm:h-20 rounded-full"
+                    style={{
+                      background:
+                        "radial-gradient(circle, rgba(255,25,25,0.95) 0%, rgba(225,6,0,0.45) 50%, transparent 75%)",
+                      animation: reduceMotion ? "none" : "f1RainLightPulse 1.8s ease-in-out infinite",
+                    }}
+                  />
+                  {!reduceMotion &&
+                    [18, 34, 50, 66, 82].map((leftPct, i) => (
+                      <span
+                        key={leftPct}
+                        className="absolute bottom-[16%] w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-400 shadow-[0_0_10px_#E10600]"
+                        style={{
+                          left: `${leftPct}%`,
+                          animation: `f1SparkRise ${1.8 + i * 0.35}s ease-out infinite`,
+                          animationDelay: `${i * 0.3}s`,
+                        }}
+                      />
+                    ))}
+                </div>
+              )}
+
+              {/* SCENE 02 OVERLAY: 1950 Documentary Film Grain, Dust Scratches & Projector Flicker */}
+              {currentScene.visualEffectType === "vintage_1950" && (
+                <div
+                  className="absolute inset-0 z-[3] pointer-events-none"
+                  style={{
+                    backgroundImage:
+                      "repeating-linear-gradient(90deg, transparent 0, transparent 90px, rgba(255,240,200,0.14) 91px, transparent 93px)",
+                    boxShadow: "inset 0 0 70px rgba(0,0,0,0.78)",
+                    animation: reduceMotion ? "none" : "f1ProjectorFlicker 2.4s infinite",
+                  }}
+                />
+              )}
+
+              {/* SCENE 03, 05, 06: Tire Smoke Puffs near Front/Rear Wheels */}
+              {!reduceMotion &&
+                (currentScene.visualEffectType === "parallax_track" ||
+                  currentScene.visualEffectType === "pitstop_team" ||
+                  currentScene.visualEffectType === "starting_grid") && (
+                  <div className="absolute inset-0 z-[3] pointer-events-none">
+                    <div
+                      className="absolute left-[24%] bottom-[14%] w-24 sm:w-36 h-12 sm:h-16 rounded-full blur-md"
+                      style={{
+                        background:
+                          "radial-gradient(circle, rgba(240,245,255,0.42) 0%, transparent 72%)",
+                        animation: "f1TireSmokePuff 2.2s ease-in-out infinite",
+                      }}
                     />
-                    <path
-                      d="M 90 340 Q 280 300, 470 235 T 760 185"
-                      fill="none"
-                      stroke="#38BDF8"
-                      strokeWidth="1.5"
-                      strokeDasharray="14 18"
-                      style={{ animation: "f1AeroStream 2.8s linear infinite" }}
+                    <div
+                      className="absolute right-[20%] bottom-[16%] w-28 sm:w-40 h-14 sm:h-20 rounded-full blur-md"
+                      style={{
+                        background:
+                          "radial-gradient(circle, rgba(240,245,255,0.36) 0%, transparent 72%)",
+                        animation: "f1TireSmokePuff 2.7s ease-in-out infinite 0.6s",
+                      }}
                     />
-                  </svg>
+                  </div>
                 )}
 
-                {CAR_COMPONENTS_SCENE_04.map((comp) => {
-                  const isHighlightedByTime =
-                    !isPlaying || currentTime === 0 || currentTime >= comp.appearAtSec
-                  const isSelected = selectedHotspot === comp.id
-                  return (
-                    <button
-                      key={comp.id}
-                      type="button"
-                      onClick={() => setSelectedHotspot(comp.id)}
-                      style={{ left: `${comp.x}%`, top: `${comp.y}%` }}
-                      className={cn(
-                        "absolute -translate-x-1/2 -translate-y-1/2 group transition-all duration-300 cursor-pointer",
-                        isHighlightedByTime ? "opacity-100 scale-100" : "opacity-45 scale-90"
-                      )}
-                      aria-label={comp.name}
-                    >
-                      <span
+              {/* SCENE 06 OVERLAY: COMPACT STARTING LIGHTS SEMAPHORE AT TOP OF FRAME */}
+              {currentScene.visualEffectType === "starting_grid" && (
+                <div className="absolute inset-x-0 top-2.5 z-[3] flex justify-center pointer-events-none px-2">
+                  <div className="px-3 py-1.5 rounded-xl bg-[#0B0D13]/90 border border-white/20 shadow-xl flex items-center gap-2 backdrop-blur-md">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      {[1, 2, 3, 4, 5].map((lightNum) => {
+                        const isLit = activeStartLights >= lightNum
+                        return (
+                          <div
+                            key={lightNum}
+                            className="w-5 h-7 sm:w-6 sm:h-9 rounded bg-black border border-white/15 flex flex-col items-center justify-around p-0.5"
+                          >
+                            <span
+                              className={cn(
+                                "w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all duration-150",
+                                isLit
+                                  ? "bg-[#E10600] shadow-[0_0_10px_#E10600]"
+                                  : "bg-red-950/40"
+                              )}
+                            />
+                            <span
+                              className={cn(
+                                "w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all duration-150",
+                                isLit
+                                  ? "bg-[#E10600] shadow-[0_0_10px_#E10600]"
+                                  : "bg-red-950/40"
+                              )}
+                            />
+                          </div>
+                        )
+                      })}
+                    </div>
+                    <span className="text-[10px] sm:text-xs font-bold text-emerald-400">
+                      {activeStartLights === -1
+                        ? "🟢 LARGADA!"
+                        : `${Math.max(0, activeStartLights)}/5`}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* SCENE 07 OVERLAY: TELEMETRY SCANLINE & LIVE PIT WALL HUD */}
+              {currentScene.visualEffectType === "telemetry_wall" && !reduceMotion && (
+                <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden">
+                  <div
+                    className="w-full h-10 bg-gradient-to-b from-transparent via-[#E10600]/25 to-transparent"
+                    style={{ animation: "f1HudScanline 3.2s linear infinite" }}
+                  />
+                </div>
+              )}
+
+              {/* SCENE 08 OVERLAY: ANIMATED WAVING CHECKERED FLAG BADGE */}
+              {currentScene.visualEffectType === "checkered_finish" && (
+                <div className="absolute top-3 right-3 z-[3] pointer-events-none">
+                  <div
+                    className="px-3 py-1.5 rounded-xl bg-black/80 border border-white/25 text-xs font-black text-white flex items-center gap-1.5 shadow-lg"
+                    style={{
+                      animation: reduceMotion ? "none" : "f1FlagWave 2.2s ease-in-out infinite",
+                    }}
+                  >
+                    <span>🏁</span>
+                    <span>BANDEIRA QUADRICULADA</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* ============================================================== */}
+            {/* CENA 04: IDENTIFICAÇÃO DOS COMPONENTES DE 1 A 7                */}
+            {/* No computador: painel lateral ao lado da imagem.               */}
+            {/* No celular: destaque ativo + lista compacta abaixo da imagem.  */}
+            {/* ============================================================== */}
+            {currentScene.visualEffectType === "machine_hotspots" && (
+              <div
+                className="lg:col-span-5 rounded-2xl bg-[#0D111A] border border-white/15 p-3 sm:p-4 space-y-2.5 shadow-xl"
+                data-testid="scene04-component-list"
+              >
+                <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
+                  <span className="text-xs font-black uppercase tracking-wider text-white flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#E10600]" />
+                    Componentes do Carro (1 a 7)
+                  </span>
+                  <span className="text-[11px] text-white/60">Toque em um número</span>
+                </div>
+
+                {/* Destaque do componente selecionado no momento */}
+                <div
+                  className="p-2.5 sm:p-3 rounded-xl bg-[#E10600]/15 border border-[#E10600] text-xs sm:text-sm"
+                  data-testid="scene04-active-component-card"
+                >
+                  <div className="font-black text-white">
+                    {activeComponentObj.id}. {activeComponentObj.title}
+                  </div>
+                  <p className="text-slate-200 text-xs leading-relaxed mt-0.5">
+                    <strong className="text-white">{activeComponentObj.title}</strong> —{" "}
+                    {activeComponentObj.shortDesc}
+                  </p>
+                </div>
+
+                {/* Lista compacta e organizada das 7 identificações */}
+                <div className="grid grid-cols-1 gap-1.5">
+                  {CAR_COMPONENTS_SCENE_04.map((comp) => {
+                    const isSelected = selectedHotspot === comp.id
+                    return (
+                      <button
+                        key={comp.id}
+                        type="button"
+                        data-component-legend-item={comp.id}
+                        onClick={() => setSelectedHotspot(comp.id)}
                         className={cn(
-                          "flex items-center justify-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-bold border shadow-lg backdrop-blur-md transition-all",
+                          "w-full text-left p-2 sm:p-2.5 rounded-xl border transition-all flex items-start gap-2.5 cursor-pointer",
                           isSelected
-                            ? "bg-[#E10600] text-white border-white scale-110 shadow-[0_0_15px_#E10600]"
-                            : "bg-black/85 text-white border-[#E10600] hover:bg-[#E10600]"
+                            ? "bg-[#E10600]/20 border-[#E10600] text-white shadow-[0_0_12px_rgba(225,6,0,0.28)]"
+                            : "bg-black/45 border-white/10 text-slate-200 hover:bg-white/5 hover:border-white/25"
                         )}
                       >
-                        <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-                        <span>{comp.shortLabel}</span>
-                      </span>
-                    </button>
-                  )
-                })}
-              </div>
-            )}
-
-            {/* SCENE 06 OVERLAY: COMPACT STARTING LIGHTS SEMAPHORE AT TOP OF FRAME */}
-            {currentScene.visualEffectType === "starting_grid" && (
-              <div className="absolute inset-x-0 top-2.5 z-[3] flex justify-center pointer-events-none px-2">
-                <div className="px-3 py-1.5 rounded-xl bg-[#0B0D13]/90 border border-white/20 shadow-xl flex items-center gap-2 backdrop-blur-md">
-                  <div className="flex items-center gap-1.5 sm:gap-2">
-                    {[1, 2, 3, 4, 5].map((lightNum) => {
-                      const isLit = activeStartLights >= lightNum
-                      return (
-                        <div
-                          key={lightNum}
-                          className="w-5 h-7 sm:w-6 sm:h-9 rounded bg-black border border-white/15 flex flex-col items-center justify-around p-0.5"
+                        <span
+                          className={cn(
+                            "w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[11px] font-black shrink-0 mt-0.5 border",
+                            isSelected
+                              ? "bg-[#E10600] text-white border-white"
+                              : "bg-[#141926] text-white border-[#E10600]"
+                          )}
                         >
-                          <span
-                            className={cn(
-                              "w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all duration-150",
-                              isLit
-                                ? "bg-[#E10600] shadow-[0_0_10px_#E10600]"
-                                : "bg-red-950/40"
-                            )}
-                          />
-                          <span
-                            className={cn(
-                              "w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all duration-150",
-                              isLit
-                                ? "bg-[#E10600] shadow-[0_0_10px_#E10600]"
-                                : "bg-red-950/40"
-                            )}
-                          />
-                        </div>
-                      )
-                    })}
-                  </div>
-                  <span className="text-[10px] sm:text-xs font-bold text-emerald-400">
-                    {activeStartLights === -1
-                      ? "🟢 LARGADA!"
-                      : `${Math.max(0, activeStartLights)}/5`}
-                  </span>
+                          {comp.id}
+                        </span>
+                        <span className="text-xs leading-snug">
+                          <strong className="font-bold text-white">{comp.title}</strong> —{" "}
+                          <span className="text-slate-300">{comp.shortDesc}</span>
+                        </span>
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
             )}
           </div>
-
-          {/* ================================================================ */}
-          {/* EXCEÇÃO CENA 04: APENAS ETIQUETAS TÉCNICAS CURTAS DOS COMPONENTES*/}
-          {/* ================================================================ */}
-          {currentScene.visualEffectType === "machine_hotspots" && (
-            <div className="flex flex-wrap items-center gap-1.5 px-1">
-              {CAR_COMPONENTS_SCENE_04.map((comp) => (
-                <button
-                  key={comp.id}
-                  type="button"
-                  onClick={() => setSelectedHotspot(comp.id)}
-                  className={cn(
-                    "px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer",
-                    selectedHotspot === comp.id
-                      ? "bg-[#E10600] text-white border-white shadow-[0_0_10px_rgba(225,6,0,0.45)]"
-                      : "bg-[#0E121B] text-white/80 border-white/15 hover:border-[#E10600]"
-                  )}
-                >
-                  {comp.shortLabel}
-                </button>
-              ))}
-            </div>
-          )}
 
           {/* ================================================================ */}
           {/* CRONÔMETRO DE 5 SEGUNDOS (QUANDO A NARRAÇÃO TERMINA)             */}
