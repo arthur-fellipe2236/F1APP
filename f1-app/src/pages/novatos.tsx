@@ -1454,7 +1454,7 @@ export function NovatosPage() {
             <button
               type="button"
               onClick={handleOpenImageFullscreen}
-              data-testid="btn-expand-fullscreen-opening"
+              data-testid="btn-expand-fullscreen"
               aria-label="Expandir imagem em tela cheia"
               title="Expandir imagem em tela cheia"
               className="absolute bottom-2.5 right-2.5 sm:top-4 sm:right-4 sm:bottom-auto z-20 inline-flex items-center gap-1.5 px-2.5 py-2 rounded-xl bg-black/75 hover:bg-[#E10600] text-white/90 hover:text-white border border-white/20 backdrop-blur-md shadow-lg transition-all cursor-pointer min-h-[38px]"
