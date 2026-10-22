@@ -109,16 +109,15 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
 ]
 
 // ============================================================================
-// COMPONENTES DO CARRO NA CENA 04 — IDENTIFICAÇÃO NUMERADA DE 1 A 7
+// CENA 04 — 7 COMPONENTES NUMERADOS DIRETAMENTE NA IMAGEM (NÚMERO + NOME)
 // ============================================================================
 export interface CarComponentHotspot {
   id: number
   shortLabel: string
   title: string
   name: string
-  shortDesc: string
-  markerX: number // % horizontal position of numbered badge on 16:9 image
-  markerY: number // % vertical position of numbered badge on 16:9 image
+  markerX: number // % horizontal position of badge on 16:9 image
+  markerY: number // % vertical position of badge on 16:9 image
   targetX: number // % exact horizontal target point on the F1 car part
   targetY: number // % exact vertical target point on the F1 car part
   appearAtSec: number // synchronized with Mariana narration
@@ -130,10 +129,8 @@ export const CAR_COMPONENTS_SCENE_04: CarComponentHotspot[] = [
     shortLabel: "1",
     title: "Asa dianteira",
     name: "1. Asa dianteira",
-    shortDesc:
-      "ajuda a controlar o fluxo de ar na parte frontal do carro e contribui para o equilíbrio aerodinâmico.",
-    markerX: 15.5,
-    markerY: 63.5,
+    markerX: 16.0,
+    markerY: 75.0,
     targetX: 23.5,
     targetY: 63.5,
     appearAtSec: 3.2,
@@ -143,10 +140,8 @@ export const CAR_COMPONENTS_SCENE_04: CarComponentHotspot[] = [
     shortLabel: "2",
     title: "Asa traseira",
     name: "2. Asa traseira",
-    shortDesc:
-      "contribui para o equilíbrio aerodinâmico e para a geração de carga aerodinâmica.",
-    markerX: 64.5,
-    markerY: 36.5,
+    markerX: 80.0,
+    markerY: 36.0,
     targetX: 62.5,
     targetY: 53.5,
     appearAtSec: 5.4,
@@ -156,10 +151,8 @@ export const CAR_COMPONENTS_SCENE_04: CarComponentHotspot[] = [
     shortLabel: "3",
     title: "Pneus",
     name: "3. Pneus",
-    shortDesc:
-      "são o contato do carro com o asfalto e influenciam a aderência, a frenagem e a estratégia.",
-    markerX: 49.5,
-    markerY: 85.0,
+    markerX: 50.0,
+    markerY: 88.0,
     targetX: 49.5,
     targetY: 69.0,
     appearAtSec: 11.2,
@@ -169,9 +162,8 @@ export const CAR_COMPONENTS_SCENE_04: CarComponentHotspot[] = [
     shortLabel: "4",
     title: "Freios",
     name: "4. Freios",
-    shortDesc: "permitem reduzir a velocidade e controlar a frenagem nas curvas.",
-    markerX: 27.5,
-    markerY: 45.0,
+    markerX: 16.5,
+    markerY: 46.0,
     targetX: 27.5,
     targetY: 62.5,
     appearAtSec: 14.5,
@@ -181,9 +173,8 @@ export const CAR_COMPONENTS_SCENE_04: CarComponentHotspot[] = [
     shortLabel: "5",
     title: "Halo",
     name: "5. Halo",
-    shortDesc: "estrutura de proteção que ajuda a proteger a cabeça do piloto.",
-    markerX: 37.5,
-    markerY: 38.0,
+    markerX: 28.0,
+    markerY: 25.0,
     targetX: 41.0,
     targetY: 53.0,
     appearAtSec: 17.8,
@@ -193,9 +184,8 @@ export const CAR_COMPONENTS_SCENE_04: CarComponentHotspot[] = [
     shortLabel: "6",
     title: "Cockpit",
     name: "6. Cockpit",
-    shortDesc: "compartimento onde o piloto se senta e controla o carro.",
-    markerX: 46.0,
-    markerY: 37.5,
+    markerX: 48.0,
+    markerY: 13.5,
     targetX: 44.0,
     targetY: 56.0,
     appearAtSec: 20.0,
@@ -205,14 +195,37 @@ export const CAR_COMPONENTS_SCENE_04: CarComponentHotspot[] = [
     shortLabel: "7",
     title: "Unidade de potência",
     name: "7. Unidade de potência",
-    shortDesc:
-      "conjunto que inclui o motor de combustão interna e os sistemas elétricos de propulsão.",
-    markerX: 55.0,
-    markerY: 37.5,
+    markerX: 72.0,
+    markerY: 20.0,
     targetX: 52.0,
     targetY: 55.0,
     appearAtSec: 22.2,
   },
+]
+
+// ============================================================================
+// DADOS DEMONSTRATIVOS DE TRANSMISSÃO 2026 (IDENTIFICADOS COMO EXEMPLO ILUSTRATIVO)
+// ============================================================================
+export const ILLUSTRATIVE_DRIVER_STANDINGS = [
+  { pos: 1, code: "AAA", pts: 150, color: "#FF8000" },
+  { pos: 2, code: "BBB", pts: 132, color: "#3671C6" },
+  { pos: 3, code: "CCC", pts: 118, color: "#E8002D" },
+  { pos: 4, code: "DDD", pts: 96, color: "#27F4D2" },
+]
+
+export const ILLUSTRATIVE_CONSTRUCTOR_STANDINGS = [
+  { pos: 1, team: "TEAM A", pts: 282, color: "#FF8000" },
+  { pos: 2, team: "TEAM B", pts: 245, color: "#3671C6" },
+  { pos: 3, team: "TEAM C", pts: 196, color: "#E8002D" },
+  { pos: 4, team: "TEAM D", pts: 154, color: "#27F4D2" },
+]
+
+export const ILLUSTRATIVE_RACE_TIMING = [
+  { pos: 1, code: "AAA", gap: "LEADER", int: "LEADER", color: "#FF8000", tire: "M" },
+  { pos: 2, code: "BBB", gap: "+1.240", int: "+1.240", color: "#3671C6", tire: "H" },
+  { pos: 3, code: "CCC", gap: "+2.815", int: "+1.575", color: "#E8002D", tire: "M" },
+  { pos: 4, code: "DDD", gap: "+4.092", int: "+1.277", color: "#27F4D2", tire: "H" },
+  { pos: 5, code: "EEE", gap: "+5.760", int: "+1.668", color: "#229971", tire: "S" },
 ]
 
 // ============================================================================
@@ -512,10 +525,12 @@ export function NovatosPage() {
 
   // 5-Second Post-Narration Countdown State
   const [countdownSeconds, setCountdownSeconds] = useState<number | null>(null)
-  const [countdownCanceled, setCountdownCanceled] = useState<boolean>(false)
 
   // Scene 06 idle light cycle so the starting semaphore is visibly alive even when audio is paused
   const [idleLightCycle, setIdleLightCycle] = useState<number>(3)
+
+  // Scene 07 timing metric mode ("GAP" = difference to leader, "INT" = interval to car ahead)
+  const [timingMetricMode, setTimingMetricMode] = useState<"GAP" | "INT">("GAP")
 
   // UI & Accessibility toggles (Transcript collapsed by default per audiovisual design)
   const [showTranscript, setShowTranscript] = useState(false)
@@ -540,6 +555,15 @@ export function NovatosPage() {
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const currentScene = MODULE_1_SCENES[sceneIndex] || MODULE_1_SCENES[0]
+
+  // Synchronized highlight for Scene 05 (Driver vs Constructor Standings)
+  const activeScene05Table = useMemo<"drivers" | "constructors" | "both">(() => {
+    if (currentScene.number !== 5) return "both"
+    if (!isPlaying && currentTime === 0) return "both"
+    if (currentTime < 6.8) return "drivers"
+    if (currentTime < 13.5) return "constructors"
+    return "both"
+  }, [currentScene.number, isPlaying, currentTime])
 
   // Save persisted state
   useEffect(() => {
@@ -596,7 +620,6 @@ export function NovatosPage() {
       countdownTimerRef.current = null
     }
     setCountdownSeconds(null)
-    setCountdownCanceled(true)
   }, [])
 
   // Stop all audio channels cleanly (prevents overlap between scenes)
@@ -652,7 +675,6 @@ export function NovatosPage() {
       clearInterval(countdownTimerRef.current)
       countdownTimerRef.current = null
     }
-    setCountdownCanceled(false)
     setCountdownSeconds(5)
   }, [])
 
@@ -660,7 +682,6 @@ export function NovatosPage() {
   const playSceneAudio = useCallback(
     async (targetScene: ModuleScene) => {
       stopAllAudio(true)
-      setCountdownCanceled(false)
 
       // Channel A: Mariana Narration (reuse DOM <audio> element for mobile unlock persistence)
       const narAudio = narrationAudioRef.current ?? new Audio()
@@ -766,7 +787,6 @@ export function NovatosPage() {
 
   const handleResumeAudio = async () => {
     clearCountdownTimer()
-    setCountdownCanceled(false)
     if (narrationAudioRef.current && isPaused) {
       try {
         await narrationAudioRef.current.play()
@@ -785,7 +805,6 @@ export function NovatosPage() {
 
   const handleReplayScene = () => {
     clearCountdownTimer()
-    setCountdownCanceled(false)
     playSceneAudio(currentScene)
   }
 
@@ -794,7 +813,6 @@ export function NovatosPage() {
     (idx: number, autoStartAudio = false) => {
       const clamped = Math.max(0, Math.min(MODULE_1_SCENES.length - 1, idx))
       stopAllAudio(autoStartAudio)
-      setCountdownCanceled(false)
       setSceneIndex(clamped)
       setSelectedHotspot(1)
       setDuration(MODULE_1_SCENES[clamped].durationSec)
@@ -915,7 +933,7 @@ export function NovatosPage() {
       />
 
       {/* ==================================================================== */}
-      {/* GPU-ACCELERATED CSS KEYFRAMES & MOBILE-COMPATIBLE MOTION CLASSES     */}
+      {/* GPU-ACCELERATED CSS KEYFRAMES & 2026 F1 BROADCAST GRAPHICS STYLES    */}
       {/* ==================================================================== */}
       <style>{`
         @keyframes f1RearIdleMotion {
@@ -990,9 +1008,9 @@ export function NovatosPage() {
           50% { opacity: 0.65; }
           100% { transform: translate3d(0, 320%, 0); opacity: 0.25; }
         }
-        @keyframes f1FlagWave {
-          0%, 100% { transform: perspective(300px) rotateY(0deg) skewY(0deg) scale(1); }
-          50% { transform: perspective(300px) rotateY(-16deg) skewY(4deg) scale(1.06); }
+        @keyframes f1BroadcastTowerIn {
+          0% { opacity: 0; transform: translate3d(0, -6px, 0); }
+          100% { opacity: 1; transform: translate3d(0, 0, 0); }
         }
 
         .f1-scene-motion-1 {
@@ -1026,6 +1044,9 @@ export function NovatosPage() {
         .f1-scene-motion-8 {
           will-change: transform;
           animation: f1CarTrackGlide 4.8s ease-in-out infinite;
+        }
+        .f1-broadcast-panel {
+          animation: f1BroadcastTowerIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
         .f1-motion-paused {
           animation: none !important;
@@ -1218,7 +1239,6 @@ export function NovatosPage() {
       {/* ==================================================================== */}
       {viewStage === "opening" && (
         <div className="relative flex flex-col justify-between p-4 sm:p-10 lg:p-12 overflow-hidden">
-          {/* Desktop full-bleed background / Mobile dedicated top hero visual */}
           <div className="relative sm:absolute sm:inset-0 aspect-video sm:aspect-auto rounded-2xl sm:rounded-none overflow-hidden mb-4 sm:mb-0 border border-white/15 sm:border-0 pointer-events-none">
             <img
               src="/backgrounds/bg-ferrari.webp"
@@ -1229,7 +1249,6 @@ export function NovatosPage() {
                 reduceMotion ? "f1-motion-paused" : "f1-scene-motion-1"
               )}
             />
-            {/* Pure CSS Heat Shimmer Distortion Waves behind Rear Wing */}
             {!reduceMotion && (
               <>
                 <div
@@ -1250,7 +1269,6 @@ export function NovatosPage() {
                 />
               </>
             )}
-            {/* Pulsing Red Rear Rain Light */}
             <div
               className="absolute left-1/2 top-[60%] w-16 h-16 sm:w-24 sm:h-24 rounded-full pointer-events-none"
               style={{
@@ -1259,7 +1277,6 @@ export function NovatosPage() {
                 animation: reduceMotion ? "none" : "f1RainLightPulse 1.8s ease-in-out infinite",
               }}
             />
-            {/* Dark Cinematic Vignette on Desktop */}
             <div className="hidden sm:block absolute inset-0 bg-gradient-to-t from-[#080A0F] via-[#080A0F]/65 to-[#080A0F]/80" />
           </div>
 
@@ -1370,26 +1387,16 @@ export function NovatosPage() {
       )}
 
       {/* ==================================================================== */}
-      {/* STAGE 2: AS 8 CENAS SEQUENCIAIS DO MÓDULO 1 (MINIMALISTA/AUDIOVISUAL)*/}
+      {/* STAGE 2: AS 8 CENAS SEQUENCIAIS DO MÓDULO 1 (MINIMALISTA/2026 F1 TV) */}
       {/* ==================================================================== */}
       {viewStage === "lesson" && (
         <div className="p-3 sm:p-6 space-y-3.5 sm:space-y-4">
           {/* ================================================================ */}
-          {/* PALCO VISUAL DA CENA (COM PAINEL LATERAL NA CENA 04 NO DESKTOP)  */}
+          {/* PALCO VISUAL DA CENA (PROPORÇÃO 16:9 FIXA EM TODAS AS CENAS)     */}
           {/* ================================================================ */}
-          <div
-            className={cn(
-              currentScene.visualEffectType === "machine_hotspots"
-                ? "grid grid-cols-1 lg:grid-cols-12 gap-4 items-start"
-                : "max-w-5xl mx-auto"
-            )}
-          >
-            {/* IMAGEM PRINCIPAL ANIMADA (PROPORÇÃO 16:9 FIXA PARA PRECISÃO DE COORDENADAS) */}
+          <div className="max-w-5xl mx-auto space-y-3">
             <div
-              className={cn(
-                "relative rounded-2xl overflow-hidden border border-white/15 bg-[#05070B] aspect-video w-full shadow-2xl",
-                currentScene.visualEffectType === "machine_hotspots" && "lg:col-span-7"
-              )}
+              className="relative rounded-2xl overflow-hidden border border-white/15 bg-[#05070B] aspect-video w-full shadow-2xl"
               data-testid="scene-visual-stage"
             >
               {/* UNIFIED ANIMATED CANVAS: Car + Scene 04 Markers move together in lockstep */}
@@ -1414,9 +1421,12 @@ export function NovatosPage() {
                   )}
                 />
 
-                {/* SCENE 04 OVERLAY: Aerodynamic Streamlines + SVG Connectors + Markers 1 to 7 */}
+                {/* ========================================================== */}
+                {/* CENA 04: SOMENTE A IMAGEM ANIMADA + MARCADORES 1 A 7       */}
+                {/* (Cada marcador exibe apenas o número e o nome da peça)     */}
+                {/* ========================================================== */}
                 {currentScene.visualEffectType === "machine_hotspots" && (
-                  <div className="absolute inset-0 z-[4]">
+                  <div className="absolute inset-0 z-[4]" data-testid="scene04-markers-layer">
                     {/* Animated Wind-Tunnel Streamlines */}
                     {!reduceMotion && (
                       <svg
@@ -1457,24 +1467,24 @@ export function NovatosPage() {
                               y1={comp.markerY}
                               x2={comp.targetX}
                               y2={comp.targetY}
-                              stroke={isSelected ? "#E10600" : "rgba(255,255,255,0.68)"}
-                              strokeWidth={isSelected ? "0.7" : "0.38"}
+                              stroke={isSelected ? "#E10600" : "rgba(255,255,255,0.72)"}
+                              strokeWidth={isSelected ? "0.75" : "0.38"}
                               strokeDasharray={isSelected ? "none" : "1.1 0.8"}
                             />
                             <circle
                               cx={comp.targetX}
                               cy={comp.targetY}
-                              r={isSelected ? "1.35" : "0.85"}
+                              r={isSelected ? "1.45" : "0.9"}
                               fill={isSelected ? "#E10600" : "#FFFFFF"}
                               stroke="#080A0F"
-                              strokeWidth="0.3"
+                              strokeWidth="0.32"
                             />
                           </g>
                         )
                       })}
                     </svg>
 
-                    {/* Discrete Numbered Markers 1 to 7 on the Image */}
+                    {/* Number + Component Name Markers (1 to 7) Directly on Image */}
                     {CAR_COMPONENTS_SCENE_04.map((comp) => {
                       const isHighlightedByTime =
                         !isPlaying || currentTime === 0 || currentTime >= comp.appearAtSec
@@ -1488,19 +1498,27 @@ export function NovatosPage() {
                           style={{ left: `${comp.markerX}%`, top: `${comp.markerY}%` }}
                           className={cn(
                             "absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-200 cursor-pointer z-10",
-                            isHighlightedByTime ? "opacity-100" : "opacity-65"
+                            isHighlightedByTime ? "opacity-100" : "opacity-75"
                           )}
-                          aria-label={`${comp.id}. ${comp.title}`}
+                          aria-label={comp.name}
                         >
                           <span
                             className={cn(
-                              "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[11px] sm:text-xs font-black border-2 shadow-lg transition-transform",
+                              "inline-flex items-center gap-1 sm:gap-1.5 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md text-[9px] sm:text-xs font-extrabold tracking-tight border shadow-lg backdrop-blur-md transition-all whitespace-nowrap",
                               isSelected
-                                ? "bg-[#E10600] text-white border-white scale-125 shadow-[0_0_16px_#E10600]"
-                                : "bg-[#0B0E17]/90 text-white border-[#E10600] hover:bg-[#E10600] hover:scale-110"
+                                ? "bg-[#E10600] text-white border-white scale-105 sm:scale-110 shadow-[0_0_16px_rgba(225,6,0,0.85)]"
+                                : "bg-[#090C12]/90 text-white border-[#E10600]/80 hover:bg-[#E10600] hover:border-white"
                             )}
                           >
-                            {comp.shortLabel}
+                            <span
+                              className={cn(
+                                "w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-sm flex items-center justify-center font-mono text-[9px] sm:text-[10px] font-black shrink-0",
+                                isSelected ? "bg-white text-[#E10600]" : "bg-[#E10600] text-white"
+                              )}
+                            >
+                              {comp.id}
+                            </span>
+                            <span>{comp.title}</span>
                           </span>
                         </button>
                       )
@@ -1626,6 +1644,127 @@ export function NovatosPage() {
                   </div>
                 )}
 
+              {/* ============================================================ */}
+              {/* CENA 05 OVERLAY: 2 MINI TABELAS F1 2026 NOS CANTOS OPOSTOS    */}
+              {/* Canto superior esquerdo: DRIVER STANDINGS                    */}
+              {/* Canto superior direito: CONSTRUCTOR STANDINGS                */}
+              {/* ============================================================ */}
+              {currentScene.visualEffectType === "pitstop_team" && (
+                <div
+                  className="absolute inset-x-0 top-0 z-[4] p-2 sm:p-3.5 flex items-start justify-between gap-2 pointer-events-none"
+                  data-testid="scene05-broadcast-tables"
+                >
+                  {/* Tabela A — Campeonato de Pilotos (Canto Superior Esquerdo) */}
+                  <div
+                    data-testid="scene05-driver-standings"
+                    className={cn(
+                      "f1-broadcast-panel pointer-events-auto w-[132px] sm:w-[196px] rounded-lg bg-[#07090E]/90 backdrop-blur-md border transition-all duration-300 overflow-hidden shadow-xl",
+                      activeScene05Table === "drivers"
+                        ? "border-[#E10600] ring-1 ring-[#E10600] shadow-[0_0_20px_rgba(225,6,0,0.45)]"
+                        : "border-white/15"
+                    )}
+                  >
+                    <div className="bg-gradient-to-r from-[#E10600] to-[#9E0400] px-2 py-1 flex items-center justify-between gap-1">
+                      <span className="font-mono text-[8px] sm:text-[10px] font-black tracking-wider uppercase text-white truncate">
+                        DRIVER STANDINGS
+                      </span>
+                      <span className="px-1 py-0.2 rounded bg-black/45 text-[7px] sm:text-[8px] font-mono font-bold text-white/90 shrink-0">
+                        2026 TV
+                      </span>
+                    </div>
+                    <div className="px-2 py-0.5 bg-black/60 border-b border-white/10 flex items-center justify-between text-[7px] sm:text-[9px] font-mono font-bold text-white/55 uppercase">
+                      <span className="w-5">POS</span>
+                      <span className="flex-1">PILOTO</span>
+                      <span className="text-right">PTS</span>
+                    </div>
+                    <div className="divide-y divide-white/5">
+                      {ILLUSTRATIVE_DRIVER_STANDINGS.map((row) => (
+                        <div
+                          key={row.pos}
+                          className={cn(
+                            "px-2 py-0.5 sm:py-1 flex items-center justify-between font-mono text-[9px] sm:text-[11px]",
+                            row.pos === 1 ? "bg-white/[0.06]" : ""
+                          )}
+                        >
+                          <span
+                            className={cn(
+                              "w-4 sm:w-5 font-black",
+                              row.pos === 1 ? "text-[#E10600]" : "text-white/80"
+                            )}
+                          >
+                            {row.pos}
+                          </span>
+                          <span className="flex-1 flex items-center gap-1.5 font-extrabold text-white tracking-tight">
+                            <span
+                              className="w-0.5 sm:w-1 h-2.5 sm:h-3 rounded-full shrink-0"
+                              style={{ backgroundColor: row.color }}
+                            />
+                            {row.code}
+                          </span>
+                          <span className="font-bold text-slate-200 tabular-nums">{row.pts}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="px-2 py-0.5 bg-black/75 border-t border-white/10 text-[7px] sm:text-[8px] font-mono font-semibold text-amber-300/90 uppercase tracking-wider text-center">
+                      EXEMPLO ILUSTRATIVO
+                    </div>
+                  </div>
+
+                  {/* Tabela B — Campeonato de Construtores (Canto Superior Direito) */}
+                  <div
+                    data-testid="scene05-constructor-standings"
+                    className={cn(
+                      "f1-broadcast-panel pointer-events-auto w-[142px] sm:w-[214px] rounded-lg bg-[#07090E]/90 backdrop-blur-md border transition-all duration-300 overflow-hidden shadow-xl",
+                      activeScene05Table === "constructors"
+                        ? "border-[#E10600] ring-1 ring-[#E10600] shadow-[0_0_20px_rgba(225,6,0,0.45)]"
+                        : "border-white/15"
+                    )}
+                  >
+                    <div className="bg-gradient-to-r from-[#E10600] to-[#9E0400] px-2 py-1 flex items-center justify-between gap-1">
+                      <span className="font-mono text-[8px] sm:text-[10px] font-black tracking-wider uppercase text-white truncate">
+                        CONSTRUCTOR STANDINGS
+                      </span>
+                    </div>
+                    <div className="px-2 py-0.5 bg-black/60 border-b border-white/10 flex items-center justify-between text-[7px] sm:text-[9px] font-mono font-bold text-white/55 uppercase">
+                      <span className="w-5">POS</span>
+                      <span className="flex-1">EQUIPE</span>
+                      <span className="text-right">PTS</span>
+                    </div>
+                    <div className="divide-y divide-white/5">
+                      {ILLUSTRATIVE_CONSTRUCTOR_STANDINGS.map((row) => (
+                        <div
+                          key={row.pos}
+                          className={cn(
+                            "px-2 py-0.5 sm:py-1 flex items-center justify-between font-mono text-[9px] sm:text-[11px]",
+                            row.pos === 1 ? "bg-white/[0.06]" : ""
+                          )}
+                        >
+                          <span
+                            className={cn(
+                              "w-4 sm:w-5 font-black",
+                              row.pos === 1 ? "text-[#E10600]" : "text-white/80"
+                            )}
+                          >
+                            {row.pos}
+                          </span>
+                          <span className="flex-1 flex items-center gap-1.5 font-extrabold text-white tracking-tight truncate">
+                            <span
+                              className="w-0.5 sm:w-1 h-2.5 sm:h-3 rounded-full shrink-0"
+                              style={{ backgroundColor: row.color }}
+                            />
+                            <span className="truncate">{row.team}</span>
+                          </span>
+                          <span className="font-bold text-slate-200 tabular-nums">{row.pts}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="px-2 py-0.5 bg-black/75 border-t border-white/10 text-[7px] sm:text-[8px] font-mono font-semibold text-amber-300/90 uppercase tracking-wider text-center">
+                      EXEMPLO ILUSTRATIVO
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* SCENE 06 OVERLAY: COMPACT STARTING LIGHTS SEMAPHORE AT TOP OF FRAME */}
               {currentScene.visualEffectType === "starting_grid" && (
                 <div className="absolute inset-x-0 top-2.5 z-[3] flex justify-center pointer-events-none px-2">
@@ -1667,85 +1806,390 @@ export function NovatosPage() {
                 </div>
               )}
 
-              {/* SCENE 07 OVERLAY: TELEMETRY SCANLINE & LIVE PIT WALL HUD */}
-              {currentScene.visualEffectType === "telemetry_wall" && !reduceMotion && (
-                <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden">
+              {/* ============================================================ */}
+              {/* CENA 07 OVERLAY: MINI TORRE DE CLASSIFICAÇÃO `RACE TIMING`   */}
+              {/* Canto superior esquerdo, com alternância clara GAP vs INT    */}
+              {/* ============================================================ */}
+              {currentScene.visualEffectType === "telemetry_wall" && (
+                <>
+                  {!reduceMotion && (
+                    <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden">
+                      <div
+                        className="w-full h-10 bg-gradient-to-b from-transparent via-[#E10600]/25 to-transparent"
+                        style={{ animation: "f1HudScanline 3.2s linear infinite" }}
+                      />
+                    </div>
+                  )}
+
                   <div
-                    className="w-full h-10 bg-gradient-to-b from-transparent via-[#E10600]/25 to-transparent"
-                    style={{ animation: "f1HudScanline 3.2s linear infinite" }}
-                  />
-                </div>
+                    className="absolute top-2 left-2 sm:top-3.5 sm:left-3.5 z-[4] w-[148px] sm:w-[218px] rounded-lg bg-[#07090E]/92 backdrop-blur-md border border-white/15 shadow-2xl overflow-hidden f1-broadcast-panel"
+                    data-testid="scene07-race-timing-tower"
+                  >
+                    {/* Broadcast Header */}
+                    <div className="bg-gradient-to-r from-[#E10600] to-[#9E0400] px-2.5 py-1 flex items-center justify-between gap-1">
+                      <span className="font-mono text-[9px] sm:text-[11px] font-black tracking-wider uppercase text-white">
+                        RACE TIMING
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => setTimingMetricMode("GAP")}
+                          className={cn(
+                            "px-1.5 py-0.5 rounded text-[7px] sm:text-[9px] font-mono font-black uppercase transition-colors cursor-pointer",
+                            timingMetricMode === "GAP"
+                              ? "bg-white text-[#E10600]"
+                              : "bg-black/40 text-white/80 hover:text-white"
+                          )}
+                          title="Diferença acumulada para o líder (GAP)"
+                        >
+                          GAP
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setTimingMetricMode("INT")}
+                          className={cn(
+                            "px-1.5 py-0.5 rounded text-[7px] sm:text-[9px] font-mono font-black uppercase transition-colors cursor-pointer",
+                            timingMetricMode === "INT"
+                              ? "bg-white text-[#E10600]"
+                              : "bg-black/40 text-white/80 hover:text-white"
+                          )}
+                          title="Intervalo para o carro imediatamente à frente (INT)"
+                        >
+                          INT
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Column Headers */}
+                    <div className="px-2.5 py-0.5 bg-black/65 border-b border-white/10 flex items-center justify-between text-[7px] sm:text-[9px] font-mono font-bold text-white/55 uppercase">
+                      <span className="w-5">POS</span>
+                      <span className="flex-1">PILOTO</span>
+                      <span className="text-right">
+                        {timingMetricMode === "GAP" ? "GAP (s)" : "INT (s)"}
+                      </span>
+                    </div>
+
+                    {/* 5 Timing Rows */}
+                    <div className="divide-y divide-white/5">
+                      {ILLUSTRATIVE_RACE_TIMING.map((row) => {
+                        const metricVal = timingMetricMode === "GAP" ? row.gap : row.int
+                        return (
+                          <div
+                            key={row.pos}
+                            className={cn(
+                              "px-2.5 py-0.5 sm:py-1 flex items-center justify-between font-mono text-[9px] sm:text-[11px]",
+                              row.pos === 1 ? "bg-[#E10600]/15" : ""
+                            )}
+                          >
+                            <span
+                              className={cn(
+                                "w-4 sm:w-5 font-black",
+                                row.pos === 1 ? "text-[#E10600]" : "text-white/85"
+                              )}
+                            >
+                              {row.pos}
+                            </span>
+                            <span className="flex-1 flex items-center gap-1.5 font-extrabold text-white tracking-tight">
+                              <span
+                                className="w-0.5 sm:w-1 h-2.5 sm:h-3 rounded-full shrink-0"
+                                style={{ backgroundColor: row.color }}
+                              />
+                              <span>{row.code}</span>
+                            </span>
+                            <span
+                              className={cn(
+                                "font-bold tabular-nums",
+                                row.pos === 1 ? "text-[#E10600] font-black" : "text-slate-200"
+                              )}
+                            >
+                              {metricVal === "LEADER" ? "LEADER" : `${metricVal}s`}
+                            </span>
+                          </div>
+                        )
+                      })}
+                    </div>
+
+                    {/* Metric Explanation & Illustrative Disclaimer */}
+                    <div className="px-2 py-1 bg-black/80 border-t border-white/10 flex items-center justify-between gap-1 text-[7px] sm:text-[8px] font-mono">
+                      <span className="text-white/65 truncate">
+                        {timingMetricMode === "GAP" ? "GAP: dif. p/ líder" : "INT: dif. p/ frente"}
+                      </span>
+                      <span className="text-amber-300/95 font-bold uppercase shrink-0">
+                        EXEMPLO ILUSTRATIVO
+                      </span>
+                    </div>
+                  </div>
+                </>
               )}
 
-              {/* SCENE 08 OVERLAY: ANIMATED WAVING CHECKERED FLAG BADGE */}
+              {/* ============================================================ */}
+              {/* CENA 08 OVERLAY (DESKTOP >= 1024px): 4 PAINÉIS DE TRANSMISSÃO*/}
+              {/* Área central limpa para o carro; no celular fica abaixo!     */}
+              {/* ============================================================ */}
               {currentScene.visualEffectType === "checkered_finish" && (
-                <div className="absolute top-3 right-3 z-[3] pointer-events-none">
-                  <div
-                    className="px-3 py-1.5 rounded-xl bg-black/80 border border-white/25 text-xs font-black text-white flex items-center gap-1.5 shadow-lg"
-                    style={{
-                      animation: reduceMotion ? "none" : "f1FlagWave 2.2s ease-in-out infinite",
-                    }}
-                  >
-                    <span>🏁</span>
-                    <span>BANDEIRA QUADRICULADA</span>
+                <div
+                  className="hidden lg:block absolute inset-0 z-[4] pointer-events-none p-3.5"
+                  data-testid="scene08-desktop-corners"
+                >
+                  {/* Canto Superior Esquerdo — F1 / HISTORY */}
+                  <div className="absolute top-3.5 left-3.5 w-60 rounded-lg bg-[#07090E]/90 backdrop-blur-md border border-white/15 shadow-xl overflow-hidden f1-broadcast-panel">
+                    <div className="bg-gradient-to-r from-[#E10600] to-[#9E0400] px-2.5 py-1 flex items-center justify-between">
+                      <span className="font-mono text-[10px] font-black tracking-wider uppercase text-white">
+                        F1 / HISTORY
+                      </span>
+                      <span className="font-mono text-[9px] font-bold text-white/90">1950</span>
+                    </div>
+                    <ul className="p-2.5 space-y-1 text-[11px] text-slate-200 font-medium leading-tight">
+                      <li className="flex items-center gap-1.5">
+                        <span className="w-1 h-2.5 rounded-full bg-[#E10600] shrink-0" />
+                        <span>Mundial de Pilotos iniciado em 1950</span>
+                      </li>
+                      <li className="flex items-center gap-1.5">
+                        <span className="w-1 h-2.5 rounded-full bg-white/60 shrink-0" />
+                        <span>Regulamentação técnica e esportiva</span>
+                      </li>
+                      <li className="flex items-center gap-1.5">
+                        <span className="w-1 h-2.5 rounded-full bg-sky-400 shrink-0" />
+                        <span>FIA: regulamentação e supervisão</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Canto Superior Direito — CAR / TECH */}
+                  <div className="absolute top-3.5 right-3.5 w-60 rounded-lg bg-[#07090E]/90 backdrop-blur-md border border-white/15 shadow-xl overflow-hidden f1-broadcast-panel">
+                    <div className="bg-gradient-to-r from-[#E10600] to-[#9E0400] px-2.5 py-1 flex items-center justify-between">
+                      <span className="font-mono text-[10px] font-black tracking-wider uppercase text-white">
+                        CAR / TECH
+                      </span>
+                      <span className="font-mono text-[9px] font-bold text-white/90">7 SYSTEMS</span>
+                    </div>
+                    <div className="p-2.5 flex flex-wrap gap-1">
+                      {[
+                        "Aerodinâmica",
+                        "Pneus",
+                        "Freios",
+                        "Halo",
+                        "Cockpit",
+                        "Unidade de potência",
+                      ].map((tech) => (
+                        <span
+                          key={tech}
+                          className="px-2 py-0.5 rounded bg-white/10 border border-white/10 text-[10px] font-mono font-bold text-white"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Canto Inferior Esquerdo — CHAMPIONSHIP */}
+                  <div className="absolute bottom-3.5 left-3.5 w-60 rounded-lg bg-[#07090E]/90 backdrop-blur-md border border-white/15 shadow-xl overflow-hidden f1-broadcast-panel">
+                    <div className="bg-gradient-to-r from-[#E10600] to-[#9E0400] px-2.5 py-1 flex items-center justify-between">
+                      <span className="font-mono text-[10px] font-black tracking-wider uppercase text-white">
+                        CHAMPIONSHIP
+                      </span>
+                      <span className="font-mono text-[9px] font-bold text-white/90">2 TITLES</span>
+                    </div>
+                    <div className="p-2.5 grid grid-cols-2 gap-1.5 font-mono">
+                      <div className="p-1.5 rounded bg-white/5 border border-white/10">
+                        <div className="text-[9px] text-[#E10600] font-black uppercase">PILOTOS</div>
+                        <div className="text-[10px] text-white font-bold">Individual</div>
+                      </div>
+                      <div className="p-1.5 rounded bg-white/5 border border-white/10">
+                        <div className="text-[9px] text-sky-400 font-black uppercase">
+                          CONSTRUTORES
+                        </div>
+                        <div className="text-[10px] text-white font-bold">Equipes</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Canto Inferior Direito — RACE TIMING (EXEMPLO ILUSTRATIVO) */}
+                  <div className="absolute bottom-3.5 right-3.5 w-60 rounded-lg bg-[#07090E]/90 backdrop-blur-md border border-white/15 shadow-xl overflow-hidden f1-broadcast-panel">
+                    <div className="bg-gradient-to-r from-[#E10600] to-[#9E0400] px-2.5 py-1 flex items-center justify-between">
+                      <span className="font-mono text-[10px] font-black tracking-wider uppercase text-white">
+                        RACE TIMING
+                      </span>
+                      <span className="px-1.5 py-0.2 rounded bg-black/50 text-[8px] font-mono font-bold text-amber-300">
+                        EXEMPLO ILUSTRATIVO
+                      </span>
+                    </div>
+                    <div className="px-2.5 py-0.5 bg-black/60 border-b border-white/10 flex justify-between text-[8px] font-mono font-bold text-white/55">
+                      <span>POS</span>
+                      <span>PILOTO</span>
+                      <span>GAP (s)</span>
+                    </div>
+                    <div className="divide-y divide-white/5 font-mono text-[10px]">
+                      {ILLUSTRATIVE_RACE_TIMING.slice(0, 3).map((r) => (
+                        <div key={r.pos} className="px-2.5 py-0.5 flex items-center justify-between">
+                          <span className={r.pos === 1 ? "text-[#E10600] font-black" : "text-white/80"}>
+                            {r.pos}
+                          </span>
+                          <span className="flex items-center gap-1.5 font-extrabold text-white">
+                            <span
+                              className="w-1 h-2.5 rounded-full"
+                              style={{ backgroundColor: r.color }}
+                            />
+                            {r.code}
+                          </span>
+                          <span className="text-slate-200 font-bold">
+                            {r.gap === "LEADER" ? "LEADER" : `${r.gap}s`}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
             </div>
 
             {/* ============================================================== */}
-            {/* CENA 04: IDENTIFICAÇÃO DOS COMPONENTES DE 1 A 7                */}
-            {/* No computador: painel lateral ao lado da imagem.               */}
-            {/* No celular: destaque ativo + lista compacta abaixo da imagem.  */}
+            {/* ADAPTAÇÃO MOBILE DA CENA 08 (<1024px): GRADE COMPACTA ABAIXO   */}
+            {/* Não cobre o carro nem comprime os 4 painéis nos cantos         */}
             {/* ============================================================== */}
-            {currentScene.visualEffectType === "machine_hotspots" && (
+            {currentScene.visualEffectType === "checkered_finish" && (
               <div
-                className="lg:col-span-5 rounded-2xl bg-[#0D111A] border border-white/15 p-3 sm:p-4 space-y-2 shadow-xl"
-                data-testid="scene04-component-list"
+                className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 lg:hidden"
+                data-testid="scene08-mobile-grid"
               >
-                <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
-                  <span className="text-xs font-black uppercase tracking-wider text-white flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[#E10600]" />
-                    Componentes do Carro (1 a 7)
-                  </span>
-                  <span className="text-[11px] text-white/60">Toque em um número</span>
+                {/* 1. F1 / HISTORY */}
+                <div
+                  className="rounded-xl bg-[#090C13] border border-white/15 overflow-hidden shadow-lg"
+                  data-testid="scene08-panel-history"
+                >
+                  <div className="bg-gradient-to-r from-[#E10600] to-[#9E0400] px-3 py-1 flex items-center justify-between">
+                    <span className="font-mono text-[10px] font-black tracking-wider uppercase text-white">
+                      F1 / HISTORY
+                    </span>
+                    <span className="font-mono text-[9px] font-bold text-white/90">1950</span>
+                  </div>
+                  <ul className="p-2.5 space-y-1 text-xs text-slate-200">
+                    <li>• Campeonato Mundial de Pilotos iniciado em 1950.</li>
+                    <li>• Regulamentação técnica e esportiva.</li>
+                    <li>• FIA: regulamentação e supervisão.</li>
+                  </ul>
                 </div>
 
-                {/* Lista compacta e organizada das 7 identificações */}
-                <div className="grid grid-cols-1 gap-1.5">
-                  {CAR_COMPONENTS_SCENE_04.map((comp) => {
-                    const isSelected = selectedHotspot === comp.id
-                    return (
-                      <button
-                        key={comp.id}
-                        type="button"
-                        data-component-legend-item={comp.id}
-                        onClick={() => setSelectedHotspot(comp.id)}
-                        className={cn(
-                          "w-full text-left p-2 sm:p-2.5 rounded-xl border transition-all flex items-start gap-2.5 cursor-pointer",
-                          isSelected
-                            ? "bg-[#E10600]/20 border-[#E10600] text-white shadow-[0_0_12px_rgba(225,6,0,0.28)]"
-                            : "bg-black/45 border-white/10 text-slate-200 hover:bg-white/5 hover:border-white/25"
-                        )}
+                {/* 2. CAR / TECH */}
+                <div
+                  className="rounded-xl bg-[#090C13] border border-white/15 overflow-hidden shadow-lg"
+                  data-testid="scene08-panel-tech"
+                >
+                  <div className="bg-gradient-to-r from-[#E10600] to-[#9E0400] px-3 py-1 flex items-center justify-between">
+                    <span className="font-mono text-[10px] font-black tracking-wider uppercase text-white">
+                      CAR / TECH
+                    </span>
+                    <span className="font-mono text-[9px] font-bold text-white/90">7 ELEMENTOS</span>
+                  </div>
+                  <div className="p-2.5 flex flex-wrap gap-1.5">
+                    {[
+                      "Aerodinâmica",
+                      "Pneus",
+                      "Freios",
+                      "Halo",
+                      "Cockpit",
+                      "Unidade de potência",
+                    ].map((tech) => (
+                      <span
+                        key={tech}
+                        className="px-2 py-0.5 rounded bg-white/10 border border-white/10 text-[11px] font-mono font-bold text-white"
                       >
-                        <span
-                          className={cn(
-                            "w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[11px] font-black shrink-0 mt-0.5 border",
-                            isSelected
-                              ? "bg-[#E10600] text-white border-white"
-                              : "bg-[#141926] text-white border-[#E10600]"
-                          )}
-                        >
-                          {comp.id}
-                        </span>
-                        <span className="text-xs leading-snug">
-                          <strong className="font-bold text-white">{comp.title}</strong> —{" "}
-                          <span className="text-slate-300">{comp.shortDesc}</span>
-                        </span>
-                      </button>
-                    )
-                  })}
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
                 </div>
+
+                {/* 3. CHAMPIONSHIP */}
+                <div
+                  className="rounded-xl bg-[#090C13] border border-white/15 overflow-hidden shadow-lg"
+                  data-testid="scene08-panel-championship"
+                >
+                  <div className="bg-gradient-to-r from-[#E10600] to-[#9E0400] px-3 py-1 flex items-center justify-between">
+                    <span className="font-mono text-[10px] font-black tracking-wider uppercase text-white">
+                      CHAMPIONSHIP
+                    </span>
+                    <span className="font-mono text-[9px] font-bold text-white/90">2 DISPUTAS</span>
+                  </div>
+                  <div className="p-2.5 grid grid-cols-2 gap-2 font-mono">
+                    <div className="p-2 rounded bg-white/5 border border-white/10">
+                      <div className="text-[10px] text-[#E10600] font-black uppercase">PILOTOS</div>
+                      <div className="text-xs text-white font-bold">Disputa individual</div>
+                    </div>
+                    <div className="p-2 rounded bg-white/5 border border-white/10">
+                      <div className="text-[10px] text-sky-400 font-black uppercase">
+                        CONSTRUTORES
+                      </div>
+                      <div className="text-xs text-white font-bold">Disputa por equipes</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. RACE TIMING */}
+                <div
+                  className="rounded-xl bg-[#090C13] border border-white/15 overflow-hidden shadow-lg"
+                  data-testid="scene08-panel-timing"
+                >
+                  <div className="bg-gradient-to-r from-[#E10600] to-[#9E0400] px-3 py-1 flex items-center justify-between">
+                    <span className="font-mono text-[10px] font-black tracking-wider uppercase text-white">
+                      RACE TIMING
+                    </span>
+                    <span className="px-1.5 py-0.5 rounded bg-black/50 text-[9px] font-mono font-bold text-amber-300">
+                      EXEMPLO ILUSTRATIVO
+                    </span>
+                  </div>
+                  <div className="px-3 py-1 bg-black/60 border-b border-white/10 flex justify-between text-[9px] font-mono font-bold text-white/55">
+                    <span>POS</span>
+                    <span>PILOTO</span>
+                    <span>GAP (s)</span>
+                  </div>
+                  <div className="divide-y divide-white/5 font-mono text-xs">
+                    {ILLUSTRATIVE_RACE_TIMING.slice(0, 3).map((r) => (
+                      <div key={r.pos} className="px-3 py-1 flex items-center justify-between">
+                        <span className={r.pos === 1 ? "text-[#E10600] font-black" : "text-white/80"}>
+                          {r.pos}
+                        </span>
+                        <span className="flex items-center gap-1.5 font-extrabold text-white">
+                          <span
+                            className="w-1 h-3 rounded-full"
+                            style={{ backgroundColor: r.color }}
+                          />
+                          {r.code}
+                        </span>
+                        <span className="text-slate-200 font-bold">
+                          {r.gap === "LEADER" ? "LEADER" : `${r.gap}s`}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ============================================================== */}
+            {/* CENA 08: MENSAGEM DE CONCLUSÃO + BOTÃO `FAZER QUESTIONÁRIO`    */}
+            {/* ============================================================== */}
+            {currentScene.visualEffectType === "checkered_finish" && (
+              <div
+                className="rounded-2xl bg-gradient-to-r from-[#17090D] via-[#0E131D] to-[#0A0E16] border border-[#E10600]/60 p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xl"
+                data-testid="scene08-foundation-banner"
+              >
+                <div className="text-xs sm:text-sm font-black text-white flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#E10600] shrink-0" />
+                  <span>Agora você já conhece os fundamentos da Fórmula 1.</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    clearCountdownTimer()
+                    stopAllAudio(false)
+                    setViewStage("quiz")
+                  }}
+                  className="px-5 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wide flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(225,6,0,0.55)] cursor-pointer min-h-[40px] shrink-0"
+                >
+                  <Award className="w-4 h-4" />
+                  FAZER QUESTIONÁRIO
+                </button>
               </div>
             )}
           </div>
@@ -1755,7 +2199,7 @@ export function NovatosPage() {
           {/* ================================================================ */}
           {countdownSeconds !== null && (
             <div
-              className="rounded-2xl bg-gradient-to-r from-[#1A090D] via-[#131824] to-[#0E121B] border-2 border-[#E10600] p-4 sm:p-5 shadow-[0_0_30px_rgba(225,6,0,0.35)] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              className="rounded-2xl bg-gradient-to-r from-[#1A090D] via-[#131824] to-[#0E121B] border-2 border-[#E10600] p-4 sm:p-5 shadow-[0_0_30px_rgba(225,6,0,0.35)] flex flex-col sm:flex-row sm:items-center justify-between gap-4 max-w-5xl mx-auto"
               role="status"
               aria-live="polite"
             >
@@ -1772,7 +2216,7 @@ export function NovatosPage() {
                     </div>
                   ) : (
                     <div className="text-sm sm:text-base font-black text-emerald-300">
-                      🏁 Módulo concluído. Vamos testar o que você aprendeu?
+                      🏁 Agora você já conhece os fundamentos da Fórmula 1.
                     </div>
                   )}
                 </div>
@@ -1799,7 +2243,7 @@ export function NovatosPage() {
                     className="flex-1 sm:flex-initial justify-center px-4 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black flex items-center gap-1.5 cursor-pointer min-h-[40px]"
                   >
                     <Award className="w-4 h-4" />
-                    Fazer questionário
+                    FAZER QUESTIONÁRIO
                   </button>
                 )}
 
@@ -1814,30 +2258,10 @@ export function NovatosPage() {
             </div>
           )}
 
-          {/* Last scene completion card when countdown was canceled */}
-          {countdownSeconds === null && countdownCanceled && currentScene.number === 8 && (
-            <div className="rounded-2xl bg-[#101923] border border-emerald-500/40 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="text-sm font-black text-emerald-300">
-                🏁 Módulo concluído. Vamos testar o que você aprendeu?
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  stopAllAudio(false)
-                  setViewStage("quiz")
-                }}
-                className="px-5 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black flex items-center justify-center gap-2 cursor-pointer min-h-[40px]"
-              >
-                <Award className="w-4 h-4" />
-                Fazer questionário
-              </button>
-            </div>
-          )}
-
           {/* ================================================================ */}
           {/* CONTROLES DE NARRAÇÃO DA MARIANA + TRILHA CINEMATOGRÁFICA        */}
           {/* ================================================================ */}
-          <div className="rounded-2xl bg-[#0E121B] border-2 border-[#E10600]/60 p-3.5 sm:p-5 shadow-xl space-y-3.5">
+          <div className="rounded-2xl bg-[#0E121B] border-2 border-[#E10600]/60 p-3.5 sm:p-5 shadow-xl space-y-3.5 max-w-5xl mx-auto">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
               {/* Mariana Avatar & Voice Identity Badge */}
               <div className="flex items-center gap-3">
@@ -2025,7 +2449,7 @@ export function NovatosPage() {
           {/* ================================================================ */}
           {/* INDICADOR DE CENA E NAVEGAÇÃO INFERIOR (ÚNICO E SEM DUPLICAÇÃO)  */}
           {/* ================================================================ */}
-          <div className="rounded-2xl bg-[#0D1017] border border-white/10 p-3 sm:p-4 space-y-3">
+          <div className="rounded-2xl bg-[#0D1017] border border-white/10 p-3 sm:p-4 space-y-3 max-w-5xl mx-auto">
             {/* Scene Sequence Indicator (01 to 08) */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 no-scrollbar">
