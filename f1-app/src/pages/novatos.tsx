@@ -20,6 +20,8 @@ import {
   Clock,
   FastForward,
   Music,
+  Maximize2,
+  Minimize2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -514,14 +516,17 @@ export function NovatosPage() {
   const [isPaused, setIsPaused] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(MODULE_1_SCENES[0].durationSec)
-  const [resourcesReady, setResourcesReady] = useState(false)
 
-  // 2 Independent Audio Channels: Mariana Narration + Cinematic Soundtrack (with auto-ducking)
+  // 2 Independent Audio Channels: Mariana Narration + Cinematic Soundtrack
   const [narrationVolume, setNarrationVolume] = useState(1.0)
-  const [musicVolume, setMusicVolume] = useState(0.45)
+  const [musicVolume, setMusicVolume] = useState(0.35)
   const [musicEnabled, setMusicEnabled] = useState(true)
   const [isMutedAll, setIsMutedAll] = useState(false)
   const [testingMusic, setTestingMusic] = useState<boolean>(false)
+
+  // Fullscreen Image Viewer State (Mobile Portrait/Landscape + Desktop Fullscreen API)
+  const [isImageFullscreen, setIsImageFullscreen] = useState(false)
+  const fullscreenContainerRef = useRef<HTMLDivElement | null>(null)
 
   // 5-Second Post-Narration Countdown State
   const [countdownSeconds, setCountdownSeconds] = useState<number | null>(null)
@@ -549,12 +554,147 @@ export function NovatosPage() {
   const [quizAnswers, setQuizAnswers] = useState<Record<number, "A" | "B" | "C" | "D">>({})
   const [quizSubmitted, setQuizSubmitted] = useState(false)
 
-  // Refs for HTML5 Audio channels & timers
+  // Refs for HTML5 Audio channels, Web Audio API GainNodes (for iOS/mobile real volume attenuation) & timers
   const narrationAudioRef = useRef<HTMLAudioElement | null>(null)
   const musicAudioRef = useRef<HTMLAudioElement | null>(null)
+  const narrationVolumeRef = useRef<number>(1.0)
+  const musicVolumeRef = useRef<number>(0.35)
+  const audioCtxRef = useRef<AudioContext | null>(null)
+  const narrationGainRef = useRef<GainNode | null>(null)
+  const musicGainRef = useRef<GainNode | null>(null)
+  const narrationSourceConnectedRef = useRef<boolean>(false)
+  const musicSourceConnectedRef = useRef<boolean>(false)
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const currentScene = MODULE_1_SCENES[sceneIndex] || MODULE_1_SCENES[0]
+
+  // Ensure Web Audio API GainNodes are initialized & connected on user interaction (fixes iOS/Mobile WebKit volume lock)
+  const ensureAudioGainGraph = useCallback(() => {
+    if (typeof window === "undefined") return
+    try {
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+      if (!AudioCtx) return
+
+      if (!audioCtxRef.current) {
+        audioCtxRef.current = new AudioCtx()
+      }
+      const ctx = audioCtxRef.current
+      if (ctx.state === "suspended") {
+        ctx.resume().catch(() => {})
+      }
+
+      if (narrationAudioRef.current && !narrationSourceConnectedRef.current) {
+        const narSource = ctx.createMediaElementSource(narrationAudioRef.current)
+        const narGain = ctx.createGain()
+        narGain.gain.value = isMutedAll ? 0 : narrationVolumeRef.current
+        narSource.connect(narGain)
+        narGain.connect(ctx.destination)
+        narrationGainRef.current = narGain
+        narrationSourceConnectedRef.current = true
+      }
+
+      if (musicAudioRef.current && !musicSourceConnectedRef.current) {
+        const musSource = ctx.createMediaElementSource(musicAudioRef.current)
+        const musGain = ctx.createGain()
+        musGain.gain.value = isMutedAll || !musicEnabled ? 0 : musicVolumeRef.current
+        musSource.connect(musGain)
+        musGain.connect(ctx.destination)
+        musicGainRef.current = musGain
+        musicSourceConnectedRef.current = true
+      }
+    } catch {
+      // Fallback to native HTMLAudioElement.volume if Web Audio graph is already bound
+    }
+  }, [isMutedAll, musicEnabled])
+
+  // Immediate synchronous volume setters for mobile touch & desktop sliders (0.0 to 1.0)
+  const applyNarrationVolume = useCallback(
+    (nextVol: number) => {
+      const clamped = Math.max(0, Math.min(1, Number.isFinite(nextVol) ? nextVol : 1))
+      narrationVolumeRef.current = clamped
+      setNarrationVolume(clamped)
+      if (clamped > 0 && isMutedAll) {
+        setIsMutedAll(false)
+      }
+      const effective = isMutedAll && clamped === 0 ? 0 : clamped
+      if (narrationAudioRef.current) {
+        narrationAudioRef.current.volume = effective
+        narrationAudioRef.current.muted = effective === 0
+      }
+      if (narrationGainRef.current && audioCtxRef.current) {
+        narrationGainRef.current.gain.setValueAtTime(effective, audioCtxRef.current.currentTime)
+      }
+    },
+    [isMutedAll]
+  )
+
+  const applyMusicVolume = useCallback(
+    (nextVol: number) => {
+      const clamped = Math.max(0, Math.min(1, Number.isFinite(nextVol) ? nextVol : 0.35))
+      musicVolumeRef.current = clamped
+      setMusicVolume(clamped)
+      if (clamped > 0 && !musicEnabled) {
+        setMusicEnabled(true)
+      }
+      if (clamped > 0 && isMutedAll) {
+        setIsMutedAll(false)
+      }
+      const effective = isMutedAll ? 0 : clamped
+      if (musicAudioRef.current) {
+        musicAudioRef.current.volume = effective
+        musicAudioRef.current.muted = effective === 0
+      }
+      if (musicGainRef.current && audioCtxRef.current) {
+        musicGainRef.current.gain.setValueAtTime(effective, audioCtxRef.current.currentTime)
+      }
+    },
+    [isMutedAll, musicEnabled]
+  )
+
+  // Fullscreen Image Viewer Handlers (Native Fullscreen API + Mobile Viewport Overlay Fallback)
+  const handleOpenImageFullscreen = useCallback(() => {
+    setIsImageFullscreen(true)
+  }, [])
+
+  const handleCloseImageFullscreen = useCallback(() => {
+    setIsImageFullscreen(false)
+    if (typeof document !== "undefined" && document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {})
+    }
+  }, [])
+
+  // Trigger browser Fullscreen API when modal mounts on desktop/supported devices & handle Escape / fullscreenchange
+  useEffect(() => {
+    if (!isImageFullscreen) return
+
+    const el = fullscreenContainerRef.current
+    if (el && typeof el.requestFullscreen === "function" && !document.fullscreenElement) {
+      el.requestFullscreen().catch(() => {
+        // Fallback to fixed inset-0 overlay automatically on iOS/mobile browsers
+      })
+    }
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleCloseImageFullscreen()
+      }
+    }
+
+    const onFullscreenChange = () => {
+      if (typeof document !== "undefined" && !document.fullscreenElement) {
+        // Keep overlay open on mobile where fullscreenElement was never set, or close if exited native fullscreen
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown)
+    document.addEventListener("fullscreenchange", onFullscreenChange)
+    return () => {
+      window.removeEventListener("keydown", onKeyDown)
+      document.removeEventListener("fullscreenchange", onFullscreenChange)
+    }
+  }, [isImageFullscreen, handleCloseImageFullscreen])
 
   // Synchronized highlight for Scene 05 (Driver vs Constructor Standings)
   const activeScene05Table = useMemo<"drivers" | "constructors" | "both">(() => {
@@ -575,14 +715,10 @@ export function NovatosPage() {
     }
   }, [persisted])
 
-  // Preload first scene image & verify audio readiness
+  // Preload first scene image
   useEffect(() => {
     const img = new Image()
     img.src = MODULE_1_SCENES[0].imageUrl
-    img.onload = () => setResourcesReady(true)
-    img.onerror = () => setResourcesReady(true)
-    const timer = setTimeout(() => setResourcesReady(true), 600)
-    return () => clearTimeout(timer)
   }, [])
 
   // Cycle Scene 06 starting lights automatically when narration is not actively driving them
@@ -643,22 +779,32 @@ export function NovatosPage() {
     [clearCountdownTimer]
   )
 
-  // Compute effective volumes & apply Auto-Ducking across Narration and Cinematic Soundtrack
+  // Synchronize effective volumes across HTMLAudioElement AND Web Audio API GainNodes
   useEffect(() => {
-    const narGain = isMutedAll ? 0 : narrationVolume
-    const musicDuck = isPlaying && !testingMusic ? 0.42 : 0.92
-    const musGain = isMutedAll || !musicEnabled ? 0 : Math.min(1, musicVolume * musicDuck)
+    const narGain = isMutedAll ? 0 : Math.max(0, Math.min(1, narrationVolume))
+    const musGain = isMutedAll || !musicEnabled ? 0 : Math.max(0, Math.min(1, musicVolume))
 
     if (narrationAudioRef.current) {
-      narrationAudioRef.current.volume = Math.max(0, Math.min(1, narGain))
+      narrationAudioRef.current.volume = narGain
+      narrationAudioRef.current.muted = narGain === 0
     }
+    if (narrationGainRef.current && audioCtxRef.current) {
+      narrationGainRef.current.gain.setValueAtTime(narGain, audioCtxRef.current.currentTime)
+    }
+
     if (musicAudioRef.current) {
-      musicAudioRef.current.volume = Math.max(0, Math.min(1, musGain))
-      if (!musicEnabled || isMutedAll) {
-        musicAudioRef.current.pause()
+      musicAudioRef.current.volume = musGain
+      musicAudioRef.current.muted = musGain === 0
+      if (!musicEnabled || isMutedAll || musGain === 0) {
+        if (isMutedAll || !musicEnabled) {
+          musicAudioRef.current.pause()
+        }
       } else if ((isPlaying || testingMusic) && musicAudioRef.current.paused) {
         musicAudioRef.current.play().catch(() => {})
       }
+    }
+    if (musicGainRef.current && audioCtxRef.current) {
+      musicGainRef.current.gain.setValueAtTime(musGain, audioCtxRef.current.currentTime)
     }
   }, [
     narrationVolume,
@@ -682,6 +828,7 @@ export function NovatosPage() {
   const playSceneAudio = useCallback(
     async (targetScene: ModuleScene) => {
       stopAllAudio(true)
+      ensureAudioGainGraph()
 
       // Channel A: Mariana Narration (reuse DOM <audio> element for mobile unlock persistence)
       const narAudio = narrationAudioRef.current ?? new Audio()
@@ -690,7 +837,12 @@ export function NovatosPage() {
         narAudio.src = targetScene.audioUrl
       }
       narAudio.currentTime = 0
-      narAudio.volume = isMutedAll ? 0 : narrationVolume
+      const activeNarVol = isMutedAll ? 0 : narrationVolumeRef.current
+      narAudio.volume = activeNarVol
+      narAudio.muted = activeNarVol === 0
+      if (narrationGainRef.current && audioCtxRef.current) {
+        narrationGainRef.current.gain.setValueAtTime(activeNarVol, audioCtxRef.current.currentTime)
+      }
       setDuration(targetScene.durationSec)
 
       // Channel B: Cinematic Instrumental Track (persistent across scenes for smooth transition)
@@ -700,8 +852,12 @@ export function NovatosPage() {
         musAudio.src = CINEMATIC_MUSIC_URL
       }
       musicAudioRef.current = musAudio
-      musAudio.volume =
-        isMutedAll || !musicEnabled ? 0 : Math.min(1, musicVolume * 0.42)
+      const activeMusVol = isMutedAll || !musicEnabled ? 0 : musicVolumeRef.current
+      musAudio.volume = activeMusVol
+      musAudio.muted = activeMusVol === 0
+      if (musicGainRef.current && audioCtxRef.current) {
+        musicGainRef.current.gain.setValueAtTime(activeMusVol, audioCtxRef.current.currentTime)
+      }
 
       narAudio.ontimeupdate = () => {
         const t = narAudio.currentTime
@@ -744,16 +900,16 @@ export function NovatosPage() {
     },
     [
       stopAllAudio,
+      ensureAudioGainGraph,
       isMutedAll,
-      narrationVolume,
       musicEnabled,
-      musicVolume,
       startPostNarrationCountdown,
     ]
   )
 
   // Toggle standalone test for Cinematic Soundtrack
   const handleToggleTestMusic = useCallback(async () => {
+    ensureAudioGainGraph()
     if (testingMusic) {
       setTestingMusic(false)
       if (!isPlaying && musicAudioRef.current) {
@@ -771,9 +927,14 @@ export function NovatosPage() {
       mus.src = CINEMATIC_MUSIC_URL
     }
     musicAudioRef.current = mus
-    mus.volume = Math.max(0.15, Math.min(1, musicVolume * 0.92))
+    const activeMusVol = musicVolumeRef.current
+    mus.volume = activeMusVol
+    mus.muted = activeMusVol === 0
+    if (musicGainRef.current && audioCtxRef.current) {
+      musicGainRef.current.gain.setValueAtTime(activeMusVol, audioCtxRef.current.currentTime)
+    }
     await mus.play().catch(() => {})
-  }, [testingMusic, isPlaying, musicVolume])
+  }, [ensureAudioGainGraph, testingMusic, isPlaying])
 
   const handlePauseAudio = () => {
     clearCountdownTimer()
@@ -1156,16 +1317,22 @@ export function NovatosPage() {
           <div className="p-2.5 rounded-xl bg-black/40 border border-white/10">
             <div className="flex justify-between mb-1.5">
               <span className="font-semibold text-white">🎙️ Narração (Mariana)</span>
-              <span className="font-mono text-white/80">{Math.round(narrationVolume * 100)}%</span>
+              <span className="font-mono text-white/80">
+                {isMutedAll ? "0%" : `${Math.round(narrationVolume * 100)}%`}
+              </span>
             </div>
             <input
               type="range"
               min={0}
-              max={1}
-              step={0.05}
-              value={narrationVolume}
-              onChange={(e) => setNarrationVolume(parseFloat(e.target.value))}
-              className="w-full accent-[#E10600] cursor-pointer"
+              max={100}
+              step={1}
+              value={isMutedAll ? 0 : Math.round(narrationVolume * 100)}
+              onInput={(e) =>
+                applyNarrationVolume(parseInt((e.target as HTMLInputElement).value, 10) / 100)
+              }
+              onChange={(e) => applyNarrationVolume(parseInt(e.target.value, 10) / 100)}
+              style={{ touchAction: "pan-y" }}
+              className="w-full h-2.5 accent-[#E10600] cursor-pointer"
               aria-label="Volume da Narração"
             />
           </div>
@@ -1187,19 +1354,22 @@ export function NovatosPage() {
                   {testingMusic ? "Parar Teste" : "Ouvir Trilha"}
                 </button>
                 <span className="font-mono text-white/80">
-                  {musicEnabled ? `${Math.round(musicVolume * 100)}%` : "Off"}
+                  {musicEnabled && !isMutedAll ? `${Math.round(musicVolume * 100)}%` : "Off"}
                 </span>
               </div>
             </div>
             <input
               type="range"
               min={0}
-              max={1}
-              step={0.05}
-              value={musicVolume}
-              onChange={(e) => setMusicVolume(parseFloat(e.target.value))}
-              disabled={!musicEnabled}
-              className="w-full accent-[#E10600] cursor-pointer"
+              max={100}
+              step={1}
+              value={!musicEnabled || isMutedAll ? 0 : Math.round(musicVolume * 100)}
+              onInput={(e) =>
+                applyMusicVolume(parseInt((e.target as HTMLInputElement).value, 10) / 100)
+              }
+              onChange={(e) => applyMusicVolume(parseInt(e.target.value, 10) / 100)}
+              style={{ touchAction: "pan-y" }}
+              className="w-full h-2.5 accent-[#E10600] cursor-pointer"
               aria-label="Volume da Trilha Cinematográfica"
             />
           </div>
@@ -1239,13 +1409,13 @@ export function NovatosPage() {
       {/* ==================================================================== */}
       {viewStage === "opening" && (
         <div className="relative flex flex-col justify-between p-4 sm:p-10 lg:p-12 overflow-hidden">
-          <div className="relative sm:absolute sm:inset-0 aspect-video sm:aspect-auto rounded-2xl sm:rounded-none overflow-hidden mb-4 sm:mb-0 border border-white/15 sm:border-0 pointer-events-none">
+          <div className="relative sm:absolute sm:inset-0 aspect-video sm:aspect-auto rounded-2xl sm:rounded-none overflow-hidden mb-5 sm:mb-0 border border-white/15 sm:border-0">
             <img
               src="/backgrounds/bg-ferrari.webp"
               alt="Carro moderno de Fórmula 1 visto de trás em circuito noturno"
               data-testid="opening-hero-img"
               className={cn(
-                "w-full h-full object-cover object-center sm:brightness-[0.52]",
+                "w-full h-full object-cover object-center sm:brightness-[0.52] pointer-events-none",
                 reduceMotion ? "f1-motion-paused" : "f1-scene-motion-1"
               )}
             />
@@ -1277,47 +1447,37 @@ export function NovatosPage() {
                 animation: reduceMotion ? "none" : "f1RainLightPulse 1.8s ease-in-out infinite",
               }}
             />
-            <div className="hidden sm:block absolute inset-0 bg-gradient-to-t from-[#080A0F] via-[#080A0F]/65 to-[#080A0F]/80" />
+            <div className="hidden sm:block absolute inset-0 bg-gradient-to-t from-[#080A0F] via-[#080A0F]/65 to-[#080A0F]/80 pointer-events-none" />
+
+            {/* Discrete Fullscreen Expand Button on Opening Image */}
+            <button
+              type="button"
+              onClick={handleOpenImageFullscreen}
+              data-testid="btn-expand-fullscreen-opening"
+              aria-label="Expandir imagem em tela cheia"
+              title="Expandir imagem em tela cheia"
+              className="absolute bottom-2.5 right-2.5 sm:top-4 sm:right-4 sm:bottom-auto z-20 inline-flex items-center gap-1.5 px-2.5 py-2 rounded-xl bg-black/75 hover:bg-[#E10600] text-white/90 hover:text-white border border-white/20 backdrop-blur-md shadow-lg transition-all cursor-pointer min-h-[38px]"
+            >
+              <Maximize2 className="w-4 h-4 shrink-0" />
+              <span className="text-[11px] font-bold hidden sm:inline">Tela cheia</span>
+            </button>
           </div>
 
-          {/* Top Opening Status Pill */}
-          <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/80 border border-white/15 backdrop-blur-md text-[11px] sm:text-xs">
-              <span className="w-2 h-2 rounded-full bg-[#E10600] animate-ping shrink-0" />
-              <span className="font-semibold text-white">MÓDULO 1 • O QUE É A FÓRMULA 1?</span>
-            </div>
-
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/80 border border-white/10 text-[11px] sm:text-xs text-emerald-300">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
-              <span>
-                {resourcesReady
-                  ? "Narração Mariana + Trilha Prontas"
-                  : "Carregando recursos de áudio e imagem…"}
-              </span>
-            </div>
-          </div>
-
-          {/* Center Hero Title, Subtitle & CTA */}
-          <div className="relative z-10 max-w-3xl my-auto py-2 sm:py-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#E10600]/20 border border-[#E10600]/50 text-red-200 text-xs font-semibold mb-3">
-              <img
-                src="/radio/mariana.png"
-                alt="Mariana"
-                className="w-5 h-5 rounded-full object-cover border border-red-400"
-              />
-              Guiado por Mariana — Locutora Oficial da Rádio F1
-            </div>
-
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white mb-3 leading-tight">
+          {/* Symmetrical Centered Hero Title, Subtitle & CTAs (3 reference badges removed cleanly) */}
+          <div
+            className="relative z-10 max-w-3xl mx-auto my-auto py-3 sm:py-8 text-center flex flex-col items-center"
+            data-testid="opening-symmetrical-text"
+          >
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white mb-3 leading-tight text-center">
               NOVATOS NA <span className="text-[#E10600]">F1</span>
             </h1>
 
-            <p className="text-sm sm:text-xl text-slate-200 font-medium leading-relaxed mb-6 max-w-2xl">
+            <p className="text-sm sm:text-lg lg:text-xl text-slate-200 font-medium leading-relaxed mb-6 max-w-2xl mx-auto text-center px-2">
               Você não precisa entender de automobilismo para começar. Nós explicamos tudo, curva
               por curva.
             </p>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-3 w-full">
               <button
                 type="button"
                 onClick={() => {
@@ -1355,8 +1515,8 @@ export function NovatosPage() {
             </div>
           </div>
 
-          {/* Bottom 8-Scene Quick Overview Strip */}
-          <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 pt-5 mt-5 border-t border-white/10">
+          {/* Bottom 8-Scene Symmetrical Quick Overview Strip */}
+          <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 pt-5 mt-5 border-t border-white/10 max-w-5xl w-full mx-auto">
             {MODULE_1_SCENES.map((sc, idx) => {
               const done = persisted.visitedScenes.includes(sc.number)
               return (
@@ -1368,17 +1528,17 @@ export function NovatosPage() {
                     goToScene(idx, true)
                   }}
                   className={cn(
-                    "text-left p-2.5 rounded-lg border transition-all cursor-pointer",
+                    "text-center p-2.5 rounded-lg border transition-all cursor-pointer flex flex-col items-center justify-center",
                     done
                       ? "bg-[#E10600]/15 border-[#E10600]/50 text-white"
                       : "bg-black/60 border-white/10 text-white/75 hover:text-white hover:border-white/25"
                   )}
                 >
-                  <div className="flex items-center justify-between text-[10px] font-mono text-white/55 mb-0.5">
+                  <div className="flex items-center justify-center gap-1 text-[10px] font-mono text-white/55 mb-0.5 w-full">
                     <span>CENA 0{sc.number}</span>
-                    {done && <CheckCircle2 className="w-3 h-3 text-emerald-400" />}
+                    {done && <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />}
                   </div>
-                  <div className="text-xs font-bold truncate">{sc.title}</div>
+                  <div className="text-xs font-bold truncate w-full text-center">{sc.title}</div>
                 </button>
               )
             })}
@@ -2038,6 +2198,27 @@ export function NovatosPage() {
                   </div>
                 </div>
               )}
+
+              {/* ============================================================ */}
+              {/* BOTÃO DISCRETO DE TELA CHEIA (EXPANDIR IMAGEM NO CELULAR/PC) */}
+              {/* Posicionado sem cobrir marcadores 1-7 nem torres de TV 2026  */}
+              {/* ============================================================ */}
+              <button
+                type="button"
+                onClick={handleOpenImageFullscreen}
+                data-testid="btn-expand-fullscreen"
+                aria-label="Expandir imagem da cena em tela cheia"
+                title="Expandir imagem em tela cheia"
+                className={cn(
+                  "absolute z-[15] inline-flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl bg-[#07090E]/85 hover:bg-[#E10600] text-white/95 hover:text-white border border-white/25 hover:border-white backdrop-blur-md shadow-xl transition-all cursor-pointer min-w-[40px] min-h-[40px]",
+                  currentScene.visualEffectType === "checkered_finish"
+                    ? "bottom-2.5 right-2.5 lg:bottom-3.5 lg:left-1/2 lg:right-auto lg:-translate-x-1/2"
+                    : "bottom-2.5 right-2.5 sm:bottom-3.5 sm:right-3.5"
+                )}
+              >
+                <Maximize2 className="w-4 h-4 shrink-0" />
+                <span className="text-[11px] font-bold hidden sm:inline">Tela cheia</span>
+              </button>
             </div>
 
             {/* ============================================================== */}
@@ -2168,10 +2349,10 @@ export function NovatosPage() {
             {/* ============================================================== */}
             {currentScene.visualEffectType === "checkered_finish" && (
               <div
-                className="rounded-2xl bg-gradient-to-r from-[#17090D] via-[#0E131D] to-[#0A0E16] border border-[#E10600]/60 p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xl"
+                className="rounded-2xl bg-gradient-to-r from-[#17090D] via-[#0E131D] to-[#0A0E16] border border-[#E10600]/60 p-4 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-3 shadow-xl text-center sm:text-left"
                 data-testid="scene08-foundation-banner"
               >
-                <div className="text-xs sm:text-sm font-black text-white flex items-center gap-2">
+                <div className="text-xs sm:text-sm font-black text-white flex items-center justify-center sm:justify-start gap-2 max-w-xl">
                   <span className="w-2 h-2 rounded-full bg-[#E10600] shrink-0" />
                   <span>Agora você já conhece os fundamentos da Fórmula 1.</span>
                 </div>
@@ -2182,7 +2363,7 @@ export function NovatosPage() {
                     stopAllAudio(false)
                     setViewStage("quiz")
                   }}
-                  className="px-5 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wide flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(225,6,0,0.55)] cursor-pointer min-h-[40px] shrink-0"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wide flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(225,6,0,0.55)] cursor-pointer min-h-[40px] shrink-0"
                 >
                   <Award className="w-4 h-4" />
                   FAZER QUESTIONÁRIO
@@ -2196,11 +2377,11 @@ export function NovatosPage() {
           {/* ================================================================ */}
           {countdownSeconds !== null && (
             <div
-              className="rounded-2xl bg-gradient-to-r from-[#1A090D] via-[#131824] to-[#0E121B] border-2 border-[#E10600] p-4 sm:p-5 shadow-[0_0_30px_rgba(225,6,0,0.35)] flex flex-col sm:flex-row sm:items-center justify-between gap-4 max-w-5xl mx-auto"
+              className="rounded-2xl bg-gradient-to-r from-[#1A090D] via-[#131824] to-[#0E121B] border-2 border-[#E10600] p-4 sm:p-5 shadow-[0_0_30px_rgba(225,6,0,0.35)] flex flex-col sm:flex-row items-center justify-between gap-4 max-w-5xl mx-auto text-center sm:text-left"
               role="status"
               aria-live="polite"
             >
-              <div className="flex items-start sm:items-center gap-3.5">
+              <div className="flex items-center justify-center sm:justify-start gap-3.5">
                 <div className="w-11 h-11 rounded-xl bg-[#E10600] text-white font-black text-xl flex items-center justify-center shrink-0 shadow-[0_0_15px_#E10600]">
                   {countdownSeconds}
                 </div>
@@ -2219,7 +2400,7 @@ export function NovatosPage() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+              <div className="flex flex-wrap items-center justify-center gap-2.5 shrink-0 w-full sm:w-auto">
                 {currentScene.number < 8 ? (
                   <button
                     type="button"
@@ -2282,7 +2463,7 @@ export function NovatosPage() {
                     </span>
                   </div>
                   <p className="text-[11px] text-white/60 mt-0.5">
-                    Trilha musical com redução automática durante a narração
+                    Controle independente do volume da narração e da trilha cinematográfica
                   </p>
                 </div>
               </div>
@@ -2362,6 +2543,7 @@ export function NovatosPage() {
                     narrationAudioRef.current.currentTime = nextT
                   }
                 }}
+                style={{ touchAction: "pan-y" }}
                 className="flex-1 accent-[#E10600] cursor-pointer"
                 aria-label="Progresso da narração da cena"
               />
@@ -2370,40 +2552,79 @@ export function NovatosPage() {
               </span>
             </div>
 
-            {/* OPTIONAL COLLAPSIBLE TRANSCRIPT (HIDDEN BY DEFAULT) */}
+            {/* OPTIONAL COLLAPSIBLE TRANSCRIPT (SYMMETRICALLY CENTERED WHEN OPENED) */}
             {showTranscript && (
-              <div className="p-3.5 rounded-xl bg-black/50 border border-white/10">
-                <p className="text-xs sm:text-sm text-slate-100 leading-relaxed break-words">
+              <div
+                className="p-4 sm:p-5 rounded-xl bg-black/55 border border-white/10 max-w-3xl mx-auto text-center"
+                data-testid="scene-transcript-box"
+              >
+                <p className="text-xs sm:text-sm text-slate-100 leading-relaxed max-w-2xl mx-auto text-center break-words">
                   &ldquo;{currentScene.narrationTranscript}&rdquo;
                 </p>
               </div>
             )}
 
-            {/* BALANCED 2-CHANNEL AUDIO MIXER (NARRATION + CINEMATIC SOUNDTRACK) */}
+            {/* BALANCED 2-CHANNEL AUDIO MIXER (REAL MOBILE & DESKTOP VOLUME CONTROLS) */}
             <div className="pt-3 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 flex flex-col justify-between">
-                <div className="flex items-center justify-between mb-1">
+              {/* Channel 1: Mariana Narration Volume */}
+              <div className="p-3 rounded-xl bg-black/45 border border-white/10 flex flex-col justify-between gap-2">
+                <div className="flex items-center justify-between">
                   <span className="font-semibold text-white flex items-center gap-1.5">
                     🎙️ Voz Mariana
                   </span>
-                  <span className="font-mono text-white/75">
-                    {Math.round(narrationVolume * 100)}%
+                  <span
+                    className="font-mono font-bold text-white/90"
+                    data-testid="narration-volume-label"
+                  >
+                    {isMutedAll ? "0%" : `${Math.round(narrationVolume * 100)}%`}
                   </span>
                 </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={1}
-                  step={0.05}
-                  value={narrationVolume}
-                  onChange={(e) => setNarrationVolume(parseFloat(e.target.value))}
-                  className="w-full accent-[#E10600] cursor-pointer"
-                  aria-label="Controle de volume da narração"
-                />
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => applyNarrationVolume(Math.max(0, narrationVolume - 0.1))}
+                    data-testid="btn-narration-vol-down"
+                    aria-label="Diminuir volume da narração"
+                    className="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center shrink-0 cursor-pointer"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    step={1}
+                    data-testid="slider-narration-volume"
+                    value={isMutedAll ? 0 : Math.round(narrationVolume * 100)}
+                    onInput={(e) => {
+                      ensureAudioGainGraph()
+                      applyNarrationVolume(
+                        parseInt((e.target as HTMLInputElement).value, 10) / 100
+                      )
+                    }}
+                    onChange={(e) => {
+                      ensureAudioGainGraph()
+                      applyNarrationVolume(parseInt(e.target.value, 10) / 100)
+                    }}
+                    style={{ touchAction: "pan-y" }}
+                    className="w-full h-2.5 accent-[#E10600] cursor-pointer"
+                    aria-label="Controle de volume da narração"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => applyNarrationVolume(Math.min(1, narrationVolume + 0.1))}
+                    data-testid="btn-narration-vol-up"
+                    aria-label="Aumentar volume da narração"
+                    className="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center shrink-0 cursor-pointer"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 flex flex-col justify-between">
-                <div className="flex items-center justify-between gap-1 mb-1">
+              {/* Channel 2: Cinematic Soundtrack Volume */}
+              <div className="p-3 rounded-xl bg-black/45 border border-white/10 flex flex-col justify-between gap-2">
+                <div className="flex items-center justify-between gap-1">
                   <span className="font-semibold text-white flex items-center gap-1 truncate">
                     <Music className="w-3.5 h-3.5 text-[#E10600] shrink-0" />
                     <span className="truncate">Trilha Cinematográfica</span>
@@ -2421,35 +2642,67 @@ export function NovatosPage() {
                     >
                       {testingMusic ? "Parar" : "Testar"}
                     </button>
-                    <span className="font-mono text-white/75">
-                      {musicEnabled ? `${Math.round(musicVolume * 100)}%` : "Off"}
+                    <span
+                      className="font-mono font-bold text-white/90"
+                      data-testid="music-volume-label"
+                    >
+                      {musicEnabled && !isMutedAll ? `${Math.round(musicVolume * 100)}%` : "0%"}
                     </span>
                   </div>
                 </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={1}
-                  step={0.05}
-                  value={musicVolume}
-                  onChange={(e) => {
-                    setMusicEnabled(true)
-                    setMusicVolume(parseFloat(e.target.value))
-                  }}
-                  className="w-full accent-[#E10600] cursor-pointer"
-                  aria-label="Controle de volume da trilha cinematográfica"
-                />
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => applyMusicVolume(Math.max(0, musicVolume - 0.1))}
+                    data-testid="btn-music-vol-down"
+                    aria-label="Diminuir volume da trilha cinematográfica"
+                    className="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center shrink-0 cursor-pointer"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    step={1}
+                    data-testid="slider-music-volume"
+                    value={!musicEnabled || isMutedAll ? 0 : Math.round(musicVolume * 100)}
+                    onInput={(e) => {
+                      ensureAudioGainGraph()
+                      applyMusicVolume(parseInt((e.target as HTMLInputElement).value, 10) / 100)
+                    }}
+                    onChange={(e) => {
+                      ensureAudioGainGraph()
+                      applyMusicVolume(parseInt(e.target.value, 10) / 100)
+                    }}
+                    style={{ touchAction: "pan-y" }}
+                    className="w-full h-2.5 accent-[#E10600] cursor-pointer"
+                    aria-label="Controle de volume da trilha cinematográfica"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => applyMusicVolume(Math.min(1, musicVolume + 0.1))}
+                    data-testid="btn-music-vol-up"
+                    aria-label="Aumentar volume da trilha cinematográfica"
+                    className="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold flex items-center justify-center shrink-0 cursor-pointer"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
           {/* ================================================================ */}
-          {/* INDICADOR DE CENA E NAVEGAÇÃO INFERIOR (ÚNICO E SEM DUPLICAÇÃO)  */}
+          {/* INDICADOR DE CENA E NAVEGAÇÃO INFERIOR (SIMÉTRICO E EQUILIBRADO) */}
           {/* ================================================================ */}
-          <div className="rounded-2xl bg-[#0D1017] border border-white/10 p-3 sm:p-4 space-y-3 max-w-5xl mx-auto">
+          <div
+            className="rounded-2xl bg-[#0D1017] border border-white/10 p-3.5 sm:p-4 space-y-3 max-w-5xl mx-auto"
+            data-testid="scene-bottom-navigation"
+          >
             {/* Scene Sequence Indicator (01 to 08) */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 no-scrollbar">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5">
+              <div className="flex items-center justify-center sm:justify-start gap-1.5 overflow-x-auto pb-1 sm:pb-0 no-scrollbar w-full sm:w-auto">
                 {MODULE_1_SCENES.map((sc, idx) => {
                   const isCurrent = idx === sceneIndex
                   const isDone = persisted.visitedScenes.includes(sc.number)
@@ -2474,14 +2727,14 @@ export function NovatosPage() {
                 })}
               </div>
 
-              <span className="text-xs font-mono font-bold text-white/90 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 self-start sm:self-auto shrink-0">
+              <span className="text-xs font-mono font-bold text-white/90 px-3 py-1 rounded-lg bg-white/5 border border-white/10 self-center sm:self-auto shrink-0 text-center">
                 Cena {currentScene.number} de {MODULE_1_SCENES.length}
               </span>
             </div>
 
             {/* Bottom Navigation Action Buttons */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-2 border-t border-white/10">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 pt-2.5 border-t border-white/10">
+              <div className="flex items-center justify-center sm:justify-start gap-2 w-full sm:w-auto">
                 <button
                   type="button"
                   onClick={() => {
@@ -2513,7 +2766,7 @@ export function NovatosPage() {
                 </button>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2.5">
+              <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2.5 w-full sm:w-auto">
                 {currentScene.number < 8 ? (
                   <button
                     type="button"
@@ -2721,6 +2974,69 @@ export function NovatosPage() {
                 </>
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ==================================================================== */}
+      {/* MODAL DE TELA CHEIA DA IMAGEM (CELULAR VERTICAL/HORIZONTAL E PC)     */}
+      {/* ==================================================================== */}
+      {isImageFullscreen && (
+        <div
+          ref={fullscreenContainerRef}
+          data-testid="fullscreen-image-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Visualização da imagem em tela cheia"
+          onClick={handleCloseImageFullscreen}
+          className="fixed inset-0 z-[100] bg-[#04060A]/98 backdrop-blur-xl flex flex-col items-center justify-center p-2 sm:p-6 select-none overflow-hidden"
+        >
+          {/* Top Bar in Fullscreen Mode: Scene Title + Close Button */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-6xl flex items-center justify-between gap-3 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-black/75 border border-white/15 backdrop-blur-md mb-2 sm:mb-3 shrink-0 z-10"
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="px-2 py-0.5 rounded bg-[#E10600] text-white font-mono text-[10px] sm:text-xs font-black uppercase shrink-0">
+                {viewStage === "opening" ? "ABERTURA" : `CENA 0${currentScene.number}`}
+              </span>
+              <span className="text-xs sm:text-sm font-bold text-white truncate">
+                {viewStage === "opening" ? "Novatos na F1" : currentScene.title}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleCloseImageFullscreen}
+              data-testid="btn-close-fullscreen"
+              aria-label="Fechar tela cheia"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wide border border-white/20 shadow-lg transition-all cursor-pointer min-h-[38px] shrink-0"
+            >
+              <Minimize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span>Fechar</span>
+            </button>
+          </div>
+
+          {/* Responsive Image Stage (object-contain adapts to Portrait & Landscape without cropping) */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative flex-1 w-full max-w-6xl flex items-center justify-center overflow-hidden rounded-xl"
+          >
+            <img
+              src={viewStage === "opening" ? "/backgrounds/bg-ferrari.webp" : currentScene.imageUrl}
+              alt={
+                viewStage === "opening"
+                  ? "Novatos na F1 — Imagem em tela cheia"
+                  : `Cena 0${currentScene.number} — ${currentScene.title}`
+              }
+              data-testid="fullscreen-expanded-img"
+              className={cn(
+                "max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl select-none",
+                viewStage === "lesson" &&
+                  currentScene.visualEffectType === "vintage_1950" &&
+                  "sepia-[0.22] contrast-115"
+              )}
+            />
           </div>
         </div>
       )}

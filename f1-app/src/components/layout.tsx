@@ -509,9 +509,9 @@ export function Layout() {
       <main className="mx-auto max-w-6xl w-full px-3 sm:px-4 py-4 sm:py-8 relative z-10 flex-1 pb-24 md:pb-8">
         <Outlet />
       </main>
-      <RadioPlayer />
-      <footer className="mx-auto max-w-6xl w-full px-4 pb-8 relative z-10">
-        <p className="text-xs text-muted-foreground">
+      {!location.pathname.startsWith("/novatos") && <RadioPlayer />}
+      <footer className="mx-auto max-w-6xl w-full px-4 pb-8 relative z-10 text-center">
+        <p className="text-xs text-muted-foreground mx-auto max-w-2xl leading-relaxed">
           Painel conectado à f1-api. Dados provisórios/simulados para temporadas futuras.
         </p>
       </footer>
