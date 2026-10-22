@@ -236,10 +236,10 @@ export function Layout() {
             />
           </Link>
 
-          {/* CÁPSULA PILL DE NAVEGAÇÃO FLUTUANTE */}
-          <div className="w-full max-w-6xl">
-            <nav className="w-full h-12 rounded-full bg-[#101015]/85 border border-white/15 backdrop-blur-xl px-4 lg:px-5 flex items-center justify-between gap-2 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
-              <div className="flex items-center gap-2.5 lg:gap-4 xl:gap-5 min-w-0">
+          {/* CÁPSULA PILL DE NAVEGAÇÃO FLUTUANTE COMPACTA E UNIFORME */}
+          <div className="w-fit max-w-full mx-auto">
+            <nav className="w-fit max-w-full h-12 rounded-full bg-[#101015]/85 border border-white/15 backdrop-blur-xl px-4 lg:px-5 flex items-center justify-center gap-2.5 lg:gap-3.5 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+              <div className="flex items-center gap-2.5 lg:gap-3.5 min-w-0">
                 {navItems.map((item) => (
                   <NavLink
                     key={item.to}
@@ -276,7 +276,9 @@ export function Layout() {
                 )}
               </div>
 
-              <div className="ml-auto flex items-center gap-2 shrink-0 pl-2">
+              <div className="h-4 w-px bg-white/15 shrink-0" aria-hidden="true" />
+
+              <div className="flex items-center gap-2 shrink-0">
                 <HealthBadge />
                 <UserProfile />
                 <TeamThemeSelector />
