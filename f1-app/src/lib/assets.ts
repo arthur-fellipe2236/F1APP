@@ -294,6 +294,12 @@ export const TEAM_SEASON_LOGOS: Record<string, Record<number, TeamLogoAsset>> = 
   "Visa Cash App RB": {
     ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2024 + i, { url: "/teams/racing_bulls.svg", color: "#0D1B3E", className: "object-contain p-0.5 filter-none" }])),
   },
+  "Racing Bulls F1 Team": {
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2024 + i, { url: "/teams/racing_bulls.svg", color: "#0D1B3E", className: "object-contain p-0.5 filter-none" }])),
+  },
+  "VCARB": {
+    ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [2024 + i, { url: "/teams/racing_bulls.svg", color: "#0D1B3E", className: "object-contain p-0.5 filter-none" }])),
+  },
   "McLaren": {
     ...Object.fromEntries(Array.from({ length: 19 }, (_, i) => [1966 + i, { url: "/teams/mclaren_classic.svg", color: "#FF1801", className: "object-contain p-0.5 filter-none" }])),
     ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [1985 + i, { url: "/mclaren/1981-1990.jpg", className: "bg-white rounded-sm" }])),
@@ -1197,6 +1203,11 @@ const TEAM_LOGO_BY_NAME: Record<string, TeamLogoAsset> = {
     className: "object-contain p-0.5 filter-none",
   },
   "Racing Bulls": {
+    url: "/teams/racing_bulls.svg",
+    color: "#0D1B3E",
+    className: "object-contain p-0.5 filter-none",
+  },
+  "Racing Bulls F1 Team": {
     url: "/teams/racing_bulls.svg",
     color: "#0D1B3E",
     className: "object-contain p-0.5 filter-none",
