@@ -141,6 +141,114 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     category: "Pista",
     definition: "Posições ordenadas em que os carros alinham na reta principal para iniciar o GP.",
   },
+  {
+    id: "ultrapassagem",
+    term: "Ultrapassagem",
+    category: "Pista",
+    definition: "Manobra controlada em que um carro supera outro na pista dentro das regras e limites estabelecidos.",
+  },
+  {
+    id: "defesa_posicao",
+    term: "Defesa de posição",
+    category: "Pista",
+    definition: "Ação do piloto à frente para dificultar a passagem do adversário escolhendo sua linha sem mudanças perigosas de direção.",
+  },
+  {
+    id: "disputa_roda_a_roda",
+    term: "Disputa roda a roda",
+    category: "Pista",
+    definition: "Momento de alta tensão em que dois carros emparelham lado a lado e dividem o espaço de frenagem e contorno de curva.",
+  },
+  {
+    id: "vacuo",
+    term: "Vácuo (Slipstream)",
+    category: "Pista",
+    definition: "Bolsão de ar de baixa pressão criado atrás do carro líder que permite ao perseguidor atingir maior velocidade em reta.",
+  },
+  {
+    id: "trajetoria",
+    term: "Trajetória",
+    category: "Pista",
+    definition: "Linha geométrica e dinâmica traçada pelo piloto na entrada, tangência e saída da curva.",
+  },
+  {
+    id: "ponto_frenagem",
+    term: "Ponto de frenagem",
+    category: "Pista",
+    definition: "Marca visual na pista onde o piloto pressiona o pedal com força máxima para desacelerar antes de virar o volante.",
+  },
+  {
+    id: "apex",
+    term: "Apex (Ponto de Tangência)",
+    category: "Pista",
+    definition: "Ponto mais interno da curva por onde o carro passa para otimizar o raio e a velocidade de saída.",
+  },
+  {
+    id: "limites_pista",
+    term: "Limites de pista",
+    category: "Pista",
+    definition: "Linhas brancas que delimitam a área de competição; exceder com as 4 rodas pode acarretar perda de tempo ou penalidade.",
+  },
+  {
+    id: "aerodinamica_ativa",
+    term: "Aerodinâmica ativa",
+    category: "Carro",
+    definition: "Tecnologia de 2026 que ajusta os elementos móveis das asas dianteira e traseira entre modos de curva e reta.",
+  },
+  {
+    id: "corner_mode",
+    term: "Corner Mode",
+    category: "Carro",
+    definition: "Configuração de asa fechada de alta sustentação para máxima pressão aerodinâmica (downforce) nas curvas.",
+  },
+  {
+    id: "straight_mode",
+    term: "Straight Mode",
+    category: "Carro",
+    definition: "Configuração de baixa resistência (baixo arrasto) em zonas de reta autorizadas para elevar a velocidade final.",
+  },
+  {
+    id: "overtake_mode",
+    term: "Overtake Mode",
+    category: "Carro",
+    definition: "Recurso regulamentar de 2026 que libera impulso adicional de potência elétrica para apoiar tentativas de ultrapassagem.",
+  },
+  {
+    id: "boost_mode",
+    term: "Boost Mode",
+    category: "Carro",
+    definition: "Modo de entrega tática de energia elétrica da bateria que o piloto pode acionar tanto para atacar quanto para defender.",
+  },
+  {
+    id: "drs_tradicional",
+    term: "DRS tradicional",
+    category: "Carro",
+    definition: "Sistema histórico (2011–2025) que abria a asa traseira a menos de 1s do carro da frente; substituído em 2026 pela aerodinâmica ativa.",
+  },
+  {
+    id: "comissarios",
+    term: "Comissários da FIA (Stewards)",
+    category: "Geral",
+    definition: "Painel independente de juízes que analisa telemetria e imagens de incidentes para aplicar advertências e punições.",
+  },
+  {
+    id: "investigacao",
+    term: "Investigação",
+    category: "Pista",
+    definition: "Abertura oficial de análise de um incidente de corrida; não implica condenação prévia.",
+  },
+  {
+    id: "penalidade",
+    term: "Penalidade de tempo",
+    category: "Pista",
+    definition: "Punição de 5 ou 10 segundos adicionados ao tempo do piloto na parada ou no resultado final da prova.",
+  },
+  {
+    id: "reentrada_pista",
+    term: "Reentrada na pista",
+    category: "Pista",
+    definition: "Retorno seguro de um carro que escapou para a área de escape, sem criar perigo para os competidores em pista.",
+  },
 ]
 
 // ============================================================================
@@ -218,6 +326,14 @@ export interface ModuleScene {
     | "mod4_alternate_plans"
     | "mod4_strategist_challenge"
     | "mod4_strategic_thinking_summary"
+    | "mod5_overtaking_anatomy"
+    | "mod5_attack_tech_2026"
+    | "mod5_defense_limits"
+    | "mod5_side_by_side_rules"
+    | "mod5_track_limits_runoff"
+    | "mod5_stewards_investigations"
+    | "mod5_overtaking_challenges"
+    | "mod5_overtaking_summary"
 }
 
 export const CINEMATIC_MUSIC_URL = "/audio/novatos/modulo1/trilha_cinematografica.mp3"
@@ -367,6 +483,101 @@ export const MODULE_1_SCENES: ModuleScene[] = [
 // ============================================================================
 // CENAS DO MÓDULO 4 — A MENTE POR TRÁS DA CORRIDA: ESTRATÉGIA, PNEUS E BOXES
 // ============================================================================
+
+// ============================================================================
+// CENAS DO MÓDULO 5 — A ARTE DE ULTRAPASSAR: ATAQUE, DEFESA E REGRAS
+// ============================================================================
+export const MODULE_5_SCENES: ModuleScene[] = [
+  {
+    id: "m5_c1",
+    number: 1,
+    title: "Como Nasce uma Ultrapassagem",
+    subtitle: "Vácuo, aproximação, frenagem e ponto de tangência",
+    imageUrl: "/backgrounds/bg-ferrari.webp",
+    audioUrl: "/audio/novatos/modulo5/cena01.mp3",
+    narrationTranscript:
+      "Bem-vindo ao Módulo 5 do Novatos na F1! Hoje vamos entender uma das partes mais emocionantes de uma corrida: a disputa por posição. Uma ultrapassagem começa muito antes de os carros ficarem lado a lado. O piloto precisa observar a distância, aproveitar oportunidades de velocidade, escolher uma trajetória e calcular a frenagem. Ao mesmo tempo, o adversário tenta defender sua posição. E existe um detalhe fundamental: estar mais rápido não significa ter direito automático de passar por qualquer espaço. A manobra precisa acontecer de maneira controlada e respeitando as regras.",
+    visualEffectType: "mod5_overtaking_anatomy",
+  },
+  {
+    id: "m5_c2",
+    number: 2,
+    title: "O Ataque em 2026",
+    subtitle: "Aerodinâmica ativa e Overtake Mode vs antigo DRS",
+    imageUrl: "/backgrounds/bg-mclaren.webp",
+    audioUrl: "/audio/novatos/modulo5/cena02.mp3",
+    narrationTranscript:
+      "Agora vem uma mudança importante para quem acompanha a Fórmula 1 em 2026. O antigo DRS, que abria uma parte da asa traseira em determinadas condições, foi substituído por uma nova combinação de recursos. A aerodinâmica ativa permite ajustar os elementos das asas entre modos voltados para curvas e para retas, de acordo com as zonas e condições previstas. Já o Overtake Mode oferece ao piloto uma oportunidade adicional de utilizar energia elétrica para atacar quando os requisitos regulamentares são atendidos. Esses sistemas ajudam a criar oportunidades, mas não garantem uma ultrapassagem.",
+    visualEffectType: "mod5_attack_tech_2026",
+  },
+  {
+    id: "m5_c3",
+    number: 3,
+    title: "Como Defender uma Posição",
+    subtitle: "Antecipação, linha defensiva e o que é proibido",
+    imageUrl: "/backgrounds/bg-mercedes.webp",
+    audioUrl: "/audio/novatos/modulo5/cena03.mp3",
+    narrationTranscript:
+      "Defender uma posição também é uma arte. O piloto que está à frente precisa escolher sua trajetória e tentar dificultar a vida do adversário, sem transformar a disputa em uma situação perigosa. Uma boa defesa exige antecipação, controle do carro e atenção ao posicionamento do rival. Mas defender não significa ter liberdade para empurrar outro carro para fora da pista ou mudar de direção de maneira perigosa. A análise depende da situação concreta e das regras aplicáveis.",
+    visualEffectType: "mod5_defense_limits",
+  },
+  {
+    id: "m5_c4",
+    number: 4,
+    title: "Roda a Roda: Direito ao Espaço",
+    subtitle: "Ataque por dentro vs por fora e diretrizes da FIA",
+    imageUrl: "/backgrounds/bg-aston.webp",
+    audioUrl: "/audio/novatos/modulo5/cena04.mp3",
+    narrationTranscript:
+      "É aqui que a disputa fica mais delicada. Dois carros podem chegar à mesma curva por trajetórias diferentes e ambos precisam conseguir contornar a curva sem provocar uma colisão. Mas quem está por dentro não ganha automaticamente todos os direitos, assim como quem está por fora não perde automaticamente o direito ao espaço. A FIA publica diretrizes para ajudar os comissários a avaliar as disputas. Elas consideram o posicionamento dos carros, o controle da manobra, a trajetória e a possibilidade de completar a curva dentro dos limites da pista. A decisão final depende das circunstâncias e dos regulamentos aplicáveis.",
+    visualEffectType: "mod5_side_by_side_rules",
+  },
+  {
+    id: "m5_c5",
+    number: 5,
+    title: "Limites de Pista e Reentradas",
+    subtitle: "Linhas brancas, zebras e ganho de vantagem",
+    imageUrl: "/backgrounds/bg-haas.webp",
+    audioUrl: "/audio/novatos/modulo5/cena05.mp3",
+    narrationTranscript:
+      "Uma ultrapassagem pode parecer concluída, mas ainda existe uma pergunta importante: o piloto respeitou os limites da pista? Sair da pista pode trazer uma vantagem, provocar uma perda de posição ou fazer parte de uma situação em que o piloto tentou evitar um contato. Por isso, os comissários precisam analisar o contexto. Também é importante observar como um carro retorna à pista depois de sair dela. O retorno não deve criar perigo ou obrigar outros pilotos a desviar de maneira arriscada.",
+    visualEffectType: "mod5_track_limits_runoff",
+  },
+  {
+    id: "m5_c6",
+    number: 6,
+    title: "Investigações e Penalidades",
+    subtitle: "Como a direção de prova e os comissários julgam",
+    imageUrl: "/backgrounds/bg-audi.webp",
+    audioUrl: "/audio/novatos/modulo5/cena06.mp3",
+    narrationTranscript:
+      "Quando acontece um incidente, a direção de prova e os comissários podem analisar a situação. Eles consideram as imagens disponíveis, as informações relevantes e os regulamentos aplicáveis. Uma investigação não significa necessariamente que alguém será punido. Às vezes, não há infração; em outras situações, uma penalidade pode ser aplicada. É por isso que vale a pena entender a diferença entre observar uma disputa e julgar oficialmente o que aconteceu.",
+    visualEffectType: "mod5_stewards_investigations",
+  },
+  {
+    id: "m5_c7",
+    number: 7,
+    title: "Desafio da Disputa",
+    subtitle: "Analise quatro manobras reais e aplique as regras",
+    imageUrl: "/backgrounds/bg-williams.webp",
+    audioUrl: "/audio/novatos/modulo5/cena07.mp3",
+    narrationTranscript:
+      "Agora é sua vez! Você vai observar diferentes disputas e tentar entender o que cada piloto está fazendo. Preste atenção na posição dos carros, na trajetória, no momento da frenagem e no espaço disponível. Sua missão não é simplesmente escolher quem deve ganhar. É analisar a situação com cuidado e entender o que as regras e as diretrizes permitem concluir. Vamos para a pista!",
+    visualEffectType: "mod5_overtaking_challenges",
+  },
+  {
+    id: "m5_c8",
+    number: 8,
+    title: "Entenda Antes de Julgar",
+    subtitle: "Síntese dos cinco princípios de uma disputa justa",
+    imageUrl: "/backgrounds/bg-cadillac.webp",
+    audioUrl: "/audio/novatos/modulo5/cena08.mp3",
+    narrationTranscript:
+      "Você chegou ao fim da nossa aula sobre ultrapassagens! Agora sabe que atacar exige preparação, que defender exige controle e que uma disputa roda a roda precisa ser entendida com atenção. Também aprendeu que a Fórmula 1 de 2026 possui recursos diferentes do DRS tradicional e que nem toda disputa pode ser julgada apenas por uma imagem isolada. O segredo é observar a posição dos carros, a trajetória, a execução da manobra e as regras aplicáveis. Com prática, você vai começar a entender cada vez melhor o que acontece na pista. Agora, vamos testar seu conhecimento!",
+    visualEffectType: "mod5_overtaking_summary",
+  },
+]
+
 export const MODULE_4_SCENES: ModuleScene[] = [
   {
     id: "m4_c1",
@@ -762,6 +973,143 @@ export const MODULE_1_QUIZ_QUESTIONS: QuizQuestion[] = [
 // ============================================================================
 // QUESTIONÁRIO FINAL — MÓDULO 4 (10 PERGUNTAS DE ESTRATÉGIA)
 // ============================================================================
+
+// ============================================================================
+// QUESTIONÁRIO FINAL — MÓDULO 5 (10 PERGUNTAS SOBRE ULTRAPASSAGENS)
+// ============================================================================
+export const MODULE_5_QUIZ_QUESTIONS: QuizQuestion[] = [
+  {
+    id: 1,
+    question: "Pergunta 1 — O que é o vácuo durante uma disputa?",
+    options: [
+      { letter: "A", text: "Uma zona do pit lane em que os carros devem parar." },
+      { letter: "B", text: "Um efeito em que o carro perseguidor pode aproveitar a redução da resistência do ar causada pelo carro à frente." },
+      { letter: "C", text: "Uma penalidade por ultrapassagem." },
+      { letter: "D", text: "Uma configuração de pneus." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Correto! O carro da frente desloca o ar, criando uma zona de menor resistência (arrasto) que facilita a aproximação e velocidade final do perseguidor.",
+  },
+  {
+    id: 2,
+    question: "Pergunta 2 — O que o piloto precisa avaliar antes de tentar ultrapassar?",
+    options: [
+      { letter: "A", text: "Apenas a posição na classificação." },
+      { letter: "B", text: "Apenas a velocidade máxima." },
+      { letter: "C", text: "Distância, velocidade relativa, frenagem, trajetória, aderência e espaço disponível." },
+      { letter: "D", text: "Somente o número de voltas restantes." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Exatamente! Ultrapassar com sucesso exige calcular a frenagem no limite, prever a reação do rival e garantir que há espaço físico para contornar a curva.",
+  },
+  {
+    id: 3,
+    question: "Pergunta 3 — Qual é a diferença entre o DRS tradicional e os recursos de ataque de 2026?",
+    options: [
+      { letter: "A", text: "O DRS tradicional continua sendo o recurso normal de ultrapassagem em 2026." },
+      { letter: "B", text: "Em 2026, a aerodinâmica ativa e o Overtake Mode fazem parte de um sistema diferente do DRS tradicional." },
+      { letter: "C", text: "O DRS tradicional controla os pneus." },
+      { letter: "D", text: "O Overtake Mode garante que o carro passe pelo adversário." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Perfeito! Em 2026, a aerodinâmica ativa alterna as asas entre Corner e Straight Mode, enquanto o Overtake Mode gerencia o disparo elétrico da bateria.",
+  },
+  {
+    id: 4,
+    question: "Pergunta 4 — O que é o Overtake Mode?",
+    options: [
+      { letter: "A", text: "Um recurso de utilização de energia que pode ajudar uma tentativa de ultrapassagem, sujeito às condições regulamentares." },
+      { letter: "B", text: "Uma bandeira usada para indicar chuva." },
+      { letter: "C", text: "Um sistema que troca os pneus automaticamente." },
+      { letter: "D", text: "Uma penalidade por defender uma posição." },
+    ],
+    correctLetter: "A",
+    feedback:
+      "Isso mesmo! O Overtake Mode oferece potência elétrica extra nas retas para aumentar o poder de aceleração sob critérios do regulamento esportivo.",
+  },
+  {
+    id: 5,
+    question: "Pergunta 5 — Um piloto que ataca por dentro de uma curva tem prioridade automática?",
+    options: [
+      { letter: "A", text: "Sim, em todas as circunstâncias." },
+      { letter: "B", text: "Sim, desde que esteja mais rápido." },
+      { letter: "C", text: "Não. A situação deve ser avaliada conforme o posicionamento, a execução da manobra e as regras aplicáveis." },
+      { letter: "D", text: "Não, porque ultrapassar por dentro é sempre proibido." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Correto! Ter a linha de dentro não dá direito de espalhar e jogar o rival para fora. É preciso manter o controle e contornar a curva nos limites da pista.",
+  },
+  {
+    id: 6,
+    question: "Pergunta 6 — O piloto que tenta ultrapassar por fora perde automaticamente o direito ao espaço?",
+    options: [
+      { letter: "A", text: "Sim, sempre." },
+      { letter: "B", text: "Não. A disputa depende das circunstâncias e dos critérios aplicáveis." },
+      { letter: "C", text: "Sim, desde que o adversário esteja à frente na reta." },
+      { letter: "D", text: "Não, porque o piloto por fora sempre tem prioridade." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Exatamente! Se o piloto por fora estiver emparelhado de forma significativa no apex com o carro sob controle, ele tem direito legítimo ao espaço de corrida.",
+  },
+  {
+    id: 7,
+    question: "Pergunta 7 — Qual é o objetivo principal de uma defesa de posição bem executada?",
+    options: [
+      { letter: "A", text: "Forçar o adversário para fora da pista." },
+      { letter: "B", text: "Mudar de direção repetidamente para impedir a ultrapassagem." },
+      { letter: "C", text: "Proteger a posição de forma controlada, respeitando as regras e o espaço dos demais carros." },
+      { letter: "D", text: "Impedir qualquer tentativa de ultrapassagem, independentemente da situação." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Muito bem! Uma grande defesa posiciona o carro com antecedência na linha interna sem mudanças bruscas de trajetória na frenagem e respeitando os rivais.",
+  },
+  {
+    id: 8,
+    question: "Pergunta 8 — Sair dos limites da pista durante uma ultrapassagem significa que haverá sempre a mesma penalidade?",
+    options: [
+      { letter: "A", text: "Sim, todos os casos recebem exatamente a mesma penalidade." },
+      { letter: "B", text: "Não. A situação e as regras aplicáveis precisam ser avaliadas." },
+      { letter: "C", text: "Sim, o piloto sempre perde cinco posições." },
+      { letter: "D", text: "Não, porque os limites da pista não são relevantes na F1." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Perfeito! Os comissários avaliam se houve ganho duradouro de vantagem, se o piloto foi forçado ou se devolveu a posição imediatamente.",
+  },
+  {
+    id: 9,
+    question: "Pergunta 9 — Uma investigação dos comissários significa que o piloto já foi considerado culpado?",
+    options: [
+      { letter: "A", text: "Sim, a investigação confirma automaticamente a infração." },
+      { letter: "B", text: "Sim, e a penalidade já está definida." },
+      { letter: "C", text: "Não. A investigação serve para avaliar as evidências e determinar se houve infração." },
+      { letter: "D", text: "Não, porque os comissários não podem analisar imagens." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Isso mesmo! A notificação de investigação indica apenas a abertura do processo para apurar telemetria e imagens; muitas investigações terminam como incidente de corrida.",
+  },
+  {
+    id: 10,
+    question: "Pergunta 10 — Qual é a maneira mais adequada de analisar uma disputa roda a roda?",
+    options: [
+      { letter: "A", text: "Decidir apenas pela posição final dos carros." },
+      { letter: "B", text: "Escolher sempre o piloto que estava à frente antes da curva." },
+      { letter: "C", text: "Observar posicionamento, trajetória, controle da manobra, limites da pista e regulamentos aplicáveis." },
+      { letter: "D", text: "Considerar que o piloto mais rápido tem sempre direito à trajetória inteira." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Parabéns! Analisar como um especialista exige olhar o conjunto: quem estava emparelhado no apex, o controle da direção e o respeito aos limites da pista.",
+  },
+]
+
 export const MODULE_4_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 1,
@@ -1168,6 +1516,7 @@ const STORAGE_MOD1_KEY = "f1_novatos_mod1_state_v1"
 const STORAGE_MOD2_KEY = "f1_novatos_mod2_state_v1"
 const STORAGE_MOD3_KEY = "f1_novatos_mod3_state_v1"
 const STORAGE_MOD4_KEY = "f1_novatos_mod4_state_v1"
+const STORAGE_MOD5_KEY = "f1_novatos_mod5_state_v1"
 const STORAGE_ACTIVE_MODULE_KEY = "f1_novatos_active_module_v1"
 
 interface PersistedModuleState {
@@ -1201,14 +1550,16 @@ export function NovatosPage() {
   // ==========================================================================
   // ESTADO DO MÓDULO ATIVO (MÓDULO 1 OU MÓDULO 2)
   // ==========================================================================
-  const [activeModuleId, setActiveModuleId] = useState<1 | 2 | 3 | 4>(() => {
+  const [activeModuleId, setActiveModuleId] = useState<1 | 2 | 3 | 4 | 5>(() => {
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search)
       const modParam = urlParams.get("modulo") || urlParams.get("mod")
+      if (modParam === "5") return 5
       if (modParam === "4") return 4
       if (modParam === "3") return 3
       if (modParam === "2") return 2
       const saved = localStorage.getItem(STORAGE_ACTIVE_MODULE_KEY)
+      if (saved === "5") return 5
       if (saved === "4") return 4
       if (saved === "3") return 3
       if (saved === "2") return 2
@@ -1216,9 +1567,9 @@ export function NovatosPage() {
     return 1
   })
 
-  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : activeModuleId === 2 ? MODULE_2_SCENES : activeModuleId === 3 ? MODULE_3_SCENES : MODULE_4_SCENES
-  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : activeModuleId === 2 ? MODULE_2_QUIZ_QUESTIONS : activeModuleId === 3 ? MODULE_3_QUIZ_QUESTIONS : MODULE_4_QUIZ_QUESTIONS
-  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : activeModuleId === 2 ? STORAGE_MOD2_KEY : activeModuleId === 3 ? STORAGE_MOD3_KEY : STORAGE_MOD4_KEY
+  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : activeModuleId === 2 ? MODULE_2_SCENES : activeModuleId === 3 ? MODULE_3_SCENES : activeModuleId === 4 ? MODULE_4_SCENES : MODULE_5_SCENES
+  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : activeModuleId === 2 ? MODULE_2_QUIZ_QUESTIONS : activeModuleId === 3 ? MODULE_3_QUIZ_QUESTIONS : activeModuleId === 4 ? MODULE_4_QUIZ_QUESTIONS : MODULE_5_QUIZ_QUESTIONS
+  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : activeModuleId === 2 ? STORAGE_MOD2_KEY : activeModuleId === 3 ? STORAGE_MOD3_KEY : activeModuleId === 4 ? STORAGE_MOD4_KEY : STORAGE_MOD5_KEY
 
   // Stage: "opening" (Hero Landing), "lesson" (Scenes 1-8), "quiz" (Final Test)
   const [viewStage, setViewStage] = useState<"opening" | "lesson" | "quiz">("opening")
@@ -1289,6 +1640,17 @@ export function NovatosPage() {
   const [m4ChallengeStep, setM4ChallengeStep] = useState<1 | 2 | 3 | 4>(1)
   const [m4ChallengeP1, setM4ChallengeP1] = useState<"stop" | "stay" | "evaluate" | null>(null)
   const [m4ChallengeP2, setM4ChallengeP2] = useState<"protect" | "attack" | "data" | null>(null)
+
+  // Interactive Scene States — Module 5
+  const [m5StraightPoint, setM5StraightPoint] = useState<1 | 2 | 3>(1)
+  const [m5AttackCard, setM5AttackCard] = useState<"aero" | "overtake" | "drs">("aero")
+  const [m5DefenseScenario, setM5DefenseScenario] = useState<1 | 2 | 3>(1)
+  const [m5SideScenario, setM5SideScenario] = useState<"inside" | "outside">("inside")
+  const [m5TrackLimitScenario, setM5TrackLimitScenario] = useState<1 | 2 | 3>(1)
+  const [m5AnalystAction, setM5AnalystAction] = useState<"investigate" | "monitor" | "incident" | null>(null)
+  const [m5ChallengeStep, setM5ChallengeStep] = useState<1 | 2 | 3 | 4>(1)
+  const [m5ChallengeAnswers, setM5ChallengeAnswers] = useState<Record<number, string>>({})
+  const [m5ShowSummaryReview, setM5ShowSummaryReview] = useState<boolean>(false)
 
   // Quiz State
   const [quizQuestionIndex, setQuizQuestionIndex] = useState(0)
@@ -1395,7 +1757,7 @@ export function NovatosPage() {
 
   // Troca de módulo (Módulo 1 vs Módulo 2)
   const handleSelectModule = useCallback(
-    (modId: 1 | 2 | 3 | 4) => {
+    (modId: 1 | 2 | 3 | 4 | 5) => {
       if (modId === activeModuleId) return
       // Para áudios e timers
       if (countdownTimerRef.current) {
@@ -1423,8 +1785,8 @@ export function NovatosPage() {
       }
 
       // Carrega estado do novo módulo
-      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : modId === 2 ? STORAGE_MOD2_KEY : modId === 3 ? STORAGE_MOD3_KEY : STORAGE_MOD4_KEY
-      const maxLen = modId === 1 ? MODULE_1_SCENES.length : modId === 2 ? MODULE_2_SCENES.length : modId === 3 ? MODULE_3_SCENES.length : MODULE_4_SCENES.length
+      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : modId === 2 ? STORAGE_MOD2_KEY : modId === 3 ? STORAGE_MOD3_KEY : modId === 4 ? STORAGE_MOD4_KEY : STORAGE_MOD5_KEY
+      const maxLen = modId === 1 ? MODULE_1_SCENES.length : modId === 2 ? MODULE_2_SCENES.length : modId === 3 ? MODULE_3_SCENES.length : modId === 4 ? MODULE_4_SCENES.length : MODULE_5_SCENES.length
       const s = loadPersistedState(targetKey)
       setVisitedScenes(s.visitedScenes)
       setSceneIndex(s.lastSceneIndex < maxLen ? s.lastSceneIndex : 0)
@@ -1552,6 +1914,15 @@ export function NovatosPage() {
       setM4ChallengeStep(1)
       setM4ChallengeP1(null)
       setM4ChallengeP2(null)
+      setM5StraightPoint(1)
+      setM5AttackCard("aero")
+      setM5DefenseScenario(1)
+      setM5SideScenario("inside")
+      setM5TrackLimitScenario(1)
+      setM5AnalystAction(null)
+      setM5ChallengeStep(1)
+      setM5ChallengeAnswers({})
+      setM5ShowSummaryReview(false)
     },
     [currentScenes.length, stopAllAudio]
   )
@@ -2856,6 +3227,15 @@ export function NovatosPage() {
                     setM4ChallengeStep(1)
                     setM4ChallengeP1(null)
                     setM4ChallengeP2(null)
+      setM5StraightPoint(1)
+      setM5AttackCard("aero")
+      setM5DefenseScenario(1)
+      setM5SideScenario("inside")
+      setM5TrackLimitScenario(1)
+      setM5AnalystAction(null)
+      setM5ChallengeStep(1)
+      setM5ChallengeAnswers({})
+      setM5ShowSummaryReview(false)
                   }}
                   className="w-full py-1 text-[10px] text-zinc-400 hover:text-white underline cursor-pointer text-center block"
                 >
@@ -2906,6 +3286,522 @@ export function NovatosPage() {
         )
       }
     }
+    // ------------------------------------------------------------------------
+    // MÓDULO 5: A ARTE DE ULTRAPASSAR: ATAQUE, DEFESA E REGRAS
+    // ------------------------------------------------------------------------
+    if (activeModuleId === 5) {
+      // CENA 1: COMO NASCE UMA ULTRAPASSAGEM
+      if (currentScene.visualEffectType === "mod5_overtaking_anatomy") {
+        const straightPhases = [
+          {
+            id: 1 as const,
+            title: "1. Início da Reta (Vácuo)",
+            desc: "O perseguidor entra no fluxo de ar de baixa resistência do líder (vácuo/slipstream), ganhando velocidade para emparelhar.",
+          },
+          {
+            id: 2 as const,
+            title: "2. Aproximação da Frenagem",
+            desc: "O atacante escolhe a linha interna ou externa e define a referência visual exata para aplicar mais de 100 kg no freio.",
+          },
+          {
+            id: 3 as const,
+            title: "3. Entrada e Apex da Curva",
+            desc: "Controla o carro em desaceleração profunda para buscar a tangência interna sem travar rodas ou empurrar o adversário.",
+          },
+        ]
+
+        const currentPhase = straightPhases.find((p) => p.id === m5StraightPoint) || straightPhases[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Anatomia da Manobra</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">ULTRAPASSAGEM</span>
+            </div>
+
+            {/* Linha Visual das Fases */}
+            <div className="p-1.5 rounded bg-white/5 border border-white/10 text-[9px] font-mono text-zinc-300 text-center uppercase tracking-wide mb-2.5">
+              Preparação ➔ Aproximação ➔ Ataque ➔ Frenagem ➔ Saída
+            </div>
+
+            <p className="text-[11px] text-zinc-300 mb-2 font-bold">
+              Selecione o ponto da manobra para entender o que o piloto faz:
+            </p>
+
+            <div className="space-y-1 mb-2.5">
+              {straightPhases.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setM5StraightPoint(p.id)}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer",
+                    m5StraightPoint === p.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {p.title}
+                </button>
+              ))}
+            </div>
+
+            <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[11px] text-zinc-200 leading-snug">
+              <span className="font-bold text-amber-300 block mb-0.5">{currentPhase.title}:</span>
+              {currentPhase.desc}
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 2: O ATAQUE EM 2026: AERODINÂMICA ATIVA E OVERTAKE MODE
+      if (currentScene.visualEffectType === "mod5_attack_tech_2026") {
+        const cards = [
+          {
+            id: "aero" as const,
+            title: "Aerodinâmica Ativa (2026)",
+            role: "Corner Mode vs Straight Mode",
+            desc: "As asas dianteira e traseira ajustam seus ângulos: máxima sustentação nas curvas (Corner Mode) e baixíssimo arrasto nas retas autorizadas (Straight Mode).",
+          },
+          {
+            id: "overtake" as const,
+            title: "Overtake Mode (2026)",
+            role: "Potência Elétrica Extra",
+            desc: "Disparo adicional de energia da bateria disponível sob requisitos regulamentares para auxiliar na aceleração durante a manobra.",
+          },
+          {
+            id: "drs" as const,
+            title: "DRS Tradicional (Histórico 2011–2025)",
+            role: "Contexto de Transmissões Antigas",
+            desc: "Abria fisicamente um flap da asa traseira a menos de 1 segundo do líder. Não é o sistema padrão de 2026, servindo como referência histórica.",
+          },
+        ]
+
+        const currentC = cards.find((c) => c.id === m5AttackCard) || cards[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Recursos Técnicos de 2026</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-600 text-white font-black">AERO & ENERGIA</span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              {cards.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setM5AttackCard(c.id)}
+                  className={cn(
+                    "py-1.5 px-1 rounded text-[9px] font-black uppercase text-center transition-all cursor-pointer",
+                    m5AttackCard === c.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/10 text-zinc-300 hover:bg-white/20"
+                  )}
+                >
+                  {c.id === "aero" ? "Aero Ativa" : c.id === "overtake" ? "Overtake" : "Antigo DRS"}
+                </button>
+              ))}
+            </div>
+
+            <div className="bg-white/5 p-2.5 rounded-lg border border-white/10 text-xs text-zinc-200 space-y-1 leading-snug">
+              <span className="font-bold text-amber-300 block">{currentC.title}</span>
+              <span className="text-[10px] font-mono text-cyan-300 block mb-1">Função: {currentC.role}</span>
+              <p className="text-[11px] text-zinc-300">{currentC.desc}</p>
+            </div>
+
+            <div className="mt-2 text-[10px] text-zinc-400 text-center font-mono">
+              Overtake Mode cria oportunidade, mas a ultrapassagem exige perícia na freada.
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 3: COMO DEFENDER UMA POSIÇÃO
+      if (currentScene.visualEffectType === "mod5_defense_limits") {
+        const defenseScenarios = [
+          {
+            id: 1 as const,
+            title: "1. Defesa Firme e Limpa",
+            badge: "PERMITIDO",
+            color: "text-emerald-400 border-emerald-500/40 bg-emerald-950/40",
+            desc: "O piloto se posiciona previamente na linha interna com clareza antes do ponto de frenagem, forçando o rival a contornar por fora.",
+          },
+          {
+            id: 2 as const,
+            title: "2. Mudança Perigosa na Freada",
+            badge: "PROIBIDO (Moving Under Braking)",
+            color: "text-rose-400 border-rose-500/40 bg-rose-950/40",
+            desc: "Mudar de direção já em processo de frenagem desestabiliza o adversário a mais de 300 km/h e causa colisões graves.",
+          },
+          {
+            id: 3 as const,
+            title: "3. Espalhar Sem Deixar Espaço",
+            badge: "SOB INVESTIGAÇÃO",
+            color: "text-amber-400 border-amber-500/40 bg-amber-950/40",
+            desc: "Se o adversário já estiver emparelhado lado a lado, empurrá-lo para fora da zebra além dos limites da pista pode gerar penalidade.",
+          },
+        ]
+
+        const currentDef = defenseScenarios.find((d) => d.id === m5DefenseScenario) || defenseScenarios[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Defesa Inteligente ou Arriscada?</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-600 text-white font-black">DEFESA</span>
+            </div>
+
+            <div className="space-y-1 mb-2.5">
+              {defenseScenarios.map((d) => (
+                <button
+                  key={d.id}
+                  type="button"
+                  onClick={() => setM5DefenseScenario(d.id)}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer",
+                    m5DefenseScenario === d.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {d.title}
+                </button>
+              ))}
+            </div>
+
+            <div className={cn("p-2 rounded-lg border text-xs leading-snug", currentDef.color)}>
+              <span className="font-mono font-black block text-[10px] uppercase mb-0.5">{currentDef.badge}</span>
+              <p className="text-[11px] text-zinc-200">{currentDef.desc}</p>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 4: RODA A RODA: QUEM TEM DIREITO AO ESPAÇO?
+      if (currentScene.visualEffectType === "mod5_side_by_side_rules") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Diretrizes da FIA</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">RODA A RODA</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-1.5 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM5SideScenario("inside")}
+                className={cn(
+                  "py-1.5 px-2 rounded-lg text-[10px] font-black uppercase text-center transition-all cursor-pointer",
+                  m5SideScenario === "inside" ? "bg-[#E10600] text-white shadow-md" : "bg-white/10 text-zinc-300 hover:bg-white/20"
+                )}
+              >
+                Ataque por Dentro
+              </button>
+              <button
+                type="button"
+                onClick={() => setM5SideScenario("outside")}
+                className={cn(
+                  "py-1.5 px-2 rounded-lg text-[10px] font-black uppercase text-center transition-all cursor-pointer",
+                  m5SideScenario === "outside" ? "bg-cyan-600 text-white shadow-md" : "bg-white/10 text-zinc-300 hover:bg-white/20"
+                )}
+              >
+                Ataque por Fora
+              </button>
+            </div>
+
+            {/* Painel Informativo: O que os comissários observam? */}
+            <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[10px] space-y-1 mb-2 leading-snug">
+              <div className="font-bold text-amber-300 uppercase">O que os comissários observam no Apex?</div>
+              <div>• <strong>Posicionamento relativo:</strong> eixo dianteiro alinhado com o retrovisor/eixo do rival.</div>
+              <div>• <strong>Controle do carro:</strong> capacidade real de fazer a curva sem travar rodas.</div>
+              <div>• <strong>Limites de pista:</strong> manter pelo menos uma roda dentro da linha branca.</div>
+            </div>
+
+            <div className="text-[11px] text-zinc-300 bg-white/5 p-2 rounded-lg border border-white/10 leading-snug">
+              {m5SideScenario === "inside" ? (
+                <>
+                  <strong className="text-white block mb-0.5">Por Dentro:</strong>
+                  Estar por dentro não dá direito de espalhar na saída e empurrar o rival para fora. É preciso deixar espaço de corrida.
+                </>
+              ) : (
+                <>
+                  <strong className="text-cyan-300 block mb-0.5">Por Fora:</strong>
+                  Se o atacante estiver emparelhado no apex sob controle, ele não perde o direito ao espaço e não pode ser empurrado para a grama.
+                </>
+              )}
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 5: LIMITES DE PISTA, REJUNTES E REENTRADAS
+      if (currentScene.visualEffectType === "mod5_track_limits_runoff") {
+        const scenarios = [
+          {
+            id: 1 as const,
+            title: "1. Manobra Dentro das Linhas",
+            status: "VÁLIDA 🟢",
+            desc: "Pelo menos parte de uma das quatro rodas permaneceu sobre a linha branca ou zebra em toda a curva.",
+          },
+          {
+            id: 2 as const,
+            title: "2. Ultrapassou Fora da Pista",
+            status: "VANTAGEM INDEVIDA 🔴",
+            desc: "Completou a manobra com as 4 rodas além da linha branca. Deve devolver a posição imediatamente ou sofrerá punição de tempo.",
+          },
+          {
+            id: 3 as const,
+            title: "3. Saiu para Evitar Colisão",
+            status: "ANALISADO PELOS COMISSÁRIOS 🟡",
+            desc: "Espalhou para a área de escape para não bater no rival que perdeu o ponto de frenagem e reentrou em segurança sem acelerar no tráfego.",
+          },
+        ]
+
+        const scn = scenarios.find((s) => s.id === m5TrackLimitScenario) || scenarios[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">A Ultrapassagem Valeu?</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">LIMITES</span>
+            </div>
+
+            <div className="space-y-1 mb-2.5">
+              {scenarios.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setM5TrackLimitScenario(s.id)}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer",
+                    m5TrackLimitScenario === s.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {s.title}
+                </button>
+              ))}
+            </div>
+
+            <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-xs text-zinc-200">
+              <span className="font-mono font-bold text-amber-300 block text-[10px] mb-0.5">{scn.status}</span>
+              <p className="text-[11px] text-zinc-300 leading-snug">{scn.desc}</p>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 6: INVESTIGAÇÕES, BANDEIRAS E PENALIDADES
+      if (currentScene.visualEffectType === "mod5_stewards_investigations") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Comissários da FIA</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-500 text-black font-black">INVESTIGAÇÃO</span>
+            </div>
+
+            <div className="p-2 rounded-lg bg-white/5 border border-white/10 text-[11px] text-zinc-200 mb-2 leading-snug">
+              <strong>Incidente Curva 1:</strong> Toque de rodas na entrada do apex. Ambos os carros continuam na prova sem danos estruturais.
+            </div>
+
+            <p className="text-[11px] text-white font-bold mb-2">Você é o analista da corrida. Qual a ação mais coerente?</p>
+
+            <div className="space-y-1 mb-2.5">
+              {[
+                { id: "investigate", label: "Abrir Investigação Formal dos Comissários" },
+                { id: "monitor", label: "Continuar Acompanhando Sem Concluir Prematuramente" },
+                { id: "incident", label: "Encerrar Imediatamente Sem Penalidade" },
+              ].map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setM5AnalystAction(opt.id as any)}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded text-[10px] font-mono transition-all cursor-pointer",
+                    m5AnalystAction === opt.id ? "bg-[#E10600] text-white font-bold" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
+            {m5AnalystAction && (
+              <div className="text-[10px] text-zinc-300 bg-white/5 p-2 rounded border border-white/10 leading-tight">
+                {m5AnalystAction === "monitor" || m5AnalystAction === "investigate"
+                  ? "Excelente! Um incidente nunca deve ser julgado por apenas um ângulo de câmera. Os comissários cruzam telemetria de freio, esterço e onboard antes de decidir."
+                  : "Cuidado: Decidir sem avaliar telemetria ou se um piloto freou tarde demais é precipitado. É essencial analisar todos os ângulos."}
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 7: DESAFIO INTERATIVO: VOCÊ DECIDE A DISPUTA
+      if (currentScene.visualEffectType === "mod5_overtaking_challenges") {
+        const challenges = [
+          {
+            step: 1 as const,
+            title: "Desafio 1 — Ataque na Reta",
+            question: "Dois carros se aproximam da curva a 320 km/h. O que o piloto deve avaliar antes da manobra?",
+            options: [
+              { id: "correct", text: "Distância, velocidade relativa, frenagem, trajetória e espaço disponível.", correct: true },
+              { id: "tires", text: "Apenas a cor dos pneus.", correct: false },
+              { id: "pos", text: "Apenas a posição atual na classificação.", correct: false },
+            ],
+            fb: "Correto! A velocidade relativa e o posicionamento são fundamentais, mas a frenagem e o espaço disponível decidem o sucesso da manobra.",
+          },
+          {
+            step: 2 as const,
+            title: "Desafio 2 — Disputa por Dentro",
+            question: "É possível afirmar automaticamente que o piloto por dentro sempre tem prioridade absoluta?",
+            options: [
+              { id: "yes", text: "Sim, quem está por dentro nunca precisa dar espaço.", correct: false },
+              { id: "correct", text: "Não. É necessário analisar posicionamento, controle, trajetória e limites de pista.", correct: true },
+              { id: "speed", text: "Sim, desde que esteja mais rápido.", correct: false },
+            ],
+            fb: "Exato! Ter a linha interna não dá passe livre para empurrar o concorrente para a brita. Ambos precisam de espaço de corrida.",
+          },
+          {
+            step: 3 as const,
+            title: "Desafio 3 — Disputa por Fora",
+            question: "O piloto que tenta ultrapassar por fora perde automaticamente o direito ao espaço?",
+            options: [
+              { id: "yes", text: "Sim, quem está por fora assume todo o risco.", correct: false },
+              { id: "correct", text: "Não. Se estiver emparelhado no apex com o carro sob controle, tem direito legítimo ao espaço.", correct: true },
+              { id: "never", text: "Sim, porque ultrapassar por fora é proibido pela FIA.", correct: false },
+            ],
+            fb: "Perfeito! As diretrizes da FIA protegem o piloto por fora quando há sobreposição significativa de eixos no apex.",
+          },
+          {
+            step: 4 as const,
+            title: "Desafio 4 — Recursos de 2026",
+            question: "O Overtake Mode garante uma ultrapassagem automática?",
+            options: [
+              { id: "yes", text: "Sim, o carro ultrapassa sem qualquer chance de defesa.", correct: false },
+              { id: "correct", text: "Não. Ele fornece potência elétrica extra, mas a manobra depende da execução do piloto na frenagem.", correct: true },
+              { id: "drs", text: "Sim, porque funciona exatamente igual ao antigo DRS.", correct: false },
+            ],
+            fb: "Isso mesmo! O Overtake Mode é uma ferramenta de apoio elétrico, mas não substitui a precisão cirúrgica na freada.",
+          },
+        ]
+
+        const currentCh = challenges.find((c) => c.step === m5ChallengeStep) || challenges[0]
+        const currentAns = m5ChallengeAnswers[m5ChallengeStep]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Simulação Didática</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-600 text-white font-black">
+                DESAFIO {m5ChallengeStep} DE 4
+              </span>
+            </div>
+
+            <p className="text-[11px] font-bold text-white mb-2">{currentCh.question}</p>
+
+            <div className="space-y-1 mb-2.5">
+              {currentCh.options.map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setM5ChallengeAnswers((prev) => ({ ...prev, [m5ChallengeStep]: opt.id }))}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded text-[10px] font-mono transition-all cursor-pointer",
+                    currentAns === opt.id
+                      ? opt.correct
+                        ? "bg-emerald-600 text-white font-bold"
+                        : "bg-red-900/80 text-white"
+                      : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {opt.text}
+                </button>
+              ))}
+            </div>
+
+            {currentAns && (
+              <div className="text-[10px] text-zinc-300 bg-white/5 p-2 rounded border border-white/10 mb-2 leading-tight">
+                {currentCh.fb}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between gap-2 pt-1 border-t border-white/10">
+              {m5ChallengeStep > 1 && (
+                <button
+                  type="button"
+                  onClick={() => setM5ChallengeStep((prev) => (prev - 1) as any)}
+                  className="px-2 py-1 rounded bg-white/10 hover:bg-white/20 text-xs text-zinc-300 cursor-pointer"
+                >
+                  Anterior
+                </button>
+              )}
+              {m5ChallengeStep < 4 ? (
+                <button
+                  type="button"
+                  onClick={() => setM5ChallengeStep((prev) => (prev + 1) as any)}
+                  disabled={!currentAns}
+                  className="ml-auto px-3 py-1 rounded bg-[#E10600] hover:bg-[#ff1a14] disabled:opacity-40 text-xs font-black uppercase text-white cursor-pointer"
+                >
+                  Próximo Desafio ➔
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setM5ShowSummaryReview(true)}
+                  className="ml-auto px-3 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-xs font-black uppercase text-white cursor-pointer"
+                >
+                  Revisar o que Aprendi
+                </button>
+              )}
+            </div>
+
+            {m5ShowSummaryReview && (
+              <div className="mt-2 p-2 rounded bg-cyan-950/60 border border-cyan-500/40 text-[10px] text-cyan-200 space-y-1">
+                <span className="font-bold block text-cyan-300">Resumo da Análise Especializada:</span>
+                <div>• Ultrapassar exige gestão de energia de 2026 e controle absoluto.</div>
+                <div>• Nem a linha interna nem a externa dão direitos incondicionais.</div>
+                <div>• Comissários julgam por telemetria, não por impressões isoladas.</div>
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 8: RESUMO: ENTENDA A DISPUTA ANTES DE JULGÁ-LA
+      if (currentScene.visualEffectType === "mod5_overtaking_summary") {
+        const principles = [
+          "1. Uma ultrapassagem exige preparação, vácuo e controle.",
+          "2. A defesa deve respeitar as regras e a segurança dos rivais.",
+          "3. Os recursos de 2026 (Aero Ativa + Overtake) substituem o DRS.",
+          "4. A posição relativa dos carros no apex decide o direito ao espaço.",
+          "5. Incidentes devem ser avaliados com evidências e telemetria.",
+        ]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Cinco Princípios Fundamentais</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-600 text-white font-black">SÍNTESE</span>
+            </div>
+
+            <div className="space-y-1.5 mb-3">
+              {principles.map((p, idx) => (
+                <div key={idx} className="bg-white/5 py-1 px-2 rounded border border-white/10 text-[10px] text-zinc-200">
+                  {p}
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                stopAllAudio()
+                setViewStage("quiz")
+              }}
+              className="w-full py-2 px-3 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider shadow-[0_0_20px_rgba(225,6,0,0.6)] transition-all cursor-pointer text-center"
+            >
+              Iniciar Quiz (10 Perguntas)
+            </button>
+          </div>
+        )
+      }
+    }
+
 
     // ------------------------------------------------------------------------
     // MÓDULO 3: DENTRO DA CORRIDA: APRENDA A ACOMPANHAR UMA TRANSMISSÃO
@@ -3984,6 +4880,15 @@ export function NovatosPage() {
                     setM4ChallengeStep(1)
                     setM4ChallengeP1(null)
                     setM4ChallengeP2(null)
+      setM5StraightPoint(1)
+      setM5AttackCard("aero")
+      setM5DefenseScenario(1)
+      setM5SideScenario("inside")
+      setM5TrackLimitScenario(1)
+      setM5AnalystAction(null)
+      setM5ChallengeStep(1)
+      setM5ChallengeAnswers({})
+      setM5ShowSummaryReview(false)
                   }}
                   className="w-full py-1 text-[10px] text-zinc-400 hover:text-white underline cursor-pointer text-center block"
                 >
@@ -4034,6 +4939,522 @@ export function NovatosPage() {
         )
       }
     }
+    // ------------------------------------------------------------------------
+    // MÓDULO 5: A ARTE DE ULTRAPASSAR: ATAQUE, DEFESA E REGRAS
+    // ------------------------------------------------------------------------
+    if (activeModuleId === 5) {
+      // CENA 1: COMO NASCE UMA ULTRAPASSAGEM
+      if (currentScene.visualEffectType === "mod5_overtaking_anatomy") {
+        const straightPhases = [
+          {
+            id: 1 as const,
+            title: "1. Início da Reta (Vácuo)",
+            desc: "O perseguidor entra no fluxo de ar de baixa resistência do líder (vácuo/slipstream), ganhando velocidade para emparelhar.",
+          },
+          {
+            id: 2 as const,
+            title: "2. Aproximação da Frenagem",
+            desc: "O atacante escolhe a linha interna ou externa e define a referência visual exata para aplicar mais de 100 kg no freio.",
+          },
+          {
+            id: 3 as const,
+            title: "3. Entrada e Apex da Curva",
+            desc: "Controla o carro em desaceleração profunda para buscar a tangência interna sem travar rodas ou empurrar o adversário.",
+          },
+        ]
+
+        const currentPhase = straightPhases.find((p) => p.id === m5StraightPoint) || straightPhases[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Anatomia da Manobra</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">ULTRAPASSAGEM</span>
+            </div>
+
+            {/* Linha Visual das Fases */}
+            <div className="p-1.5 rounded bg-white/5 border border-white/10 text-[9px] font-mono text-zinc-300 text-center uppercase tracking-wide mb-2.5">
+              Preparação ➔ Aproximação ➔ Ataque ➔ Frenagem ➔ Saída
+            </div>
+
+            <p className="text-[11px] text-zinc-300 mb-2 font-bold">
+              Selecione o ponto da manobra para entender o que o piloto faz:
+            </p>
+
+            <div className="space-y-1 mb-2.5">
+              {straightPhases.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setM5StraightPoint(p.id)}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer",
+                    m5StraightPoint === p.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {p.title}
+                </button>
+              ))}
+            </div>
+
+            <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[11px] text-zinc-200 leading-snug">
+              <span className="font-bold text-amber-300 block mb-0.5">{currentPhase.title}:</span>
+              {currentPhase.desc}
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 2: O ATAQUE EM 2026: AERODINÂMICA ATIVA E OVERTAKE MODE
+      if (currentScene.visualEffectType === "mod5_attack_tech_2026") {
+        const cards = [
+          {
+            id: "aero" as const,
+            title: "Aerodinâmica Ativa (2026)",
+            role: "Corner Mode vs Straight Mode",
+            desc: "As asas dianteira e traseira ajustam seus ângulos: máxima sustentação nas curvas (Corner Mode) e baixíssimo arrasto nas retas autorizadas (Straight Mode).",
+          },
+          {
+            id: "overtake" as const,
+            title: "Overtake Mode (2026)",
+            role: "Potência Elétrica Extra",
+            desc: "Disparo adicional de energia da bateria disponível sob requisitos regulamentares para auxiliar na aceleração durante a manobra.",
+          },
+          {
+            id: "drs" as const,
+            title: "DRS Tradicional (Histórico 2011–2025)",
+            role: "Contexto de Transmissões Antigas",
+            desc: "Abria fisicamente um flap da asa traseira a menos de 1 segundo do líder. Não é o sistema padrão de 2026, servindo como referência histórica.",
+          },
+        ]
+
+        const currentC = cards.find((c) => c.id === m5AttackCard) || cards[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Recursos Técnicos de 2026</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-600 text-white font-black">AERO & ENERGIA</span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              {cards.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setM5AttackCard(c.id)}
+                  className={cn(
+                    "py-1.5 px-1 rounded text-[9px] font-black uppercase text-center transition-all cursor-pointer",
+                    m5AttackCard === c.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/10 text-zinc-300 hover:bg-white/20"
+                  )}
+                >
+                  {c.id === "aero" ? "Aero Ativa" : c.id === "overtake" ? "Overtake" : "Antigo DRS"}
+                </button>
+              ))}
+            </div>
+
+            <div className="bg-white/5 p-2.5 rounded-lg border border-white/10 text-xs text-zinc-200 space-y-1 leading-snug">
+              <span className="font-bold text-amber-300 block">{currentC.title}</span>
+              <span className="text-[10px] font-mono text-cyan-300 block mb-1">Função: {currentC.role}</span>
+              <p className="text-[11px] text-zinc-300">{currentC.desc}</p>
+            </div>
+
+            <div className="mt-2 text-[10px] text-zinc-400 text-center font-mono">
+              Overtake Mode cria oportunidade, mas a ultrapassagem exige perícia na freada.
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 3: COMO DEFENDER UMA POSIÇÃO
+      if (currentScene.visualEffectType === "mod5_defense_limits") {
+        const defenseScenarios = [
+          {
+            id: 1 as const,
+            title: "1. Defesa Firme e Limpa",
+            badge: "PERMITIDO",
+            color: "text-emerald-400 border-emerald-500/40 bg-emerald-950/40",
+            desc: "O piloto se posiciona previamente na linha interna com clareza antes do ponto de frenagem, forçando o rival a contornar por fora.",
+          },
+          {
+            id: 2 as const,
+            title: "2. Mudança Perigosa na Freada",
+            badge: "PROIBIDO (Moving Under Braking)",
+            color: "text-rose-400 border-rose-500/40 bg-rose-950/40",
+            desc: "Mudar de direção já em processo de frenagem desestabiliza o adversário a mais de 300 km/h e causa colisões graves.",
+          },
+          {
+            id: 3 as const,
+            title: "3. Espalhar Sem Deixar Espaço",
+            badge: "SOB INVESTIGAÇÃO",
+            color: "text-amber-400 border-amber-500/40 bg-amber-950/40",
+            desc: "Se o adversário já estiver emparelhado lado a lado, empurrá-lo para fora da zebra além dos limites da pista pode gerar penalidade.",
+          },
+        ]
+
+        const currentDef = defenseScenarios.find((d) => d.id === m5DefenseScenario) || defenseScenarios[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Defesa Inteligente ou Arriscada?</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-600 text-white font-black">DEFESA</span>
+            </div>
+
+            <div className="space-y-1 mb-2.5">
+              {defenseScenarios.map((d) => (
+                <button
+                  key={d.id}
+                  type="button"
+                  onClick={() => setM5DefenseScenario(d.id)}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer",
+                    m5DefenseScenario === d.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {d.title}
+                </button>
+              ))}
+            </div>
+
+            <div className={cn("p-2 rounded-lg border text-xs leading-snug", currentDef.color)}>
+              <span className="font-mono font-black block text-[10px] uppercase mb-0.5">{currentDef.badge}</span>
+              <p className="text-[11px] text-zinc-200">{currentDef.desc}</p>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 4: RODA A RODA: QUEM TEM DIREITO AO ESPAÇO?
+      if (currentScene.visualEffectType === "mod5_side_by_side_rules") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Diretrizes da FIA</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">RODA A RODA</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-1.5 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM5SideScenario("inside")}
+                className={cn(
+                  "py-1.5 px-2 rounded-lg text-[10px] font-black uppercase text-center transition-all cursor-pointer",
+                  m5SideScenario === "inside" ? "bg-[#E10600] text-white shadow-md" : "bg-white/10 text-zinc-300 hover:bg-white/20"
+                )}
+              >
+                Ataque por Dentro
+              </button>
+              <button
+                type="button"
+                onClick={() => setM5SideScenario("outside")}
+                className={cn(
+                  "py-1.5 px-2 rounded-lg text-[10px] font-black uppercase text-center transition-all cursor-pointer",
+                  m5SideScenario === "outside" ? "bg-cyan-600 text-white shadow-md" : "bg-white/10 text-zinc-300 hover:bg-white/20"
+                )}
+              >
+                Ataque por Fora
+              </button>
+            </div>
+
+            {/* Painel Informativo: O que os comissários observam? */}
+            <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[10px] space-y-1 mb-2 leading-snug">
+              <div className="font-bold text-amber-300 uppercase">O que os comissários observam no Apex?</div>
+              <div>• <strong>Posicionamento relativo:</strong> eixo dianteiro alinhado com o retrovisor/eixo do rival.</div>
+              <div>• <strong>Controle do carro:</strong> capacidade real de fazer a curva sem travar rodas.</div>
+              <div>• <strong>Limites de pista:</strong> manter pelo menos uma roda dentro da linha branca.</div>
+            </div>
+
+            <div className="text-[11px] text-zinc-300 bg-white/5 p-2 rounded-lg border border-white/10 leading-snug">
+              {m5SideScenario === "inside" ? (
+                <>
+                  <strong className="text-white block mb-0.5">Por Dentro:</strong>
+                  Estar por dentro não dá direito de espalhar na saída e empurrar o rival para fora. É preciso deixar espaço de corrida.
+                </>
+              ) : (
+                <>
+                  <strong className="text-cyan-300 block mb-0.5">Por Fora:</strong>
+                  Se o atacante estiver emparelhado no apex sob controle, ele não perde o direito ao espaço e não pode ser empurrado para a grama.
+                </>
+              )}
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 5: LIMITES DE PISTA, REJUNTES E REENTRADAS
+      if (currentScene.visualEffectType === "mod5_track_limits_runoff") {
+        const scenarios = [
+          {
+            id: 1 as const,
+            title: "1. Manobra Dentro das Linhas",
+            status: "VÁLIDA 🟢",
+            desc: "Pelo menos parte de uma das quatro rodas permaneceu sobre a linha branca ou zebra em toda a curva.",
+          },
+          {
+            id: 2 as const,
+            title: "2. Ultrapassou Fora da Pista",
+            status: "VANTAGEM INDEVIDA 🔴",
+            desc: "Completou a manobra com as 4 rodas além da linha branca. Deve devolver a posição imediatamente ou sofrerá punição de tempo.",
+          },
+          {
+            id: 3 as const,
+            title: "3. Saiu para Evitar Colisão",
+            status: "ANALISADO PELOS COMISSÁRIOS 🟡",
+            desc: "Espalhou para a área de escape para não bater no rival que perdeu o ponto de frenagem e reentrou em segurança sem acelerar no tráfego.",
+          },
+        ]
+
+        const scn = scenarios.find((s) => s.id === m5TrackLimitScenario) || scenarios[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">A Ultrapassagem Valeu?</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">LIMITES</span>
+            </div>
+
+            <div className="space-y-1 mb-2.5">
+              {scenarios.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setM5TrackLimitScenario(s.id)}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer",
+                    m5TrackLimitScenario === s.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {s.title}
+                </button>
+              ))}
+            </div>
+
+            <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-xs text-zinc-200">
+              <span className="font-mono font-bold text-amber-300 block text-[10px] mb-0.5">{scn.status}</span>
+              <p className="text-[11px] text-zinc-300 leading-snug">{scn.desc}</p>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 6: INVESTIGAÇÕES, BANDEIRAS E PENALIDADES
+      if (currentScene.visualEffectType === "mod5_stewards_investigations") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Comissários da FIA</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-500 text-black font-black">INVESTIGAÇÃO</span>
+            </div>
+
+            <div className="p-2 rounded-lg bg-white/5 border border-white/10 text-[11px] text-zinc-200 mb-2 leading-snug">
+              <strong>Incidente Curva 1:</strong> Toque de rodas na entrada do apex. Ambos os carros continuam na prova sem danos estruturais.
+            </div>
+
+            <p className="text-[11px] text-white font-bold mb-2">Você é o analista da corrida. Qual a ação mais coerente?</p>
+
+            <div className="space-y-1 mb-2.5">
+              {[
+                { id: "investigate", label: "Abrir Investigação Formal dos Comissários" },
+                { id: "monitor", label: "Continuar Acompanhando Sem Concluir Prematuramente" },
+                { id: "incident", label: "Encerrar Imediatamente Sem Penalidade" },
+              ].map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setM5AnalystAction(opt.id as any)}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded text-[10px] font-mono transition-all cursor-pointer",
+                    m5AnalystAction === opt.id ? "bg-[#E10600] text-white font-bold" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
+            {m5AnalystAction && (
+              <div className="text-[10px] text-zinc-300 bg-white/5 p-2 rounded border border-white/10 leading-tight">
+                {m5AnalystAction === "monitor" || m5AnalystAction === "investigate"
+                  ? "Excelente! Um incidente nunca deve ser julgado por apenas um ângulo de câmera. Os comissários cruzam telemetria de freio, esterço e onboard antes de decidir."
+                  : "Cuidado: Decidir sem avaliar telemetria ou se um piloto freou tarde demais é precipitado. É essencial analisar todos os ângulos."}
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 7: DESAFIO INTERATIVO: VOCÊ DECIDE A DISPUTA
+      if (currentScene.visualEffectType === "mod5_overtaking_challenges") {
+        const challenges = [
+          {
+            step: 1 as const,
+            title: "Desafio 1 — Ataque na Reta",
+            question: "Dois carros se aproximam da curva a 320 km/h. O que o piloto deve avaliar antes da manobra?",
+            options: [
+              { id: "correct", text: "Distância, velocidade relativa, frenagem, trajetória e espaço disponível.", correct: true },
+              { id: "tires", text: "Apenas a cor dos pneus.", correct: false },
+              { id: "pos", text: "Apenas a posição atual na classificação.", correct: false },
+            ],
+            fb: "Correto! A velocidade relativa e o posicionamento são fundamentais, mas a frenagem e o espaço disponível decidem o sucesso da manobra.",
+          },
+          {
+            step: 2 as const,
+            title: "Desafio 2 — Disputa por Dentro",
+            question: "É possível afirmar automaticamente que o piloto por dentro sempre tem prioridade absoluta?",
+            options: [
+              { id: "yes", text: "Sim, quem está por dentro nunca precisa dar espaço.", correct: false },
+              { id: "correct", text: "Não. É necessário analisar posicionamento, controle, trajetória e limites de pista.", correct: true },
+              { id: "speed", text: "Sim, desde que esteja mais rápido.", correct: false },
+            ],
+            fb: "Exato! Ter a linha interna não dá passe livre para empurrar o concorrente para a brita. Ambos precisam de espaço de corrida.",
+          },
+          {
+            step: 3 as const,
+            title: "Desafio 3 — Disputa por Fora",
+            question: "O piloto que tenta ultrapassar por fora perde automaticamente o direito ao espaço?",
+            options: [
+              { id: "yes", text: "Sim, quem está por fora assume todo o risco.", correct: false },
+              { id: "correct", text: "Não. Se estiver emparelhado no apex com o carro sob controle, tem direito legítimo ao espaço.", correct: true },
+              { id: "never", text: "Sim, porque ultrapassar por fora é proibido pela FIA.", correct: false },
+            ],
+            fb: "Perfeito! As diretrizes da FIA protegem o piloto por fora quando há sobreposição significativa de eixos no apex.",
+          },
+          {
+            step: 4 as const,
+            title: "Desafio 4 — Recursos de 2026",
+            question: "O Overtake Mode garante uma ultrapassagem automática?",
+            options: [
+              { id: "yes", text: "Sim, o carro ultrapassa sem qualquer chance de defesa.", correct: false },
+              { id: "correct", text: "Não. Ele fornece potência elétrica extra, mas a manobra depende da execução do piloto na frenagem.", correct: true },
+              { id: "drs", text: "Sim, porque funciona exatamente igual ao antigo DRS.", correct: false },
+            ],
+            fb: "Isso mesmo! O Overtake Mode é uma ferramenta de apoio elétrico, mas não substitui a precisão cirúrgica na freada.",
+          },
+        ]
+
+        const currentCh = challenges.find((c) => c.step === m5ChallengeStep) || challenges[0]
+        const currentAns = m5ChallengeAnswers[m5ChallengeStep]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Simulação Didática</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-600 text-white font-black">
+                DESAFIO {m5ChallengeStep} DE 4
+              </span>
+            </div>
+
+            <p className="text-[11px] font-bold text-white mb-2">{currentCh.question}</p>
+
+            <div className="space-y-1 mb-2.5">
+              {currentCh.options.map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setM5ChallengeAnswers((prev) => ({ ...prev, [m5ChallengeStep]: opt.id }))}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded text-[10px] font-mono transition-all cursor-pointer",
+                    currentAns === opt.id
+                      ? opt.correct
+                        ? "bg-emerald-600 text-white font-bold"
+                        : "bg-red-900/80 text-white"
+                      : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {opt.text}
+                </button>
+              ))}
+            </div>
+
+            {currentAns && (
+              <div className="text-[10px] text-zinc-300 bg-white/5 p-2 rounded border border-white/10 mb-2 leading-tight">
+                {currentCh.fb}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between gap-2 pt-1 border-t border-white/10">
+              {m5ChallengeStep > 1 && (
+                <button
+                  type="button"
+                  onClick={() => setM5ChallengeStep((prev) => (prev - 1) as any)}
+                  className="px-2 py-1 rounded bg-white/10 hover:bg-white/20 text-xs text-zinc-300 cursor-pointer"
+                >
+                  Anterior
+                </button>
+              )}
+              {m5ChallengeStep < 4 ? (
+                <button
+                  type="button"
+                  onClick={() => setM5ChallengeStep((prev) => (prev + 1) as any)}
+                  disabled={!currentAns}
+                  className="ml-auto px-3 py-1 rounded bg-[#E10600] hover:bg-[#ff1a14] disabled:opacity-40 text-xs font-black uppercase text-white cursor-pointer"
+                >
+                  Próximo Desafio ➔
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setM5ShowSummaryReview(true)}
+                  className="ml-auto px-3 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-xs font-black uppercase text-white cursor-pointer"
+                >
+                  Revisar o que Aprendi
+                </button>
+              )}
+            </div>
+
+            {m5ShowSummaryReview && (
+              <div className="mt-2 p-2 rounded bg-cyan-950/60 border border-cyan-500/40 text-[10px] text-cyan-200 space-y-1">
+                <span className="font-bold block text-cyan-300">Resumo da Análise Especializada:</span>
+                <div>• Ultrapassar exige gestão de energia de 2026 e controle absoluto.</div>
+                <div>• Nem a linha interna nem a externa dão direitos incondicionais.</div>
+                <div>• Comissários julgam por telemetria, não por impressões isoladas.</div>
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 8: RESUMO: ENTENDA A DISPUTA ANTES DE JULGÁ-LA
+      if (currentScene.visualEffectType === "mod5_overtaking_summary") {
+        const principles = [
+          "1. Uma ultrapassagem exige preparação, vácuo e controle.",
+          "2. A defesa deve respeitar as regras e a segurança dos rivais.",
+          "3. Os recursos de 2026 (Aero Ativa + Overtake) substituem o DRS.",
+          "4. A posição relativa dos carros no apex decide o direito ao espaço.",
+          "5. Incidentes devem ser avaliados com evidências e telemetria.",
+        ]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Cinco Princípios Fundamentais</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-600 text-white font-black">SÍNTESE</span>
+            </div>
+
+            <div className="space-y-1.5 mb-3">
+              {principles.map((p, idx) => (
+                <div key={idx} className="bg-white/5 py-1 px-2 rounded border border-white/10 text-[10px] text-zinc-200">
+                  {p}
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                stopAllAudio()
+                setViewStage("quiz")
+              }}
+              className="w-full py-2 px-3 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider shadow-[0_0_20px_rgba(225,6,0,0.6)] transition-all cursor-pointer text-center"
+            >
+              Iniciar Quiz (10 Perguntas)
+            </button>
+          </div>
+        )
+      }
+    }
+
 
 
 
@@ -4083,7 +5504,7 @@ export function NovatosPage() {
           {/* Fundo Cinematográfico com Parallax Suave */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <img
-              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : "/backgrounds/bg-redbull.webp"}
+              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : activeModuleId === 4 ? "/backgrounds/bg-redbull.webp" : "/backgrounds/bg-redbull.webp"}
               alt="Fundo Novatos na F1"
               className={cn(
                 "w-full h-full object-cover object-center brightness-40 contrast-125 scale-105",
@@ -4135,6 +5556,16 @@ export function NovatosPage() {
             >
               4. A Mente por Trás da Corrida
             </button>
+            <button
+              type="button"
+              onClick={() => handleSelectModule(5)}
+              className={cn(
+                "px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide transition-all cursor-pointer",
+                activeModuleId === 5 ? "bg-[#E10600] text-white shadow-lg" : "text-zinc-400 hover:text-white"
+              )}
+            >
+              5. A Arte de Ultrapassar
+            </button>
           </div>
 
           {/* Hero Content */}
@@ -4148,7 +5579,9 @@ export function NovatosPage() {
                   ? "MÓDULO 2 • A MÁQUINA: COMO FUNCIONA O CARRO"
                   : activeModuleId === 3
                   ? "MÓDULO 3 • DENTRO DA CORRIDA: APRENDA A ACOMPANHAR A TRANSMISSÃO"
-                  : "MÓDULO 4 • A MENTE POR TRÁS DA CORRIDA: ESTRATÉGIA E PNEUS"}
+                  : activeModuleId === 4
+                  ? "MÓDULO 4 • A MENTE POR TRÁS DA CORRIDA: ESTRATÉGIA E PNEUS"
+                  : "MÓDULO 5 • A ARTE DE ULTRAPASSAR: REGRAS E DISPUTAS"}
               </span>
             </div>
 
@@ -4163,7 +5596,9 @@ export function NovatosPage() {
                 ? "MÓDULO 2 — A MÁQUINA"
                 : activeModuleId === 3
                 ? "MÓDULO 3 — DENTRO DA CORRIDA"
-                : "MÓDULO 4 — A MENTE POR TRÁS DA CORRIDA"}
+                : activeModuleId === 4
+                ? "MÓDULO 4 — A MENTE POR TRÁS DA CORRIDA"
+                : "MÓDULO 5 — A ARTE DE ULTRAPASSAR"}
             </p>
 
             <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-xl mb-8">
@@ -4173,7 +5608,9 @@ export function NovatosPage() {
                 ? "“Um carro de Fórmula 1 não é apenas rápido. Cada peça, cada ajuste e cada decisão ajudam a transformar potência em desempenho.”"
                 : activeModuleId === 3
                 ? "“Os carros estão no grid. Os pilotos estão preparados. Mas você sabe interpretar tudo o que está prestes a acontecer?”"
-                : "“Na Fórmula 1, velocidade é fundamental. Mas saber quando atacar, economizar pneus ou parar nos boxes pode mudar o resultado de uma corrida.”"}
+                : activeModuleId === 4
+                ? "“Na Fórmula 1, velocidade é fundamental. Mas saber quando atacar, economizar pneus ou parar nos boxes pode mudar o resultado de uma corrida.”"
+                : "“Na Fórmula 1, ultrapassar não é apenas acelerar. É escolher o momento certo, entender o adversário e disputar cada centímetro dentro das regras.”"}
             </p>
 
             {/* Botão de Ação CTA */}
@@ -4554,7 +5991,7 @@ export function NovatosPage() {
               </div>
 
               <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white mb-1">
-                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : activeModuleId === 2 ? "MÓDULO 2 CONCLUÍDO" : activeModuleId === 3 ? "MÓDULO 3 CONCLUÍDO" : "MÓDULO 4 CONCLUÍDO"}
+                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : activeModuleId === 2 ? "MÓDULO 2 CONCLUÍDO" : activeModuleId === 3 ? "MÓDULO 3 CONCLUÍDO" : activeModuleId === 4 ? "MÓDULO 4 CONCLUÍDO" : "MÓDULO 5 CONCLUÍDO"}
               </h2>
 
               <p className="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-4">
@@ -4568,13 +6005,21 @@ export function NovatosPage() {
                   ? "“Você já conhece os principais sistemas de um carro de Fórmula 1 e entende melhor como engenharia, piloto e equipe trabalham juntos.”"
                   : activeModuleId === 3
                   ? "“Você já conhece os principais momentos de uma corrida de Fórmula 1 e está mais preparado para acompanhar uma transmissão e entender o que acontece na pista.”"
+                  : activeModuleId === 4
+                  ? (quizScore ?? 0) >= 9
+                    ? "“Excelente! Você já consegue interpretar vários dos principais elementos da estratégia de corrida.”"
+                    : (quizScore ?? 0) >= 7
+                    ? "“Muito bem! Você compreendeu os conceitos principais. Revise os detalhes que ainda geraram dúvidas.”"
+                    : (quizScore ?? 0) >= 5
+                    ? "“Bom começo! Refaça as cenas sobre pneus, pit stops e decisões estratégicas para consolidar o conhecimento.”"
+                    : "“Toda grande estratégia começa com aprendizado. Reveja as cenas e tente novamente.”"
                   : (quizScore ?? 0) >= 9
-                  ? "“Excelente! Você já consegue interpretar vários dos principais elementos da estratégia de corrida.”"
+                  ? "“Excelente! Você já consegue interpretar os principais elementos de uma disputa de F1.”"
                   : (quizScore ?? 0) >= 7
-                  ? "“Muito bem! Você compreendeu os conceitos principais. Revise os detalhes que ainda geraram dúvidas.”"
+                  ? "“Muito bem! Você entendeu os fundamentos. Revise os detalhes regulamentares para melhorar ainda mais.”"
                   : (quizScore ?? 0) >= 5
-                  ? "“Bom começo! Refaça as cenas sobre pneus, pit stops e decisões estratégicas para consolidar o conhecimento.”"
-                  : "“Toda grande estratégia começa com aprendizado. Reveja as cenas e tente novamente.”"}
+                  ? "“Bom começo! Reveja as cenas sobre defesa, ataque e disputas roda a roda.”"
+                  : "“Toda boa leitura de corrida começa com aprendizado. Reveja as cenas e tente novamente.”"}
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-3">
