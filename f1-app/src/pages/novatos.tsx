@@ -34,76 +34,112 @@ export interface GlossaryTerm {
 
 export const GLOSSARY_TERMS: GlossaryTerm[] = [
   {
+    id: "estrategia_corrida",
+    term: "Estratégia de corrida",
+    category: "Geral",
+    definition: "Planejamento dinâmico que define o momento das paradas, uso dos compostos de pneus e ritmo de prova para maximizar o resultado da equipe.",
+  },
+  {
+    id: "composto",
+    term: "Composto",
+    category: "Carro",
+    definition: "Tipo e dureza da borracha do pneu (Macio, Médio, Duro, Intermediário e Chuva Extrema) adaptado à pista e temperatura.",
+  },
+  {
+    id: "degradacao",
+    term: "Degradação",
+    category: "Carro",
+    definition: "Perda térmica e mecânica de desempenho e aderência do pneu ao longo das voltas decorrentes do atrito com o asfalto.",
+  },
+  {
+    id: "desgaste",
+    term: "Desgaste",
+    category: "Carro",
+    definition: "Consumo físico da borracha da banda de rodagem, aproximando o pneu da carcaça estrutural.",
+  },
+  {
+    id: "janela_parada",
+    term: "Janela de parada",
+    category: "Pista",
+    definition: "Intervalo de voltas calculado pelos estrategistas no qual fazer o pit stop traz o menor prejuízo de tempo e tráfego.",
+  },
+  {
+    id: "pitstop",
+    term: "Pit stop",
+    category: "Pista",
+    definition: "Parada nos boxes onde a equipe troca os quatro pneus em cerca de 2 segundos e faz eventuais ajustes na asa dianteira.",
+  },
+  {
+    id: "undercut",
+    term: "Undercut",
+    category: "Pista",
+    definition: "Manobra estratégica de antecipar o pit stop para usar pneus novos e superar o rival quando ele fizer a parada voltas depois.",
+  },
+  {
+    id: "overcut",
+    term: "Overcut",
+    category: "Pista",
+    definition: "Estratégia de permanecer na pista com ar limpo enquanto o rival para, tirando vantagem de ritmo ou de uma neutralização.",
+  },
+  {
+    id: "gap",
+    term: "Gap",
+    category: "Pista",
+    definition: "Diferença de tempo em segundos entre dois pilotos na pista ou a distância total de um carro em relação ao líder.",
+  },
+  {
+    id: "ritmo_corrida",
+    term: "Ritmo de corrida",
+    category: "Geral",
+    definition: "Capacidade do carro e do piloto de manter tempos de volta velozes e consistentes com tanque cheio e desgaste de pneus.",
+  },
+  {
+    id: "trafego",
+    term: "Tráfego",
+    category: "Pista",
+    definition: "Presença de carros mais lentos ou retardatários à frente que geram ar turbulento e atrasam o tempo de volta.",
+  },
+  {
+    id: "telemetria",
+    term: "Telemetria",
+    category: "Geral",
+    definition: "Transmissão sem fio de centenas de sensores do carro em tempo real para os computadores dos engenheiros no muro dos boxes.",
+  },
+  {
+    id: "safety_car",
+    term: "Safety Car",
+    category: "Pista",
+    definition: "Carro de segurança físico que entra na pista para neutralizar e liderar o pelotão em velocidade reduzida durante acidentes.",
+  },
+  {
+    id: "virtual_safety_car",
+    term: "Virtual Safety Car (VSC)",
+    category: "Pista",
+    definition: "Procedimento eletrônico que impõe tempo delta mínimo obrigatório em todos os setores sem a presença do carro físico na pista.",
+  },
+  {
+    id: "pneus_intermediarios",
+    term: "Pneus intermediários",
+    category: "Carro",
+    definition: "Compostos com sulcos médios identificados pela faixa verde, indicados para asfalto molhado sem poças profundas.",
+  },
+  {
+    id: "pneus_chuva_extrema",
+    term: "Pneus de chuva extrema",
+    category: "Carro",
+    definition: "Pneus com sulcos profundos com faixa azul, capazes de evacuar até 85 litros de água por segundo em chuva intensa.",
+  },
+  {
     id: "f1",
     term: "F1",
     category: "Geral",
     definition: "Fórmula 1, categoria de automobilismo de mais alto nível tecnológico e esportivo.",
   },
   {
-    id: "piloto",
-    term: "Piloto",
-    category: "Geral",
-    definition: "Atleta de alto rendimento que conduz o carro no limite da física.",
-  },
-  {
-    id: "equipe",
-    term: "Equipe / Construtor",
-    category: "Geral",
-    definition: "Organização responsável pelo projeto do carro, pela operação nos boxes e pela estratégia de corrida.",
-  },
-  {
     id: "grid",
     term: "Grid de largada",
     category: "Pista",
     definition: "Posições ordenadas em que os carros alinham na reta principal para iniciar o GP.",
-  },
-  {
-    id: "classificacao",
-    term: "Classificação (Qualifying)",
-    category: "Pista",
-    definition: "Sessão que determina a ordem de largada através das voltas mais rápidas.",
-  },
-  {
-    id: "pitstop",
-    term: "Pit stop",
-    category: "Pista",
-    definition: "Parada estratégica nos boxes para troca de pneus e eventuais reparos em menos de 2,5 segundos.",
-  },
-  {
-    id: "pneus",
-    term: "Pneus",
-    category: "Carro",
-    definition: "Compostos de borracha (Macio, Médio, Duro ou Chuva) que geram a aderência mecânica no asfalto.",
-  },
-  {
-    id: "aerodinamica",
-    term: "Aerodinâmica (Downforce & Arrasto)",
-    category: "Carro",
-    definition: "Controle do fluxo de ar para pressionar o carro contra o solo sem criar resistência excessiva.",
-  },
-  {
-    id: "unidade_potencia",
-    term: "Unidade de potência",
-    category: "Carro",
-    definition: "Conjunto propulsor híbrido formado pelo motor V6 turbo e sistemas elétricos de recuperação de energia.",
-  },
-  {
-    id: "campeonato_pilotos",
-    term: "Campeonato de pilotos",
-    category: "Campeonato",
-    definition: "Disputa individual onde os pilotos acumulam pontos a cada corrida até a consagração do campeão mundial.",
-  },
-  {
-    id: "campeonato_construtores",
-    term: "Campeonato de construtores",
-    category: "Campeonato",
-    definition: "Classificação que soma os pontos dos dois carros de cada equipe pelo troféu anual.",
-  },
-  {
-    id: "bandeira_quadriculada",
-    term: "Bandeira quadriculada",
-    category: "Pista",
-    definition: "Sinal visual oficial agitado na linha de chegada indicando o encerramento da corrida.",
   },
 ]
 
@@ -174,6 +210,14 @@ export interface ModuleScene {
     | "mod3_pitstop_strategy"
     | "mod3_flags_safety_car"
     | "mod3_finish_championship"
+    | "mod4_roles_strategy"
+    | "mod4_tire_choice_sim"
+    | "mod4_pitstop_timing_calc"
+    | "mod4_safety_car_rain"
+    | "mod4_telemetry_radio_data"
+    | "mod4_alternate_plans"
+    | "mod4_strategist_challenge"
+    | "mod4_strategic_thinking_summary"
 }
 
 export const CINEMATIC_MUSIC_URL = "/audio/novatos/modulo1/trilha_cinematografica.mp3"
@@ -319,6 +363,101 @@ export const MODULE_1_SCENES: ModuleScene[] = [
 // ============================================================================
 // CENAS DO MÓDULO 3 — DENTRO DA CORRIDA: APRENDA A ACOMPANHAR A TRANSMISSÃO
 // ============================================================================
+
+// ============================================================================
+// CENAS DO MÓDULO 4 — A MENTE POR TRÁS DA CORRIDA: ESTRATÉGIA, PNEUS E BOXES
+// ============================================================================
+export const MODULE_4_SCENES: ModuleScene[] = [
+  {
+    id: "m4_c1",
+    number: 1,
+    title: "A Estratégia Antes da Largada",
+    subtitle: "Quem participa das decisões no pit wall",
+    imageUrl: "/backgrounds/bg-mercedes.webp",
+    audioUrl: "/audio/novatos/modulo4/cena01.mp3",
+    narrationTranscript:
+      "Bem-vindo de volta ao Novatos na F1! Hoje você vai descobrir algo que nem sempre aparece nas imagens da transmissão: a batalha de estratégia. Uma equipe não precisa apenas construir um carro rápido. Ela precisa decidir como usar os pneus, quando parar, como reagir aos rivais e como adaptar seus planos ao que acontece na pista. O piloto sente o comportamento do carro, o engenheiro de corrida mantém a comunicação e os estrategistas analisam cenários, tempos e oportunidades. E atenção: nem sempre o plano mais rápido no papel é o melhor quando a corrida começa.",
+    visualEffectType: "mod4_roles_strategy",
+  },
+  {
+    id: "m4_c2",
+    number: 2,
+    title: "Pneus: Tempo Ganho e Perdido",
+    subtitle: "Aderência, temperatura, degradação e desgaste",
+    imageUrl: "/backgrounds/bg-ferrari.webp",
+    audioUrl: "/audio/novatos/modulo4/cena02.mp3",
+    narrationTranscript:
+      "Os pneus são uma das peças mais importantes do quebra-cabeça. Eles são o contato do carro com o asfalto e influenciam diretamente a aderência, a frenagem e a velocidade nas curvas. Em condições de pista seca, você normalmente verá os compostos macio, médio e duro. O macio costuma oferecer mais desempenho em determinadas condições, mas pode perder rendimento mais rapidamente. O duro tende a resistir melhor em algumas situações, embora nem sempre seja o mais rápido. O médio fica entre essas características, mas tudo depende do circuito, da temperatura, do carro e do modo como o piloto utiliza os pneus.",
+    visualEffectType: "mod4_tire_choice_sim",
+  },
+  {
+    id: "m4_c3",
+    number: 3,
+    title: "Pit Stop: A Hora de Parar",
+    subtitle: "Janela tática, tempo total perdido e tráfego",
+    imageUrl: "/backgrounds/bg-mclaren.webp",
+    audioUrl: "/audio/novatos/modulo4/cena03.mp3",
+    narrationTranscript:
+      "Uma parada nos boxes parece simples: o carro entra, a equipe troca os pneus e ele volta para a pista. Mas a decisão vai muito além do tempo que os mecânicos levam para fazer o serviço. O estrategista precisa considerar o tempo gasto no pit lane, o limite de velocidade, o trânsito na pista, a posição dos rivais, o desgaste dos pneus e o ritmo esperado depois da parada. Um pit stop muito cedo pode obrigar o piloto a administrar os pneus por muito tempo. Uma parada tardia pode custar posições se os rivais aproveitarem a oportunidade.",
+    visualEffectType: "mod4_pitstop_timing_calc",
+  },
+  {
+    id: "m4_c4",
+    number: 4,
+    title: "Safety Car, VSC e Chuva",
+    subtitle: "Quando as condições de pista mudam o plano",
+    imageUrl: "/backgrounds/bg-audi.webp",
+    audioUrl: "/audio/novatos/modulo4/cena04.mp3",
+    narrationTranscript:
+      "Imagine que sua equipe planejou parar daqui a cinco voltas. De repente, aparece um Safety Car. Os carros reduzem a velocidade e a corrida passa a ser controlada de outra maneira. Uma parada pode ficar mais atraente porque o custo relativo de entrar nos boxes pode mudar. Mas isso não significa que parar seja sempre a decisão certa. A equipe precisa considerar a posição, o estado dos pneus, a estratégia dos rivais e as regras em vigor naquele momento.",
+    visualEffectType: "mod4_safety_car_rain",
+  },
+  {
+    id: "m4_c5",
+    number: 5,
+    title: "Rádio e Telemetria",
+    subtitle: "O que os dados e setores revelam aos engenheiros",
+    imageUrl: "/backgrounds/bg-aston.webp",
+    audioUrl: "/audio/novatos/modulo4/cena05.mp3",
+    narrationTranscript:
+      "Enquanto você acompanha a transmissão, a equipe está analisando muito mais do que a posição do carro. Ela compara os tempos por volta, observa os setores, avalia a diferença para os rivais, acompanha o comportamento dos pneus e escuta o que o piloto relata. Um piloto pode dizer que está perdendo aderência na saída das curvas. Os dados ajudam a equipe a verificar se o ritmo realmente caiu e se o problema parece estar aumentando. Nenhum indicador, sozinho, conta a história inteira.",
+    visualEffectType: "mod4_telemetry_radio_data",
+  },
+  {
+    id: "m4_c6",
+    number: 6,
+    title: "Planos Alternativos e Resposta",
+    subtitle: "Como uma equipe reage quando o plano A falha",
+    imageUrl: "/backgrounds/bg-haas.webp",
+    audioUrl: "/audio/novatos/modulo4/cena06.mp3",
+    narrationTranscript:
+      "Uma estratégia não é uma promessa de que tudo vai acontecer exatamente como planejado. É um plano que precisa ser atualizado. Um rival pode parar antes do esperado, um pneu pode perder rendimento, a chuva pode chegar ou um Safety Car pode mudar as oportunidades. Uma equipe preparada trabalha com alternativas e tenta responder sem perder de vista a posição, o ritmo e as condições do carro.",
+    visualEffectType: "mod4_alternate_plans",
+  },
+  {
+    id: "m4_c7",
+    number: 7,
+    title: "Desafio do Estrategista",
+    subtitle: "Sua decisão em tempo real pode mudar a corrida",
+    imageUrl: "/backgrounds/bg-williams.webp",
+    audioUrl: "/audio/novatos/modulo4/cena07.mp3",
+    narrationTranscript:
+      "Chegou a sua vez. Você está no muro dos boxes e precisa ajudar a equipe a tomar uma decisão. Observe os pneus, a posição, os tempos e o que está acontecendo na pista. Não procure uma resposta mágica: procure a decisão mais coerente com as informações disponíveis. Preparado? Vamos para a corrida!",
+    visualEffectType: "mod4_strategist_challenge",
+  },
+  {
+    id: "m4_c8",
+    number: 8,
+    title: "Pense Como um Estrategista",
+    subtitle: "Síntese dos cinco pilares fundamentais da vitória",
+    imageUrl: "/backgrounds/bg-alpine.webp",
+    audioUrl: "/audio/novatos/modulo4/cena08.mp3",
+    narrationTranscript:
+      "Você chegou ao final da nossa aula sobre estratégia de corrida! Agora sabe que pneus não são apenas pneus, que uma parada envolve muito mais do que a troca em si e que os dados precisam ser interpretados em conjunto. Você também viu como Safety Car, chuva e ritmo dos rivais podem mudar um plano. A estratégia perfeita não existe em todas as situações. O que existe é uma equipe preparada para avaliar informações, entender os riscos e tomar a melhor decisão possível com o que sabe naquele momento. Agora, vamos testar o que você aprendeu!",
+    visualEffectType: "mod4_strategic_thinking_summary",
+  },
+]
+
 export const MODULE_3_SCENES: ModuleScene[] = [
   {
     id: "m3_c1",
@@ -619,6 +758,143 @@ export const MODULE_1_QUIZ_QUESTIONS: QuizQuestion[] = [
 // ============================================================================
 // QUESTIONÁRIO FINAL — MÓDULO 3 (10 PERGUNTAS EQUILIBRADAS)
 // ============================================================================
+
+// ============================================================================
+// QUESTIONÁRIO FINAL — MÓDULO 4 (10 PERGUNTAS DE ESTRATÉGIA)
+// ============================================================================
+export const MODULE_4_QUIZ_QUESTIONS: QuizQuestion[] = [
+  {
+    id: 1,
+    question: "Pergunta 1 — Qual é o principal objetivo da estratégia de corrida?",
+    options: [
+      { letter: "A", text: "Fazer todas as paradas o mais rápido possível, independentemente do cenário." },
+      { letter: "B", text: "Tomar decisões para buscar o melhor resultado possível considerando ritmo, pneus, rivais e condições." },
+      { letter: "C", text: "Usar sempre o pneu macio." },
+      { letter: "D", text: "Evitar qualquer mudança no plano inicial." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Correto! A estratégia busca maximizar o resultado final integrando velocidade, ritmo de prova, degradação dos pneus e resposta aos concorrentes.",
+  },
+  {
+    id: 2,
+    question: "Pergunta 2 — O que significa degradação dos pneus?",
+    options: [
+      { letter: "A", text: "A redução do desempenho dos pneus ao longo do uso." },
+      { letter: "B", text: "A perda automática de todas as posições." },
+      { letter: "C", text: "A redução da velocidade máxima permitida no pit lane." },
+      { letter: "D", text: "A troca obrigatória de pneus em toda volta." },
+    ],
+    correctLetter: "A",
+    feedback:
+      "Exatamente! Degradação é a queda gradual de aderência e tempo de volta provocada pelo ciclo térmico e atrito da borracha no asfalto.",
+  },
+  {
+    id: 3,
+    question: "Pergunta 3 — O que é um undercut?",
+    options: [
+      { letter: "A", text: "Permanecer na pista até o final sem parar." },
+      { letter: "B", text: "Parar depois do rival e tentar ganhar tempo apenas na volta de entrada." },
+      { letter: "C", text: "Parar antes do rival para tentar obter vantagem com pneus novos." },
+      { letter: "D", text: "Ultrapassar obrigatoriamente outro carro dentro do pit lane." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Perfeito! O undercut antecipa a parada para aproveitar a borracha nova imediata e ganhar a posição quando o concorrente fizer seu pit stop.",
+  },
+  {
+    id: 4,
+    question: "Pergunta 4 — O que é um overcut?",
+    options: [
+      { letter: "A", text: "Uma tentativa de ganhar vantagem permanecendo na pista enquanto o rival para, quando as condições favorecem essa opção." },
+      { letter: "B", text: "Uma penalidade por ultrapassagem." },
+      { letter: "C", text: "Um tipo de pneu de chuva." },
+      { letter: "D", text: "Uma parada feita exclusivamente para trocar o volante." },
+    ],
+    correctLetter: "A",
+    feedback:
+      "Isso mesmo! O overcut estende o stint na pista com ar limpo, ritmo forte ou torcendo por um Safety Car favorável.",
+  },
+  {
+    id: 5,
+    question: "Pergunta 5 — Por que o tempo de uma parada não é apenas o tempo gasto trocando os pneus?",
+    options: [
+      { letter: "A", text: "Porque o piloto precisa abandonar a corrida." },
+      { letter: "B", text: "Porque o custo também inclui percorrer o pit lane e retornar à pista, além dos efeitos de tráfego e posição." },
+      { letter: "C", text: "Porque todas as equipes têm o mesmo tempo de parada total." },
+      { letter: "D", text: "Porque o tempo de serviço nunca influencia a corrida." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Exatamente! A perda total inclui o tempo em velocidade limitada (80 km/h) no pit lane, desaceleração na entrada, parada física e reinserção na pista.",
+  },
+  {
+    id: 6,
+    question: "Pergunta 6 — O que é o Safety Car?",
+    options: [
+      { letter: "A", text: "Um modo de aumentar a velocidade dos carros." },
+      { letter: "B", text: "Um sistema que permite ultrapassagens livres." },
+      { letter: "C", text: "Um procedimento de neutralização da corrida com carro de segurança, segundo as regras aplicáveis." },
+      { letter: "D", text: "Um tipo de pneu intermediário." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Correto! O Safety Car entra na pista para neutralizar o perigo, reduzindo e agrupando o pelotão de forma controlada.",
+  },
+  {
+    id: 7,
+    question: "Pergunta 7 — Por que uma equipe compara várias voltas em vez de avaliar somente uma?",
+    options: [
+      { letter: "A", text: "Porque uma única volta sempre é inválida." },
+      { letter: "B", text: "Porque várias voltas ajudam a identificar tendências de ritmo e possíveis mudanças no desempenho." },
+      { letter: "C", text: "Porque os pneus só funcionam em voltas pares." },
+      { letter: "D", text: "Porque o rádio não funciona em uma volta isolada." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Muito bem! Uma única volta pode sofrer com tráfego ou erros pontuais; uma sequência de voltas expõe a curva real de degradação e consistência.",
+  },
+  {
+    id: 8,
+    question: "Pergunta 8 — O que a idade dos pneus permite concluir?",
+    options: [
+      { letter: "A", text: "Permite saber com certeza o vencedor." },
+      { letter: "B", text: "Determina sozinha a hora exata da parada." },
+      { letter: "C", text: "É uma informação útil, mas precisa ser interpretada junto com ritmo, condições e outros dados." },
+      { letter: "D", text: "Mostra automaticamente a temperatura exata do asfalto." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Exato! Saber quantas voltas o pneu tem é um indicador valioso, mas deve ser cruzado com o feedback do piloto, tempos de setor e telemetria.",
+  },
+  {
+    id: 9,
+    question: "Pergunta 9 — A chuva começa a cair durante uma corrida. Qual é a atitude estratégica mais coerente?",
+    options: [
+      { letter: "A", text: "Manter obrigatoriamente o plano inicial." },
+      { letter: "B", text: "Considerar as condições da pista, a aderência, a previsão, os pneus e o momento adequado para agir." },
+      { letter: "C", text: "Trocar imediatamente todos os componentes do carro." },
+      { letter: "D", text: "Escolher sempre pneus de chuva extrema, independentemente das condições." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Perfeito! A decisão de mudar para pneus de chuva depende da intensidade da água, do radar meteorológico e do ponto de crossover de aderência.",
+  },
+  {
+    id: 10,
+    question: "Pergunta 10 — O que caracteriza uma boa decisão estratégica?",
+    options: [
+      { letter: "A", text: "Ser sempre a mesma em todas as corridas." },
+      { letter: "B", text: "Ignorar os rivais e confiar apenas na posição atual." },
+      { letter: "C", text: "Ser tomada com base nas informações disponíveis, considerando vantagens, riscos e possíveis mudanças." },
+      { letter: "D", text: "Garantir a vitória antes da largada." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Parabéns! Na Fórmula 1, uma grande estratégia avalia riscos e probabilidades em tempo real, mantendo flexibilidade para reagir a qualquer imprevisto.",
+  },
+]
+
 export const MODULE_3_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 1,
@@ -891,6 +1167,7 @@ export const MODULE_2_QUIZ_QUESTIONS: QuizQuestion[] = [
 const STORAGE_MOD1_KEY = "f1_novatos_mod1_state_v1"
 const STORAGE_MOD2_KEY = "f1_novatos_mod2_state_v1"
 const STORAGE_MOD3_KEY = "f1_novatos_mod3_state_v1"
+const STORAGE_MOD4_KEY = "f1_novatos_mod4_state_v1"
 const STORAGE_ACTIVE_MODULE_KEY = "f1_novatos_active_module_v1"
 
 interface PersistedModuleState {
@@ -924,22 +1201,24 @@ export function NovatosPage() {
   // ==========================================================================
   // ESTADO DO MÓDULO ATIVO (MÓDULO 1 OU MÓDULO 2)
   // ==========================================================================
-  const [activeModuleId, setActiveModuleId] = useState<1 | 2 | 3>(() => {
+  const [activeModuleId, setActiveModuleId] = useState<1 | 2 | 3 | 4>(() => {
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search)
       const modParam = urlParams.get("modulo") || urlParams.get("mod")
+      if (modParam === "4") return 4
       if (modParam === "3") return 3
       if (modParam === "2") return 2
       const saved = localStorage.getItem(STORAGE_ACTIVE_MODULE_KEY)
+      if (saved === "4") return 4
       if (saved === "3") return 3
       if (saved === "2") return 2
     }
     return 1
   })
 
-  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : activeModuleId === 2 ? MODULE_2_SCENES : MODULE_3_SCENES
-  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : activeModuleId === 2 ? MODULE_2_QUIZ_QUESTIONS : MODULE_3_QUIZ_QUESTIONS
-  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : activeModuleId === 2 ? STORAGE_MOD2_KEY : STORAGE_MOD3_KEY
+  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : activeModuleId === 2 ? MODULE_2_SCENES : activeModuleId === 3 ? MODULE_3_SCENES : MODULE_4_SCENES
+  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : activeModuleId === 2 ? MODULE_2_QUIZ_QUESTIONS : activeModuleId === 3 ? MODULE_3_QUIZ_QUESTIONS : MODULE_4_QUIZ_QUESTIONS
+  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : activeModuleId === 2 ? STORAGE_MOD2_KEY : activeModuleId === 3 ? STORAGE_MOD3_KEY : STORAGE_MOD4_KEY
 
   // Stage: "opening" (Hero Landing), "lesson" (Scenes 1-8), "quiz" (Final Test)
   const [viewStage, setViewStage] = useState<"opening" | "lesson" | "quiz">("opening")
@@ -998,6 +1277,18 @@ export function NovatosPage() {
   const [m3TowerSelected, setM3TowerSelected] = useState<"VER" | "NOR" | "LEC" | "HAM">("LEC")
   const [m3StrategyPicked, setM3StrategyPicked] = useState<"undercut" | "overcut" | "traffic">("undercut")
   const [m3IncidentScenario, setM3IncidentScenario] = useState<1 | 2 | 3>(1)
+
+  // Interactive Scene States — Module 4
+  const [m4Role, setM4Role] = useState<"pilot" | "engineer" | "strategist" | "pitcrew">("strategist")
+  const [m4RoleQuestionAnswer, setM4RoleQuestionAnswer] = useState<string | null>(null)
+  const [m4TireScenario, setM4TireScenario] = useState<1 | 2 | 3>(1)
+  const [m4PitChoice, setM4PitChoice] = useState<"now" | "stay3" | "wait_info" | null>(null)
+  const [m4RainChoice, setM4RainChoice] = useState<"slick" | "inter" | "wait" | null>(null)
+  const [m4ShowDataAnalysis, setM4ShowDataAnalysis] = useState<boolean>(false)
+  const [m4AlternatePlan, setM4AlternatePlan] = useState<"anticipate" | "stay" | "more_data" | null>(null)
+  const [m4ChallengeStep, setM4ChallengeStep] = useState<1 | 2 | 3 | 4>(1)
+  const [m4ChallengeP1, setM4ChallengeP1] = useState<"stop" | "stay" | "evaluate" | null>(null)
+  const [m4ChallengeP2, setM4ChallengeP2] = useState<"protect" | "attack" | "data" | null>(null)
 
   // Quiz State
   const [quizQuestionIndex, setQuizQuestionIndex] = useState(0)
@@ -1104,7 +1395,7 @@ export function NovatosPage() {
 
   // Troca de módulo (Módulo 1 vs Módulo 2)
   const handleSelectModule = useCallback(
-    (modId: 1 | 2 | 3) => {
+    (modId: 1 | 2 | 3 | 4) => {
       if (modId === activeModuleId) return
       // Para áudios e timers
       if (countdownTimerRef.current) {
@@ -1132,8 +1423,8 @@ export function NovatosPage() {
       }
 
       // Carrega estado do novo módulo
-      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : modId === 2 ? STORAGE_MOD2_KEY : STORAGE_MOD3_KEY
-      const maxLen = modId === 1 ? MODULE_1_SCENES.length : modId === 2 ? MODULE_2_SCENES.length : MODULE_3_SCENES.length
+      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : modId === 2 ? STORAGE_MOD2_KEY : modId === 3 ? STORAGE_MOD3_KEY : STORAGE_MOD4_KEY
+      const maxLen = modId === 1 ? MODULE_1_SCENES.length : modId === 2 ? MODULE_2_SCENES.length : modId === 3 ? MODULE_3_SCENES.length : MODULE_4_SCENES.length
       const s = loadPersistedState(targetKey)
       setVisitedScenes(s.visitedScenes)
       setSceneIndex(s.lastSceneIndex < maxLen ? s.lastSceneIndex : 0)
@@ -1251,6 +1542,16 @@ export function NovatosPage() {
       setM3TowerSelected("LEC")
       setM3StrategyPicked("undercut")
       setM3IncidentScenario(1)
+      setM4Role("strategist")
+      setM4RoleQuestionAnswer(null)
+      setM4TireScenario(1)
+      setM4PitChoice(null)
+      setM4RainChoice(null)
+      setM4ShowDataAnalysis(false)
+      setM4AlternatePlan(null)
+      setM4ChallengeStep(1)
+      setM4ChallengeP1(null)
+      setM4ChallengeP2(null)
     },
     [currentScenes.length, stopAllAudio]
   )
@@ -2006,6 +2307,607 @@ export function NovatosPage() {
       }
     }
     // ------------------------------------------------------------------------
+    // MÓDULO 4: A MENTE POR TRÁS DA CORRIDA: ESTRATÉGIA, PNEUS E BOXES
+    // ------------------------------------------------------------------------
+    if (activeModuleId === 4) {
+      // CENA 1: A ESTRATÉGIA COMEÇA ANTES DA LARGADA
+      if (currentScene.visualEffectType === "mod4_roles_strategy") {
+        const roles = [
+          { id: "pilot", title: "Piloto", desc: "Sente o comportamento do carro, a aderência na pista e relata o desgaste da borracha curva a curva.", role: "Condução e Feedback" },
+          { id: "engineer", title: "Engenheiro de Corrida", desc: "A voz no rádio. Traduz os pedidos do piloto e transmite as ordens técnicas e deltas de tempo.", role: "Comunicação e Operação" },
+          { id: "strategist", title: "Estrategistas", desc: "Ficam no muro dos boxes e na fábrica. Simulam cenários matemáticos, paradas e o momento ideal do pit stop.", role: "Decisão e Modelagem" },
+          { id: "pitcrew", title: "Equipe dos Boxes", desc: "Mais de 20 mecânicos sincronizados trocam 4 pneus em menos de 2,5 segundos sob pressão extrema.", role: "Execução do Pit Stop" },
+        ]
+
+        const currentRole = roles.find((r) => r.id === m4Role) || roles[2]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Quem Faz o Quê?</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">PIT WALL</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-1.5 mb-2.5">
+              {roles.map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => setM4Role(r.id as any)}
+                  className={cn(
+                    "py-1.5 px-2 rounded-lg text-[10px] font-black uppercase text-left transition-all cursor-pointer",
+                    m4Role === r.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {r.title}
+                </button>
+              ))}
+            </div>
+
+            <div className="bg-white/5 p-2 rounded-lg border border-white/10 mb-2.5 text-xs">
+              <span className="font-bold text-cyan-400 block mb-0.5">{currentRole.role}:</span>
+              <p className="text-[11px] text-zinc-300 leading-snug">{currentRole.desc}</p>
+            </div>
+
+            {/* Pergunta de Fixação */}
+            <div className="pt-2 border-t border-white/10">
+              <p className="text-[11px] font-bold text-amber-300 mb-1.5">
+                Quem avalia os cenários de parada e compara diferentes planos de corrida?
+              </p>
+              <div className="grid grid-cols-2 gap-1 mb-1.5">
+                {[
+                  { id: "pilot", text: "Piloto" },
+                  { id: "strategist", text: "Estrategistas" },
+                  { id: "pitcrew", text: "Equipe dos Boxes" },
+                  { id: "engineer", text: "Engenheiro" },
+                ].map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setM4RoleQuestionAnswer(opt.id)}
+                    className={cn(
+                      "py-1 px-1.5 rounded text-[10px] font-mono transition-all cursor-pointer text-center",
+                      m4RoleQuestionAnswer === opt.id
+                        ? opt.id === "strategist"
+                          ? "bg-emerald-600 text-white font-bold"
+                          : "bg-red-900/80 text-white"
+                        : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                    )}
+                  >
+                    {opt.text}
+                  </button>
+                ))}
+              </div>
+              {m4RoleQuestionAnswer && (
+                <div className="text-[10px] text-zinc-300 bg-white/5 p-1.5 rounded border border-white/10 leading-tight">
+                  {m4RoleQuestionAnswer === "strategist"
+                    ? "Correto! Os estrategistas comparam modelos de ritmo, tráfego e degrau de pneus para definir o plano ideal."
+                    : "Quase lá. O piloto e o engenheiro fornecem dados em tempo real, mas a modelagem dos planos cabe aos estrategistas."}
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 2: PNEUS: TEMPO GANHO E PERDIDO
+      if (currentScene.visualEffectType === "mod4_tire_choice_sim") {
+        const scenarios = [
+          {
+            id: 1 as const,
+            title: "1. Poucas Voltas Restantes (Buscar Desempenho)",
+            recom: "Macio (Soft)",
+            logic: "Máxima aderência imediata para atacar nas voltas finais.",
+            advantage: "Ganha até 1 segundo por volta em relação a pneus velhos.",
+            risk: "Superaquecimento rápido se pressionar demais em ar turbulento.",
+            extra: "Estrategista verifica se haverá voltas suficientes para ultrapassar antes de degradar.",
+            bars: { grip: 95, deg: 85, life: 30 },
+          },
+          {
+            id: 2 as const,
+            title: "2. Longo Trecho pela Frente (Foco em Durabilidade)",
+            recom: "Duro (Hard)",
+            logic: "Construção de borracha rígida para resistir a mais de 35 voltas.",
+            advantage: "Ritmo constante com degradação muito baixa.",
+            risk: "Demora mais voltas para atingir a temperatura ideal de funcionamento.",
+            extra: "Estrategista monitora se o asfalto está quente o bastante para dar aderência ao composto duro.",
+            bars: { grip: 70, deg: 30, life: 95 },
+          },
+          {
+            id: 3 as const,
+            title: "3. Pista com Chuva e Baixa Aderência",
+            recom: "Intermediário / Chuva Extrema",
+            logic: "Compostos com sulcos para evacuar água e evitar aquaplanagem.",
+            advantage: "Permite tracionar e frear em segurança no asfalto molhado.",
+            risk: "Se a pista secar rápido, o pneu superaquece e se desfaz em poucas voltas.",
+            extra: "Estrategista vigia o radar meteorológico para antecipar o crossover.",
+            bars: { grip: 60, deg: 50, life: 60 },
+          },
+        ]
+
+        const scn = scenarios.find((s) => s.id === m4TireScenario) || scenarios[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Qual Pneu Escolher?</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">COMPOSTOS</span>
+            </div>
+
+            <div className="space-y-1 mb-2.5">
+              {scenarios.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setM4TireScenario(s.id)}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer",
+                    m4TireScenario === s.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {s.title}
+                </button>
+              ))}
+            </div>
+
+            {/* Barras Didáticas Qualitativas */}
+            <div className="bg-white/5 p-2.5 rounded-lg border border-white/10 mb-2 space-y-1.5 text-[10px] font-mono">
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-400">Aderência Inicial:</span>
+                <div className="w-32 bg-white/10 rounded-full h-2 overflow-hidden">
+                  <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${scn.bars.grip}%` }} />
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-400">Sensibilidade ao Desgaste:</span>
+                <div className="w-32 bg-white/10 rounded-full h-2 overflow-hidden">
+                  <div className="bg-amber-500 h-full rounded-full" style={{ width: `${scn.bars.deg}%` }} />
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-400">Durabilidade em Voltas:</span>
+                <div className="w-32 bg-white/10 rounded-full h-2 overflow-hidden">
+                  <div className="bg-cyan-500 h-full rounded-full" style={{ width: `${scn.bars.life}%` }} />
+                </div>
+              </div>
+            </div>
+
+            <div className="text-[11px] text-zinc-300 space-y-1 bg-white/5 p-2 rounded-lg border border-white/10 leading-snug">
+              <span className="font-bold text-amber-300 block">Composto Recomendado: {scn.recom}</span>
+              <p><strong className="text-emerald-400">Vantagem:</strong> {scn.advantage}</p>
+              <p><strong className="text-rose-400">Risco:</strong> {scn.risk}</p>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 3: PIT STOP: QUANDO É A HORA DE PARAR?
+      if (currentScene.visualEffectType === "mod4_pitstop_timing_calc") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Simulação Didática</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">PIT STOP</span>
+            </div>
+
+            <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-xs text-zinc-200 mb-2.5 space-y-0.5 font-mono">
+              <div className="flex justify-between"><span>Posição Atual:</span><strong className="text-white">P4</strong></div>
+              <div className="flex justify-between"><span>Rival à Frente:</span><strong className="text-amber-400">P3 (+1.4s)</strong></div>
+              <div className="flex justify-between"><span>Voltas Restantes:</span><strong className="text-white">20 voltas</strong></div>
+              <div className="flex justify-between"><span>Perda Total no Pit:</span><strong className="text-rose-400">~22.0 segundos</strong></div>
+            </div>
+
+            <p className="text-[11px] text-zinc-300 mb-2 font-bold">
+              Seus pneus perdem ritmo e o rival não parou. Qual decisão tomar?
+            </p>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM4PitChoice("now")}
+                className={cn(
+                  "py-1.5 px-1 rounded text-[9px] font-black uppercase text-center transition-all cursor-pointer",
+                  m4PitChoice === "now" ? "bg-[#E10600] text-white" : "bg-white/10 text-zinc-300"
+                )}
+              >
+                Parar Agora (Undercut)
+              </button>
+              <button
+                type="button"
+                onClick={() => setM4PitChoice("stay3")}
+                className={cn(
+                  "py-1.5 px-1 rounded text-[9px] font-black uppercase text-center transition-all cursor-pointer",
+                  m4PitChoice === "stay3" ? "bg-[#E10600] text-white" : "bg-white/10 text-zinc-300"
+                )}
+              >
+                Ficar +3 Voltas
+              </button>
+              <button
+                type="button"
+                onClick={() => setM4PitChoice("wait_info")}
+                className={cn(
+                  "py-1.5 px-1 rounded text-[9px] font-black uppercase text-center transition-all cursor-pointer",
+                  m4PitChoice === "wait_info" ? "bg-[#E10600] text-white" : "bg-white/10 text-zinc-300"
+                )}
+              >
+                Aguardar Dados
+              </button>
+            </div>
+
+            {m4PitChoice && (
+              <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[11px] text-zinc-200 leading-snug mb-2">
+                {m4PitChoice === "now" && (
+                  <>
+                    <span className="font-bold text-emerald-400 block mb-0.5">Tentativa de Undercut:</span>
+                    Você coloca pneus novos e vira 1,5s mais rápido. Se sair livre de tráfego, assume o P3 quando o rival parar!
+                  </>
+                )}
+                {m4PitChoice === "stay3" && (
+                  <>
+                    <span className="font-bold text-amber-400 block mb-0.5">Aposta no Overcut:</span>
+                    Seus pneus continuam degradando, mas você torce por um Safety Car oportuno para economizar 10s no pit stop.
+                  </>
+                )}
+                {m4PitChoice === "wait_info" && (
+                  <>
+                    <span className="font-bold text-cyan-400 block mb-0.5">Cautela Tática:</span>
+                    A equipe monitora se outros carros que já pararam pegaram tráfego no pelotão intermediário antes de decidir.
+                  </>
+                )}
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setM4PitChoice(null)}
+              className="text-[10px] text-zinc-400 hover:text-white underline cursor-pointer block text-center w-full"
+            >
+              Reiniciar Cenário
+            </button>
+          </div>
+        )
+      }
+
+      // CENA 4: SAFETY CAR, VSC E BANDEIRAS
+      if (currentScene.visualEffectType === "mod4_safety_car_rain") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Imprevisto na Pista</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-blue-600 text-white font-black">A CHUVA CHEGOU!</span>
+            </div>
+
+            {/* Linha do Tempo Didática */}
+            <div className="p-1.5 rounded bg-white/5 border border-white/10 text-[9px] font-mono text-zinc-300 text-center uppercase tracking-wide mb-2.5">
+              Plano Inicial ➔ Chuva na Curva 4 ➔ Nova Avaliação ➔ Decisão
+            </div>
+
+            <p className="text-[11px] text-zinc-300 mb-2 leading-snug">
+              Pingos de chuva no setor 2, mas a reta ainda está seca. Alguns rivais continuam de slick. O que fazer?
+            </p>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM4RainChoice("slick")}
+                className={cn(
+                  "py-1.5 px-1 rounded text-[9px] font-black uppercase text-center transition-all cursor-pointer",
+                  m4RainChoice === "slick" ? "bg-[#E10600] text-white" : "bg-white/10 text-zinc-300"
+                )}
+              >
+                Manter Slick
+              </button>
+              <button
+                type="button"
+                onClick={() => setM4RainChoice("inter")}
+                className={cn(
+                  "py-1.5 px-1 rounded text-[9px] font-black uppercase text-center transition-all cursor-pointer",
+                  m4RainChoice === "inter" ? "bg-emerald-600 text-white" : "bg-white/10 text-zinc-300"
+                )}
+              >
+                Colocar Inter
+              </button>
+              <button
+                type="button"
+                onClick={() => setM4RainChoice("wait")}
+                className={cn(
+                  "py-1.5 px-1 rounded text-[9px] font-black uppercase text-center transition-all cursor-pointer",
+                  m4RainChoice === "wait" ? "bg-amber-600 text-white" : "bg-white/10 text-zinc-300"
+                )}
+              >
+                Aguardar Radar
+              </button>
+            </div>
+
+            {m4RainChoice && (
+              <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[11px] text-zinc-200 leading-snug">
+                {m4RainChoice === "slick" && (
+                  <p>Vantagem se a chuva parar rápido; mas alto risco de rodar se o asfalto encharcar.</p>
+                )}
+                {m4RainChoice === "inter" && (
+                  <p>Segurança total na chuva; mas se o sol abrir, os intermediários superaquecem e derretem em 3 voltas.</p>
+                )}
+                {m4RainChoice === "wait" && (
+                  <p>A equipe consulta a telemetria do radar de tempestade para não parar uma volta antes da hora.</p>
+                )}
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 5: RÁDIO, TELEMETRIA E O QUE OS DADOS REVELAM
+      if (currentScene.visualEffectType === "mod4_telemetry_radio_data") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Exemplo Ilustrativo</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-600 text-white font-black">TELEMETRIA</span>
+            </div>
+
+            <table className="w-full text-[11px] font-mono mb-2.5">
+              <thead>
+                <tr className="border-b border-white/15 text-zinc-400 text-[10px]">
+                  <th className="text-left pb-1">Indicador</th>
+                  <th className="text-right pb-1 text-white">Piloto A</th>
+                  <th className="text-right pb-1 text-cyan-300">Piloto B</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5 text-zinc-200">
+                <tr><td className="py-1">Volta anterior</td><td className="text-right">1:32.400</td><td className="text-right">1:32.700</td></tr>
+                <tr><td className="py-1">Volta atual</td><td className="text-right text-rose-400">1:33.100</td><td className="text-right text-emerald-400">1:32.800</td></tr>
+                <tr><td className="py-1">Idade pneus</td><td className="text-right">18 voltas</td><td className="text-right">8 voltas</td></tr>
+                <tr><td className="py-1">Posição</td><td className="text-right font-black">P4</td><td className="text-right font-black">P5</td></tr>
+              </tbody>
+            </table>
+
+            <p className="text-[11px] text-zinc-300 mb-2 font-bold">
+              O que você conclui com esses dados?
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setM4ShowDataAnalysis(!m4ShowDataAnalysis)}
+              className="w-full py-1.5 px-3 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer text-center mb-2"
+            >
+              {m4ShowDataAnalysis ? "Ocultar Análise" : "Mostrar Análise dos Estrategistas"}
+            </button>
+
+            {m4ShowDataAnalysis && (
+              <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[11px] text-zinc-200 space-y-1 leading-snug">
+                <p>• <strong>Piloto A perdeu 0,700s</strong> na volta atual, indicando provável queda no rendimento dos pneus de 18 voltas.</p>
+                <p>• <strong>Piloto B foi 0,300s mais rápido</strong> (1:32.800 vs 1:33.100) na volta atual, diminuindo a distância.</p>
+                <p className="text-amber-300 font-bold">• Mas atenção: uma única volta não prova tudo! É preciso avaliar mais setores para confirmar a tendência.</p>
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 6: COMUNICAÇÃO, ERROS E PLANOS ALTERNATIVOS
+      if (currentScene.visualEffectType === "mod4_alternate_plans") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Plano A ou Plano B?</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-600 text-white font-black">CONTINGÊNCIA</span>
+            </div>
+
+            <p className="text-[11px] text-zinc-300 mb-2.5 leading-snug">
+              Seu plano era parar na volta 30. Mas seu rival direto parou na volta 25 e está voando baixo com pneus novos.
+            </p>
+
+            <div className="space-y-1 mb-2.5">
+              {[
+                { id: "anticipate", title: "1. Antecipar a Parada Agora", desc: "Limita o dano do undercut do rival chamando o piloto imediatamente." },
+                { id: "stay", title: "2. Ficar na Pista e Acelerar", desc: "Tenta acumular ar limpo e parar no fim da prova com pneus bem mais novos." },
+                { id: "more_data", title: "3. Pedir Mais Dados de Rádio", desc: "Checa se o rival pegou tráfego antes de queimar o plano A." },
+              ].map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setM4AlternatePlan(opt.id as any)}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer",
+                    m4AlternatePlan === opt.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  <span className="block font-black">{opt.title}</span>
+                  <span className="block text-[9px] font-normal text-zinc-300">{opt.desc}</span>
+                </button>
+              ))}
+            </div>
+
+            {m4AlternatePlan && (
+              <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[11px] text-zinc-200 leading-snug mb-1">
+                <span className="font-bold text-amber-300 block mb-0.5">Avaliação da Escolha:</span>
+                Toda decisão envolve risco. Antecipar reduz a perda direta, mas encurta a vida dos pneus no último trecho. Ficar na pista exige ar livre absoluto.
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 7: DESAFIO DO ESTRATEGISTA: SUA DECISÃO PODE MUDAR A CORRIDA
+      if (currentScene.visualEffectType === "mod4_strategist_challenge") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Desafio Interativo</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-600 text-white font-black">
+                ETAPA {m4ChallengeStep} DE 4
+              </span>
+            </div>
+
+            {/* ETAPA 1: ESCOLHA INICIAL */}
+            {m4ChallengeStep === 1 && (
+              <div className="space-y-2">
+                <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[11px] font-mono">
+                  <div>• 10 voltas restantes | Seu piloto em P3</div>
+                  <div>• Rival em P4 a 2,4s acabou de colocar pneus novos</div>
+                  <div>• Seu piloto está com Médios de 15 voltas perdendo ritmo</div>
+                </div>
+
+                <p className="text-[11px] text-white font-bold">Qual deve ser a prioridade da equipe?</p>
+
+                <div className="space-y-1">
+                  {[
+                    { id: "stop", label: "Parar imediatamente para defender" },
+                    { id: "stay", label: "Permanecer na pista e administrar o ritmo" },
+                    { id: "evaluate", label: "Avaliar o ritmo do rival antes de confirmar" },
+                  ].map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setM4ChallengeP1(opt.id as any)}
+                      className={cn(
+                        "w-full text-left py-1.5 px-2 rounded text-[10px] font-mono transition-all cursor-pointer",
+                        m4ChallengeP1 === opt.id ? "bg-[#E10600] text-white font-bold" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                      )}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+
+                {m4ChallengeP1 && (
+                  <button
+                    type="button"
+                    onClick={() => setM4ChallengeStep(2)}
+                    className="w-full py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer text-center"
+                  >
+                    Confirmar e Ver Próxima Volta ➔
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* ETAPA 2: NOVO ACONTECIMENTO */}
+            {m4ChallengeStep === 2 && (
+              <div className="space-y-2">
+                <div className="p-2 rounded-lg bg-amber-950/60 border border-amber-500/40 text-[11px] text-amber-200">
+                  <span className="font-bold block text-amber-300 mb-0.5">⚠️ Volta 50/57: O Rival Atacou!</span>
+                  O rival fez a volta mais rápida da prova e a diferença caiu de 2,4s para 1,1s! Seus pneus traseiros começam a deslizar na curva 9.
+                </div>
+
+                <p className="text-[11px] text-white font-bold">A situação mudou. Como você reage?</p>
+
+                <button
+                  type="button"
+                  onClick={() => setM4ChallengeStep(3)}
+                  className="w-full py-1.5 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer text-center"
+                >
+                  Tomar Decisão Final de Corrida ➔
+                </button>
+              </div>
+            )}
+
+            {/* ETAPA 3: DECISÃO FINAL */}
+            {m4ChallengeStep === 3 && (
+              <div className="space-y-2">
+                <p className="text-[11px] text-white font-bold">Escolha sua ação com a justificativa:</p>
+
+                <div className="space-y-1">
+                  {[
+                    { id: "protect", label: "“Quero proteger a posição na pista até o final.”" },
+                    { id: "attack", label: "“Quero buscar uma oportunidade de parada estratégica.”" },
+                    { id: "data", label: "“Preciso de mais dados de rádio antes de arriscar.”" },
+                  ].map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setM4ChallengeP2(opt.id as any)}
+                      className={cn(
+                        "w-full text-left py-1.5 px-2 rounded text-[10px] font-mono transition-all cursor-pointer",
+                        m4ChallengeP2 === opt.id ? "bg-[#E10600] text-white font-bold" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                      )}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+
+                {m4ChallengeP2 && (
+                  <button
+                    type="button"
+                    onClick={() => setM4ChallengeStep(4)}
+                    className="w-full py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer text-center"
+                  >
+                    Gerar Relatório de Estratégia 📊
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* ETAPA 4: RELATÓRIO DO ESTRATEGISTA */}
+            {m4ChallengeStep === 4 && (
+              <div className="space-y-2">
+                <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[10px] space-y-1 leading-snug">
+                  <div className="font-black text-cyan-300 uppercase">Relatório de Decisão do Estrategista</div>
+                  <div>• <strong>Ação:</strong> {m4ChallengeP2 === "protect" ? "Defesa de Posição na Pista" : m4ChallengeP2 === "attack" ? "Parada Agressiva de Pneus Novos" : "Gestão Baseada em Dados"}</div>
+                  <div>• <strong>Vantagem:</strong> Evita a perda garantida de 22s no pit lane mantendo o carro na frente na pista.</div>
+                  <div>• <strong>Risco:</strong> Vulnerabilidade contra o DRS do adversário na volta final.</div>
+                  <div>• <strong>Lição:</strong> Não existe resposta mágica; toda decisão em F1 gerencia probabilidades e riscos.</div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setM4ChallengeStep(1)
+                    setM4ChallengeP1(null)
+                    setM4ChallengeP2(null)
+                  }}
+                  className="w-full py-1 text-[10px] text-zinc-400 hover:text-white underline cursor-pointer text-center block"
+                >
+                  Recomeçar Desafio
+                </button>
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 8: RESUMO: PENSE COMO UM ESTRATEGISTA
+      if (currentScene.visualEffectType === "mod4_strategic_thinking_summary") {
+        const pillars = [
+          "1. A estratégia é uma decisão coletiva de equipe.",
+          "2. Pneus influenciam ritmo, aderência e durabilidade.",
+          "3. Pit stops envolvem custo total, tráfego e posição.",
+          "4. Dados e rádio ajudam a interpretar tendências.",
+          "5. Um bom plano precisa se adaptar aos imprevistos.",
+        ]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Cinco Pilares Fundamentais</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-600 text-white font-black">SÍNTESE</span>
+            </div>
+
+            <div className="space-y-1.5 mb-3">
+              {pillars.map((p, idx) => (
+                <div key={idx} className="bg-white/5 py-1 px-2 rounded border border-white/10 text-[10px] text-zinc-200">
+                  {p}
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                stopAllAudio()
+                setViewStage("quiz")
+              }}
+              className="w-full py-2 px-3 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider shadow-[0_0_20px_rgba(225,6,0,0.6)] transition-all cursor-pointer text-center"
+            >
+              Fazer o Quiz Final (10 Perguntas)
+            </button>
+          </div>
+        )
+      }
+    }
+
+    // ------------------------------------------------------------------------
     // MÓDULO 3: DENTRO DA CORRIDA: APRENDA A ACOMPANHAR UMA TRANSMISSÃO
     // ------------------------------------------------------------------------
     if (activeModuleId === 3) {
@@ -2532,6 +3434,607 @@ export function NovatosPage() {
         )
       }
     }
+    // ------------------------------------------------------------------------
+    // MÓDULO 4: A MENTE POR TRÁS DA CORRIDA: ESTRATÉGIA, PNEUS E BOXES
+    // ------------------------------------------------------------------------
+    if (activeModuleId === 4) {
+      // CENA 1: A ESTRATÉGIA COMEÇA ANTES DA LARGADA
+      if (currentScene.visualEffectType === "mod4_roles_strategy") {
+        const roles = [
+          { id: "pilot", title: "Piloto", desc: "Sente o comportamento do carro, a aderência na pista e relata o desgaste da borracha curva a curva.", role: "Condução e Feedback" },
+          { id: "engineer", title: "Engenheiro de Corrida", desc: "A voz no rádio. Traduz os pedidos do piloto e transmite as ordens técnicas e deltas de tempo.", role: "Comunicação e Operação" },
+          { id: "strategist", title: "Estrategistas", desc: "Ficam no muro dos boxes e na fábrica. Simulam cenários matemáticos, paradas e o momento ideal do pit stop.", role: "Decisão e Modelagem" },
+          { id: "pitcrew", title: "Equipe dos Boxes", desc: "Mais de 20 mecânicos sincronizados trocam 4 pneus em menos de 2,5 segundos sob pressão extrema.", role: "Execução do Pit Stop" },
+        ]
+
+        const currentRole = roles.find((r) => r.id === m4Role) || roles[2]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Quem Faz o Quê?</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">PIT WALL</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-1.5 mb-2.5">
+              {roles.map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => setM4Role(r.id as any)}
+                  className={cn(
+                    "py-1.5 px-2 rounded-lg text-[10px] font-black uppercase text-left transition-all cursor-pointer",
+                    m4Role === r.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {r.title}
+                </button>
+              ))}
+            </div>
+
+            <div className="bg-white/5 p-2 rounded-lg border border-white/10 mb-2.5 text-xs">
+              <span className="font-bold text-cyan-400 block mb-0.5">{currentRole.role}:</span>
+              <p className="text-[11px] text-zinc-300 leading-snug">{currentRole.desc}</p>
+            </div>
+
+            {/* Pergunta de Fixação */}
+            <div className="pt-2 border-t border-white/10">
+              <p className="text-[11px] font-bold text-amber-300 mb-1.5">
+                Quem avalia os cenários de parada e compara diferentes planos de corrida?
+              </p>
+              <div className="grid grid-cols-2 gap-1 mb-1.5">
+                {[
+                  { id: "pilot", text: "Piloto" },
+                  { id: "strategist", text: "Estrategistas" },
+                  { id: "pitcrew", text: "Equipe dos Boxes" },
+                  { id: "engineer", text: "Engenheiro" },
+                ].map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setM4RoleQuestionAnswer(opt.id)}
+                    className={cn(
+                      "py-1 px-1.5 rounded text-[10px] font-mono transition-all cursor-pointer text-center",
+                      m4RoleQuestionAnswer === opt.id
+                        ? opt.id === "strategist"
+                          ? "bg-emerald-600 text-white font-bold"
+                          : "bg-red-900/80 text-white"
+                        : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                    )}
+                  >
+                    {opt.text}
+                  </button>
+                ))}
+              </div>
+              {m4RoleQuestionAnswer && (
+                <div className="text-[10px] text-zinc-300 bg-white/5 p-1.5 rounded border border-white/10 leading-tight">
+                  {m4RoleQuestionAnswer === "strategist"
+                    ? "Correto! Os estrategistas comparam modelos de ritmo, tráfego e degrau de pneus para definir o plano ideal."
+                    : "Quase lá. O piloto e o engenheiro fornecem dados em tempo real, mas a modelagem dos planos cabe aos estrategistas."}
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 2: PNEUS: TEMPO GANHO E PERDIDO
+      if (currentScene.visualEffectType === "mod4_tire_choice_sim") {
+        const scenarios = [
+          {
+            id: 1 as const,
+            title: "1. Poucas Voltas Restantes (Buscar Desempenho)",
+            recom: "Macio (Soft)",
+            logic: "Máxima aderência imediata para atacar nas voltas finais.",
+            advantage: "Ganha até 1 segundo por volta em relação a pneus velhos.",
+            risk: "Superaquecimento rápido se pressionar demais em ar turbulento.",
+            extra: "Estrategista verifica se haverá voltas suficientes para ultrapassar antes de degradar.",
+            bars: { grip: 95, deg: 85, life: 30 },
+          },
+          {
+            id: 2 as const,
+            title: "2. Longo Trecho pela Frente (Foco em Durabilidade)",
+            recom: "Duro (Hard)",
+            logic: "Construção de borracha rígida para resistir a mais de 35 voltas.",
+            advantage: "Ritmo constante com degradação muito baixa.",
+            risk: "Demora mais voltas para atingir a temperatura ideal de funcionamento.",
+            extra: "Estrategista monitora se o asfalto está quente o bastante para dar aderência ao composto duro.",
+            bars: { grip: 70, deg: 30, life: 95 },
+          },
+          {
+            id: 3 as const,
+            title: "3. Pista com Chuva e Baixa Aderência",
+            recom: "Intermediário / Chuva Extrema",
+            logic: "Compostos com sulcos para evacuar água e evitar aquaplanagem.",
+            advantage: "Permite tracionar e frear em segurança no asfalto molhado.",
+            risk: "Se a pista secar rápido, o pneu superaquece e se desfaz em poucas voltas.",
+            extra: "Estrategista vigia o radar meteorológico para antecipar o crossover.",
+            bars: { grip: 60, deg: 50, life: 60 },
+          },
+        ]
+
+        const scn = scenarios.find((s) => s.id === m4TireScenario) || scenarios[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Qual Pneu Escolher?</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">COMPOSTOS</span>
+            </div>
+
+            <div className="space-y-1 mb-2.5">
+              {scenarios.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setM4TireScenario(s.id)}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer",
+                    m4TireScenario === s.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {s.title}
+                </button>
+              ))}
+            </div>
+
+            {/* Barras Didáticas Qualitativas */}
+            <div className="bg-white/5 p-2.5 rounded-lg border border-white/10 mb-2 space-y-1.5 text-[10px] font-mono">
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-400">Aderência Inicial:</span>
+                <div className="w-32 bg-white/10 rounded-full h-2 overflow-hidden">
+                  <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${scn.bars.grip}%` }} />
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-400">Sensibilidade ao Desgaste:</span>
+                <div className="w-32 bg-white/10 rounded-full h-2 overflow-hidden">
+                  <div className="bg-amber-500 h-full rounded-full" style={{ width: `${scn.bars.deg}%` }} />
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-400">Durabilidade em Voltas:</span>
+                <div className="w-32 bg-white/10 rounded-full h-2 overflow-hidden">
+                  <div className="bg-cyan-500 h-full rounded-full" style={{ width: `${scn.bars.life}%` }} />
+                </div>
+              </div>
+            </div>
+
+            <div className="text-[11px] text-zinc-300 space-y-1 bg-white/5 p-2 rounded-lg border border-white/10 leading-snug">
+              <span className="font-bold text-amber-300 block">Composto Recomendado: {scn.recom}</span>
+              <p><strong className="text-emerald-400">Vantagem:</strong> {scn.advantage}</p>
+              <p><strong className="text-rose-400">Risco:</strong> {scn.risk}</p>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 3: PIT STOP: QUANDO É A HORA DE PARAR?
+      if (currentScene.visualEffectType === "mod4_pitstop_timing_calc") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Simulação Didática</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">PIT STOP</span>
+            </div>
+
+            <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-xs text-zinc-200 mb-2.5 space-y-0.5 font-mono">
+              <div className="flex justify-between"><span>Posição Atual:</span><strong className="text-white">P4</strong></div>
+              <div className="flex justify-between"><span>Rival à Frente:</span><strong className="text-amber-400">P3 (+1.4s)</strong></div>
+              <div className="flex justify-between"><span>Voltas Restantes:</span><strong className="text-white">20 voltas</strong></div>
+              <div className="flex justify-between"><span>Perda Total no Pit:</span><strong className="text-rose-400">~22.0 segundos</strong></div>
+            </div>
+
+            <p className="text-[11px] text-zinc-300 mb-2 font-bold">
+              Seus pneus perdem ritmo e o rival não parou. Qual decisão tomar?
+            </p>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM4PitChoice("now")}
+                className={cn(
+                  "py-1.5 px-1 rounded text-[9px] font-black uppercase text-center transition-all cursor-pointer",
+                  m4PitChoice === "now" ? "bg-[#E10600] text-white" : "bg-white/10 text-zinc-300"
+                )}
+              >
+                Parar Agora (Undercut)
+              </button>
+              <button
+                type="button"
+                onClick={() => setM4PitChoice("stay3")}
+                className={cn(
+                  "py-1.5 px-1 rounded text-[9px] font-black uppercase text-center transition-all cursor-pointer",
+                  m4PitChoice === "stay3" ? "bg-[#E10600] text-white" : "bg-white/10 text-zinc-300"
+                )}
+              >
+                Ficar +3 Voltas
+              </button>
+              <button
+                type="button"
+                onClick={() => setM4PitChoice("wait_info")}
+                className={cn(
+                  "py-1.5 px-1 rounded text-[9px] font-black uppercase text-center transition-all cursor-pointer",
+                  m4PitChoice === "wait_info" ? "bg-[#E10600] text-white" : "bg-white/10 text-zinc-300"
+                )}
+              >
+                Aguardar Dados
+              </button>
+            </div>
+
+            {m4PitChoice && (
+              <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[11px] text-zinc-200 leading-snug mb-2">
+                {m4PitChoice === "now" && (
+                  <>
+                    <span className="font-bold text-emerald-400 block mb-0.5">Tentativa de Undercut:</span>
+                    Você coloca pneus novos e vira 1,5s mais rápido. Se sair livre de tráfego, assume o P3 quando o rival parar!
+                  </>
+                )}
+                {m4PitChoice === "stay3" && (
+                  <>
+                    <span className="font-bold text-amber-400 block mb-0.5">Aposta no Overcut:</span>
+                    Seus pneus continuam degradando, mas você torce por um Safety Car oportuno para economizar 10s no pit stop.
+                  </>
+                )}
+                {m4PitChoice === "wait_info" && (
+                  <>
+                    <span className="font-bold text-cyan-400 block mb-0.5">Cautela Tática:</span>
+                    A equipe monitora se outros carros que já pararam pegaram tráfego no pelotão intermediário antes de decidir.
+                  </>
+                )}
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setM4PitChoice(null)}
+              className="text-[10px] text-zinc-400 hover:text-white underline cursor-pointer block text-center w-full"
+            >
+              Reiniciar Cenário
+            </button>
+          </div>
+        )
+      }
+
+      // CENA 4: SAFETY CAR, VSC E BANDEIRAS
+      if (currentScene.visualEffectType === "mod4_safety_car_rain") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Imprevisto na Pista</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-blue-600 text-white font-black">A CHUVA CHEGOU!</span>
+            </div>
+
+            {/* Linha do Tempo Didática */}
+            <div className="p-1.5 rounded bg-white/5 border border-white/10 text-[9px] font-mono text-zinc-300 text-center uppercase tracking-wide mb-2.5">
+              Plano Inicial ➔ Chuva na Curva 4 ➔ Nova Avaliação ➔ Decisão
+            </div>
+
+            <p className="text-[11px] text-zinc-300 mb-2 leading-snug">
+              Pingos de chuva no setor 2, mas a reta ainda está seca. Alguns rivais continuam de slick. O que fazer?
+            </p>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM4RainChoice("slick")}
+                className={cn(
+                  "py-1.5 px-1 rounded text-[9px] font-black uppercase text-center transition-all cursor-pointer",
+                  m4RainChoice === "slick" ? "bg-[#E10600] text-white" : "bg-white/10 text-zinc-300"
+                )}
+              >
+                Manter Slick
+              </button>
+              <button
+                type="button"
+                onClick={() => setM4RainChoice("inter")}
+                className={cn(
+                  "py-1.5 px-1 rounded text-[9px] font-black uppercase text-center transition-all cursor-pointer",
+                  m4RainChoice === "inter" ? "bg-emerald-600 text-white" : "bg-white/10 text-zinc-300"
+                )}
+              >
+                Colocar Inter
+              </button>
+              <button
+                type="button"
+                onClick={() => setM4RainChoice("wait")}
+                className={cn(
+                  "py-1.5 px-1 rounded text-[9px] font-black uppercase text-center transition-all cursor-pointer",
+                  m4RainChoice === "wait" ? "bg-amber-600 text-white" : "bg-white/10 text-zinc-300"
+                )}
+              >
+                Aguardar Radar
+              </button>
+            </div>
+
+            {m4RainChoice && (
+              <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[11px] text-zinc-200 leading-snug">
+                {m4RainChoice === "slick" && (
+                  <p>Vantagem se a chuva parar rápido; mas alto risco de rodar se o asfalto encharcar.</p>
+                )}
+                {m4RainChoice === "inter" && (
+                  <p>Segurança total na chuva; mas se o sol abrir, os intermediários superaquecem e derretem em 3 voltas.</p>
+                )}
+                {m4RainChoice === "wait" && (
+                  <p>A equipe consulta a telemetria do radar de tempestade para não parar uma volta antes da hora.</p>
+                )}
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 5: RÁDIO, TELEMETRIA E O QUE OS DADOS REVELAM
+      if (currentScene.visualEffectType === "mod4_telemetry_radio_data") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Exemplo Ilustrativo</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-600 text-white font-black">TELEMETRIA</span>
+            </div>
+
+            <table className="w-full text-[11px] font-mono mb-2.5">
+              <thead>
+                <tr className="border-b border-white/15 text-zinc-400 text-[10px]">
+                  <th className="text-left pb-1">Indicador</th>
+                  <th className="text-right pb-1 text-white">Piloto A</th>
+                  <th className="text-right pb-1 text-cyan-300">Piloto B</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5 text-zinc-200">
+                <tr><td className="py-1">Volta anterior</td><td className="text-right">1:32.400</td><td className="text-right">1:32.700</td></tr>
+                <tr><td className="py-1">Volta atual</td><td className="text-right text-rose-400">1:33.100</td><td className="text-right text-emerald-400">1:32.800</td></tr>
+                <tr><td className="py-1">Idade pneus</td><td className="text-right">18 voltas</td><td className="text-right">8 voltas</td></tr>
+                <tr><td className="py-1">Posição</td><td className="text-right font-black">P4</td><td className="text-right font-black">P5</td></tr>
+              </tbody>
+            </table>
+
+            <p className="text-[11px] text-zinc-300 mb-2 font-bold">
+              O que você conclui com esses dados?
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setM4ShowDataAnalysis(!m4ShowDataAnalysis)}
+              className="w-full py-1.5 px-3 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer text-center mb-2"
+            >
+              {m4ShowDataAnalysis ? "Ocultar Análise" : "Mostrar Análise dos Estrategistas"}
+            </button>
+
+            {m4ShowDataAnalysis && (
+              <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[11px] text-zinc-200 space-y-1 leading-snug">
+                <p>• <strong>Piloto A perdeu 0,700s</strong> na volta atual, indicando provável queda no rendimento dos pneus de 18 voltas.</p>
+                <p>• <strong>Piloto B foi 0,300s mais rápido</strong> (1:32.800 vs 1:33.100) na volta atual, diminuindo a distância.</p>
+                <p className="text-amber-300 font-bold">• Mas atenção: uma única volta não prova tudo! É preciso avaliar mais setores para confirmar a tendência.</p>
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 6: COMUNICAÇÃO, ERROS E PLANOS ALTERNATIVOS
+      if (currentScene.visualEffectType === "mod4_alternate_plans") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Plano A ou Plano B?</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-600 text-white font-black">CONTINGÊNCIA</span>
+            </div>
+
+            <p className="text-[11px] text-zinc-300 mb-2.5 leading-snug">
+              Seu plano era parar na volta 30. Mas seu rival direto parou na volta 25 e está voando baixo com pneus novos.
+            </p>
+
+            <div className="space-y-1 mb-2.5">
+              {[
+                { id: "anticipate", title: "1. Antecipar a Parada Agora", desc: "Limita o dano do undercut do rival chamando o piloto imediatamente." },
+                { id: "stay", title: "2. Ficar na Pista e Acelerar", desc: "Tenta acumular ar limpo e parar no fim da prova com pneus bem mais novos." },
+                { id: "more_data", title: "3. Pedir Mais Dados de Rádio", desc: "Checa se o rival pegou tráfego antes de queimar o plano A." },
+              ].map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setM4AlternatePlan(opt.id as any)}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer",
+                    m4AlternatePlan === opt.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  <span className="block font-black">{opt.title}</span>
+                  <span className="block text-[9px] font-normal text-zinc-300">{opt.desc}</span>
+                </button>
+              ))}
+            </div>
+
+            {m4AlternatePlan && (
+              <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[11px] text-zinc-200 leading-snug mb-1">
+                <span className="font-bold text-amber-300 block mb-0.5">Avaliação da Escolha:</span>
+                Toda decisão envolve risco. Antecipar reduz a perda direta, mas encurta a vida dos pneus no último trecho. Ficar na pista exige ar livre absoluto.
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 7: DESAFIO DO ESTRATEGISTA: SUA DECISÃO PODE MUDAR A CORRIDA
+      if (currentScene.visualEffectType === "mod4_strategist_challenge") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Desafio Interativo</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-600 text-white font-black">
+                ETAPA {m4ChallengeStep} DE 4
+              </span>
+            </div>
+
+            {/* ETAPA 1: ESCOLHA INICIAL */}
+            {m4ChallengeStep === 1 && (
+              <div className="space-y-2">
+                <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[11px] font-mono">
+                  <div>• 10 voltas restantes | Seu piloto em P3</div>
+                  <div>• Rival em P4 a 2,4s acabou de colocar pneus novos</div>
+                  <div>• Seu piloto está com Médios de 15 voltas perdendo ritmo</div>
+                </div>
+
+                <p className="text-[11px] text-white font-bold">Qual deve ser a prioridade da equipe?</p>
+
+                <div className="space-y-1">
+                  {[
+                    { id: "stop", label: "Parar imediatamente para defender" },
+                    { id: "stay", label: "Permanecer na pista e administrar o ritmo" },
+                    { id: "evaluate", label: "Avaliar o ritmo do rival antes de confirmar" },
+                  ].map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setM4ChallengeP1(opt.id as any)}
+                      className={cn(
+                        "w-full text-left py-1.5 px-2 rounded text-[10px] font-mono transition-all cursor-pointer",
+                        m4ChallengeP1 === opt.id ? "bg-[#E10600] text-white font-bold" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                      )}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+
+                {m4ChallengeP1 && (
+                  <button
+                    type="button"
+                    onClick={() => setM4ChallengeStep(2)}
+                    className="w-full py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer text-center"
+                  >
+                    Confirmar e Ver Próxima Volta ➔
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* ETAPA 2: NOVO ACONTECIMENTO */}
+            {m4ChallengeStep === 2 && (
+              <div className="space-y-2">
+                <div className="p-2 rounded-lg bg-amber-950/60 border border-amber-500/40 text-[11px] text-amber-200">
+                  <span className="font-bold block text-amber-300 mb-0.5">⚠️ Volta 50/57: O Rival Atacou!</span>
+                  O rival fez a volta mais rápida da prova e a diferença caiu de 2,4s para 1,1s! Seus pneus traseiros começam a deslizar na curva 9.
+                </div>
+
+                <p className="text-[11px] text-white font-bold">A situação mudou. Como você reage?</p>
+
+                <button
+                  type="button"
+                  onClick={() => setM4ChallengeStep(3)}
+                  className="w-full py-1.5 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer text-center"
+                >
+                  Tomar Decisão Final de Corrida ➔
+                </button>
+              </div>
+            )}
+
+            {/* ETAPA 3: DECISÃO FINAL */}
+            {m4ChallengeStep === 3 && (
+              <div className="space-y-2">
+                <p className="text-[11px] text-white font-bold">Escolha sua ação com a justificativa:</p>
+
+                <div className="space-y-1">
+                  {[
+                    { id: "protect", label: "“Quero proteger a posição na pista até o final.”" },
+                    { id: "attack", label: "“Quero buscar uma oportunidade de parada estratégica.”" },
+                    { id: "data", label: "“Preciso de mais dados de rádio antes de arriscar.”" },
+                  ].map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setM4ChallengeP2(opt.id as any)}
+                      className={cn(
+                        "w-full text-left py-1.5 px-2 rounded text-[10px] font-mono transition-all cursor-pointer",
+                        m4ChallengeP2 === opt.id ? "bg-[#E10600] text-white font-bold" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                      )}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+
+                {m4ChallengeP2 && (
+                  <button
+                    type="button"
+                    onClick={() => setM4ChallengeStep(4)}
+                    className="w-full py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer text-center"
+                  >
+                    Gerar Relatório de Estratégia 📊
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* ETAPA 4: RELATÓRIO DO ESTRATEGISTA */}
+            {m4ChallengeStep === 4 && (
+              <div className="space-y-2">
+                <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-[10px] space-y-1 leading-snug">
+                  <div className="font-black text-cyan-300 uppercase">Relatório de Decisão do Estrategista</div>
+                  <div>• <strong>Ação:</strong> {m4ChallengeP2 === "protect" ? "Defesa de Posição na Pista" : m4ChallengeP2 === "attack" ? "Parada Agressiva de Pneus Novos" : "Gestão Baseada em Dados"}</div>
+                  <div>• <strong>Vantagem:</strong> Evita a perda garantida de 22s no pit lane mantendo o carro na frente na pista.</div>
+                  <div>• <strong>Risco:</strong> Vulnerabilidade contra o DRS do adversário na volta final.</div>
+                  <div>• <strong>Lição:</strong> Não existe resposta mágica; toda decisão em F1 gerencia probabilidades e riscos.</div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setM4ChallengeStep(1)
+                    setM4ChallengeP1(null)
+                    setM4ChallengeP2(null)
+                  }}
+                  className="w-full py-1 text-[10px] text-zinc-400 hover:text-white underline cursor-pointer text-center block"
+                >
+                  Recomeçar Desafio
+                </button>
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 8: RESUMO: PENSE COMO UM ESTRATEGISTA
+      if (currentScene.visualEffectType === "mod4_strategic_thinking_summary") {
+        const pillars = [
+          "1. A estratégia é uma decisão coletiva de equipe.",
+          "2. Pneus influenciam ritmo, aderência e durabilidade.",
+          "3. Pit stops envolvem custo total, tráfego e posição.",
+          "4. Dados e rádio ajudam a interpretar tendências.",
+          "5. Um bom plano precisa se adaptar aos imprevistos.",
+        ]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Cinco Pilares Fundamentais</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-600 text-white font-black">SÍNTESE</span>
+            </div>
+
+            <div className="space-y-1.5 mb-3">
+              {pillars.map((p, idx) => (
+                <div key={idx} className="bg-white/5 py-1 px-2 rounded border border-white/10 text-[10px] text-zinc-200">
+                  {p}
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                stopAllAudio()
+                setViewStage("quiz")
+              }}
+              className="w-full py-2 px-3 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider shadow-[0_0_20px_rgba(225,6,0,0.6)] transition-all cursor-pointer text-center"
+            >
+              Fazer o Quiz Final (10 Perguntas)
+            </button>
+          </div>
+        )
+      }
+    }
+
 
 
     return null
@@ -2580,7 +4083,7 @@ export function NovatosPage() {
           {/* Fundo Cinematográfico com Parallax Suave */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <img
-              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : "/backgrounds/bg-mclaren.webp"}
+              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : "/backgrounds/bg-redbull.webp"}
               alt="Fundo Novatos na F1"
               className={cn(
                 "w-full h-full object-cover object-center brightness-40 contrast-125 scale-105",
@@ -2622,6 +4125,16 @@ export function NovatosPage() {
             >
               3. Dentro da Corrida
             </button>
+            <button
+              type="button"
+              onClick={() => handleSelectModule(4)}
+              className={cn(
+                "px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide transition-all cursor-pointer",
+                activeModuleId === 4 ? "bg-[#E10600] text-white shadow-lg" : "text-zinc-400 hover:text-white"
+              )}
+            >
+              4. A Mente por Trás da Corrida
+            </button>
           </div>
 
           {/* Hero Content */}
@@ -2633,7 +4146,9 @@ export function NovatosPage() {
                   ? "MÓDULO 1 • O QUE É A FÓRMULA 1?"
                   : activeModuleId === 2
                   ? "MÓDULO 2 • A MÁQUINA: COMO FUNCIONA O CARRO"
-                  : "MÓDULO 3 • DENTRO DA CORRIDA: APRENDA A ACOMPANHAR A TRANSMISSÃO"}
+                  : activeModuleId === 3
+                  ? "MÓDULO 3 • DENTRO DA CORRIDA: APRENDA A ACOMPANHAR A TRANSMISSÃO"
+                  : "MÓDULO 4 • A MENTE POR TRÁS DA CORRIDA: ESTRATÉGIA E PNEUS"}
               </span>
             </div>
 
@@ -2646,7 +4161,9 @@ export function NovatosPage() {
                 ? "Aprenda a entender cada corrida, curva por curva"
                 : activeModuleId === 2
                 ? "MÓDULO 2 — A MÁQUINA"
-                : "MÓDULO 3 — DENTRO DA CORRIDA"}
+                : activeModuleId === 3
+                ? "MÓDULO 3 — DENTRO DA CORRIDA"
+                : "MÓDULO 4 — A MENTE POR TRÁS DA CORRIDA"}
             </p>
 
             <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-xl mb-8">
@@ -2654,7 +4171,9 @@ export function NovatosPage() {
                 ? "Você não precisa entender de automobilismo para começar. Nós explicamos as regras, estratégias, equipes e o caminho até a bandeirada final."
                 : activeModuleId === 2
                 ? "“Um carro de Fórmula 1 não é apenas rápido. Cada peça, cada ajuste e cada decisão ajudam a transformar potência em desempenho.”"
-                : "“Os carros estão no grid. Os pilotos estão preparados. Mas você sabe interpretar tudo o que está prestes a acontecer?”"}
+                : activeModuleId === 3
+                ? "“Os carros estão no grid. Os pilotos estão preparados. Mas você sabe interpretar tudo o que está prestes a acontecer?”"
+                : "“Na Fórmula 1, velocidade é fundamental. Mas saber quando atacar, economizar pneus ou parar nos boxes pode mudar o resultado de uma corrida.”"}
             </p>
 
             {/* Botão de Ação CTA */}
@@ -2664,7 +4183,7 @@ export function NovatosPage() {
               className="inline-flex items-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-sm sm:text-base font-black uppercase tracking-wider shadow-[0_0_30px_rgba(225,6,0,0.65)] hover:shadow-[0_0_40px_rgba(225,6,0,0.85)] transition-all cursor-pointer transform hover:scale-105 active:scale-95"
             >
               <Play className="w-5 h-5 fill-white" />
-              <span>{activeModuleId === 1 ? "COMEÇAR DO ZERO" : activeModuleId === 2 ? "INICIAR EXPERIÊNCIA" : "INICIAR TRANSMISSÃO"}</span>
+              <span>{activeModuleId === 1 ? "COMEÇAR DO ZERO" : activeModuleId === 2 ? "INICIAR EXPERIÊNCIA" : activeModuleId === 3 ? "INICIAR TRANSMISSÃO" : "INICIAR TRANSMISSÃO"}</span>
             </button>
 
             {/* Acessos Rápidos no Rodapé da Abertura */}
@@ -3035,7 +4554,7 @@ export function NovatosPage() {
               </div>
 
               <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white mb-1">
-                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : activeModuleId === 2 ? "MÓDULO 2 CONCLUÍDO" : "MÓDULO 3 CONCLUÍDO"}
+                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : activeModuleId === 2 ? "MÓDULO 2 CONCLUÍDO" : activeModuleId === 3 ? "MÓDULO 3 CONCLUÍDO" : "MÓDULO 4 CONCLUÍDO"}
               </h2>
 
               <p className="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-4">
@@ -3047,7 +4566,15 @@ export function NovatosPage() {
                   ? "Parabéns! Você já compreende as regras fundamentais, a história, o campeonato e os elementos de uma corrida de F1."
                   : activeModuleId === 2
                   ? "“Você já conhece os principais sistemas de um carro de Fórmula 1 e entende melhor como engenharia, piloto e equipe trabalham juntos.”"
-                  : "“Você já conhece os principais momentos de uma corrida de Fórmula 1 e está mais preparado para acompanhar uma transmissão e entender o que acontece na pista.”"}
+                  : activeModuleId === 3
+                  ? "“Você já conhece os principais momentos de uma corrida de Fórmula 1 e está mais preparado para acompanhar uma transmissão e entender o que acontece na pista.”"
+                  : (quizScore ?? 0) >= 9
+                  ? "“Excelente! Você já consegue interpretar vários dos principais elementos da estratégia de corrida.”"
+                  : (quizScore ?? 0) >= 7
+                  ? "“Muito bem! Você compreendeu os conceitos principais. Revise os detalhes que ainda geraram dúvidas.”"
+                  : (quizScore ?? 0) >= 5
+                  ? "“Bom começo! Refaça as cenas sobre pneus, pit stops e decisões estratégicas para consolidar o conhecimento.”"
+                  : "“Toda grande estratégia começa com aprendizado. Reveja as cenas e tente novamente.”"}
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-3">
@@ -3094,7 +4621,7 @@ export function NovatosPage() {
           >
             <div onClick={(e) => e.stopPropagation()} className="relative w-screen h-dvh overflow-hidden">
               <img
-                src={viewStage === "opening" ? (activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : "/backgrounds/bg-mclaren.webp") : currentScene.imageUrl}
+                src={viewStage === "opening" ? (activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : "/backgrounds/bg-redbull.webp") : currentScene.imageUrl}
                 data-testid="fullscreen-expanded-img"
                 className={cn(
                   "w-screen h-dvh object-cover object-center select-none",
