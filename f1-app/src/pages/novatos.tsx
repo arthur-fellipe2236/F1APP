@@ -467,6 +467,48 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     definition: "Punição de 5 ou 10 segundos adicionados ao tempo do piloto na parada ou no resultado final da prova.",
   },
   {
+    id: "consistencia",
+    term: "Consistência",
+    category: "Geral",
+    definition: "Capacidade de um piloto de repetir tempos de volta precisos e idênticos ao longo de toda uma prova sem cometer erros ou desgastar excessivamente o equipamento.",
+  },
+  {
+    id: "ritmo_corrida",
+    term: "Ritmo de corrida",
+    category: "Geral",
+    definition: "Velocidade média sustentável que um carro e piloto conseguem manter durante múltiplos stints de uma prova com tanque cheio e gerenciamento contínuo de pneus.",
+  },
+  {
+    id: "gestao_pneus",
+    term: "Gestão de pneus",
+    category: "Carro",
+    definition: "Técnica de modulação de aceleração, frenagem e esterço para manter a temperatura do composto na janela ideal, retardando a degradação e o desgaste.",
+  },
+  {
+    id: "leitura_corrida",
+    term: "Leitura de corrida",
+    category: "Geral",
+    definition: "Habilidade de antecipar o comportamento dos rivais, a evolução climática e os momentos estratégicos da prova para agir antes das circunstâncias.",
+  },
+  {
+    id: "racecraft",
+    term: "Racecraft",
+    category: "Geral",
+    definition: "Conjunto refinado de habilidades de disputa direta roda a roda, incluindo posicionamento tático, indução de erros do oponente e defesa legal de linha.",
+  },
+  {
+    id: "pressao_competitiva",
+    term: "Pressão competitiva",
+    category: "Geral",
+    definition: "Carga psicológica suportada pelo piloto sob perseguição intensa ou caça ao líder, exigindo controle emocional para evitar travamentos e saídas de pista.",
+  },
+  {
+    id: "adaptacao",
+    term: "Adaptação",
+    category: "Carro",
+    definition: "Capacidade de modificar o estilo de pilotagem em tempo real conforme o carro fica mais leve, o equilíbrio dinâmico muda ou a pista perde aderência.",
+  },
+  {
     id: "reentrada_pista",
     term: "Reentrada na pista",
     category: "Pista",
@@ -581,6 +623,14 @@ export interface ModuleScene {
     | "mod8_monaco_monza_spa"
     | "mod8_rain_track_limits"
     | "mod8_lap_master_challenge"
+    | "mod9_qualities_overview"
+    | "mod9_pressure_mindset"
+    | "mod9_consistency_pace"
+    | "mod9_racecraft_duels"
+    | "mod9_tire_intelligence"
+    | "mod9_champions_styles"
+    | "mod9_adapting_uncertainty"
+    | "mod9_champion_mindset_challenge"
 }
 
 export const CINEMATIC_MUSIC_URL = "/audio/novatos/modulo1/trilha_cinematografica.mp3"
@@ -746,6 +796,101 @@ export const MODULE_1_SCENES: ModuleScene[] = [
 // ============================================================================
 // CENAS DO MÓDULO 8 — DOMINANDO OS CIRCUITOS: TRAJETÓRIAS, FRENAGEM E CURVAS
 // ============================================================================
+
+// ============================================================================
+// CENAS DO MÓDULO 9 — A MENTE DOS CAMPEÕES: VELOCIDADE, CONSISTÊNCIA E PSICOLÓGICO
+// ============================================================================
+export const MODULE_9_SCENES: ModuleScene[] = [
+  {
+    id: "m9_c1",
+    number: 1,
+    title: "Velocidade Não É Tudo",
+    subtitle: "Os cinco pilares de um piloto campeão",
+    imageUrl: "/backgrounds/bg-redbull.webp",
+    audioUrl: "/audio/novatos/modulo9/cena01.mp3",
+    narrationTranscript:
+      "Muita gente pensa que ser rápido é o suficiente na Fórmula 1. Mas a velocidade pura só decide quem larga na frente. Na corrida, o que constrói um campeão é a capacidade de repetir voltas perfeitas sem cometer erros, entender o momento certo de arriscar e tomar decisões lúcidas a mais de trezentos por hora.",
+    visualEffectType: "mod9_qualities_overview",
+  },
+  {
+    id: "m9_c2",
+    number: 2,
+    title: "A Mente sob Pressão",
+    subtitle: "Erros acontecem: o que importa é a velocidade da recuperação",
+    imageUrl: "/backgrounds/bg-ferrari.webp",
+    audioUrl: "/audio/novatos/modulo9/cena02.mp3",
+    narrationTranscript:
+      "Errar na Fórmula 1 custa caro. Uma freada perdida, um toque na zebra ou uma decisão errada podem destruir um fim de semana inteiro. A diferença entre um piloto comum e um fora de série não é nunca errar: é a velocidade com que ele se recupera do erro, ajusta o foco e volta ao ritmo sem deixar o pânico tomar conta.",
+    visualEffectType: "mod9_pressure_mindset",
+  },
+  {
+    id: "m9_c3",
+    number: 3,
+    title: "A Arte da Consistência",
+    subtitle: "Piloto A oscilante vs Piloto B regular: por que a regularidade vence",
+    imageUrl: "/backgrounds/bg-mclaren.webp",
+    audioUrl: "/audio/novatos/modulo9/cena03.mp3",
+    narrationTranscript:
+      "Olhe para esses dois gráficos. O Piloto A consegue voltas espetaculares, mas oscila a cada passagem. O Piloto B não tem a volta mais rápida da prova, mas mantém o mesmo tempo volta após volta. No fim das cinquenta voltas, a regularidade vence o brilho momentâneo. Consistência é o verdadeiro superpoder na Fórmula 1.",
+    visualEffectType: "mod9_consistency_pace",
+  },
+  {
+    id: "m9_c4",
+    number: 4,
+    title: "Ataque, Defesa e Leitura do Adversário",
+    subtitle: "Racecraft: paciência, antecipação e posicionamento cirúrgico",
+    imageUrl: "/backgrounds/bg-aston.webp",
+    audioUrl: "/audio/novatos/modulo9/cena04.mp3",
+    narrationTranscript:
+      "Ultrapassar não é apenas mergulhar na primeira brecha. É um jogo psicológico de paciência e antecipação. Um campeão estuda o adversário por voltas: descobre onde ele freia, onde tem menos tração e prepara o ataque duas curvas antes. Defender exige a mesma frieza: posicionar o carro no lugar certo sem perder tempo nem cruzar o limite das regras.",
+    visualEffectType: "mod9_racecraft_duels",
+  },
+  {
+    id: "m9_c5",
+    number: 5,
+    title: "Os Pneus Também Exigem Inteligência",
+    subtitle: "Degradação térmica vs desgaste mecânico: pilotagem agressiva vs controlada",
+    imageUrl: "/backgrounds/bg-mercedes.webp",
+    audioUrl: "/audio/novatos/modulo9/cena05.mp3",
+    narrationTranscript:
+      "Pneus não são infinitos. Cada derrapada, cada travada de roda consome borracha e eleva a temperatura. Pilotos lendários desenvolvem uma sensibilidade quase mágica nas mãos e nos pés: conseguem andar rápido sem agredir o composto, guardando vida útil para o momento decisivo da corrida.",
+    visualEffectType: "mod9_tire_intelligence",
+  },
+  {
+    id: "m9_c6",
+    number: 6,
+    title: "Estilos Diferentes, Campeões Diferentes",
+    subtitle: "Senna, Schumacher, Hamilton, Verstappen: diferentes caminhos para a glória",
+    imageUrl: "/backgrounds/bg-williams.webp",
+    audioUrl: "/audio/novatos/modulo9/cena06.mp3",
+    narrationTranscript:
+      "Não existe uma única forma de ser campeão. Ayrton Senna pilotava no limite do instinto e da intensidade. Michael Schumacher unia disciplina física, método e sincronia com a engenharia. Lewis Hamilton combina sensibilidade técnica com precisão cirúrgica em momentos de pressão. E Max Verstappen compete com agressividade implacável e controle absoluto do carro. Qualidades diferentes, o mesmo resultado: a grandeza.",
+    visualEffectType: "mod9_champions_styles",
+  },
+  {
+    id: "m9_c7",
+    number: 7,
+    title: "Quando o Plano Dá Errado",
+    subtitle: "Incerteza, chuva repentina e a simbiose com o pit wall",
+    imageUrl: "/backgrounds/bg-audi.webp",
+    audioUrl: "/audio/novatos/modulo9/cena07.mp3",
+    narrationTranscript:
+      "Na Fórmula 1, o plano perfeito dura até a primeira gota de chuva ou o primeiro safety car. Quando as circunstâncias mudam, o piloto não pode paralisar. Ele precisa filtrar o excesso de dados, confiar no instinto, dialogar com o engenheiro pelo rádio e agir rápido. Campeões crescem exatamente quando o caos se instala.",
+    visualEffectType: "mod9_adapting_uncertainty",
+  },
+  {
+    id: "m9_c8",
+    number: 8,
+    title: "Desafio Final: A Mente do Campeão",
+    subtitle: "Simulação de corrida em 3 etapas para testar sua leitura tática",
+    imageUrl: "/backgrounds/bg-default.webp",
+    audioUrl: "/audio/novatos/modulo9/cena08.mp3",
+    narrationTranscript:
+      "Você conheceu os pilares que formam uma mente campeã: velocidade, consistência, leitura de corrida, controle sob pressão e capacidade de adaptação. Agora é com você. Mostre no desafio e no quiz final se você aprendeu a enxergar a Fórmula 1 além dos números e da velocidade bruta!",
+    visualEffectType: "mod9_champion_mindset_challenge",
+  },
+]
+
 export const MODULE_8_SCENES: ModuleScene[] = [
   {
     id: "m8_c1",
@@ -1521,6 +1666,143 @@ export const MODULE_1_QUIZ_QUESTIONS: QuizQuestion[] = [
 // ============================================================================
 // QUESTIONÁRIO FINAL — MÓDULO 8 (10 PERGUNTAS SOBRE CIRCUITOS E VOLTA RÁPIDA)
 // ============================================================================
+
+// ============================================================================
+// QUESTIONÁRIO FINAL — MÓDULO 9 (10 PERGUNTAS SOBRE A MENTE DOS CAMPEÕES)
+// ============================================================================
+export const MODULE_9_QUIZ_QUESTIONS: QuizQuestion[] = [
+  {
+    id: 1,
+    question: "Pergunta 1 — Ter a volta mais rápida da classificação garante vitória no domingo?",
+    options: [
+      { letter: "A", text: "Sim, quem larga na pole sempre tem o melhor ritmo." },
+      { letter: "B", text: "Não, a corrida exige consistência, gerenciamento de pneus e leitura estratégica ao longo de várias voltas." },
+      { letter: "C", text: "Não, porque o piloto da pole é obrigado a trocar de carro." },
+      { letter: "D", text: "Sim, a pontuação da classificação é mais importante que a da corrida." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Exato! Uma volta rápida isolada garante apenas a posição de largada; a vitória depende de regularidade, pneus e decisões durante 300 km.",
+  },
+  {
+    id: 2,
+    question: "Pergunta 2 — O que caracteriza a resiliência emocional de um piloto de elite após um erro?",
+    options: [
+      { letter: "A", text: "Discutir imediatamente com a equipe pelo rádio para justificar a falha." },
+      { letter: "B", text: "Acelerar sem critério para tentar recuperar o tempo na mesma volta." },
+      { letter: "C", text: "Conter a frustração, resetar o foco mental e retomar o ritmo sem cometer novos erros em sequência." },
+      { letter: "D", text: "Abandonar a prova por vergonha." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Perfeito! Erros acontecem com todos os pilotos; a velocidade com que se recupera o foco e a estabilidade emocional define os campeões.",
+  },
+  {
+    id: 3,
+    question: "Pergunta 3 — Por que a consistência volta a volta é frequentemente mais valiosa que picos isolados de velocidade?",
+    options: [
+      { letter: "A", text: "Porque reduz a imprevisibilidade para a equipe, preserva os pneus e acumula vantagem no tempo total de corrida." },
+      { letter: "B", text: "Porque os comissários punem pilotos com voltas muito velozes." },
+      { letter: "C", text: "Porque o carro ganha potência se mantiver o mesmo tempo." },
+      { letter: "D", text: "Porque não há diferença de tempo no final da corrida." },
+    ],
+    correctLetter: "A",
+    feedback:
+      "Correto! Manter um ritmo estável com variação mínima protege os pneus contra picos térmicos e constrói janelas estratégicas perfeitas para o pit stop.",
+  },
+  {
+    id: 4,
+    question: "Pergunta 4 — O que é 'racecraft' na Fórmula 1?",
+    options: [
+      { letter: "A", text: "A capacidade do mecânico de trocar os pneus em menos de 2 segundos." },
+      { letter: "B", text: "O conjunto de inteligência tática, posicionamento do carro, leitura dos rivais e habilidade em disputas roda a roda." },
+      { letter: "C", text: "O design gráfico da pintura do carro." },
+      { letter: "D", text: "A habilidade de pilotar no simulador sem usar as mãos." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Muito bem! Racecraft é a arte da disputa: saber quando pressionar, onde colocar as rodas, como ler o adversário e escolher o momento fatal do ataque.",
+  },
+  {
+    id: 5,
+    question: "Pergunta 5 — Como um piloto campeão costuma preparar uma ultrapassagem sobre um rival experiente?",
+    options: [
+      { letter: "A", text: "Mergulha às cegas em qualquer curva logo na primeira oportunidade." },
+      { letter: "B", text: "Buzina e espera o adversário abrir espaço." },
+      { letter: "C", text: "Observa os pontos fracos do rival por algumas voltas e prepara a manobra sacrificando a entrada de uma curva para ganhar velocidade na saída." },
+      { letter: "D", text: "Aguarda obrigatoriamente a bandeira amarela." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Excelente! Manobras inteligentes como a 'tesoura' exigem abrir mão da entrada para ter aceleração máxima e tracionar à frente do rival na saída.",
+  },
+  {
+    id: 6,
+    question: "Pergunta 6 — Qual é a diferença fundamental entre desgaste mecânico e degradação térmica dos pneus?",
+    options: [
+      { letter: "A", text: "O desgaste mecânico é o atrito físico que consome a borracha; a degradação térmica é a perda de aderência causada pelo superaquecimento do composto." },
+      { letter: "B", text: "Desgaste acontece apenas na chuva e degradação apenas no calor." },
+      { letter: "C", text: "Não há diferença; são nomes idênticos para a mesma coisa." },
+      { letter: "D", text: "A degradação térmica só afeta as rodas dianteiras." },
+    ],
+    correctLetter: "A",
+    feedback:
+      "Exato! Desgaste físico é o afinamento da banda de rodagem; degradação térmica ocorre quando o calor excessivo altera a química e a aderência da borracha.",
+  },
+  {
+    id: 7,
+    question: "Pergunta 7 — Por que comparar campeões como Senna, Schumacher, Hamilton e Verstappen apenas por estatísticas pode ser reducionista?",
+    options: [
+      { letter: "A", text: "Porque nenhum deles correu na Fórmula 1 moderna." },
+      { letter: "B", text: "Porque cada um competiu em eras com regulamentos, tecnologias, níveis de confiabilidade mecânica e durações de calendário totalmente diferentes." },
+      { letter: "C", text: "Porque as vitórias antigas não contavam pontos oficiais." },
+      { letter: "D", text: "Porque todos tinham carros com motores e chassis idênticos." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Perfeito! Cada era tem características próprias: número de GPs por ano, auxílios eletrônicos, confiabilidade dos motores e formato dos finais de semana.",
+  },
+  {
+    id: 8,
+    question: "Pergunta 8 — Em momentos de mudança climática ou safety car, qual postura mental separa os pilotos extraordinários?",
+    options: [
+      { letter: "A", text: "Pânico e recusa em falar com o engenheiro." },
+      { letter: "B", text: "Capacidade de filtrar dados complexos, manter a calma e tomar decisões ágeis em sintonia com o pit wall." },
+      { letter: "C", text: "Acelerar em bandeira vermelha para ganhar tempo." },
+      { letter: "D", text: "Parar o carro na pista e esperar o sol voltar." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Muito bem! No caos da chuva ou incidentes, a comunicação transparente e a leitura tática imediata convertem incerteza em vitórias espetaculares.",
+  },
+  {
+    id: 9,
+    question: "Pergunta 9 — O que significa 'fazer a tesoura' (cross-over) em uma disputa de posição?",
+    options: [
+      { letter: "A", text: "Cortar deliberadamente a asa dianteira do rival." },
+      { letter: "B", text: "Deixar o adversário espalhar por dentro na curva para cruzar a linha por trás dele e tracionar melhor na saída." },
+      { letter: "C", text: "Pedir autorização aos comissários para trocar de lado." },
+      { letter: "D", text: "Ziguezaguear na reta para assustar quem vem atrás." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Excelente! O defensor entra rápido por dentro e perde velocidade no meio da curva; o atacante contorna por fora, cruza por trás e sai acelerando muito antes.",
+  },
+  {
+    id: 10,
+    question: "Pergunta 10 — Qual a melhor definição de 'mente de campeão' na Fórmula 1?",
+    options: [
+      { letter: "A", text: "Acreditar que a vitória depende exclusivamente da velocidade e ignorar a equipe." },
+      { letter: "B", text: "A união harmônica entre talento natural, disciplina inabalável, consistência, leitura de contexto e constante adaptação às adversidades." },
+      { letter: "C", text: "Nunca admitir erros e culpar o carro por qualquer revés." },
+      { letter: "D", text: "Pilotar sempre a 100% do limite sem se preocupar com os pneus ou o motor." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Parabéns! Um campeão completo domina a técnica, o emocional, a simbiose com os engenheiros e a frieza para tomar decisões vencedoras em frações de segundo.",
+  },
+]
+
 export const MODULE_8_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 1,
@@ -2463,6 +2745,7 @@ const STORAGE_MOD5_KEY = "f1_novatos_mod5_state_v1"
 const STORAGE_MOD6_KEY = "f1_novatos_mod6_state_v1"
 const STORAGE_MOD7_KEY = "f1_novatos_mod7_state_v1"
 const STORAGE_MOD8_KEY = "f1_novatos_mod8_state_v1"
+const STORAGE_MOD9_KEY = "f1_novatos_mod9_state_v1"
 const STORAGE_ACTIVE_MODULE_KEY = "f1_novatos_active_module_v1"
 
 interface PersistedModuleState {
@@ -2496,10 +2779,11 @@ export function NovatosPage() {
   // ==========================================================================
   // ESTADO DO MÓDULO ATIVO (MÓDULO 1 OU MÓDULO 2)
   // ==========================================================================
-  const [activeModuleId, setActiveModuleId] = useState<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8>(() => {
+  const [activeModuleId, setActiveModuleId] = useState<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9>(() => {
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search)
       const modParam = urlParams.get("modulo") || urlParams.get("mod")
+      if (modParam === "9") return 9
       if (modParam === "8") return 8
       if (modParam === "7") return 7
       if (modParam === "6") return 6
@@ -2508,6 +2792,7 @@ export function NovatosPage() {
       if (modParam === "3") return 3
       if (modParam === "2") return 2
       const saved = localStorage.getItem(STORAGE_ACTIVE_MODULE_KEY)
+      if (saved === "9") return 9
       if (saved === "8") return 8
       if (saved === "7") return 7
       if (saved === "6") return 6
@@ -2519,9 +2804,9 @@ export function NovatosPage() {
     return 1
   })
 
-  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : activeModuleId === 2 ? MODULE_2_SCENES : activeModuleId === 3 ? MODULE_3_SCENES : activeModuleId === 4 ? MODULE_4_SCENES : activeModuleId === 5 ? MODULE_5_SCENES : activeModuleId === 6 ? MODULE_6_SCENES : activeModuleId === 7 ? MODULE_7_SCENES : MODULE_8_SCENES
-  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : activeModuleId === 2 ? MODULE_2_QUIZ_QUESTIONS : activeModuleId === 3 ? MODULE_3_QUIZ_QUESTIONS : activeModuleId === 4 ? MODULE_4_QUIZ_QUESTIONS : activeModuleId === 5 ? MODULE_5_QUIZ_QUESTIONS : activeModuleId === 6 ? MODULE_6_QUIZ_QUESTIONS : activeModuleId === 7 ? MODULE_7_QUIZ_QUESTIONS : MODULE_8_QUIZ_QUESTIONS
-  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : activeModuleId === 2 ? STORAGE_MOD2_KEY : activeModuleId === 3 ? STORAGE_MOD3_KEY : activeModuleId === 4 ? STORAGE_MOD4_KEY : activeModuleId === 5 ? STORAGE_MOD5_KEY : activeModuleId === 6 ? STORAGE_MOD6_KEY : activeModuleId === 7 ? STORAGE_MOD7_KEY : STORAGE_MOD8_KEY
+  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : activeModuleId === 2 ? MODULE_2_SCENES : activeModuleId === 3 ? MODULE_3_SCENES : activeModuleId === 4 ? MODULE_4_SCENES : activeModuleId === 5 ? MODULE_5_SCENES : activeModuleId === 6 ? MODULE_6_SCENES : activeModuleId === 7 ? MODULE_7_SCENES : activeModuleId === 8 ? MODULE_8_SCENES : MODULE_9_SCENES
+  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : activeModuleId === 2 ? MODULE_2_QUIZ_QUESTIONS : activeModuleId === 3 ? MODULE_3_QUIZ_QUESTIONS : activeModuleId === 4 ? MODULE_4_QUIZ_QUESTIONS : activeModuleId === 5 ? MODULE_5_QUIZ_QUESTIONS : activeModuleId === 6 ? MODULE_6_QUIZ_QUESTIONS : activeModuleId === 7 ? MODULE_7_QUIZ_QUESTIONS : activeModuleId === 8 ? MODULE_8_QUIZ_QUESTIONS : MODULE_9_QUIZ_QUESTIONS
+  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : activeModuleId === 2 ? STORAGE_MOD2_KEY : activeModuleId === 3 ? STORAGE_MOD3_KEY : activeModuleId === 4 ? STORAGE_MOD4_KEY : activeModuleId === 5 ? STORAGE_MOD5_KEY : activeModuleId === 6 ? STORAGE_MOD6_KEY : activeModuleId === 7 ? STORAGE_MOD7_KEY : activeModuleId === 8 ? STORAGE_MOD8_KEY : STORAGE_MOD9_KEY
 
   // Stage: "opening" (Hero Landing), "lesson" (Scenes 1-8), "quiz" (Final Test)
   const [viewStage, setViewStage] = useState<"opening" | "lesson" | "quiz">("opening")
@@ -2642,6 +2927,17 @@ export function NovatosPage() {
   const [m8WetDecision, setM8WetDecision] = useState<1 | 2 | 3 | null>(null)
   const [m8ChallengeStep, setM8ChallengeStep] = useState<1 | 2 | 3>(1)
   const [m8ChallengeAnswers, setM8ChallengeAnswers] = useState<Record<number, string>>({})
+  // Estados interativos do Módulo 9: A Mente dos Campeões
+  const [m9SelectedQuality, setM9SelectedQuality] = useState<"speed" | "consistency" | "racecraft" | "adaptation" | "decision">("speed")
+  const [m9ErrorScenario, setM9ErrorScenario] = useState<"A" | "B" | "C" | null>(null)
+  const [m9ConsistencyPace, setM9ConsistencyPace] = useState<"driverA" | "driverB">("driverB")
+  const [m9DuelChoice, setM9DuelChoice] = useState<"1" | "2" | "3" | null>(null)
+  const [m9TirePacingStyle, setM9TirePacingStyle] = useState<"aggressive" | "controlled">("controlled")
+  const [m9SelectedChampion, setM9SelectedChampion] = useState<"senna" | "schumacher" | "hamilton" | "verstappen">("senna")
+  const [m9PlanAdaptChoice, setM9PlanAdaptChoice] = useState<"1" | "2" | "3" | null>(null)
+  const [m9ChallengeStep, setM9ChallengeStep] = useState<1 | 2 | 3>(1)
+  const [m9ChallengeAnswers, setM9ChallengeAnswers] = useState<Record<number, string>>({})
+
 
 
 
@@ -2751,7 +3047,7 @@ export function NovatosPage() {
 
   // Troca de módulo (Módulo 1 a 8)
   const handleSelectModule = useCallback(
-    (modId: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8) => {
+    (modId: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9) => {
       if (modId === activeModuleId) return
       // Para áudios e timers
       if (countdownTimerRef.current) {
@@ -2779,8 +3075,8 @@ export function NovatosPage() {
       }
 
       // Carrega estado do novo módulo
-      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : modId === 2 ? STORAGE_MOD2_KEY : modId === 3 ? STORAGE_MOD3_KEY : modId === 4 ? STORAGE_MOD4_KEY : modId === 5 ? STORAGE_MOD5_KEY : modId === 6 ? STORAGE_MOD6_KEY : modId === 7 ? STORAGE_MOD7_KEY : STORAGE_MOD8_KEY
-      const maxLen = modId === 1 ? MODULE_1_SCENES.length : modId === 2 ? MODULE_2_SCENES.length : modId === 3 ? MODULE_3_SCENES.length : modId === 4 ? MODULE_4_SCENES.length : modId === 5 ? MODULE_5_SCENES.length : modId === 6 ? MODULE_6_SCENES.length : modId === 7 ? MODULE_7_SCENES.length : MODULE_8_SCENES.length
+      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : modId === 2 ? STORAGE_MOD2_KEY : modId === 3 ? STORAGE_MOD3_KEY : modId === 4 ? STORAGE_MOD4_KEY : modId === 5 ? STORAGE_MOD5_KEY : modId === 6 ? STORAGE_MOD6_KEY : modId === 7 ? STORAGE_MOD7_KEY : modId === 8 ? STORAGE_MOD8_KEY : STORAGE_MOD9_KEY
+      const maxLen = modId === 1 ? MODULE_1_SCENES.length : modId === 2 ? MODULE_2_SCENES.length : modId === 3 ? MODULE_3_SCENES.length : modId === 4 ? MODULE_4_SCENES.length : modId === 5 ? MODULE_5_SCENES.length : modId === 6 ? MODULE_6_SCENES.length : modId === 7 ? MODULE_7_SCENES.length : modId === 8 ? MODULE_8_SCENES.length : MODULE_9_SCENES.length
       const s = loadPersistedState(targetKey)
       setVisitedScenes(s.visitedScenes)
       setSceneIndex(s.lastSceneIndex < maxLen ? s.lastSceneIndex : 0)
@@ -2931,6 +3227,15 @@ export function NovatosPage() {
       setM8ChallengeStep(1)
       setM8ChallengeAnswers({})
       setM8CornerExercise({})
+      setM9SelectedQuality("speed")
+      setM9ErrorScenario(null)
+      setM9ConsistencyPace("driverB")
+      setM9DuelChoice(null)
+      setM9TirePacingStyle("controlled")
+      setM9SelectedChampion("senna")
+      setM9PlanAdaptChoice(null)
+      setM9ChallengeStep(1)
+      setM9ChallengeAnswers({})
     },
     [currentScenes.length, stopAllAudio]
   )
@@ -4258,6 +4563,15 @@ export function NovatosPage() {
       setM8ChallengeStep(1)
       setM8ChallengeAnswers({})
       setM8CornerExercise({})
+      setM9SelectedQuality("speed")
+      setM9ErrorScenario(null)
+      setM9ConsistencyPace("driverB")
+      setM9DuelChoice(null)
+      setM9TirePacingStyle("controlled")
+      setM9SelectedChampion("senna")
+      setM9PlanAdaptChoice(null)
+      setM9ChallengeStep(1)
+      setM9ChallengeAnswers({})
                   }}
                   className="w-full py-1 text-[10px] text-zinc-400 hover:text-white underline cursor-pointer text-center block"
                 >
@@ -5925,6 +6239,15 @@ export function NovatosPage() {
       setM8ChallengeStep(1)
       setM8ChallengeAnswers({})
       setM8CornerExercise({})
+      setM9SelectedQuality("speed")
+      setM9ErrorScenario(null)
+      setM9ConsistencyPace("driverB")
+      setM9DuelChoice(null)
+      setM9TirePacingStyle("controlled")
+      setM9SelectedChampion("senna")
+      setM9PlanAdaptChoice(null)
+      setM9ChallengeStep(1)
+      setM9ChallengeAnswers({})
                   }}
                   className="w-full py-1 text-[10px] text-zinc-400 hover:text-white underline cursor-pointer text-center block"
                 >
@@ -7927,6 +8250,736 @@ export function NovatosPage() {
     // ------------------------------------------------------------------------
     // MÓDULO 8: DOMINANDO OS CIRCUITOS — A ARTE DE FAZER UMA VOLTA RÁPIDA
     // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // MÓDULO 9: A MENTE DOS CAMPEÕES — VELOCIDADE, DISCIPLINA E CONSISTÊNCIA
+    // ------------------------------------------------------------------------
+    if (activeModuleId === 9) {
+      // CENA 1: VELOCIDADE NÃO É TUDO (5 PILARES)
+      if (currentScene.visualEffectType === "mod9_qualities_overview") {
+        const qualities = [
+          {
+            id: "speed" as const,
+            name: "1. Velocidade Pura",
+            badge: "TALENTO BRUTO",
+            desc: "A capacidade de extrair o limite físico absoluto do carro e dos pneus em uma única volta de classificação.",
+            quote: "A velocidade bruta te coloca no grid de largada, mas não te sustenta por 50 voltas consecutivas.",
+          },
+          {
+            id: "consistency" as const,
+            name: "2. Consistência",
+            badge: "METRÔNOMO",
+            desc: "A precisão matemática de repetir o mesmo tempo de volta com variação de milésimos sem cometer erros.",
+            quote: "A regularidade vence o brilho esporádico: constrói janelas estratégicas e evita panes mecânicas.",
+          },
+          {
+            id: "racecraft" as const,
+            name: "3. Leitura de Corrida",
+            badge: "VISÃO TÁTICA",
+            desc: "Compreender o ritmo dos oponentes, antecipar bandeiras amarelas e ler a evolução da aderência da pista.",
+            quote: "Enxergar a corrida do alto do cockpit: onde o adversário hesita e quando é o momento de atacar.",
+          },
+          {
+            id: "adaptation" as const,
+            name: "4. Adaptação Contínua",
+            badge: "VERSATILIDADE",
+            desc: "Mudar o estilo de guiar conforme o tanque de combustível esvazia, os pneus degradam ou cai chuva fina.",
+            quote: "O carro perfeito não existe após a volta 5. O campeão pilota o carro que tem nas mãos.",
+          },
+          {
+            id: "decision" as const,
+            name: "5. Decisão sob Pressão",
+            badge: "LUCIDEZ A 300 KM/H",
+            desc: "Manter a calma cardíaca e cerebral quando o rádio chama, o tráfego aperta ou um erro inesperado acontece.",
+            quote: "A mente fria nos momentos de crise é o maior divisor de águas entre bons pilotos e lendas.",
+          },
+        ]
+
+        const activeQ = qualities.find((q) => q.id === m9SelectedQuality) || qualities[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Anatomia do Campeão</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">5 PILARES FUNDAMENTAIS</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-2 font-bold">
+              Selecione um pilar para entender o que constrói um campeão:
+            </p>
+
+            <div className="grid grid-cols-2 gap-1.5 mb-2.5">
+              {qualities.map((q) => (
+                <button
+                  key={q.id}
+                  type="button"
+                  onClick={() => setM9SelectedQuality(q.id)}
+                  className={cn(
+                    "p-1.5 rounded text-[10px] font-bold text-left transition-all border",
+                    m9SelectedQuality === q.id
+                      ? "bg-[#E10600] text-white border-[#E10600] shadow-md"
+                      : "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10"
+                  )}
+                >
+                  {q.name}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-[10px]">
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-bold text-white text-[11px]">{activeQ.name}</span>
+                <span className="px-1.5 py-0.5 rounded bg-white/10 text-cyan-300 font-mono text-[8px] uppercase">
+                  {activeQ.badge}
+                </span>
+              </div>
+              <p className="text-zinc-300 mb-1.5 leading-snug">{activeQ.desc}</p>
+              <div className="p-1.5 rounded bg-black/60 border border-white/5 text-[9px] text-amber-300 italic">
+                “{activeQ.quote}”
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 2: A MENTE SOB PRESSÃO (GESTÃO DO ERRO)
+      if (currentScene.visualEffectType === "mod9_pressure_mindset") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Controle Emocional</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">GESTÃO DE CRISES</span>
+            </div>
+
+            <div className="p-2 rounded-lg bg-zinc-900 border border-white/10 text-[10px] mb-2.5">
+              <span className="text-white font-bold block mb-1">⚠️ Situação Crítica na Pista:</span>
+              <p className="text-zinc-300 leading-snug">
+                Você travou as rodas dianteiras no fim da reta principal, escapou para a área de escape asfaltada e perdeu 1.8 segundo para o adversário atrás.
+              </p>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Como reagir nos próximos 30 segundos?
+            </p>
+
+            <div className="flex flex-col gap-1.5 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM9ErrorScenario("A")}
+                className={cn(
+                  "p-2 rounded text-[10px] font-bold text-left transition-all border",
+                  m9ErrorScenario === "A"
+                    ? "bg-red-950/80 border-red-500 text-red-200"
+                    : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                Opção A: Acelerar com raiva para recuperar o tempo na mesma volta
+              </button>
+              <button
+                type="button"
+                onClick={() => setM9ErrorScenario("B")}
+                className={cn(
+                  "p-2 rounded text-[10px] font-bold text-left transition-all border",
+                  m9ErrorScenario === "B"
+                    ? "bg-emerald-950/80 border-emerald-500 text-emerald-200"
+                    : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                Opção B (Recomendada): Respirar, aceitar o erro, recalibrar a frenagem e reconstruir o ritmo
+              </button>
+              <button
+                type="button"
+                onClick={() => setM9ErrorScenario("C")}
+                className={cn(
+                  "p-2 rounded text-[10px] font-bold text-left transition-all border",
+                  m9ErrorScenario === "C"
+                    ? "bg-amber-950/80 border-amber-500 text-amber-200"
+                    : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                Opção C: Abrir o rádio aos berros culpando a equipe pelo equilíbrio dos freios
+              </button>
+            </div>
+
+            {m9ErrorScenario && (
+              <div
+                className={cn(
+                  "p-2 rounded-lg border text-[10px] leading-snug",
+                  m9ErrorScenario === "B"
+                    ? "bg-emerald-950/50 border-emerald-500/40 text-emerald-200"
+                    : "bg-red-950/50 border-red-500/40 text-red-200"
+                )}
+              >
+                {m9ErrorScenario === "B" && (
+                  <span>
+                    ✓ <strong>Mente de Campeão:</strong> O tempo perdido não volta na marra. Resetar a mente evita o superaquecimento dos pneus e o temido 'efeito dominó' de erros sucessivos.
+                  </span>
+                )}
+                {m9ErrorScenario === "A" && (
+                  <span>
+                    ❌ <strong>Risco Crítico:</strong> Os pneus dianteiros estão com alta temperatura após a travada. Forçar ritmo imediato causa nova perda de aderência e potencial rodada.
+                  </span>
+                )}
+                {m9ErrorScenario === "C" && (
+                  <span>
+                    ❌ <strong>Prejuízo Coletivo:</strong> Criar atrito com o engenheiro polui a comunicação do rádio e demonstra instabilidade emocional diante do time.
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 3: A ARTE DA CONSISTÊNCIA (PILOTO A VS PILOTO B)
+      if (currentScene.visualEffectType === "mod9_consistency_pace") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Análise de Ritmo</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">METRÔNOMO DA F1</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-2 font-bold">
+              Compare a telemetria de 5 voltas de dois perfis diferentes:
+            </p>
+
+            <div className="flex gap-1.5 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM9ConsistencyPace("driverA")}
+                className={cn(
+                  "flex-1 p-1.5 rounded text-[10px] font-bold text-center transition-all border",
+                  m9ConsistencyPace === "driverA"
+                    ? "bg-amber-600 text-white border-amber-500 shadow-md"
+                    : "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10"
+                )}
+              >
+                Piloto A (Oscilante)
+              </button>
+              <button
+                type="button"
+                onClick={() => setM9ConsistencyPace("driverB")}
+                className={cn(
+                  "flex-1 p-1.5 rounded text-[10px] font-bold text-center transition-all border",
+                  m9ConsistencyPace === "driverB"
+                    ? "bg-emerald-600 text-white border-emerald-500 shadow-md"
+                    : "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10"
+                )}
+              >
+                Piloto B (Consistente)
+              </button>
+            </div>
+
+            <div className="p-2 rounded-lg bg-zinc-900 border border-white/10 text-[10px] mb-2 font-mono">
+              <div className="flex justify-between text-zinc-400 border-b border-white/10 pb-1 mb-1 text-[9px]">
+                <span>VOLTA</span>
+                <span>TEMPO REGISTRADO</span>
+                <span>STATUS PNEU</span>
+              </div>
+              {m9ConsistencyPace === "driverA" ? (
+                <>
+                  <div className="flex justify-between text-emerald-400"><span>Volta 12</span><span>1:18.200 (Pico)</span><span>98°C</span></div>
+                  <div className="flex justify-between text-amber-400"><span>Volta 13</span><span>1:19.450 (+1.2s)</span><span>118°C ⚠️</span></div>
+                  <div className="flex justify-between text-emerald-400"><span>Volta 14</span><span>1:18.150 (Rápida)</span><span>124°C 🔥</span></div>
+                  <div className="flex justify-between text-red-400"><span>Volta 15</span><span>1:20.100 (+1.9s)</span><span>129°C ❌</span></div>
+                  <div className="flex justify-between text-zinc-300"><span>Volta 16</span><span>1:18.020</span><span>122°C</span></div>
+                  <div className="mt-1.5 pt-1 border-t border-white/10 flex justify-between font-bold text-amber-300 text-[9px]">
+                    <span>MÉDIA: 1:18.784</span>
+                    <span>VARIAÇÃO: 2.08s</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex justify-between text-zinc-300"><span>Volta 12</span><span>1:18.520</span><span>104°C ✓</span></div>
+                  <div className="flex justify-between text-zinc-300"><span>Volta 13</span><span>1:18.580</span><span>104°C ✓</span></div>
+                  <div className="flex justify-between text-zinc-300"><span>Volta 14</span><span>1:18.490</span><span>105°C ✓</span></div>
+                  <div className="flex justify-between text-zinc-300"><span>Volta 15</span><span>1:18.540</span><span>104°C ✓</span></div>
+                  <div className="flex justify-between text-zinc-300"><span>Volta 16</span><span>1:18.510</span><span>105°C ✓</span></div>
+                  <div className="mt-1.5 pt-1 border-t border-white/10 flex justify-between font-bold text-emerald-300 text-[9px]">
+                    <span>MÉDIA: 1:18.528</span>
+                    <span>VARIAÇÃO: 0.09s</span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="p-2 rounded bg-white/5 border border-white/10 text-[10px] text-zinc-300 leading-snug">
+              {m9ConsistencyPace === "driverA"
+                ? "⚠️ Piloto A atinge a melhor volta isolada, mas agride os pneus com picos de temperatura. O ritmo cai drasticamente logo em seguida."
+                : "✓ Piloto B mantém variação de menos de 1 décimo por volta. No fim de 50 voltas, abre mais de 12 segundos de vantagem real!"}
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 4: RACECRAFT: ATAQUE, DEFESA E DUELO NA PISTA
+      if (currentScene.visualEffectType === "mod9_racecraft_duels") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Inteligência de Duelo</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold">RACECRAFT</span>
+            </div>
+
+            <div className="p-2 rounded-lg bg-zinc-900 border border-white/10 text-[10px] mb-2.5">
+              <strong className="text-white block mb-0.5">Cenário: Volta 45 de 52</strong>
+              <p className="text-zinc-300 leading-snug">
+                Você persegue o rival colado na traseira. Na aproximação da curva, ele fecha firmemente a linha interna para defender a posição.
+              </p>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Qual manobra revela inteligência de campeão?
+            </p>
+
+            <div className="flex flex-col gap-1.5 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM9DuelChoice("1")}
+                className={cn(
+                  "p-2 rounded text-[10px] font-bold text-left transition-all border",
+                  m9DuelChoice === "1"
+                    ? "bg-red-950/80 border-red-500 text-red-200"
+                    : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                1. Mergulhar por fora no limite do desespero e tentar contornar a curva lado a lado
+              </button>
+              <button
+                type="button"
+                onClick={() => setM9DuelChoice("2")}
+                className={cn(
+                  "p-2 rounded text-[10px] font-bold text-left transition-all border",
+                  m9DuelChoice === "2"
+                    ? "bg-emerald-950/80 border-emerald-500 text-emerald-200"
+                    : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                2. (Recomendado) Fazer a 'Tesoura': frear mais cedo por fora, cruzar por trás e tracionar com força na saída
+              </button>
+              <button
+                type="button"
+                onClick={() => setM9DuelChoice("3")}
+                className={cn(
+                  "p-2 rounded text-[10px] font-bold text-left transition-all border",
+                  m9DuelChoice === "3"
+                    ? "bg-amber-950/80 border-amber-500 text-amber-200"
+                    : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                3. Manter-se colado na traseira dele freando no limite da mesma linha
+              </button>
+            </div>
+
+            {m9DuelChoice && (
+              <div
+                className={cn(
+                  "p-2 rounded-lg border text-[10px] leading-snug",
+                  m9DuelChoice === "2"
+                    ? "bg-emerald-950/50 border-emerald-500/40 text-emerald-200"
+                    : "bg-red-950/50 border-red-500/40 text-red-200"
+                )}
+              >
+                {m9DuelChoice === "2" && (
+                  <span>
+                    ✓ <strong>Leitura Genial:</strong> Ao defender a linha interna, o adversário é obrigado a frear tarde e espalha na saída. Você cruza por trás, pisa fundo mais cedo e passa com folga antes da próxima reta!
+                  </span>
+                )}
+                {m9DuelChoice === "1" && (
+                  <span>
+                    ❌ <strong>Risco Imprudente:</strong> A parte externa tem sujeira e má inclinação. Você corre risco de espalhar na brita ou tomar um toque involuntário.
+                  </span>
+                )}
+                {m9DuelChoice === "3" && (
+                  <span>
+                    ❌ <strong>Ar Sujo:</strong> Permanecer na esteira turbulenta elimina o downforce da asa dianteira, queima seus freios e desgasta seus pneus sem gerar chance de ultrapassagem.
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 5: INTELIGÊNCIA NOS PNEUS (DEGRADAÇÃO VS DESGASTE)
+      if (currentScene.visualEffectType === "mod9_tire_intelligence") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Gestão de Borracha</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">GERENCIAMENTO TÉRMICO</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-2 font-bold">
+              Selecione o estilo de condução para comparar a saúde do pneu:
+            </p>
+
+            <div className="flex gap-1.5 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM9TirePacingStyle("aggressive")}
+                className={cn(
+                  "flex-1 p-1.5 rounded text-[10px] font-bold text-center transition-all border",
+                  m9TirePacingStyle === "aggressive"
+                    ? "bg-red-600 text-white border-red-500 shadow-md"
+                    : "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10"
+                )}
+              >
+                Estilo Agressivo
+              </button>
+              <button
+                type="button"
+                onClick={() => setM9TirePacingStyle("controlled")}
+                className={cn(
+                  "flex-1 p-1.5 rounded text-[10px] font-bold text-center transition-all border",
+                  m9TirePacingStyle === "controlled"
+                    ? "bg-emerald-600 text-white border-emerald-500 shadow-md"
+                    : "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10"
+                )}
+              >
+                Estilo Cirúrgico
+              </button>
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-[10px] mb-2.5">
+              <div className="flex justify-between items-center mb-1.5">
+                <span className="text-zinc-400 text-[9px] font-mono">TEMPERATURA DA BANDA</span>
+                <span className={cn("font-mono font-bold text-[11px]", m9TirePacingStyle === "aggressive" ? "text-red-400" : "text-emerald-400")}>
+                  {m9TirePacingStyle === "aggressive" ? "128°C (Superaquecido)" : "103°C (Janela Ótima)"}
+                </span>
+              </div>
+              <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden mb-2">
+                <div
+                  className={cn("h-full transition-all duration-500", m9TirePacingStyle === "aggressive" ? "w-[95%] bg-red-500" : "w-[60%] bg-emerald-500")}
+                />
+              </div>
+
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-zinc-400 text-[9px] font-mono">ADERÊNCIA RESTANTE (VOLTA 18)</span>
+                <span className={cn("font-mono font-bold text-[11px]", m9TirePacingStyle === "aggressive" ? "text-red-400" : "text-emerald-400")}>
+                  {m9TirePacingStyle === "aggressive" ? "54% (Degradação Severa)" : "86% (Consistência Alta)"}
+                </span>
+              </div>
+              <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+                <div
+                  className={cn("h-full transition-all duration-500", m9TirePacingStyle === "aggressive" ? "w-[54%] bg-red-500" : "w-[86%] bg-emerald-500")}
+                />
+              </div>
+            </div>
+
+            <div className="p-2 rounded bg-white/5 border border-white/10 text-[10px] text-zinc-300 leading-snug">
+              <strong className="text-white block mb-0.5">Conceito Fundamental:</strong>
+              {m9TirePacingStyle === "aggressive"
+                ? "Derrapagens e correções bruscas de volante geram atrito excessivo, cozinhando o composto de dentro para fora (blistering). O tempo por volta desaba 1.5s."
+                : "Transferências suaves de massa e rotação fluida mantêm o composto na temperatura perfeita. O piloto preserva a borracha para atacar no fim do stint."}
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 6: ESTILOS DIFERENTES, CAMPEÕES DIFERENTES
+      if (currentScene.visualEffectType === "mod9_champions_styles") {
+        const champions = [
+          {
+            id: "senna" as const,
+            name: "Ayrton Senna",
+            era: "Tricampeão (1988, 1990, 1991)",
+            dna: "Instinto Visceral & Maestria na Chuva",
+            hallmark: "Famoso pelo toque pulsante no acelerador para manter o turbo girando e pela velocidade inigualável em volta única de classificação.",
+          },
+          {
+            id: "schumacher" as const,
+            name: "Michael Schumacher",
+            era: "Heptacampeão (1994, 1995, 2000-2004)",
+            dna: "Metodologia Científica & Preparo Atlético",
+            hallmark: "Revolucionou o condicionamento físico dos pilotos e era capaz de fazer sequências de 30 voltas seguidas no ritmo de volta de classificação.",
+          },
+          {
+            id: "hamilton" as const,
+            name: "Lewis Hamilton",
+            era: "Heptacampeão (2008, 2014, 2015, 2017-2020)",
+            dna: "Sensibilidade Cirúrgica & Frieza sob Pressão",
+            hallmark: "Mestre supremo na gestão de pneus sem abrir mão do ritmo de ponta, além de precisão absoluta em batalhas roda a roda no limite regulamentar.",
+          },
+          {
+            id: "verstappen" as const,
+            name: "Max Verstappen",
+            era: "Tetracampeão (2021-2024)",
+            dna: "Agressividade Fria & Controle do Eixo Traseiro",
+            hallmark: "Controle milimétrico da traseira do carro, decisões instantâneas sem hesitação em freadas e consistência mecânica volta a volta.",
+          },
+        ]
+
+        const activeChamp = champions.find((c) => c.id === m9SelectedChampion) || champions[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Diferentes Caminhos</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">DNA DOS VENCEDORES</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-2 font-bold">
+              Selecione uma lenda para analisar seu estilo de pilotagem:
+            </p>
+
+            <div className="grid grid-cols-2 gap-1.5 mb-2.5">
+              {champions.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setM9SelectedChampion(c.id)}
+                  className={cn(
+                    "p-1.5 rounded text-[10px] font-bold text-left transition-all border",
+                    m9SelectedChampion === c.id
+                      ? "bg-[#E10600] text-white border-[#E10600] shadow-md"
+                      : "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10"
+                  )}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-[10px]">
+              <div className="flex items-center justify-between mb-0.5">
+                <span className="font-bold text-white text-[11px]">{activeChamp.name}</span>
+                <span className="text-zinc-400 text-[8px] font-mono">{activeChamp.era}</span>
+              </div>
+              <div className="text-cyan-300 font-mono text-[9px] font-bold uppercase mb-1.5">
+                ✦ {activeChamp.dna}
+              </div>
+              <p className="text-zinc-300 leading-snug">{activeChamp.hallmark}</p>
+            </div>
+
+            <div className="mt-2 p-1.5 rounded bg-white/5 border border-white/5 text-[9px] text-zinc-400 italic text-center">
+              Não existe um único estilo supremo: a grandeza nasce da perfeição na aplicação do próprio talento.
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 7: QUANDO O PLANO DÁ ERRADO (INCERTEZA E PIT WALL)
+      if (currentScene.visualEffectType === "mod9_adapting_uncertainty") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Adaptação no Caos</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-bold">CHUVA & INCERTEZA</span>
+            </div>
+
+            <div className="p-2 rounded-lg bg-zinc-900 border border-white/10 text-[10px] mb-2.5">
+              <strong className="text-white block mb-0.5">Mudança Repentina de Cenário:</strong>
+              <p className="text-zinc-300 leading-snug">
+                Cai chuva fina no Setor 3 do autódromo, mas a reta dos boxes e o Setor 1 permanecem completamente secos sob sol.
+              </p>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Qual deve ser sua conduta imediata?
+            </p>
+
+            <div className="flex flex-col gap-1.5 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM9PlanAdaptChoice("1")}
+                className={cn(
+                  "p-2 rounded text-[10px] font-bold text-left transition-all border",
+                  m9PlanAdaptChoice === "1"
+                    ? "bg-red-950/80 border-red-500 text-red-200"
+                    : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                1. Entrar imediatamente nos boxes sem avisar e pedir pneus de chuva extrema
+              </button>
+              <button
+                type="button"
+                onClick={() => setM9PlanAdaptChoice("2")}
+                className={cn(
+                  "p-2 rounded text-[10px] font-bold text-left transition-all border",
+                  m9PlanAdaptChoice === "2"
+                    ? "bg-emerald-950/80 border-emerald-500 text-emerald-200"
+                    : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                2. (Recomendado) Descrever a aderência curva a curva ao engenheiro e aguardar a confirmação de intensidade do radar
+              </button>
+              <button
+                type="button"
+                onClick={() => setM9PlanAdaptChoice("3")}
+                className={cn(
+                  "p-2 rounded text-[10px] font-bold text-left transition-all border",
+                  m9PlanAdaptChoice === "3"
+                    ? "bg-amber-950/80 border-amber-500 text-amber-200"
+                    : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                3. Acelerar forte ignorando a chuva para abrir vantagem antes que todos parem
+              </button>
+            </div>
+
+            {m9PlanAdaptChoice && (
+              <div
+                className={cn(
+                  "p-2 rounded-lg border text-[10px] leading-snug",
+                  m9PlanAdaptChoice === "2"
+                    ? "bg-emerald-950/50 border-emerald-500/40 text-emerald-200"
+                    : "bg-red-950/50 border-red-500/40 text-red-200"
+                )}
+              >
+                {m9PlanAdaptChoice === "2" && (
+                  <span>
+                    ✓ <strong>Sinergia Perfeita:</strong> O piloto sente o asfalto nas mãos e os engenheiros monitoram o radar de satélite. Essa troca contínua decide o momento exato de colocar intermediários ou manter slicks.
+                  </span>
+                )}
+                {m9PlanAdaptChoice === "1" && (
+                  <span>
+                    ❌ <strong>Erro Crítico:</strong> Pneus de chuva pesada superaquecem e derretem no asfalto seco dos outros setores em 2 voltas, obrigando um novo pit stop desastroso.
+                  </span>
+                )}
+                {m9PlanAdaptChoice === "3" && (
+                  <span>
+                    ❌ <strong>Acidente Iminente:</strong> Pneus slicks perdem toda aderência sobre poças de água. O risco de aquaplanagem e colisão contra o guard-rail é de quase 100%.
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 8: DESAFIO FINAL: A MENTE DO CAMPEÃO
+      if (currentScene.visualEffectType === "mod9_champion_mindset_challenge") {
+        const challengeSteps = [
+          {
+            step: 1 as const,
+            title: "Etapa 1: Pressão na Largada",
+            scenario: "Você larga na pole, mas patina na arrancada e perde a liderança na Curva 1. Qual a sua postura mental?",
+            options: [
+              { id: "A", text: "Tentar forçar ultrapassagem por fora na zebra suja na curva seguinte." },
+              { id: "B", text: "Garantir a 2ª posição, manter o vácuo a 1.2s e poupar pneus para um contra-ataque calculado." },
+            ],
+            correct: "B",
+            feedback: "Excelente! Campeonatos se vencem no final da corrida, não na primeira curva.",
+          },
+          {
+            step: 2 as const,
+            title: "Etapa 2: Gerenciamento do Stint",
+            scenario: "O líder parou nos boxes. A equipe pede para você estender o stint por 5 voltas para tentar o 'overcut'. Como pilotar?",
+            options: [
+              { id: "A", text: "Tirar o pé nas retas principais para esfriar o motor." },
+              { id: "B", text: "Aliviar os ápices de curva, evitar derrapagens na tração e manter voltas dentro de 2 décimos." },
+            ],
+            correct: "B",
+            feedback: "Perfeito! Regularidade suave preserva a carcaça do pneu sem perder tempo para o rival.",
+          },
+          {
+            step: 3 as const,
+            title: "Etapa 3: Ultrapassagem Decisiva",
+            scenario: "Última volta: você saiu do pit stop colado no rival. Ele defende a linha interna no grampo. Qual a manobra?",
+            options: [
+              { id: "A", text: "Abrir a linha por fora, frear mais cedo e tracionar antes para ultrapassar na reta dos boxes." },
+              { id: "B", text: "Mergulhar por dentro no espaço inexistente e empurrá-lo para fora da pista." },
+            ],
+            correct: "A",
+            feedback: "Vitória espetacular! Manobra de campeão: inteligência, respeito às regras e velocidade na bandeirada!",
+          },
+        ]
+
+        const currentChallenge = challengeSteps.find((s) => s.step === m9ChallengeStep) || challengeSteps[0]
+        const answered = m9ChallengeAnswers[m9ChallengeStep]
+        const isAllDone = Object.keys(m9ChallengeAnswers).length === 3
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Desafio Interativo</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">
+                {isAllDone ? "DESAFIO CONCLUÍDO" : `ETAPA ${m9ChallengeStep}/3`}
+              </span>
+            </div>
+
+            {!isAllDone ? (
+              <>
+                <div className="p-2 rounded-lg bg-zinc-900 border border-white/10 text-[10px] mb-2.5">
+                  <span className="text-white font-bold block mb-1">{currentChallenge.title}</span>
+                  <p className="text-zinc-300 leading-snug">{currentChallenge.scenario}</p>
+                </div>
+
+                <div className="flex flex-col gap-1.5 mb-2.5">
+                  {currentChallenge.options.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setM9ChallengeAnswers({ ...m9ChallengeAnswers, [m9ChallengeStep]: opt.id })}
+                      className={cn(
+                        "p-2 rounded text-[10px] font-bold text-left transition-all border",
+                        answered === opt.id
+                          ? opt.id === currentChallenge.correct
+                            ? "bg-emerald-950/80 border-emerald-500 text-emerald-200"
+                            : "bg-red-950/80 border-red-500 text-red-200"
+                          : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                      )}
+                    >
+                      {opt.id}) {opt.text}
+                    </button>
+                  ))}
+                </div>
+
+                {answered && (
+                  <div className="mb-2">
+                    <p
+                      className={cn(
+                        "text-[9px] p-1.5 rounded border",
+                        answered === currentChallenge.correct
+                          ? "bg-emerald-950/40 border-emerald-500/30 text-emerald-300"
+                          : "bg-red-950/40 border-red-500/30 text-red-300"
+                      )}
+                    >
+                      {answered === currentChallenge.correct
+                        ? `✓ ${currentChallenge.feedback}`
+                        : "❌ Decisão impulsiva que custaria o resultado na corrida. Tente a opção correta!"}
+                    </p>
+
+                    {answered === currentChallenge.correct && m9ChallengeStep < 3 && (
+                      <button
+                        type="button"
+                        onClick={() => setM9ChallengeStep((prev) => ((prev + 1) as 1 | 2 | 3))}
+                        className="mt-2 w-full py-1.5 rounded bg-[#E10600] hover:bg-[#ff1a14] text-white text-[10px] font-black uppercase tracking-wider cursor-pointer transition-all"
+                      >
+                        Próxima Etapa →
+                      </button>
+                    )}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-center py-2">
+                <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-2 border border-emerald-500/40">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
+                <h4 className="text-white text-xs font-black uppercase mb-1">Você Pensa como um Campeão!</h4>
+                <p className="text-zinc-300 text-[10px] leading-snug mb-3">
+                  Dominou a largada com frieza, administrou a borracha no stint e realizou uma ultrapassagem cirúrgica sem infrações.
+                </p>
+                <div className="p-2 rounded bg-white/5 border border-white/10 text-[9px] text-zinc-400 mb-3 text-left">
+                  <strong className="text-white block mb-0.5">✦ Os 5 Pilares Fixados:</strong>
+                  1. Velocidade • 2. Consistência • 3. Racecraft • 4. Gestão Térmica • 5. Frieza Decisória
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setViewStage("quiz")}
+                  className="w-full py-2 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider shadow-[0_0_20px_rgba(225,6,0,0.6)] cursor-pointer transition-all"
+                >
+                  Ir para o Questionário da Mente Campeã
+                </button>
+              </div>
+            )}
+          </div>
+        )
+      }
+    }
+
     if (activeModuleId === 8) {
       // CENA 1: CADA CIRCUITO CONTA UMA HISTÓRIA
       if (currentScene.visualEffectType === "mod8_circuit_anatomy") {
@@ -8721,7 +9774,7 @@ export function NovatosPage() {
           {/* Fundo Cinematográfico com Parallax Suave */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <img
-              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : activeModuleId === 4 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 5 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 6 ? "/novatos/modulo1/cena02_1950.jpg" : activeModuleId === 7 ? "/backgrounds/bg-mercedes.webp" : "/backgrounds/bg-aston.webp"}
+              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : activeModuleId === 4 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 5 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 6 ? "/novatos/modulo1/cena02_1950.jpg" : activeModuleId === 7 ? "/backgrounds/bg-mercedes.webp" : activeModuleId === 8 ? "/backgrounds/bg-aston.webp" : "/backgrounds/bg-redbull.webp"}
               alt="Fundo Novatos na F1"
               className={cn(
                 "w-full h-full object-cover object-center brightness-40 contrast-125 scale-105",
@@ -8805,6 +9858,16 @@ export function NovatosPage() {
             </button>
             <button
               type="button"
+              onClick={() => handleSelectModule(9)}
+              className={cn(
+                "px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide transition-all cursor-pointer",
+                activeModuleId === 9 ? "bg-[#E10600] text-white shadow-lg" : "text-zinc-400 hover:text-white"
+              )}
+            >
+              9. A Mente dos Campeões
+            </button>
+            <button
+              type="button"
               onClick={() => handleSelectModule(8)}
               className={cn(
                 "px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide transition-all cursor-pointer",
@@ -8834,7 +9897,7 @@ export function NovatosPage() {
                   ? "MÓDULO 6 • A HISTÓRIA DA FÓRMULA 1: 75 ANOS DE EVOLUÇÃO"
                   : activeModuleId === 7
                   ? "MÓDULO 7 • POR TRÁS DA EQUIPE: ENGENHEIROS, ESTRATÉGIA E DADOS"
-                  : "MÓDULO 8 • DOMINANDO OS CIRCUITOS: TRAJETÓRIAS E VOLTA RÁPIDA"}
+                  : activeModuleId === 8 ? "MÓDULO 8 • DOMINANDO OS CIRCUITOS: TRAJETÓRIAS E VOLTA RÁPIDA" : "MÓDULO 9 • A MENTE DOS CAMPEÕES: O QUE DEFINE UM VENCEDOR"}
               </span>
             </div>
 
@@ -8857,7 +9920,7 @@ export function NovatosPage() {
                 ? "MÓDULO 6 — A HISTÓRIA DA FÓRMULA 1"
                 : activeModuleId === 7
                 ? "MÓDULO 7 — POR TRÁS DA EQUIPE"
-                : "MÓDULO 8 — DOMINANDO OS CIRCUITOS"}
+                : activeModuleId === 8 ? "MÓDULO 8 — DOMINANDO OS CIRCUITOS" : "MÓDULO 9 — A MENTE DOS CAMPEÕES"}
             </p>
 
             <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-xl mb-8">
@@ -9256,7 +10319,7 @@ export function NovatosPage() {
               </div>
 
               <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white mb-1">
-                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : activeModuleId === 2 ? "MÓDULO 2 CONCLUÍDO" : activeModuleId === 3 ? "MÓDULO 3 CONCLUÍDO" : activeModuleId === 4 ? "MÓDULO 4 CONCLUÍDO" : activeModuleId === 5 ? "MÓDULO 5 CONCLUÍDO" : activeModuleId === 6 ? "MÓDULO 6 CONCLUÍDO" : activeModuleId === 7 ? "MÓDULO 7 CONCLUÍDO" : "MÓDULO 8 CONCLUÍDO"}
+                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : activeModuleId === 2 ? "MÓDULO 2 CONCLUÍDO" : activeModuleId === 3 ? "MÓDULO 3 CONCLUÍDO" : activeModuleId === 4 ? "MÓDULO 4 CONCLUÍDO" : activeModuleId === 5 ? "MÓDULO 5 CONCLUÍDO" : activeModuleId === 6 ? "MÓDULO 6 CONCLUÍDO" : activeModuleId === 7 ? "MÓDULO 7 CONCLUÍDO" : activeModuleId === 8 ? "MÓDULO 8 CONCLUÍDO" : "MÓDULO 9 CONCLUÍDO"}
               </h2>
 
               <p className="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-4">
@@ -9302,6 +10365,14 @@ export function NovatosPage() {
                     : (quizScore ?? 0) >= 5
                     ? "“Bom começo! Reveja as cenas sobre telemetria, limite de custos e estratégia de pit wall.”"
                     : "“Liderar uma equipe exige aprendizado constante. Reveja as cenas do módulo e tente novamente.”"
+                                    : activeModuleId === 9
+                  ? (quizScore ?? 0) === 10
+                    ? "“Perfeito! Mente de Campeão Mundial! Você domina todos os pilares mentais, táticos e técnicos de um piloto extraordinário.”"
+                    : (quizScore ?? 0) >= 8
+                    ? "“Excelente visão estratégica! Você pensa como os pilotos e estrategistas mais experientes da Fórmula 1.”"
+                    : (quizScore ?? 0) >= 5
+                    ? "“Boa evolução tática! Você já enxerga a importância da consistência, do foco sob pressão e da preservação de pneus.”"
+                    : "“Leitura inicial da mente competitiva. Você começou a entender que a F1 vai muito além do acelerador. Reveja as cenas e tente novamente!”"
                   : (quizScore ?? 0) === 10
                   ? "“Volta perfeita no quiz! Você concluiu o desafio com domínio dos conceitos fundamentais.”"
                   : (quizScore ?? 0) >= 8
@@ -9349,6 +10420,19 @@ export function NovatosPage() {
                   >
                     <Sparkles className="w-3.5 h-3.5 text-[#E10600]" />
                     <span>Rever o Desafio do Chefe</span>
+                  </button>
+                )}
+
+                {activeModuleId === 9 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      goToScene(7)
+                    }}
+                    className="px-4 py-2 rounded-xl bg-[#E10600]/20 hover:bg-[#E10600]/30 text-white text-xs font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 border border-[#E10600]/40"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-[#E10600]" />
+                    <span>Rever o Desafio do Campeão</span>
                   </button>
                 )}
 
