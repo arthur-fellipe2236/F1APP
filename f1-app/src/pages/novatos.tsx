@@ -140,13 +140,14 @@ export interface ModuleScene {
   number: number
   id: string
   title: string
-  estimatedDurationLabel: string
-  durationSec: number
+  subtitle?: string
+  estimatedDurationLabel?: string
+  durationSec?: number
   imageUrl: string
   audioUrl: string
   ambientAudioUrl?: string
-  ambientDescription: string
-  shortSummary: string
+  ambientDescription?: string
+  shortSummary?: string
   narrationTranscript: string
   visualEffectType:
     | "rear_shimmer"
@@ -165,6 +166,14 @@ export interface ModuleScene {
     | "mod2_power_unit"
     | "mod2_setup_strategy"
     | "mod2_full_integration"
+    | "mod3_weekend_format"
+    | "mod3_practice_analysis"
+    | "mod3_qualifying_grid"
+    | "mod3_start_sequence"
+    | "mod3_race_tower"
+    | "mod3_pitstop_strategy"
+    | "mod3_flags_safety_car"
+    | "mod3_finish_championship"
 }
 
 export const CINEMATIC_MUSIC_URL = "/audio/novatos/modulo1/trilha_cinematografica.mp3"
@@ -306,6 +315,101 @@ export const MODULE_1_SCENES: ModuleScene[] = [
 // ============================================================================
 // CENAS DO MÓDULO 2 — A MÁQUINA (COMO FUNCIONA UM CARRO DE F1)
 // ============================================================================
+
+// ============================================================================
+// CENAS DO MÓDULO 3 — DENTRO DA CORRIDA: APRENDA A ACOMPANHAR A TRANSMISSÃO
+// ============================================================================
+export const MODULE_3_SCENES: ModuleScene[] = [
+  {
+    id: "m3_c1",
+    number: 1,
+    title: "O Fim de Semana de F1",
+    subtitle: "Treinos, classificação e o formato do Grande Prêmio",
+    imageUrl: "/backgrounds/bg-aston.webp",
+    audioUrl: "/audio/novatos/modulo3/cena01.mp3",
+    narrationTranscript:
+      "Um Grande Prêmio de Fórmula 1 não é apenas a corrida de domingo. É uma jornada que começa na sexta-feira. No formato tradicional, as equipes têm três treinos livres para acertar o carro, uma classificação no sábado para definir o grid e o Grande Prêmio no domingo. Já nos fins de semana com formato Sprint, a intensidade é imediata: temos apenas um treino livre, seguido pela classificação da Sprint, a corrida curta Sprint no sábado, e depois a classificação principal que define as posições da grande largada no domingo.",
+    visualEffectType: "mod3_weekend_format",
+  },
+  {
+    id: "m3_c2",
+    number: 2,
+    title: "Treinos Livres: A Preparação",
+    subtitle: "O que os dados e sequências de voltas revelam",
+    imageUrl: "/backgrounds/bg-haas.webp",
+    audioUrl: "/audio/novatos/modulo3/cena02.mp3",
+    narrationTranscript:
+      "Durante os treinos livres, o cronômetro nem sempre conta a história toda. Fazer a volta mais rápida em um treino não garante a vitória no domingo. As equipes testam diferentes cargas de combustível, avaliam o desgaste dos pneus macios, médios e duros e simulam o ritmo de corrida em sequências de várias voltas. O verdadeiro segredo que os engenheiros procuram não é apenas uma volta rápida isolada, mas a consistência do carro volta após volta.",
+    visualEffectType: "mod3_practice_analysis",
+  },
+  {
+    id: "m3_c3",
+    number: 3,
+    title: "Classificação e Grid de Largada",
+    subtitle: "A batalha eliminatória no Q1, Q2 e Q3 pela Pole Position",
+    imageUrl: "/backgrounds/bg-mclaren.webp",
+    audioUrl: "/audio/novatos/modulo3/cena03.mp3",
+    narrationTranscript:
+      "No sábado, a pressão atinge o pico com a classificação. No formato tradicional, ela é dividida em três fases eliminatórias: Q1, Q2 e Q3. Os cinco pilotos mais lentos são eliminados a cada rodada. No Q3, os dez pilotos mais rápidos disputam no limite a cobiçada Pole Position, o primeiro lugar do grid de largada. Lembre-se: o menor tempo de volta válido conquista o topo, mas penalidades de motor ou infrações ainda podem alterar a ordem final de largada.",
+    visualEffectType: "mod3_qualifying_grid",
+  },
+  {
+    id: "m3_c4",
+    number: 4,
+    title: "A Largada: Cinco Luzes",
+    subtitle: "O procedimento e a tensão antes da primeira curva",
+    imageUrl: "/backgrounds/bg-ferrari.webp",
+    audioUrl: "/audio/novatos/modulo3/cena04.mp3",
+    narrationTranscript:
+      "A largada é o momento mais tenso de uma corrida. Os vinte carros se alinham no grid após a volta de apresentação. Acima deles, o pórtico acende uma a uma as cinco luzes vermelhas. Quando todas as cinco luzes finalmente se apagam, a corrida começa! Não existe um cronômetro previsível: o diretor de prova varia o tempo de espera para testar os reflexos e a tração dos pilotos. Uma largada perfeita exige reação instantânea e precisão cirúrgica na primeira curva.",
+    visualEffectType: "mod3_start_sequence",
+  },
+  {
+    id: "m3_c5",
+    number: 5,
+    title: "A Corrida: Torre, GAP e INT",
+    subtitle: "Como ler as diferenças de tempo e identificar disputas",
+    imageUrl: "/backgrounds/bg-redbull.webp",
+    audioUrl: "/audio/novatos/modulo3/cena05.mp3",
+    narrationTranscript:
+      "Durante a corrida, a torre de transmissão na lateral da tela é o seu mapa de bordo. Ali você vê a posição de cada piloto, mas preste atenção em duas siglas fundamentais: GAP e INT. GAP é a distância em segundos até o líder da prova. Já INT é o intervalo em relação ao carro imediatamente à frente. Se o INT estiver caindo abaixo de um segundo, prepare-se: uma tentativa de ultrapassagem com asa móvel aberta está prestes a acontecer.",
+    visualEffectType: "mod3_race_tower",
+  },
+  {
+    id: "m3_c6",
+    number: 6,
+    title: "Pit Stops e Estratégia",
+    subtitle: "Undercut, Overcut e a batalha nos boxes",
+    imageUrl: "/backgrounds/bg-mercedes.webp",
+    audioUrl: "/audio/novatos/modulo3/cena06.mp3",
+    narrationTranscript:
+      "Nenhum piloto vence sozinho na pista; as corridas são vencidas ou perdidas nos boxes. Um pit stop de Fórmula 1 troca quatro pneus em menos de três segundos. É aqui que entram as grandes jogadas táticas: o Undercut, quando um piloto para antes do adversário para usar pneus novos e tentar passar na saída dos boxes; e o Overcut, quando o piloto fica mais tempo na pista aproveitando ar limpo e ritmo constante. Cada segundo conta.",
+    visualEffectType: "mod3_pitstop_strategy",
+  },
+  {
+    id: "m3_c7",
+    number: 7,
+    title: "Bandeiras e Safety Car",
+    subtitle: "Sinalizações, neutralizações e punições dos comissários",
+    imageUrl: "/backgrounds/bg-audi.webp",
+    audioUrl: "/audio/novatos/modulo3/cena07.mp3",
+    narrationTranscript:
+      "A direção de prova monitora cada metro de asfalto para garantir a segurança. Bandeira amarela significa perigo no setor e ultrapassagens são proibidas. Bandeira vermelha suspende a corrida imediatamente. Em incidentes maiores, o Safety Car entra na pista para agrupar o pelotão e reduzir o ritmo, enquanto o Virtual Safety Car impõe um limite eletrônico de velocidade sem o carro físico. Os comissários também analisam toques e infrações, aplicando punições de tempo que mudam o resultado.",
+    visualEffectType: "mod3_flags_safety_car",
+  },
+  {
+    id: "m3_c8",
+    number: 8,
+    title: "Bandeirada, Resultado e Pontos",
+    subtitle: "Inspeção técnica, pontos e a classificação dos campeonatos",
+    imageUrl: "/backgrounds/bg-cadillac.webp",
+    audioUrl: "/audio/novatos/modulo3/cena08.mp3",
+    narrationTranscript:
+      "A bandeira quadriculada sela a linha de chegada, mas a corrida só termina de verdade após a inspeção técnica e a homologação dos comissários. A posição na pista pode mudar com penalidades pós-prova. Os dez primeiros colocados somam pontos preciosos para o Campeonato Mundial de Pilotos e para o Campeonato de Construtores, que define as premiações e o prestígio das equipes. Agora, quando você acompanhar uma corrida de Fórmula 1, vai conseguir olhar além da velocidade. Vai entender as posições, os intervalos, as estratégias e as decisões que podem mudar tudo até a bandeirada.",
+    visualEffectType: "mod3_finish_championship",
+  },
+]
+
 export const MODULE_2_SCENES: ModuleScene[] = [
   {
     number: 1,
@@ -511,6 +615,143 @@ export const MODULE_1_QUIZ_QUESTIONS: QuizQuestion[] = [
 // ============================================================================
 // QUESTIONÁRIO FINAL — MÓDULO 2 (10 PERGUNTAS EQUILIBRADAS)
 // ============================================================================
+
+// ============================================================================
+// QUESTIONÁRIO FINAL — MÓDULO 3 (10 PERGUNTAS EQUILIBRADAS)
+// ============================================================================
+export const MODULE_3_QUIZ_QUESTIONS: QuizQuestion[] = [
+  {
+    id: 1,
+    question: "Pergunta 1 — No formato tradicional de fim de semana de Fórmula 1, quais sessões compõem a programação oficial?",
+    options: [
+      { letter: "A", text: "Dois treinos livres na sexta e duas corridas completas no domingo." },
+      { letter: "B", text: "Três treinos livres (TL1, TL2, TL3), a Classificação no sábado e o Grande Prêmio no domingo." },
+      { letter: "C", text: "Apenas uma corrida rápida no sábado e uma corrida de duplas no domingo." },
+      { letter: "D", text: "Quatro sessões de classificação com eliminação direta na sexta-feira." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Correto! No formato tradicional, as equipes têm TL1 e TL2 na sexta, TL3 e Classificação no sábado, e a corrida principal no domingo.",
+  },
+  {
+    id: 2,
+    question: "Pergunta 2 — Por que a volta mais rápida isolada em um treino livre nem sempre revela quem vencerá a corrida?",
+    options: [
+      { letter: "A", text: "Porque os tempos de treino livre são multiplicados por um fator aleatório pela FIA." },
+      { letter: "B", text: "Porque os carros correm com motores elétricos desligados durante os treinos." },
+      { letter: "C", text: "Porque as equipes testam cargas variadas de combustível, pneus diferentes e simulam sequências longas de voltas em ritmo de prova." },
+      { letter: "D", text: "Porque é proibido ultrapassar qualquer carro durante os treinos livres." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Exatamente! Uma volta rápida isolada pode ser feita com tanque vazio e pneu macio novo, enquanto a consistência em sequências longas (long runs) revela o real ritmo de corrida.",
+  },
+  {
+    id: 3,
+    question: "Pergunta 3 — No formato eliminatório da classificação (Q1, Q2 e Q3), o que é a Pole Position?",
+    options: [
+      { letter: "A", text: "A posição do piloto que fez mais ultrapassagens no Q1." },
+      { letter: "B", text: "O primeiro lugar do grid de largada, conquistado pelo piloto mais rápido do Q3." },
+      { letter: "C", text: "A punição aplicada ao piloto mais lento da sessão de sexta-feira." },
+      { letter: "D", text: "O posto de largada reservado exclusivamente para o campeão do ano anterior." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Perfeito! A pole position pertence ao piloto que marca o melhor tempo válido na fase decisiva (Q3), garantindo a primeira vaga na largada.",
+  },
+  {
+    id: 4,
+    question: "Pergunta 4 — No procedimento normal de largada de um GP, em qual momento exato os carros podem acelerar para a corrida?",
+    options: [
+      { letter: "A", text: "Quando a primeira luz vermelha se acende no pórtico." },
+      { letter: "B", text: "No exato instante em que todas as cinco luzes vermelhas se apagam." },
+      { letter: "C", text: "Quando o Safety Car apaga seus giroflexes nos boxes." },
+      { letter: "D", text: "Após soar uma buzina de 10 segundos no pit wall." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Isso mesmo! As 5 luzes vermelhas acendem sequencialmente e, após um intervalo variável e imprevisível, todas se apagam simultaneamente, liberando a largada.",
+  },
+  {
+    id: 5,
+    question: "Pergunta 5 — O que representa a torre vertical de posições exibida na tela durante a transmissão de uma corrida?",
+    options: [
+      { letter: "A", text: "A ordem de chegada do ano anterior e a potência dos motores." },
+      { letter: "B", text: "A ordem em pista dos pilotos, suas abreviações, posições e diferenças de tempo atualizadas." },
+      { letter: "C", text: "Apenas o número de voltas que cada carro ainda precisa cumprir." },
+      { letter: "D", text: "A escala de pontuação dos comissários de prova." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Correto! A torre lateral é o guia principal do espectador, mostrando a posição em tempo real, códigos de 3 letras, equipes e os deltas de tempo.",
+  },
+  {
+    id: 6,
+    question: "Pergunta 6 — Na torre de transmissão, qual é a diferença fundamental entre as siglas GAP e INT?",
+    options: [
+      { letter: "A", text: "GAP indica a diferença para o líder; INT indica o intervalo em relação ao carro imediatamente à frente." },
+      { letter: "B", text: "GAP significa velocidade máxima; INT significa quantidade de pit stops realizados." },
+      { letter: "C", text: "GAP é a temperatura dos freios; INT é a pressão dos pneus traseiros." },
+      { letter: "D", text: "Ambas significam exatamente a mesma coisa sem qualquer distinção." },
+    ],
+    correctLetter: "A",
+    feedback:
+      "Exatamente! GAP é a distância em segundos acumulada até o primeiro colocado (líder), enquanto INT (Interval) mede a distância para o carro que está logo na sua frente.",
+  },
+  {
+    id: 7,
+    question: "Pergunta 7 — Por que a janela de pit stop e a estratégia de pneus são tão determinantes para o resultado de uma prova?",
+    options: [
+      { letter: "A", text: "Porque os pilotos ganham pontos extras toda vez que passam pelo pit lane." },
+      { letter: "B", text: "Porque pneus novos entregam muito mais aderência e ritmo, permitindo ganhar posições na pista ou nos boxes." },
+      { letter: "C", text: "Porque é obrigatório trocar de piloto na metade do Grande Prêmio." },
+      { letter: "D", text: "Porque os carros não têm permissão para terminar a corrida com pneus da mesma cor da asa dianteira." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Muito bem! Um pneu novo gera vantagem imediata de aderência, permitindo voltas muito mais rápidas e possibilitando superar adversários de forma tática.",
+  },
+  {
+    id: 8,
+    question: "Pergunta 8 — O que é a manobra estratégica conhecida como 'Undercut'?",
+    options: [
+      { letter: "A", text: "Parar nos boxes antes do adversário direto para aproveitar pneus novos e ultrapassá-lo quando ele parar." },
+      { letter: "B", text: "Ultrapassar um concorrente passando por baixo do assoalho do outro carro." },
+      { letter: "C", text: "Ficar na pista até a última volta sem jamais trocar de composto." },
+      { letter: "D", text: "Reduzir intencionalmente a velocidade na reta para resfriar os radiadores." },
+    ],
+    correctLetter: "A",
+    feedback:
+      "Perfeito! O Undercut consiste em antecipar o pit stop, virar voltas rápidas com borracha nova e assumir a posição quando o rival parar voltas depois.",
+  },
+  {
+    id: 9,
+    question: "Pergunta 9 — Qual é a principal diferença operacional entre o Safety Car físico e o Virtual Safety Car (VSC)?",
+    options: [
+      { letter: "A", text: "O Safety Car físico fecha o pit lane; o VSC obriga todos os pilotos a pararem nos boxes." },
+      { letter: "B", text: "O Safety Car físico entra na pista liderando e agrupando o pelotão; o VSC impõe limite eletrônico de velocidade por setores sem carro na pista." },
+      { letter: "C", text: "O VSC só é usado em treinos livres; o Safety Car só corre em pistas molhadas." },
+      { letter: "D", text: "Não há diferença: ambos utilizam um carro real conduzindo o pelotão." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Exatamente! O Safety Car lidera fisicamente a fila na pista, enquanto o VSC gerencia o ritmo por meio de deltas de tempo nos painéis eletrônicos dos próprios carros.",
+  },
+  {
+    id: 10,
+    question: "Pergunta 10 — Por que a posição em que um carro cruza a linha de chegada na bandeirada pode não ser sua posição oficial final?",
+    options: [
+      { letter: "A", text: "Porque o público vota na internet para decidir o pódio verdadeiro após a prova." },
+      { letter: "B", text: "Porque penalidades de tempo aplicadas pelos comissários ou irregularidades técnicas podem alterar a classificação definitiva." },
+      { letter: "C", text: "Porque a bandeirada é apenas uma saudação cerimonial sem valor esportivo." },
+      { letter: "D", text: "Porque as voltas mais rápidas são sorteadas para definir quem recebe os troféus." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Parabéns! Punições de tempo por incidentes em pista ou desclassificações na pesagem e inspeção técnica pós-corrida podem alterar completamente o resultado oficial.",
+  },
+]
+
 export const MODULE_2_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 1,
@@ -649,6 +890,7 @@ export const MODULE_2_QUIZ_QUESTIONS: QuizQuestion[] = [
 // ============================================================================
 const STORAGE_MOD1_KEY = "f1_novatos_mod1_state_v1"
 const STORAGE_MOD2_KEY = "f1_novatos_mod2_state_v1"
+const STORAGE_MOD3_KEY = "f1_novatos_mod3_state_v1"
 const STORAGE_ACTIVE_MODULE_KEY = "f1_novatos_active_module_v1"
 
 interface PersistedModuleState {
@@ -682,20 +924,22 @@ export function NovatosPage() {
   // ==========================================================================
   // ESTADO DO MÓDULO ATIVO (MÓDULO 1 OU MÓDULO 2)
   // ==========================================================================
-  const [activeModuleId, setActiveModuleId] = useState<1 | 2>(() => {
+  const [activeModuleId, setActiveModuleId] = useState<1 | 2 | 3>(() => {
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search)
       const modParam = urlParams.get("modulo") || urlParams.get("mod")
+      if (modParam === "3") return 3
       if (modParam === "2") return 2
       const saved = localStorage.getItem(STORAGE_ACTIVE_MODULE_KEY)
+      if (saved === "3") return 3
       if (saved === "2") return 2
     }
     return 1
   })
 
-  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : MODULE_2_SCENES
-  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : MODULE_2_QUIZ_QUESTIONS
-  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : STORAGE_MOD2_KEY
+  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : activeModuleId === 2 ? MODULE_2_SCENES : MODULE_3_SCENES
+  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : activeModuleId === 2 ? MODULE_2_QUIZ_QUESTIONS : MODULE_3_QUIZ_QUESTIONS
+  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : activeModuleId === 2 ? STORAGE_MOD2_KEY : STORAGE_MOD3_KEY
 
   // Stage: "opening" (Hero Landing), "lesson" (Scenes 1-8), "quiz" (Final Test)
   const [viewStage, setViewStage] = useState<"opening" | "lesson" | "quiz">("opening")
@@ -744,6 +988,16 @@ export function NovatosPage() {
   const [m2PowerUnitPart, setM2PowerUnitPart] = useState<number>(1)
   const [m2SetupScenario, setM2SetupScenario] = useState<"straights" | "corners" | "rain">("straights")
   const [m2SummaryCard, setM2SummaryCard] = useState<number | null>(null)
+
+  // Interactive Scene States — Module 3
+  const [m3WeekendFormat, setM3WeekendFormat] = useState<"traditional" | "sprint">("traditional")
+  const [m3PracticePicked, setM3PracticePicked] = useState<"A" | "B" | null>(null)
+  const [m3GridSorted, setM3GridSorted] = useState<boolean>(false)
+  const [m3StartStep, setM3StartStep] = useState<number>(0)
+  const [m3StartAnswer, setM3StartAnswer] = useState<number | null>(null)
+  const [m3TowerSelected, setM3TowerSelected] = useState<"VER" | "NOR" | "LEC" | "HAM">("LEC")
+  const [m3StrategyPicked, setM3StrategyPicked] = useState<"undercut" | "overcut" | "traffic">("undercut")
+  const [m3IncidentScenario, setM3IncidentScenario] = useState<1 | 2 | 3>(1)
 
   // Quiz State
   const [quizQuestionIndex, setQuizQuestionIndex] = useState(0)
@@ -850,7 +1104,7 @@ export function NovatosPage() {
 
   // Troca de módulo (Módulo 1 vs Módulo 2)
   const handleSelectModule = useCallback(
-    (modId: 1 | 2) => {
+    (modId: 1 | 2 | 3) => {
       if (modId === activeModuleId) return
       // Para áudios e timers
       if (countdownTimerRef.current) {
@@ -878,10 +1132,11 @@ export function NovatosPage() {
       }
 
       // Carrega estado do novo módulo
-      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : STORAGE_MOD2_KEY
+      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : modId === 2 ? STORAGE_MOD2_KEY : STORAGE_MOD3_KEY
+      const maxLen = modId === 1 ? MODULE_1_SCENES.length : modId === 2 ? MODULE_2_SCENES.length : MODULE_3_SCENES.length
       const s = loadPersistedState(targetKey)
       setVisitedScenes(s.visitedScenes)
-      setSceneIndex(s.lastSceneIndex < (modId === 1 ? MODULE_1_SCENES.length : MODULE_2_SCENES.length) ? s.lastSceneIndex : 0)
+      setSceneIndex(s.lastSceneIndex < maxLen ? s.lastSceneIndex : 0)
       setQuizCompleted(s.quizCompleted)
       setQuizScore(s.quizScore)
       setViewStage("opening")
@@ -988,6 +1243,14 @@ export function NovatosPage() {
       setMod1ActiveComponent(null)
       setM2Hotspot(1)
       setM2SummaryCard(null)
+      setM3WeekendFormat("traditional")
+      setM3PracticePicked(null)
+      setM3GridSorted(false)
+      setM3StartStep(0)
+      setM3StartAnswer(null)
+      setM3TowerSelected("LEC")
+      setM3StrategyPicked("undercut")
+      setM3IncidentScenario(1)
     },
     [currentScenes.length, stopAllAudio]
   )
@@ -1742,6 +2005,534 @@ export function NovatosPage() {
         )
       }
     }
+    // ------------------------------------------------------------------------
+    // MÓDULO 3: DENTRO DA CORRIDA: APRENDA A ACOMPANHAR UMA TRANSMISSÃO
+    // ------------------------------------------------------------------------
+    if (activeModuleId === 3) {
+      // CENA 1: O FIM DE SEMANA DE FÓRMULA 1
+      if (currentScene.visualEffectType === "mod3_weekend_format") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Estrutura do Evento</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">PROGRAMAÇÃO</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-1.5 mb-3">
+              <button
+                type="button"
+                onClick={() => setM3WeekendFormat("traditional")}
+                className={cn(
+                  "py-1.5 px-2 rounded-lg text-[10px] font-black uppercase text-center transition-all cursor-pointer",
+                  m3WeekendFormat === "traditional" ? "bg-[#E10600] text-white shadow-md" : "bg-white/10 text-zinc-300 hover:bg-white/20"
+                )}
+              >
+                Tradicional
+              </button>
+              <button
+                type="button"
+                onClick={() => setM3WeekendFormat("sprint")}
+                className={cn(
+                  "py-1.5 px-2 rounded-lg text-[10px] font-black uppercase text-center transition-all cursor-pointer",
+                  m3WeekendFormat === "sprint" ? "bg-amber-600 text-white shadow-md" : "bg-white/10 text-zinc-300 hover:bg-white/20"
+                )}
+              >
+                Formato Sprint
+              </button>
+            </div>
+
+            {m3WeekendFormat === "traditional" ? (
+              <div className="space-y-1.5 text-xs text-zinc-300">
+                <div className="bg-white/5 p-2 rounded-lg border border-white/10">
+                  <span className="font-black text-cyan-400 block text-[11px]">SEXTA-FEIRA:</span>
+                  TL1 (Treino Livre 1) & TL2 (Treino Livre 2)
+                </div>
+                <div className="bg-white/5 p-2 rounded-lg border border-white/10">
+                  <span className="font-black text-amber-400 block text-[11px]">SÁBADO:</span>
+                  TL3 & Classificação Oficial (Q1, Q2, Q3)
+                </div>
+                <div className="bg-white/5 p-2 rounded-lg border border-white/10">
+                  <span className="font-black text-emerald-400 block text-[11px]">DOMINGO:</span>
+                  Grande Prêmio (Corrida Principal de ~300 km)
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-1.5 text-xs text-zinc-300">
+                <div className="bg-white/5 p-2 rounded-lg border border-white/10">
+                  <span className="font-black text-cyan-400 block text-[11px]">SEXTA-FEIRA:</span>
+                  TL1 Único & Classificação Sprint (Shootout)
+                </div>
+                <div className="bg-white/5 p-2 rounded-lg border border-white/10">
+                  <span className="font-black text-amber-400 block text-[11px]">SÁBADO:</span>
+                  Corrida Sprint (100 km) & Classificação do GP
+                </div>
+                <div className="bg-white/5 p-2 rounded-lg border border-white/10">
+                  <span className="font-black text-emerald-400 block text-[11px]">DOMINGO:</span>
+                  Grande Prêmio (Corrida Principal)
+                </div>
+              </div>
+            )}
+
+            <div className="mt-2.5 p-2 rounded bg-cyan-950/40 border border-cyan-500/30 text-[10px] text-cyan-200 leading-snug">
+              A Sprint e o Grande Prêmio são sessões distintas: a Classificação Sprint define o grid da Sprint, e a Classificação do GP define a corrida de domingo.
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 2: TREINOS LIVRES: A PREPARAÇÃO
+      if (currentScene.visualEffectType === "mod3_practice_analysis") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Exemplo Ilustrativo</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-600 text-white font-black">TREINOS LIVRES</span>
+            </div>
+
+            <p className="text-[11px] text-zinc-300 mb-2.5 leading-snug">
+              Qual das sessões abaixo é mais útil para avaliar o ritmo consistente de corrida de domingo?
+            </p>
+
+            <div className="grid grid-cols-2 gap-1.5 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM3PracticePicked("A")}
+                className={cn(
+                  "p-2 rounded-lg border text-left transition-all cursor-pointer",
+                  m3PracticePicked === "A" ? "bg-amber-600/30 border-amber-500 ring-1 ring-amber-400" : "bg-white/5 border-white/10 hover:bg-white/10"
+                )}
+              >
+                <span className="text-[10px] font-black text-amber-300 block mb-0.5 uppercase">Sessão A (Volta Única)</span>
+                <span className="text-[10px] text-zinc-300 block">Pneu Macio • Tanque vazio</span>
+                <span className="text-[11px] font-mono font-bold text-white block mt-1">1:18.250 (1 volta)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setM3PracticePicked("B")}
+                className={cn(
+                  "p-2 rounded-lg border text-left transition-all cursor-pointer",
+                  m3PracticePicked === "B" ? "bg-emerald-600/30 border-emerald-500 ring-1 ring-emerald-400" : "bg-white/5 border-white/10 hover:bg-white/10"
+                )}
+              >
+                <span className="text-[10px] font-black text-emerald-300 block mb-0.5 uppercase">Sessão B (Long Run)</span>
+                <span className="text-[10px] text-zinc-300 block">Pneu Médio • Tanque 100kg</span>
+                <span className="text-[11px] font-mono font-bold text-white block mt-1">15 voltas em 1:21.8</span>
+              </button>
+            </div>
+
+            {m3PracticePicked && (
+              <div className={cn(
+                "p-2.5 rounded-lg border text-[11px] leading-snug",
+                m3PracticePicked === "B" ? "bg-emerald-950/60 border-emerald-500/40 text-emerald-200" : "bg-amber-950/60 border-amber-500/40 text-amber-200"
+              )}>
+                {m3PracticePicked === "B"
+                  ? "Exatamente! A Sessão B simula o peso real da largada e a degradação dos pneus ao longo das voltas, revelando a verdadeira velocidade de corrida."
+                  : "Atenção: A Sessão A mostra apenas a velocidade máxima instantânea de classificação. Sem sequências longas, é impossível prever o ritmo de domingo."}
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 3: CLASSIFICAÇÃO E GRID DE LARGADA
+      if (currentScene.visualEffectType === "mod3_qualifying_grid") {
+        const drivers = [
+          { letter: "C", time: "1:15.120", gap: "LÍDER", team: "Velocity F1", pole: true },
+          { letter: "A", time: "1:15.280", gap: "+0.160s", team: "Titan Grand Prix", pole: false },
+          { letter: "F", time: "1:15.410", gap: "+0.290s", team: "Dynamo Racing", pole: false },
+          { letter: "B", time: "1:15.650", gap: "+0.530s", team: "Apex Motorsport", pole: false },
+          { letter: "E", time: "1:15.890", gap: "+0.770s", team: "Zenith Sport", pole: false },
+          { letter: "D", time: "1:16.100", gap: "+0.980s", team: "Vortex Racing", pole: false },
+        ]
+
+        const displayDrivers = m3GridSorted
+          ? drivers
+          : [drivers[1], drivers[3], drivers[0], drivers[5], drivers[4], drivers[2]]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Simulação Didática</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">FASE Q3 (POLE)</span>
+            </div>
+
+            <div className="space-y-1 mb-2.5">
+              {displayDrivers.map((d, idx) => (
+                <div key={d.letter} className="flex items-center justify-between py-1 px-2 rounded bg-white/5 text-xs font-mono">
+                  <div className="flex items-center gap-2">
+                    <span className={cn("font-black w-5", m3GridSorted && idx === 0 ? "text-amber-400" : "text-zinc-400")}>
+                      {m3GridSorted ? `P${idx + 1}` : `—`}
+                    </span>
+                    <span className="font-bold text-white">Piloto {d.letter}</span>
+                    <span className="text-[10px] text-zinc-400 hidden sm:inline">({d.team})</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-zinc-200 font-bold">{d.time}</span>
+                    {m3GridSorted && <span className="text-[10px] text-zinc-400">{d.gap}</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setM3GridSorted(!m3GridSorted)}
+              className="w-full py-1.5 px-3 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer text-center mb-2"
+            >
+              {m3GridSorted ? "Restaurar Ordem de Pista" : "Ordenar Grid por Tempo (Menor ➔ Maior)"}
+            </button>
+
+            {m3GridSorted && (
+              <div className="p-2 rounded bg-amber-500/10 border border-amber-500/30 text-[10px] text-amber-300 leading-tight">
+                Piloto C conquistou a <strong>Pole Position</strong> por cravar o menor tempo de volta (1:15.120).
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 4: A LARGADA: CINCO LUZES
+      if (currentScene.visualEffectType === "mod3_start_sequence") {
+        const handleStartSequence = () => {
+          setM3StartStep(1)
+          setTimeout(() => setM3StartStep(2), 700)
+          setTimeout(() => setM3StartStep(3), 1400)
+          setTimeout(() => setM3StartStep(4), 2100)
+          setTimeout(() => setM3StartStep(5), 2800)
+          setTimeout(() => setM3StartStep(6), 4200)
+        }
+
+        return (
+          <>
+            {/* Pórtico de Largada com 5 Luzes */}
+            <div className="absolute top-4 inset-x-0 z-20 flex flex-col items-center">
+              <div className="inline-flex items-center gap-2 sm:gap-3 px-4 py-3 rounded-2xl bg-black/95 border border-white/25 shadow-2xl backdrop-blur-md">
+                {[1, 2, 3, 4, 5].map((light) => {
+                  const isRed = m3StartStep >= light && m3StartStep < 6
+                  return (
+                    <div
+                      key={light}
+                      className={cn(
+                        "w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 transition-all",
+                        isRed
+                          ? "bg-[#E10600] border-red-400 shadow-[0_0_20px_#E10600]"
+                          : "bg-zinc-900 border-zinc-700 opacity-60"
+                      )}
+                    />
+                  )
+                })}
+              </div>
+
+              {m3StartStep === 6 && (
+                <div className="mt-2 px-3 py-1 rounded-full bg-emerald-600 text-white font-mono text-xs font-black uppercase tracking-widest shadow-[0_0_25px_#10B981] animate-bounce">
+                  🟢 LUZES APAGADAS • LARGADA DADA!
+                </div>
+              )}
+            </div>
+
+            {/* Painel de Interação de Largada */}
+            <div className="absolute bottom-3 inset-x-3 sm:bottom-5 sm:right-5 sm:left-auto sm:w-84 z-20 bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+              <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-white/10">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Simulação Didática</span>
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">LARGADA</span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleStartSequence}
+                className="w-full py-2 px-3 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider shadow-lg transition-all cursor-pointer mb-2.5 text-center"
+              >
+                {m3StartStep === 0 ? "Preparar Largada" : "Repetir Sequência de Luzes"}
+              </button>
+
+              <p className="text-[11px] text-zinc-300 font-bold mb-1.5">
+                Em que momento a largada acontece no procedimento normal?
+              </p>
+
+              <div className="space-y-1">
+                {[
+                  { id: 1, text: "Quando a 1ª luz acende" },
+                  { id: 2, text: "Quando todas as 5 luzes vermelhas se apagam" },
+                  { id: 3, text: "Exatamente 10 segundos após o sinal" },
+                ].map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setM3StartAnswer(opt.id)}
+                    className={cn(
+                      "w-full text-left py-1 px-2 rounded text-[10px] font-mono transition-all cursor-pointer",
+                      m3StartAnswer === opt.id
+                        ? opt.id === 2 ? "bg-emerald-600 text-white font-bold" : "bg-red-900/80 text-white"
+                        : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                    )}
+                  >
+                    {opt.text}
+                  </button>
+                ))}
+              </div>
+
+              {m3StartAnswer && (
+                <div className="mt-2 text-[10px] text-zinc-300 bg-white/5 p-1.5 rounded border border-white/10 leading-tight">
+                  {m3StartAnswer === 2
+                    ? "Correto! As luzes acendem uma a uma e, ao se apagarem juntas após um tempo variável, a prova começa."
+                    : "Incorreto. A largada só é autorizada no instante em que todas as luzes vermelhas se apagam simultaneamente."}
+                </div>
+              )}
+            </div>
+          </>
+        )
+      }
+
+      // CENA 5: A CORRIDA: TORRE, GAP E INT
+      if (currentScene.visualEffectType === "mod3_race_tower") {
+        const driversTower = [
+          { code: "VER", pos: 1, team: "LBR", gap: "—", int: "—", diff: 0, desc: "Líder da corrida. Dita o ritmo e administra o desgaste de borracha." },
+          { code: "NOR", pos: 2, team: "PAP", gap: "+1.850s", int: "+1.850s", diff: 0, desc: "Persegue o líder tentando reduzir a distância para menos de 1 segundo." },
+          { code: "LEC", pos: 3, team: "SFM", gap: "+2.450s", int: "+0.600s", diff: 1, desc: "A 0.6s de NOR! Na zona de detecção do DRS, com grande chance de ultrapassagem." },
+          { code: "HAM", pos: 4, team: "MER", gap: "+5.120s", int: "+2.670s", diff: -1, desc: "Isolado em 4º lugar, gerenciando o motor e preparando uma parada antecipada." },
+        ]
+
+        const activeCar = driversTower.find((d) => d.code === m3TowerSelected) || driversTower[2]
+
+        return (
+          <>
+            {/* Torre Vertical de Classificação de Transmissão */}
+            <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-20 w-52 sm:w-60 bg-black/92 border border-white/20 rounded-xl p-2 sm:p-2.5 shadow-2xl backdrop-blur-md">
+              <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-white/15">
+                <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-400">Classificação F1</span>
+                <span className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-[#E10600] text-white font-bold">VOLTA 34/57</span>
+              </div>
+
+              <div className="space-y-1">
+                {driversTower.map((d) => (
+                  <button
+                    key={d.code}
+                    type="button"
+                    onClick={() => setM3TowerSelected(d.code as any)}
+                    className={cn(
+                      "w-full flex items-center justify-between py-1 px-1.5 rounded text-[11px] font-mono transition-all cursor-pointer text-left",
+                      m3TowerSelected === d.code
+                        ? "bg-[#E10600] text-white ring-1 ring-white"
+                        : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                    )}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-black w-3 text-center">{d.pos}</span>
+                      <span className="font-black text-white">{d.code}</span>
+                      <span className="text-[9px] text-zinc-400">({d.team})</span>
+                    </div>
+                    <div className="text-right text-[10px]">
+                      <span className="font-bold">{d.int}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-2 pt-1.5 border-t border-white/10 flex justify-between text-[9px] font-mono text-zinc-400">
+                <span>GAP: Dif. pro Líder</span>
+                <span>INT: Dif. pro da Frente</span>
+              </div>
+            </div>
+
+            {/* Painel Explicativo do Piloto Selecionado */}
+            <div className="absolute bottom-3 inset-x-3 sm:bottom-5 sm:right-5 sm:left-auto sm:w-80 z-20 bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+              <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-white/10">
+                <span className="text-[10px] font-mono uppercase text-zinc-400">Telemetria Selecionada</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">
+                  P{activeCar.pos} • {activeCar.code}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-1.5 bg-white/5 p-2 rounded-lg border border-white/10 mb-2 text-xs font-mono">
+                <div>
+                  <span className="text-zinc-400 block text-[9px] uppercase">GAP (Líder):</span>
+                  <span className="font-bold text-white">{activeCar.gap}</span>
+                </div>
+                <div>
+                  <span className="text-zinc-400 block text-[9px] uppercase">INT (Carro da Frente):</span>
+                  <span className="font-bold text-cyan-300">{activeCar.int}</span>
+                </div>
+              </div>
+
+              <p className="text-xs text-zinc-200 leading-snug">{activeCar.desc}</p>
+            </div>
+          </>
+        )
+      }
+
+      // CENA 6: PIT STOPS E ESTRATÉGIA
+      if (currentScene.visualEffectType === "mod3_pitstop_strategy") {
+        const strats = {
+          undercut: {
+            title: "Undercut (Parar Antes)",
+            pros: "Aproveita pneus novos imediatos para fazer a volta de saída ultra-rápida e passar o rival nos boxes.",
+            risk: "Risco de voltar preso no tráfego de carros mais lentos no meio do pelotão.",
+          },
+          overcut: {
+            title: "Overcut (Ficar na Pista)",
+            pros: "Usa ar limpo sem carros à frente para estender o stint e se beneficiar de um possível Safety Car.",
+            risk: "Risco dos pneus velhos degradarem demais e perder 2 segundos por volta em relação ao rival.",
+          },
+          traffic: {
+            title: "Avaliar Tráfego e Dados",
+            pros: "Espera abrir uma janela livre de tráfego antes de chamar o piloto para o pit lane.",
+            risk: "Pode perder o timing ideal da parada se o rival já tiver acionado o undercut com sucesso.",
+          },
+        }
+
+        const currentS = strats[m3StrategyPicked]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Cenário Ilustrativo</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-600 text-white font-black">ESTRATÉGIA</span>
+            </div>
+
+            <p className="text-[11px] text-zinc-300 mb-2 leading-snug">
+              Piloto B está a 1.2s do líder na volta 22. Os pneus começam a perder aderência. O que a equipe decide?
+            </p>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              {(["undercut", "overcut", "traffic"] as const).map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setM3StrategyPicked(s)}
+                  className={cn(
+                    "py-1.5 px-1 rounded text-[9px] font-black uppercase text-center transition-all cursor-pointer",
+                    m3StrategyPicked === s ? "bg-[#E10600] text-white shadow-md" : "bg-white/10 text-zinc-300 hover:bg-white/20"
+                  )}
+                >
+                  {s === "undercut" ? "Undercut" : s === "overcut" ? "Overcut" : "Tráfego"}
+                </button>
+              ))}
+            </div>
+
+            <div className="bg-white/5 p-2.5 rounded-lg border border-white/10 text-xs text-zinc-200 mb-2 space-y-1">
+              <span className="font-bold text-amber-300 block">{currentS.title}</span>
+              <p className="text-[11px] text-emerald-300">✅ {currentS.pros}</p>
+              <p className="text-[11px] text-rose-300">⚠️ {currentS.risk}</p>
+            </div>
+
+            <div className="text-[10px] font-mono text-zinc-400 text-center">
+              A decisão ideal depende de pista livre, temperatura e tráfego.
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 7: BANDEIRAS E SAFETY CAR
+      if (currentScene.visualEffectType === "mod3_flags_safety_car") {
+        const scenarios = [
+          {
+            id: 1 as const,
+            title: "1. Carro na brita em curva perigosa",
+            procedure: "Bandeira Amarela / Virtual Safety Car (VSC)",
+            rule: "Pilotos devem reduzir velocidade respeitando o tempo delta. Ultrapassagens são terminantemente proibidas.",
+          },
+          {
+            id: 2 as const,
+            title: "2. Chuva torrencial e barreira quebrada",
+            procedure: "Bandeira Vermelha (Sessão Suspensa)",
+            rule: "Todos os carros entram em baixa velocidade no pit lane e aguardam em segurança o reparo da pista.",
+          },
+          {
+            id: 3 as const,
+            title: "3. Toque lateral na disputa de curva",
+            procedure: "Investigação dos Comissários da FIA",
+            rule: "Os comissários analisam telemetria e vídeos. Podem aplicar 5s/10s de punição ou declarar incidente de corrida.",
+          },
+        ]
+
+        const scn = scenarios.find((s) => s.id === m3IncidentScenario) || scenarios[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Direção de Prova</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-500 text-black font-black">SEGURANÇA</span>
+            </div>
+
+            <div className="space-y-1 mb-2.5">
+              {scenarios.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setM3IncidentScenario(s.id)}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer",
+                    m3IncidentScenario === s.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {s.title}
+                </button>
+              ))}
+            </div>
+
+            <div className="bg-white/5 p-2.5 rounded-lg border border-white/10 text-xs text-zinc-200">
+              <span className="text-[10px] font-mono uppercase text-amber-400 block mb-0.5">Procedimento Aplicado:</span>
+              <span className="font-black text-white block mb-1">{scn.procedure}</span>
+              <p className="text-[11px] text-zinc-300 leading-snug">{scn.rule}</p>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 8: BANDEIRADA, RESULTADO E PONTOS
+      if (currentScene.visualEffectType === "mod3_finish_championship") {
+        const results = [
+          { pos: 1, driver: "Piloto A", team: "Alfa Tech", gap: "VENCEDOR", pts: "25 pts" },
+          { pos: 2, driver: "Piloto B", team: "Beta GP", gap: "+2.340s", pts: "18 pts" },
+          { pos: 3, driver: "Piloto C", team: "Gama Racing", gap: "+5.110s", pts: "15 pts" },
+          { pos: 4, driver: "Piloto D", team: "Delta Sport", gap: "+12.450s", pts: "12 pts" },
+        ]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-84 max-w-[88vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Resultado Ilustrativo</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-600 text-white font-black">CHEGADA</span>
+            </div>
+
+            <div className="space-y-1 mb-2.5">
+              {results.map((r) => (
+                <div key={r.pos} className="flex items-center justify-between py-1 px-2 rounded bg-white/5 text-xs font-mono">
+                  <div className="flex items-center gap-2">
+                    <span className={cn("font-black w-4", r.pos === 1 ? "text-amber-400" : "text-zinc-400")}>
+                      P{r.pos}
+                    </span>
+                    <span className="font-bold text-white">{r.driver}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-zinc-300">{r.gap}</span>
+                    <span className="text-[10px] font-black text-emerald-400">{r.pts}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Pipeline de Resumo da Corrida */}
+            <div className="p-1.5 rounded bg-white/5 border border-white/10 text-[9px] font-mono text-zinc-300 text-center uppercase tracking-wide mb-3">
+              GRID ➔ LARGADA ➔ DISPUTA ➔ ESTRATÉGIA ➔ BANDEIRADA
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                stopAllAudio()
+                setViewStage("quiz")
+              }}
+              className="w-full py-2 px-3 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider shadow-[0_0_20px_rgba(225,6,0,0.6)] transition-all cursor-pointer text-center"
+            >
+              Fazer Questionário (10 Perguntas)
+            </button>
+          </div>
+        )
+      }
+    }
+
 
     return null
   }
@@ -1789,7 +2580,7 @@ export function NovatosPage() {
           {/* Fundo Cinematográfico com Parallax Suave */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <img
-              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : "/backgrounds/bg-default.webp"}
+              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : "/backgrounds/bg-mclaren.webp"}
               alt="Fundo Novatos na F1"
               className={cn(
                 "w-full h-full object-cover object-center brightness-40 contrast-125 scale-105",
@@ -1821,6 +2612,16 @@ export function NovatosPage() {
             >
               2. A Máquina
             </button>
+            <button
+              type="button"
+              onClick={() => handleSelectModule(3)}
+              className={cn(
+                "px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide transition-all cursor-pointer",
+                activeModuleId === 3 ? "bg-[#E10600] text-white shadow-lg" : "text-zinc-400 hover:text-white"
+              )}
+            >
+              3. Dentro da Corrida
+            </button>
           </div>
 
           {/* Hero Content */}
@@ -1828,7 +2629,11 @@ export function NovatosPage() {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[11px] font-mono uppercase tracking-widest text-zinc-300 mb-4 backdrop-blur-md">
               <Sparkles className="w-3.5 h-3.5 text-[#E10600]" />
               <span>
-                {activeModuleId === 1 ? "MÓDULO 1 • O QUE É A FÓRMULA 1?" : "MÓDULO 2 • A MÁQUINA: COMO FUNCIONA O CARRO"}
+                {activeModuleId === 1
+                  ? "MÓDULO 1 • O QUE É A FÓRMULA 1?"
+                  : activeModuleId === 2
+                  ? "MÓDULO 2 • A MÁQUINA: COMO FUNCIONA O CARRO"
+                  : "MÓDULO 3 • DENTRO DA CORRIDA: APRENDA A ACOMPANHAR A TRANSMISSÃO"}
               </span>
             </div>
 
@@ -1837,13 +2642,19 @@ export function NovatosPage() {
             </h1>
 
             <p className="text-sm sm:text-lg font-bold uppercase tracking-wider text-zinc-300 mb-4">
-              {activeModuleId === 1 ? "Aprenda a entender cada corrida, curva por curva" : "MÓDULO 2 — A MÁQUINA"}
+              {activeModuleId === 1
+                ? "Aprenda a entender cada corrida, curva por curva"
+                : activeModuleId === 2
+                ? "MÓDULO 2 — A MÁQUINA"
+                : "MÓDULO 3 — DENTRO DA CORRIDA"}
             </p>
 
             <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-xl mb-8">
               {activeModuleId === 1
                 ? "Você não precisa entender de automobilismo para começar. Nós explicamos as regras, estratégias, equipes e o caminho até a bandeirada final."
-                : "“Um carro de Fórmula 1 não é apenas rápido. Cada peça, cada ajuste e cada decisão ajudam a transformar potência em desempenho.”"}
+                : activeModuleId === 2
+                ? "“Um carro de Fórmula 1 não é apenas rápido. Cada peça, cada ajuste e cada decisão ajudam a transformar potência em desempenho.”"
+                : "“Os carros estão no grid. Os pilotos estão preparados. Mas você sabe interpretar tudo o que está prestes a acontecer?”"}
             </p>
 
             {/* Botão de Ação CTA */}
@@ -1853,7 +2664,7 @@ export function NovatosPage() {
               className="inline-flex items-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-sm sm:text-base font-black uppercase tracking-wider shadow-[0_0_30px_rgba(225,6,0,0.65)] hover:shadow-[0_0_40px_rgba(225,6,0,0.85)] transition-all cursor-pointer transform hover:scale-105 active:scale-95"
             >
               <Play className="w-5 h-5 fill-white" />
-              <span>{activeModuleId === 1 ? "COMEÇAR DO ZERO" : "INICIAR EXPERIÊNCIA"}</span>
+              <span>{activeModuleId === 1 ? "COMEÇAR DO ZERO" : activeModuleId === 2 ? "INICIAR EXPERIÊNCIA" : "INICIAR TRANSMISSÃO"}</span>
             </button>
 
             {/* Acessos Rápidos no Rodapé da Abertura */}
@@ -2224,7 +3035,7 @@ export function NovatosPage() {
               </div>
 
               <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white mb-1">
-                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : "MÓDULO 2 CONCLUÍDO"}
+                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : activeModuleId === 2 ? "MÓDULO 2 CONCLUÍDO" : "MÓDULO 3 CONCLUÍDO"}
               </h2>
 
               <p className="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-4">
@@ -2234,7 +3045,9 @@ export function NovatosPage() {
               <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed max-w-md mx-auto mb-6">
                 {activeModuleId === 1
                   ? "Parabéns! Você já compreende as regras fundamentais, a história, o campeonato e os elementos de uma corrida de F1."
-                  : "“Você já conhece os principais sistemas de um carro de Fórmula 1 e entende melhor como engenharia, piloto e equipe trabalham juntos.”"}
+                  : activeModuleId === 2
+                  ? "“Você já conhece os principais sistemas de um carro de Fórmula 1 e entende melhor como engenharia, piloto e equipe trabalham juntos.”"
+                  : "“Você já conhece os principais momentos de uma corrida de Fórmula 1 e está mais preparado para acompanhar uma transmissão e entender o que acontece na pista.”"}
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-3">
@@ -2281,7 +3094,7 @@ export function NovatosPage() {
           >
             <div onClick={(e) => e.stopPropagation()} className="relative w-screen h-dvh overflow-hidden">
               <img
-                src={viewStage === "opening" ? (activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : "/backgrounds/bg-default.webp") : currentScene.imageUrl}
+                src={viewStage === "opening" ? (activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : "/backgrounds/bg-mclaren.webp") : currentScene.imageUrl}
                 data-testid="fullscreen-expanded-img"
                 className={cn(
                   "w-screen h-dvh object-cover object-center select-none",
