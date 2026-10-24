@@ -35,6 +35,60 @@ export interface GlossaryTerm {
 
 export const GLOSSARY_TERMS: GlossaryTerm[] = [
   {
+    id: "racing_line",
+    term: "Racing line",
+    category: "Pista",
+    definition: "Trajetória geométrica e dinâmica ideal que aproveita toda a largura da pista para contornar curvas com a maior velocidade média e menor tempo de volta.",
+  },
+  {
+    id: "ponto_frenagem",
+    term: "Ponto de frenagem",
+    category: "Pista",
+    definition: "Referência visual fixa no circuito (placas de metros ou início de zebra) onde o piloto aplica pressão máxima no pedal de freio antes da curva.",
+  },
+  {
+    id: "apice",
+    term: "Ápice",
+    category: "Pista",
+    definition: "Ponto mais interno da trajetória de uma curva (ponto de tangência) onde o carro atinge a rotação máxima e inicia a fase de aceleração de saída.",
+  },
+  {
+    id: "entrada_curva",
+    term: "Entrada da curva",
+    category: "Pista",
+    definition: "Fase de aproximação, frenagem e início de esterço do volante onde o piloto posiciona o carro para apontar na direção do ápice.",
+  },
+  {
+    id: "saida_curva",
+    term: "Saída da curva",
+    category: "Pista",
+    definition: "Fase final da curva em que o piloto desvira o volante em direção à zebra externa e acelera progressivamente rumo à reta seguinte.",
+  },
+  {
+    id: "chicane",
+    term: "Chicane",
+    category: "Pista",
+    definition: "Sequência curta de curvas estreitas e alternadas (ex: esquerda-direita) projetada para desacelerar os carros em trechos de altíssima velocidade.",
+  },
+  {
+    id: "aderencia",
+    term: "Aderência",
+    category: "Carro",
+    definition: "Força de atrito gerada pelo contato entre a borracha dos pneus e o asfalto, responsável por manter o carro estável em frenagens, curvas e acelerações.",
+  },
+  {
+    id: "tracao",
+    term: "Tração",
+    category: "Carro",
+    definition: "Capacidade do conjunto motor e pneus traseiros de transferir torque e acelerar sem destracionar ou patinar a borracha.",
+  },
+  {
+    id: "bloqueio_roda",
+    term: "Bloqueio de roda",
+    category: "Carro",
+    definition: "Situação em que a força de frenagem supera o atrito do pneu com a pista, fazendo a roda parar de girar e gerando fumaça e desgaste plano (flatspot).",
+  },
+  {
     id: "team_principal",
     term: "Team Principal",
     category: "Geral",
@@ -519,6 +573,14 @@ export interface ModuleScene {
     | "mod7_two_drivers_one_team"
     | "mod7_cost_cap_development"
     | "mod7_team_principal_challenge"
+    | "mod8_circuit_anatomy"
+    | "mod8_racing_line"
+    | "mod8_braking_physics"
+    | "mod8_corner_categories"
+    | "mod8_friction_circle"
+    | "mod8_monaco_monza_spa"
+    | "mod8_rain_track_limits"
+    | "mod8_lap_master_challenge"
 }
 
 export const CINEMATIC_MUSIC_URL = "/audio/novatos/modulo1/trilha_cinematografica.mp3"
@@ -680,6 +742,101 @@ export const MODULE_1_SCENES: ModuleScene[] = [
 // ============================================================================
 // CENAS DO MÓDULO 7 — POR TRÁS DA EQUIPE: ENGENHEIROS, ESTRATÉGIA E DADOS
 // ============================================================================
+
+// ============================================================================
+// CENAS DO MÓDULO 8 — DOMINANDO OS CIRCUITOS: TRAJETÓRIAS, FRENAGEM E CURVAS
+// ============================================================================
+export const MODULE_8_SCENES: ModuleScene[] = [
+  {
+    id: "m8_c1",
+    number: 1,
+    title: "Cada Circuito Conta uma História",
+    subtitle: "Antes de entender a velocidade, aprenda a ler a pista",
+    imageUrl: "/backgrounds/bg-aston.webp",
+    audioUrl: "/audio/novatos/modulo8/cena01.mp3",
+    narrationTranscript:
+      "Olá! Bem-vindo ao Módulo 8 de Novatos na F1: Dominando os Circuitos! Antes de tentar entender por que um piloto é veloz, precisamos aprender a ler a pista. Cada autódromo do calendário é um desafio único de engenharia e pilotagem. Em um traçado, você encontrará retas longas onde a velocidade final e o vácuo dominam; chicanes apertadas que exigem mudanças bruscas de direção sobre as zebras; curvas lentas que cobram tração perfeita; e sequências de curvas de alta velocidade onde a pressão aerodinâmica cola o carro no asfalto. Pilotar não é apenas seguir uma linha desenhada no chão: é encadear uma sequência matemática de decisões sobre onde frear, como virar o volante e quando acelerar.",
+    visualEffectType: "mod8_circuit_anatomy",
+  },
+  {
+    id: "m8_c2",
+    number: 2,
+    title: "O Segredo da Trajetória Ideal",
+    subtitle: "A geometria da racing line: entrada, ápice e saída",
+    imageUrl: "/backgrounds/bg-ferrari.webp",
+    audioUrl: "/audio/novatos/modulo8/cena02.mp3",
+    narrationTranscript:
+      "A trajetória ideal, conhecida mundialmente como racing line, é o caminho geométrico mais eficiente para contornar uma curva no menor tempo possível. Ela se divide em três fases essenciais: a entrada, onde o piloto posiciona o carro na parte externa e inicia a desaceleração; o ápice ou ponto de tangência, onde o carro passa o mais rente possível da zebra interna; e a saída, quando o piloto abre o volante em direção à zebra externa para acelerar com potência total. Atenção: a linha mais rápida nem sempre é a menor distância em metros. Muitas vezes, fazer uma curva mais aberta permite reacelerar centenas de metros antes, gerando uma velocidade imensa para a reta seguinte.",
+    visualEffectType: "mod8_racing_line",
+  },
+  {
+    id: "m8_c3",
+    number: 3,
+    title: "Frenar no Momento Certo",
+    subtitle: "A desaceleração brutal de 5G e a transferência de peso",
+    imageUrl: "/backgrounds/bg-redbull.webp",
+    audioUrl: "/audio/novatos/modulo8/cena03.mp3",
+    narrationTranscript:
+      "Na Fórmula 1, acelerar é instinto, mas frear é uma ciência de precisão cirúrgica. Ao final de uma reta a mais de trezentos quilômetros por hora, o piloto pisa no pedal de freio com uma força superior a cem quilos. Os discos de carbono em brasa geram uma desaceleração brutal de cinco vezes a força da gravidade. Se frear cedo demais, o piloto desperdiça décimos preciosos antes da curva. Se frear tarde demais, corre o risco de travar as rodas, estragar o pneu e espalhar para fora da pista. O segredo de uma volta rápida é encontrar o ponto exato de frenagem e transferir suavemente o peso do carro para manter a frente apontada para a curva.",
+    visualEffectType: "mod8_braking_physics",
+  },
+  {
+    id: "m8_c4",
+    number: 4,
+    title: "Curvas Lentas, Médias e Rápidas",
+    subtitle: "Três desafios físicos que exigem técnicas diferentes",
+    imageUrl: "/backgrounds/bg-mclaren.webp",
+    audioUrl: "/audio/novatos/modulo8/cena04.mp3",
+    narrationTranscript:
+      "Nem toda curva é igual, e cada tipo exige uma postura diferente do piloto. Nas curvas lentas, abaixo de cem quilômetros por hora, a aderência mecânica e a tração de saída são tudo: quem consegue colocar potência no chão mais cedo leva vantagem por toda a reta. Nas curvas médias, o segredo é o equilíbrio e a fluidez de transição entre freio e volante. Já nas curvas de alta velocidade, a aerodinâmica assume o comando: as asas geram toneladas de downforce que colam os pneus no chão, permitindo contornos a mais de duzentos e cinquenta por hora onde a confiança e a precisão milimétrica não admitem qualquer hesitação.",
+    visualEffectType: "mod8_corner_categories",
+  },
+  {
+    id: "m8_c5",
+    number: 5,
+    title: "O Equilíbrio dos Comandos",
+    subtitle: "Acelerador, freio e volante dividem o orçamento de aderência",
+    imageUrl: "/backgrounds/bg-alpine.webp",
+    audioUrl: "/audio/novatos/modulo8/cena05.mp3",
+    narrationTranscript:
+      "Para entender o comportamento do carro, imagine que os quatro pneus possuem um orçamento limitado de aderência. Se o piloto usa cem por cento dessa capacidade para frear em linha reta, não sobra aderência para virar o volante. Se ele tentar virar e acelerar ao mesmo tempo de forma brusca, a borracha perde a tração e a traseira escapa. É por isso que os grandes pilotos fazem uma transição suave: à medida que aliviam o freio na entrada da curva, aumentam o esterço do volante; e à medida que desviram o volante na saída, aplicam a aceleração de forma progressiva. O segredo de uma volta perfeita é pilotar na fronteira exata desse limite de aderência.",
+    visualEffectType: "mod8_friction_circle",
+  },
+  {
+    id: "m8_c6",
+    number: 6,
+    title: "Mônaco, Monza e Spa",
+    subtitle: "Três templos com personalidades e desafios opostos",
+    imageUrl: "/backgrounds/bg-williams.webp",
+    audioUrl: "/audio/novatos/modulo8/cena06.mp3",
+    narrationTranscript:
+      "O calendário da Fórmula 1 reúne pistas com identidades completamente distintas. Mônaco é o teste supremo de precisão: ruas estreitas, curvas travadas, guard-rails colados no cockpit e margem de erro zero. Monza, o lendário Templo da Velocidade, é o oposto: retas intermináveis, asas mínimas com baixíssimo arrasto aerodinâmico e frenagens violentas nas chicanes. Já Spa-Francorchamps, na Bélgica, é a obra-prima das curvas de alta e variações de relevo, como a mítica Eau Rouge e a subida da Raidillon. Cada circuito exige um acerto de suspensão, pressão aerodinâmica e estilo de pilotagem completamente diferente.",
+    visualEffectType: "mod8_monaco_monza_spa",
+  },
+  {
+    id: "m8_c7",
+    number: 7,
+    title: "Quando a Pista Muda",
+    subtitle: "Chuva, asfalto escorregadio, zebras e limites de pista",
+    imageUrl: "/backgrounds/bg-haas.webp",
+    audioUrl: "/audio/novatos/modulo8/cena07.mp3",
+    narrationTranscript:
+      "A pista nunca é a mesma durante todo o fim de semana. Quando a chuva cai, o asfalto emborrachado da linha seca torna-se extremamente escorregadio, obrigando os pilotos a buscar a chamada linha de chuva por fora do traçado habitual. Além disso, as zebras pintadas perdem aderência quando molhadas e poças d'água podem provocar aquaplanagem instantânea. Ao mesmo tempo, o piloto precisa vigiar rigorosamente os limites de pista: tocar além das quatro rodas fora da faixa branca invalida a volta rápida na classificação e gera advertências na corrida. A excelência de um campeão está na capacidade de adaptar suas referências a cada volta.",
+    visualEffectType: "mod8_rain_track_limits",
+  },
+  {
+    id: "m8_c8",
+    number: 8,
+    title: "Desafio Final: A Volta Perfeita",
+    subtitle: "Conecte os setores e construa a volta mais rápida",
+    imageUrl: "/backgrounds/bg-default.webp",
+    audioUrl: "/audio/novatos/modulo8/cena08.mp3",
+    narrationTranscript:
+      "Chegou a hora de acelerar na prática! No nosso simulador interativo, você vai guiar um carro de Fórmula 1 por uma volta rápida em um circuito fictício de cinco setores desafiadores. Diante de cada trecho, você precisará tomar a decisão correta de frenagem, posicionamento de curva e adaptação às condições da pista. Lembre-se do que a Mariana ensinou: uma volta perfeita não nasce apenas da coragem de acelerar fundo, mas da consistência em respeitar os limites da física e do traçado. Boa volta e nos vemos no Quiz Final!",
+    visualEffectType: "mod8_lap_master_challenge",
+  },
+]
+
 export const MODULE_7_SCENES: ModuleScene[] = [
   {
     id: "m7_c1",
@@ -1360,6 +1517,143 @@ export const MODULE_1_QUIZ_QUESTIONS: QuizQuestion[] = [
 // ============================================================================
 // QUESTIONÁRIO FINAL — MÓDULO 7 (10 PERGUNTAS SOBRE OS BASTIDORES DA EQUIPE)
 // ============================================================================
+
+// ============================================================================
+// QUESTIONÁRIO FINAL — MÓDULO 8 (10 PERGUNTAS SOBRE CIRCUITOS E VOLTA RÁPIDA)
+// ============================================================================
+export const MODULE_8_QUIZ_QUESTIONS: QuizQuestion[] = [
+  {
+    id: 1,
+    question: "Pergunta 1 — O que é a racing line?",
+    options: [
+      { letter: "A", text: "O caminho mais rápido possível em todas as situações, sem exceção." },
+      { letter: "B", text: "Uma trajetória escolhida para contornar o circuito com eficiência." },
+      { letter: "C", text: "A linha branca que delimita a pista." },
+      { letter: "D", text: "O caminho usado exclusivamente durante a chuva." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Correto! A racing line é a trajetória geométrica e dinâmica que maximiza o raio de curva e a velocidade média na volta.",
+  },
+  {
+    id: 2,
+    question: "Pergunta 2 — O que é o ápice de uma curva?",
+    options: [
+      { letter: "A", text: "O ponto mais distante da curva." },
+      { letter: "B", text: "O início da reta principal." },
+      { letter: "C", text: "A região em que o carro passa próximo à parte interna do traçado." },
+      { letter: "D", text: "O ponto em que o piloto sempre precisa frear." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Exato! O ápice (apex ou ponto de tangência) é o ponto interno da curva onde o carro completa a rotação para iniciar a aceleração de saída.",
+  },
+  {
+    id: 3,
+    question: "Pergunta 3 — O que significa ponto de frenagem?",
+    options: [
+      { letter: "A", text: "O local de referência em que o piloto inicia a frenagem para uma curva." },
+      { letter: "B", text: "O lugar em que todos os carros precisam parar." },
+      { letter: "C", text: "O ponto em que o carro troca de marcha automaticamente." },
+      { letter: "D", text: "A área reservada aos mecânicos." },
+    ],
+    correctLetter: "A",
+    feedback:
+      "Muito bem! É o ponto de referência visual (como placas de 100m ou marcas de asfalto) onde o piloto aplica pressão máxima no freio.",
+  },
+  {
+    id: 4,
+    question: "Pergunta 4 — Por que a saída de uma curva lenta é importante?",
+    options: [
+      { letter: "A", text: "Porque elimina a necessidade de frear na curva seguinte." },
+      { letter: "B", text: "Porque pode influenciar a aceleração e a velocidade na reta seguinte." },
+      { letter: "C", text: "Porque sempre permite ultrapassar outro carro." },
+      { letter: "D", text: "Porque impede o desgaste dos pneus." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Perfeito! Uma saída eficiente permite acelerar a fundo mais cedo, carregando maior velocidade final por toda a reta seguinte.",
+  },
+  {
+    id: 5,
+    question: "Pergunta 5 — Qual afirmação sobre curvas rápidas está correta?",
+    options: [
+      { letter: "A", text: "Elas não exigem atenção à aderência." },
+      { letter: "B", text: "O piloto deve sempre frear no ápice." },
+      { letter: "C", text: "A estabilidade e a aderência são importantes para contorná-las." },
+      { letter: "D", text: "Elas são iguais em todos os circuitos." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Correto! Em curvas de alta velocidade, a carga aerodinâmica (downforce) e a estabilidade do chassi mantêm o carro colado ao chão.",
+  },
+  {
+    id: 6,
+    question: "Pergunta 6 — O que pode acontecer se o piloto acelerar excessivamente na saída de uma curva?",
+    options: [
+      { letter: "A", text: "O carro necessariamente ganha aderência." },
+      { letter: "B", text: "Os pneus deixam de sofrer desgaste." },
+      { letter: "C", text: "O carro passa a frear automaticamente." },
+      { letter: "D", text: "Pode haver perda de tração e dificuldade para manter o controle." },
+    ],
+    correctLetter: "D",
+    feedback:
+      "Exato! Excesso de aceleração com o volante esterçado esgota a aderência dos pneus traseiros, provocando sobresterço ou derrapagem.",
+  },
+  {
+    id: 7,
+    question: "Pergunta 7 — A trajetória ideal é sempre a mesma em pista seca e molhada?",
+    options: [
+      { letter: "A", text: "Sim, sem nenhuma exceção." },
+      { letter: "B", text: "Não. A aderência e as condições podem exigir adaptações." },
+      { letter: "C", text: "Sim, porque os pneus sempre têm a mesma aderência." },
+      { letter: "D", text: "Não, porque a chuva elimina completamente a possibilidade de contornar curvas." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Muito bem! Na chuva, o emborrachamento do traçado seco fica ensaboado, forçando o piloto a contornar por fora, onde há mais atrito.",
+  },
+  {
+    id: 8,
+    question: "Pergunta 8 — Qual característica está especialmente associada a Monza?",
+    options: [
+      { letter: "A", text: "Apenas curvas lentas e barreiras próximas." },
+      { letter: "B", text: "Um circuito sem retas longas." },
+      { letter: "C", text: "Longas retas e zonas de frenagem importantes." },
+      { letter: "D", text: "Uma pista exclusivamente molhada." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Excelente! Monza é o Templo da Velocidade, famoso pelas retas de mais de 340 km/h e fortes desacelerações para chicanes históricas.",
+  },
+  {
+    id: 9,
+    question: "Pergunta 9 — Por que é importante respeitar os limites de pista?",
+    options: [
+      { letter: "A", text: "Porque eles fazem parte das condições de segurança e das regras esportivas." },
+      { letter: "B", text: "Porque o carro não consegue andar sobre as zebras em nenhuma situação." },
+      { letter: "C", text: "Porque todos os erros de trajetória são automaticamente iguais." },
+      { letter: "D", text: "Porque os pilotos precisam permanecer no centro da pista o tempo todo." },
+    ],
+    correctLetter: "A",
+    feedback:
+      "Perfeito! Os limites de pista garantem a integridade esportiva e evitam que carros utilizem áreas de escape perigosas para ganhar tempo.",
+  },
+  {
+    id: 10,
+    question: "Pergunta 10 — O que mais representa uma volta eficiente?",
+    options: [
+      { letter: "A", text: "Acelerar ao máximo em todas as curvas." },
+      { letter: "B", text: "Utilizar sempre a trajetória mais curta, mesmo perdendo velocidade." },
+      { letter: "C", text: "Frear o mais tarde possível em todas as situações." },
+      { letter: "D", text: "Combinar trajetória, frenagem, aderência, aceleração e consistência de acordo com as condições." },
+    ],
+    correctLetter: "D",
+    feedback:
+      "Parabéns! Uma volta perfeita é o resultado harmonioso entre técnica de pilotagem, respeito à física dos pneus e consistência curva por curva.",
+  },
+]
+
 export const MODULE_7_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 1,
@@ -2168,6 +2462,7 @@ const STORAGE_MOD4_KEY = "f1_novatos_mod4_state_v1"
 const STORAGE_MOD5_KEY = "f1_novatos_mod5_state_v1"
 const STORAGE_MOD6_KEY = "f1_novatos_mod6_state_v1"
 const STORAGE_MOD7_KEY = "f1_novatos_mod7_state_v1"
+const STORAGE_MOD8_KEY = "f1_novatos_mod8_state_v1"
 const STORAGE_ACTIVE_MODULE_KEY = "f1_novatos_active_module_v1"
 
 interface PersistedModuleState {
@@ -2201,10 +2496,11 @@ export function NovatosPage() {
   // ==========================================================================
   // ESTADO DO MÓDULO ATIVO (MÓDULO 1 OU MÓDULO 2)
   // ==========================================================================
-  const [activeModuleId, setActiveModuleId] = useState<1 | 2 | 3 | 4 | 5 | 6 | 7>(() => {
+  const [activeModuleId, setActiveModuleId] = useState<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8>(() => {
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search)
       const modParam = urlParams.get("modulo") || urlParams.get("mod")
+      if (modParam === "8") return 8
       if (modParam === "7") return 7
       if (modParam === "6") return 6
       if (modParam === "5") return 5
@@ -2212,6 +2508,7 @@ export function NovatosPage() {
       if (modParam === "3") return 3
       if (modParam === "2") return 2
       const saved = localStorage.getItem(STORAGE_ACTIVE_MODULE_KEY)
+      if (saved === "8") return 8
       if (saved === "7") return 7
       if (saved === "6") return 6
       if (saved === "5") return 5
@@ -2222,9 +2519,9 @@ export function NovatosPage() {
     return 1
   })
 
-  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : activeModuleId === 2 ? MODULE_2_SCENES : activeModuleId === 3 ? MODULE_3_SCENES : activeModuleId === 4 ? MODULE_4_SCENES : activeModuleId === 5 ? MODULE_5_SCENES : activeModuleId === 6 ? MODULE_6_SCENES : MODULE_7_SCENES
-  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : activeModuleId === 2 ? MODULE_2_QUIZ_QUESTIONS : activeModuleId === 3 ? MODULE_3_QUIZ_QUESTIONS : activeModuleId === 4 ? MODULE_4_QUIZ_QUESTIONS : activeModuleId === 5 ? MODULE_5_QUIZ_QUESTIONS : activeModuleId === 6 ? MODULE_6_QUIZ_QUESTIONS : MODULE_7_QUIZ_QUESTIONS
-  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : activeModuleId === 2 ? STORAGE_MOD2_KEY : activeModuleId === 3 ? STORAGE_MOD3_KEY : activeModuleId === 4 ? STORAGE_MOD4_KEY : activeModuleId === 5 ? STORAGE_MOD5_KEY : activeModuleId === 6 ? STORAGE_MOD6_KEY : STORAGE_MOD7_KEY
+  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : activeModuleId === 2 ? MODULE_2_SCENES : activeModuleId === 3 ? MODULE_3_SCENES : activeModuleId === 4 ? MODULE_4_SCENES : activeModuleId === 5 ? MODULE_5_SCENES : activeModuleId === 6 ? MODULE_6_SCENES : activeModuleId === 7 ? MODULE_7_SCENES : MODULE_8_SCENES
+  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : activeModuleId === 2 ? MODULE_2_QUIZ_QUESTIONS : activeModuleId === 3 ? MODULE_3_QUIZ_QUESTIONS : activeModuleId === 4 ? MODULE_4_QUIZ_QUESTIONS : activeModuleId === 5 ? MODULE_5_QUIZ_QUESTIONS : activeModuleId === 6 ? MODULE_6_QUIZ_QUESTIONS : activeModuleId === 7 ? MODULE_7_QUIZ_QUESTIONS : MODULE_8_QUIZ_QUESTIONS
+  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : activeModuleId === 2 ? STORAGE_MOD2_KEY : activeModuleId === 3 ? STORAGE_MOD3_KEY : activeModuleId === 4 ? STORAGE_MOD4_KEY : activeModuleId === 5 ? STORAGE_MOD5_KEY : activeModuleId === 6 ? STORAGE_MOD6_KEY : activeModuleId === 7 ? STORAGE_MOD7_KEY : STORAGE_MOD8_KEY
 
   // Stage: "opening" (Hero Landing), "lesson" (Scenes 1-8), "quiz" (Final Test)
   const [viewStage, setViewStage] = useState<"opening" | "lesson" | "quiz">("opening")
@@ -2332,6 +2629,21 @@ export function NovatosPage() {
   const [m7ChallengeStep, setM7ChallengeStep] = useState<1 | 2 | 3>(1)
   const [m7ChallengeAnswers, setM7ChallengeAnswers] = useState<Record<number, string>>({})
 
+  // Interactive Scene States — Module 8
+  const [m8SelectedCircuitZone, setM8SelectedCircuitZone] = useState<"straight" | "heavy_brake" | "slow_corner" | "chicane" | "fast_sweeper">("straight")
+  const [m8RacingLineStep, setM8RacingLineStep] = useState<"entry" | "apex" | "exit">("apex")
+  const [m8RacingLineChallenge, setM8RacingLineChallenge] = useState<"geometric" | "late_apex" | null>(null)
+  const [m8BrakingScenario, setM8BrakingScenario] = useState<"early" | "late" | "ideal">("ideal")
+  const [m8CornerType, setM8CornerType] = useState<"slow" | "medium" | "fast">("medium")
+  const [m8CornerExercise, setM8CornerExercise] = useState<Record<string, string>>({})
+  const [m8GripPhase, setM8GripPhase] = useState<1 | 2 | 3>(2)
+  const [m8ThrottleComparison, setM8ThrottleComparison] = useState<"abrupt" | "progressive">("progressive")
+  const [m8SelectedTrackProfile, setM8SelectedTrackProfile] = useState<"monaco" | "monza" | "spa">("monza")
+  const [m8WetDecision, setM8WetDecision] = useState<1 | 2 | 3 | null>(null)
+  const [m8ChallengeStep, setM8ChallengeStep] = useState<1 | 2 | 3>(1)
+  const [m8ChallengeAnswers, setM8ChallengeAnswers] = useState<Record<number, string>>({})
+
+
 
 
   // Quiz State
@@ -2437,9 +2749,9 @@ export function NovatosPage() {
     setQuizScore(state.quizScore)
   }, [currentStorageKey])
 
-  // Troca de módulo (Módulo 1 a 7)
+  // Troca de módulo (Módulo 1 a 8)
   const handleSelectModule = useCallback(
-    (modId: 1 | 2 | 3 | 4 | 5 | 6 | 7) => {
+    (modId: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8) => {
       if (modId === activeModuleId) return
       // Para áudios e timers
       if (countdownTimerRef.current) {
@@ -2467,8 +2779,8 @@ export function NovatosPage() {
       }
 
       // Carrega estado do novo módulo
-      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : modId === 2 ? STORAGE_MOD2_KEY : modId === 3 ? STORAGE_MOD3_KEY : modId === 4 ? STORAGE_MOD4_KEY : modId === 5 ? STORAGE_MOD5_KEY : modId === 6 ? STORAGE_MOD6_KEY : STORAGE_MOD7_KEY
-      const maxLen = modId === 1 ? MODULE_1_SCENES.length : modId === 2 ? MODULE_2_SCENES.length : modId === 3 ? MODULE_3_SCENES.length : modId === 4 ? MODULE_4_SCENES.length : modId === 5 ? MODULE_5_SCENES.length : modId === 6 ? MODULE_6_SCENES.length : MODULE_7_SCENES.length
+      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : modId === 2 ? STORAGE_MOD2_KEY : modId === 3 ? STORAGE_MOD3_KEY : modId === 4 ? STORAGE_MOD4_KEY : modId === 5 ? STORAGE_MOD5_KEY : modId === 6 ? STORAGE_MOD6_KEY : modId === 7 ? STORAGE_MOD7_KEY : STORAGE_MOD8_KEY
+      const maxLen = modId === 1 ? MODULE_1_SCENES.length : modId === 2 ? MODULE_2_SCENES.length : modId === 3 ? MODULE_3_SCENES.length : modId === 4 ? MODULE_4_SCENES.length : modId === 5 ? MODULE_5_SCENES.length : modId === 6 ? MODULE_6_SCENES.length : modId === 7 ? MODULE_7_SCENES.length : MODULE_8_SCENES.length
       const s = loadPersistedState(targetKey)
       setVisitedScenes(s.visitedScenes)
       setSceneIndex(s.lastSceneIndex < maxLen ? s.lastSceneIndex : 0)
@@ -2614,6 +2926,11 @@ export function NovatosPage() {
       setM7ChallengeAnswers({})
       setM7PitStopStep(1)
       setM7TelemetryPoint(1)
+      setM8RacingLineChallenge(null)
+      setM8WetDecision(null)
+      setM8ChallengeStep(1)
+      setM8ChallengeAnswers({})
+      setM8CornerExercise({})
     },
     [currentScenes.length, stopAllAudio]
   )
@@ -3936,6 +4253,11 @@ export function NovatosPage() {
       setM7ChallengeAnswers({})
       setM7PitStopStep(1)
       setM7TelemetryPoint(1)
+      setM8RacingLineChallenge(null)
+      setM8WetDecision(null)
+      setM8ChallengeStep(1)
+      setM8ChallengeAnswers({})
+      setM8CornerExercise({})
                   }}
                   className="w-full py-1 text-[10px] text-zinc-400 hover:text-white underline cursor-pointer text-center block"
                 >
@@ -5598,6 +5920,11 @@ export function NovatosPage() {
       setM7ChallengeAnswers({})
       setM7PitStopStep(1)
       setM7TelemetryPoint(1)
+      setM8RacingLineChallenge(null)
+      setM8WetDecision(null)
+      setM8ChallengeStep(1)
+      setM8ChallengeAnswers({})
+      setM8CornerExercise({})
                   }}
                   className="w-full py-1 text-[10px] text-zinc-400 hover:text-white underline cursor-pointer text-center block"
                 >
@@ -7596,6 +7923,758 @@ export function NovatosPage() {
       }
     }
 
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 8: DOMINANDO OS CIRCUITOS — A ARTE DE FAZER UMA VOLTA RÁPIDA
+    // ------------------------------------------------------------------------
+    if (activeModuleId === 8) {
+      // CENA 1: CADA CIRCUITO CONTA UMA HISTÓRIA
+      if (currentScene.visualEffectType === "mod8_circuit_anatomy") {
+        const circuitZones = [
+          {
+            id: "straight" as const,
+            title: "Reta Principal (Long Straight)",
+            gear: "8ª Marcha • ~340 km/h",
+            desc: "Zona de aceleração máxima e vácuo aerodinâmico. O piloto descansa o volante e foca exclusivamente na referência da placa de frenagem.",
+          },
+          {
+            id: "heavy_brake" as const,
+            title: "Zona de Frenagem Pesada",
+            gear: "Desaceleração de 340 para 85 km/h",
+            desc: "Mais de 100 kg no pedal de freio e 5G de desaceleração. A traseira alivia e o piloto equilibra a pressão para evitar o travamento de rodas.",
+          },
+          {
+            id: "slow_corner" as const,
+            title: "Curva Lenta (Hairpin / Gancho)",
+            gear: "1ª ou 2ª Marcha • ~75 km/h",
+            desc: "A aerodinâmica não atua nessa velocidade. A aderência mecânica e a tração de saída definem se o piloto perde ou ganha décimos preciosos.",
+          },
+          {
+            id: "chicane" as const,
+            title: "Chicane Rápida",
+            gear: "4ª Marcha • ~180 km/h",
+            desc: "Transição agressiva de direção (esquerda-direita). O piloto ataca as zebras com precisão de suspensão para encurtar a distância.",
+          },
+          {
+            id: "fast_sweeper" as const,
+            title: "Curva de Alta Velocidade",
+            gear: "6ª ou 7ª Marcha • ~260 km/h",
+            desc: "O downforce das asas pressiona o carro com mais de 2 toneladas contra o asfalto. Confiança total no chassi e tolerância zero a erros.",
+          },
+        ]
+
+        const activeZone = circuitZones.find((z) => z.id === m8SelectedCircuitZone) || circuitZones[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Análise de Traçado</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">LEITURA DE PISTA</span>
+            </div>
+
+            <div className="p-1 rounded bg-white/5 border border-white/10 text-[9px] font-mono text-center text-zinc-400 uppercase mb-2">
+              CIRCUITO ILUSTRATIVO — ELEMENTOS TÉCNICOS
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Selecione um setor da pista para analisar a exigência:
+            </p>
+
+            <div className="grid grid-cols-2 gap-1 mb-2.5">
+              {circuitZones.map((z) => (
+                <button
+                  key={z.id}
+                  type="button"
+                  onClick={() => setM8SelectedCircuitZone(z.id)}
+                  className={cn(
+                    "py-1 px-1.5 rounded text-[9px] font-bold truncate transition-all cursor-pointer text-center",
+                    m8SelectedCircuitZone === z.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {z.title.split(" (")[0]}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px]">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-black text-white">{activeZone.title}</span>
+              </div>
+              <span className="text-[9px] font-mono text-amber-400 font-bold block mb-1">{activeZone.gear}</span>
+              <p className="text-zinc-300 leading-relaxed mb-2">{activeZone.desc}</p>
+              <div className="p-1.5 rounded bg-black/60 border border-white/5 text-[9px] text-zinc-400">
+                🏁 <em>“Antes de entender por que um piloto é rápido, precisamos aprender a ler a pista.”</em>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 2: O SEGREDO DA TRAJETÓRIA IDEAL
+      if (currentScene.visualEffectType === "mod8_racing_line") {
+        const lineSteps = [
+          {
+            id: "entry" as const,
+            title: "1. Entrada da Curva (Turn-in)",
+            pos: "Lado Externo da Pista",
+            desc: "O piloto posiciona as quatro rodas junto à borda externa. Inicia a frenagem em linha reta e começa a direcionar o bico do carro suavemente para dentro.",
+          },
+          {
+            id: "apex" as const,
+            title: "2. Ápice (Apex / Tangência)",
+            pos: "Borda Interna (Zebra)",
+            desc: "O ponto mais interno onde o carro tangencia a zebra. É o momento de menor velocidade na curva e o instante exato de apontar para a saída e reacelerar.",
+          },
+          {
+            id: "exit" as const,
+            title: "3. Saída da Curva (Track-out)",
+            pos: "Lado Externo da Pista",
+            desc: "O piloto abre o volante progressivamente em direção à zebra externa, aproveitando toda a largura da pista para colocar potência total no acelerador.",
+          },
+        ]
+
+        const currentLineStep = lineSteps.find((s) => s.id === m8RacingLineStep) || lineSteps[1]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Geometria da Curva</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">RACING LINE</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              As 3 fases fundamentais de contorno:
+            </p>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              {lineSteps.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setM8RacingLineStep(s.id)}
+                  className={cn(
+                    "py-1 px-1 rounded text-[9px] font-bold transition-all cursor-pointer text-center truncate",
+                    m8RacingLineStep === s.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {s.id === "entry" ? "Entrada" : s.id === "apex" ? "Ápice" : "Saída"}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px] mb-2.5">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-black text-white">{currentLineStep.title}</span>
+                <span className="text-[9px] font-mono text-cyan-400 font-bold">{currentLineStep.pos}</span>
+              </div>
+              <p className="text-zinc-300 leading-relaxed">{currentLineStep.desc}</p>
+            </div>
+
+            {/* Mini Desafio */}
+            <div className="p-2 rounded-lg bg-black/70 border border-white/10 text-[10px]">
+              <p className="font-bold text-white mb-1">Mini Desafio: Reta Longa à Frente</p>
+              <p className="text-zinc-400 text-[9px] mb-1.5">
+                Qual abordagem gera uma saída mais eficiente antes de uma reta longa?
+              </p>
+              <div className="grid grid-cols-2 gap-1 mb-1.5">
+                <button
+                  type="button"
+                  onClick={() => setM8RacingLineChallenge("geometric")}
+                  className={cn(
+                    "py-1 px-1.5 rounded text-[9px] font-bold transition-all cursor-pointer text-center",
+                    m8RacingLineChallenge === "geometric" ? "bg-red-600/80 text-white" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  Ápice Central (Geométrico)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setM8RacingLineChallenge("late_apex")}
+                  className={cn(
+                    "py-1 px-1.5 rounded text-[9px] font-bold transition-all cursor-pointer text-center",
+                    m8RacingLineChallenge === "late_apex" ? "bg-emerald-600 text-white" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  Ápice Tardio (Late Apex)
+                </button>
+              </div>
+
+              {m8RacingLineChallenge && (
+                <p className="text-[9px] text-zinc-300 leading-snug border-t border-white/10 pt-1">
+                  {m8RacingLineChallenge === "late_apex" ? (
+                    <span className="text-emerald-400 font-bold">
+                      ✓ Correto! O Ápice Tardio permite endireitar o volante mais cedo e colocar pé embaixo antes, acumulando velocidade para a reta.
+                    </span>
+                  ) : (
+                    <span className="text-amber-400">
+                      ⚠️ O ápice central tem velocidade média alta, mas atrasa a aceleração total para a reta.
+                    </span>
+                  )}
+                </p>
+              )}
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 3: FRENAR NO MOMENTO CERTO
+      if (currentScene.visualEffectType === "mod8_braking_physics") {
+        const scenarios = [
+          {
+            id: "early" as const,
+            title: "Cenário A: Frear Cedo Demais",
+            time: "Perda de ~0.35s",
+            desc: "O piloto se assusta e freia 30 metros antes da referência. O carro perde velocidade desnecessariamente na reta e chega lento demais na curva.",
+          },
+          {
+            id: "late" as const,
+            title: "Cenário B: Frear Tarde Demais",
+            time: "Perda de ~0.80s + Risco",
+            desc: "O piloto passa do ponto ideal. A roda dianteira interna trava (fumaça branca), gerando pneu quadrado (flatspot) e espalhando para fora da zebra.",
+          },
+          {
+            id: "ideal" as const,
+            title: "Cenário C: Frenagem Controlada (Ideal)",
+            time: "Ganho Máximo na Volta",
+            desc: "Força de 100 kg inicial no pedal exatamente na placa de 100m, alívio progressivo (trail braking) ao iniciar o esterço e frente colada no ápice.",
+          },
+        ]
+
+        const activeScenario = scenarios.find((s) => s.id === m8BrakingScenario) || scenarios[2]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Física da Frenagem</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">5G DE FORÇA</span>
+            </div>
+
+            <div className="p-1 rounded bg-white/5 border border-white/10 text-[9px] font-mono text-center text-zinc-400 uppercase mb-2">
+              EXEMPLO ILUSTRATIVO — PLACA DE 100M
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Compare os 3 momentos de frenagem:
+            </p>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              {scenarios.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setM8BrakingScenario(s.id)}
+                  className={cn(
+                    "py-1 px-1 rounded text-[9px] font-bold transition-all cursor-pointer text-center truncate",
+                    m8BrakingScenario === s.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {s.id === "early" ? "Cedo Demais" : s.id === "late" ? "Tarde Demais" : "Ideal"}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px]">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-black text-white">{activeScenario.title}</span>
+                <span className="text-[9px] font-mono text-amber-400 font-bold">{activeScenario.time}</span>
+              </div>
+              <p className="text-zinc-300 leading-relaxed mb-2">{activeScenario.desc}</p>
+              <div className="p-1.5 rounded bg-black/60 border border-white/5 text-[9px] text-zinc-400">
+                💡 <em>O ponto exato varia conforme a carga de combustível, o vento, a temperatura da pista e o composto do pneu.</em>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 4: CURVAS LENTAS, MÉDIAS E RÁPIDAS
+      if (currentScene.visualEffectType === "mod8_corner_categories") {
+        const cornerTypes = [
+          {
+            id: "slow" as const,
+            title: "Curva Lenta (< 100 km/h)",
+            focus: "Aderência Mecânica & Tração de Saída",
+            desc: "Asas não geram downforce em baixa velocidade. O piloto precisa ter paciência para apontar o bico e aplicar o acelerador sem patinar as rodas traseiras.",
+          },
+          {
+            id: "medium" as const,
+            title: "Curva Média (100 a 180 km/h)",
+            focus: "Equilíbrio Dinâmico & Transição",
+            desc: "Exige dosagem perfeita entre a desaceleração final e a rotação do volante. A estabilidade de freios e a distribuição de peso evitam o subesterço.",
+          },
+          {
+            id: "fast" as const,
+            title: "Curva Rápida (> 200 km/h)",
+            focus: "Downforce Aerodinâmico & Confiança",
+            desc: "O fluxo de ar empurra o carro com milhares de quilos. O piloto confia no vácuo gerado sob o assoalho para contornar sem levantar o pé.",
+          },
+        ]
+
+        const activeCorner = cornerTypes.find((c) => c.id === m8CornerType) || cornerTypes[1]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Classificação de Curvas</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">DINÂMICA</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Selecione o tipo de curva para ver o fator decisivo:
+            </p>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              {cornerTypes.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setM8CornerType(c.id)}
+                  className={cn(
+                    "py-1 px-1 rounded text-[9px] font-bold transition-all cursor-pointer text-center",
+                    m8CornerType === c.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {c.id === "slow" ? "Lenta" : c.id === "medium" ? "Média" : "Rápida"}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px] mb-2">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-black text-white">{activeCorner.title}</span>
+              </div>
+              <span className="text-[9px] font-mono text-cyan-400 font-bold block mb-1">{activeCorner.focus}</span>
+              <p className="text-zinc-300 leading-relaxed">{activeCorner.desc}</p>
+            </div>
+
+            {/* Mini exercício */}
+            <div className="p-2 rounded-lg bg-black/70 border border-white/10 text-[9px]">
+              <span className="text-white font-bold block mb-1">Desafio Rápido:</span>
+              <p className="text-zinc-400 mb-1.5">Onde a aerodinâmica tem maior influência no contorno?</p>
+              <div className="grid grid-cols-3 gap-1">
+                <button
+                  type="button"
+                  onClick={() => setM8CornerExercise({ q1: "slow" })}
+                  className={cn(
+                    "py-1 rounded text-center cursor-pointer transition-all",
+                    m8CornerExercise.q1 === "slow" ? "bg-red-600/70 text-white" : "bg-white/5 hover:bg-white/10 text-zinc-300"
+                  )}
+                >
+                  Lentas
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setM8CornerExercise({ q1: "medium" })}
+                  className={cn(
+                    "py-1 rounded text-center cursor-pointer transition-all",
+                    m8CornerExercise.q1 === "medium" ? "bg-red-600/70 text-white" : "bg-white/5 hover:bg-white/10 text-zinc-300"
+                  )}
+                >
+                  Médias
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setM8CornerExercise({ q1: "fast" })}
+                  className={cn(
+                    "py-1 rounded text-center cursor-pointer transition-all",
+                    m8CornerExercise.q1 === "fast" ? "bg-emerald-600 text-white" : "bg-white/5 hover:bg-white/10 text-zinc-300"
+                  )}
+                >
+                  Rápidas ✓
+                </button>
+              </div>
+              {m8CornerExercise.q1 === "fast" && (
+                <p className="text-emerald-400 mt-1 text-[9px]">✓ Correto! O downforce aumenta com o quadrado da velocidade.</p>
+              )}
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 5: O ACELERADOR, O FREIO E O VOLANTE TRABALHAM JUNTOS
+      if (currentScene.visualEffectType === "mod8_friction_circle") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Orçamento de Aderência</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">CÍRCULO DE ATRITO</span>
+            </div>
+
+            <div className="p-2 rounded-lg bg-white/5 border border-white/10 text-[10px] mb-2.5">
+              <strong className="text-white block mb-0.5">Analogia do Orçamento de Borracha:</strong>
+              <p className="text-zinc-300 leading-snug">
+                Os 4 pneus têm 100% de capacidade total. Se você gasta 100% para frear reto, não sobra nada para esterçar o volante.
+              </p>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Selecione a fase de transição de comandos:
+            </p>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM8GripPhase(1)}
+                className={cn(
+                  "py-1 px-1 rounded text-[9px] font-bold transition-all cursor-pointer text-center",
+                  m8GripPhase === 1 ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                1. Frenagem
+              </button>
+              <button
+                type="button"
+                onClick={() => setM8GripPhase(2)}
+                className={cn(
+                  "py-1 px-1 rounded text-[9px] font-bold transition-all cursor-pointer text-center",
+                  m8GripPhase === 2 ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                2. Contorno
+              </button>
+              <button
+                type="button"
+                onClick={() => setM8GripPhase(3)}
+                className={cn(
+                  "py-1 px-1 rounded text-[9px] font-bold transition-all cursor-pointer text-center",
+                  m8GripPhase === 3 ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                3. Saída
+              </button>
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px] mb-2.5">
+              {m8GripPhase === 1 && (
+                <div>
+                  <span className="font-bold text-white block mb-0.5">Fase 1 — Frenagem Longitudinal:</span>
+                  <p className="text-zinc-300 leading-relaxed">
+                    Volante reto, 100% da aderência dedicada à desaceleração. O piloto não esterça até começar a aliviar o pedal.
+                  </p>
+                </div>
+              )}
+              {m8GripPhase === 2 && (
+                <div>
+                  <span className="font-bold text-white block mb-0.5">Fase 2 — Contorno no Ápice:</span>
+                  <p className="text-zinc-300 leading-relaxed">
+                    Freio liberado, 100% da aderência dedicada à força lateral (curva). O carro atinge sua rotação máxima.
+                  </p>
+                </div>
+              )}
+              {m8GripPhase === 3 && (
+                <div>
+                  <span className="font-bold text-white block mb-0.5">Fase 3 — Reaceleração Progressiva:</span>
+                  <p className="text-zinc-300 leading-relaxed">
+                    À medida que desvira o volante (reduzindo a força lateral), o piloto aumenta a aceleração longitudinal até 100%.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Comparador de Aceleração */}
+            <div className="p-2 rounded-lg bg-black/70 border border-white/10 text-[10px]">
+              <span className="text-zinc-300 font-bold block mb-1">Aceleração na Saída:</span>
+              <div className="grid grid-cols-2 gap-1 mb-1.5">
+                <button
+                  type="button"
+                  onClick={() => setM8ThrottleComparison("abrupt")}
+                  className={cn(
+                    "py-1 rounded text-[9px] font-bold transition-all cursor-pointer text-center",
+                    m8ThrottleComparison === "abrupt" ? "bg-red-600/80 text-white" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  Aceleração Brusca
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setM8ThrottleComparison("progressive")}
+                  className={cn(
+                    "py-1 rounded text-[9px] font-bold transition-all cursor-pointer text-center",
+                    m8ThrottleComparison === "progressive" ? "bg-emerald-600 text-white" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  Aceleração Progressiva
+                </button>
+              </div>
+              <p className="text-[9px] text-zinc-300 leading-snug">
+                {m8ThrottleComparison === "abrupt"
+                  ? "❌ Destracionamento imediato, superaquecimento da borracha e sobresterço perigoso."
+                  : "✓ Potência transmitida sem patinar, estabilidade perfeita e velocidade contínua para a reta."}
+              </p>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 6: MÔNACO, MONZA E SPA
+      if (currentScene.visualEffectType === "mod8_monaco_monza_spa") {
+        const trackProfiles = [
+          {
+            id: "monaco" as const,
+            name: "Circuito de Mônaco",
+            nickname: "A Joia do Calendário",
+            char: "Ruas estreitas, guard-rails colados, curvas mais lentas da F1 (Fairmont Hairpin a 45 km/h).",
+            challenge: "Precisão cirúrgica a cada milímetro: qualquer erro é contato com o muro e abandono.",
+            setup: "Máxima carga aerodinâmica (Downforce extremo), suspensão macia e esterço ampliado.",
+          },
+          {
+            id: "monza" as const,
+            name: "Autódromo de Monza (Itália)",
+            nickname: "O Templo da Velocidade",
+            char: "75% da volta com aceleração total, retas de +340 km/h e chicanes icônicas (Rettifilo e Ascari).",
+            challenge: "Desacelerações violentas de 350 para 70 km/h e estabilidade de frenagem no limite.",
+            setup: "Asas quase planas de baixíssimo arrasto aerodinâmico (Skinny Wings) para velocidade de reta.",
+          },
+          {
+            id: "spa" as const,
+            name: "Spa-Francorchamps (Bélgica)",
+            nickname: "A Montanha-Russa das Ardenas",
+            char: "7 km de extensão, curvas rápidas lendárias (Pouhon e Blanchimont) e o mito da Eau Rouge/Raidillon.",
+            challenge: "Compressão vertical de 4G na subida cega e clima imprevisível que chove em um setor e seca em outro.",
+            setup: "Acerto de compromisso médio-baixo: velocidade no setor 1 e sustentação no setor 2.",
+          },
+        ]
+
+        const activeTrack = trackProfiles.find((t) => t.id === m8SelectedTrackProfile) || trackProfiles[1]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Personalidades do Calendário</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">3 TEMPLOS</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Selecione o circuito para ver o DNA de pilotagem:
+            </p>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              {trackProfiles.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setM8SelectedTrackProfile(t.id)}
+                  className={cn(
+                    "py-1 px-1 rounded text-[9px] font-bold transition-all cursor-pointer text-center",
+                    m8SelectedTrackProfile === t.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {t.id.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px] space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-white">{activeTrack.name}</span>
+                <span className="text-[9px] font-mono text-cyan-400 font-bold">{activeTrack.nickname}</span>
+              </div>
+              <p className="text-zinc-300 leading-snug">
+                <strong>Características:</strong> {activeTrack.char}
+              </p>
+              <p className="text-zinc-300 leading-snug">
+                <strong>Desafio do Piloto:</strong> {activeTrack.challenge}
+              </p>
+              <div className="p-1.5 rounded bg-black/60 border border-white/5 text-[9px] text-zinc-300">
+                ⚙️ <strong>Acerto do Carro:</strong> {activeTrack.setup}
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 7: QUANDO A PISTA MUDA: CHUVA, PNEUS E LIMITES
+      if (currentScene.visualEffectType === "mod8_rain_track_limits") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Pista em Mutação</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-bold">CONDIÇÕES CLIMÁTICAS</span>
+            </div>
+
+            {/* Quadro: A Mesma Curva, Duas Condições */}
+            <div className="p-2 rounded-lg bg-zinc-900 border border-white/10 text-[10px] mb-2.5">
+              <div className="flex items-center justify-between text-zinc-300 mb-1 font-bold">
+                <span className="text-amber-400">☀️ Pista Seca</span>
+                <span className="text-blue-400">🌧️ Pista Molhada</span>
+              </div>
+              <p className="text-zinc-400 text-[9px] leading-relaxed">
+                No seco, a linha emborrachada tem máxima aderência. Na chuva, essa mesma borracha fica ensaboada; os pilotos buscam o asfalto áspero por fora da linha convencional e evitam zebras pintadas.
+              </p>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 font-bold mb-1.5">
+              Diante de uma curva molhada com chuva repentina, o que fazer?
+            </p>
+
+            <div className="space-y-1 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM8WetDecision(1)}
+                className={cn(
+                  "w-full text-left py-1.5 px-2 rounded-lg text-[9px] font-bold transition-all cursor-pointer",
+                  m8WetDecision === 1 ? "bg-red-600/80 text-white" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                1. Manter exatamente a mesma velocidade e ponto de freio do seco
+              </button>
+              <button
+                type="button"
+                onClick={() => setM8WetDecision(2)}
+                className={cn(
+                  "w-full text-left py-1.5 px-2 rounded-lg text-[9px] font-bold transition-all cursor-pointer",
+                  m8WetDecision === 2 ? "bg-emerald-600 text-white" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                2. Adaptar velocidade, frear mais cedo e buscar a linha de chuva por fora
+              </button>
+              <button
+                type="button"
+                onClick={() => setM8WetDecision(3)}
+                className={cn(
+                  "w-full text-left py-1.5 px-2 rounded-lg text-[9px] font-bold transition-all cursor-pointer",
+                  m8WetDecision === 3 ? "bg-red-600/80 text-white" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                3. Acelerar mais fundo para compensar o tempo perdido
+              </button>
+            </div>
+
+            {m8WetDecision && (
+              <div className="p-2 rounded-lg bg-black/70 border border-white/10 text-[9px] text-zinc-300">
+                {m8WetDecision === 2 ? (
+                  <span className="text-emerald-400 font-bold">
+                    ✓ Perfeito! A adaptação de frenagem e a linha externa evitam a perda de controle e mantêm o carro nos limites da pista.
+                  </span>
+                ) : (
+                  <span className="text-amber-400">
+                    ⚠️ Risco grave de aquaplanagem, travamento de rodas ou saída de pista com danos ao carro.
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 8: DESAFIO FINAL: ENCONTRE A VOLTA MAIS EFICIENTE
+      if (currentScene.visualEffectType === "mod8_lap_master_challenge") {
+        const lapDecisions = [
+          {
+            step: 1 as const,
+            sector: "Setor 1 • Fim da Reta Principal",
+            question: "Aproximando-se de uma curva lenta a 330 km/h:",
+            options: [
+              { id: "A", text: "Frear tarde demais para tentar ganhar velocidade na marra." },
+              { id: "B", text: "Frear no ponto de referência adequado e preparar o bico para a curva." },
+              { id: "C", text: "Frear 100m antes do necessário sem qualquer referência." },
+            ],
+            best: "B",
+            exp: "Excelente! Respeitar o ponto de frenagem garante estabilidade e evita o travamento de rodas.",
+          },
+          {
+            step: 2 as const,
+            sector: "Setor 2 • Curva Média que Leva a Reta Longa",
+            question: "Como abordar o contorno para maximizar a reta?",
+            options: [
+              { id: "A", text: "Priorizar saída controlada com ápice tardio para acelerar cedo." },
+              { id: "B", text: "Mergulhar direto para a zebra interna sem pensar na saída." },
+              { id: "C", text: "Passar por fora da linha branca desrespeitando os limites de pista." },
+            ],
+            best: "A",
+            exp: "Correto! A aceleração antecipada gera velocidade que se multiplica por toda a reta seguinte.",
+          },
+          {
+            step: 3 as const,
+            sector: "Setor 3 • Curva Rápida com Garôa Repentina",
+            question: "Gotas começam a atingir a viseira no ápice:",
+            options: [
+              { id: "A", text: "Acelerar mais ainda para compensar o tempo." },
+              { id: "B", text: "Moderar os comandos, evitar as zebras molhadas e manter a estabilidade." },
+              { id: "C", text: "Puxar o freio de mão imediatamente no meio da curva." },
+            ],
+            best: "B",
+            exp: "Perfeito! A sensibilidade para ler as mudanças no asfalto separa os pilotos comuns dos grandes campeões.",
+          },
+        ]
+
+        const currentD = lapDecisions.find((d) => d.step === m8ChallengeStep) || lapDecisions[0]
+        const hasAnswered = !!m8ChallengeAnswers[m8ChallengeStep]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Simulador de Volta Rápida</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">ETAPA {m8ChallengeStep} DE 3</span>
+            </div>
+
+            <div className="p-1 rounded bg-[#E10600]/10 border border-[#E10600]/30 text-[9px] font-mono text-center text-[#E10600] font-bold uppercase mb-2">
+              SIMULAÇÃO DIDÁTICA — CIRCUITO FICTÍCIO
+            </div>
+
+            <p className="text-[10px] font-mono text-amber-400 font-bold mb-0.5">{currentD.sector}</p>
+            <p className="text-[10px] text-white font-bold mb-2">{currentD.question}</p>
+
+            <div className="space-y-1 mb-2.5">
+              {currentD.options.map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setM8ChallengeAnswers({ ...m8ChallengeAnswers, [m8ChallengeStep]: opt.id })}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded-lg text-[9px] font-bold transition-all cursor-pointer flex items-center gap-1.5",
+                    m8ChallengeAnswers[m8ChallengeStep] === opt.id
+                      ? opt.id === currentD.best
+                        ? "bg-emerald-600 text-white shadow-md"
+                        : "bg-red-600/80 text-white shadow-md"
+                      : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  <span className="font-mono font-black">{opt.id})</span>
+                  <span>{opt.text}</span>
+                </button>
+              ))}
+            </div>
+
+            {hasAnswered && (
+              <div className="p-2 rounded-lg bg-black/70 border border-white/10 text-[9px] text-zinc-300 mb-2.5">
+                {m8ChallengeAnswers[m8ChallengeStep] === currentD.best ? (
+                  <span className="text-emerald-400 font-bold block mb-0.5">✓ {currentD.exp}</span>
+                ) : (
+                  <span className="text-amber-400 font-bold block mb-0.5">⚠️ Decisão subótima! O ideal é: {currentD.exp}</span>
+                )}
+              </div>
+            )}
+
+            <div className="flex items-center gap-1.5">
+              {m8ChallengeStep < 3 ? (
+                <button
+                  type="button"
+                  disabled={!hasAnswered}
+                  onClick={() => setM8ChallengeStep((prev) => ((prev + 1) as 1 | 2 | 3))}
+                  className="w-full py-1.5 px-3 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer text-center shadow-md"
+                >
+                  Próximo Setor
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  disabled={!hasAnswered}
+                  onClick={() => {
+                    stopAllAudio()
+                    setViewStage("quiz")
+                  }}
+                  className="w-full py-2 px-3 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer text-center shadow-[0_0_20px_rgba(225,6,0,0.6)]"
+                >
+                  Fazer o Quiz Final (10 Perguntas)
+                </button>
+              )}
+            </div>
+          </div>
+        )
+      }
+    }
+
     return null
   }
 
@@ -7642,7 +8721,7 @@ export function NovatosPage() {
           {/* Fundo Cinematográfico com Parallax Suave */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <img
-              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : activeModuleId === 4 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 5 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 6 ? "/novatos/modulo1/cena02_1950.jpg" : "/backgrounds/bg-mercedes.webp"}
+              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : activeModuleId === 4 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 5 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 6 ? "/novatos/modulo1/cena02_1950.jpg" : activeModuleId === 7 ? "/backgrounds/bg-mercedes.webp" : "/backgrounds/bg-aston.webp"}
               alt="Fundo Novatos na F1"
               className={cn(
                 "w-full h-full object-cover object-center brightness-40 contrast-125 scale-105",
@@ -7724,6 +8803,16 @@ export function NovatosPage() {
             >
               7. Bastidores da Equipe
             </button>
+            <button
+              type="button"
+              onClick={() => handleSelectModule(8)}
+              className={cn(
+                "px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide transition-all cursor-pointer",
+                activeModuleId === 8 ? "bg-[#E10600] text-white shadow-lg" : "text-zinc-400 hover:text-white"
+              )}
+            >
+              8. Dominando Circuitos
+            </button>
           </div>
 
           {/* Hero Content */}
@@ -7743,7 +8832,9 @@ export function NovatosPage() {
                   ? "MÓDULO 5 • A ARTE DE ULTRAPASSAR: REGRAS E DISPUTAS"
                   : activeModuleId === 6
                   ? "MÓDULO 6 • A HISTÓRIA DA FÓRMULA 1: 75 ANOS DE EVOLUÇÃO"
-                  : "MÓDULO 7 • POR TRÁS DA EQUIPE: ENGENHEIROS, ESTRATÉGIA E DADOS"}
+                  : activeModuleId === 7
+                  ? "MÓDULO 7 • POR TRÁS DA EQUIPE: ENGENHEIROS, ESTRATÉGIA E DADOS"
+                  : "MÓDULO 8 • DOMINANDO OS CIRCUITOS: TRAJETÓRIAS E VOLTA RÁPIDA"}
               </span>
             </div>
 
@@ -7764,7 +8855,9 @@ export function NovatosPage() {
                 ? "MÓDULO 5 — A ARTE DE ULTRAPASSAR"
                 : activeModuleId === 6
                 ? "MÓDULO 6 — A HISTÓRIA DA FÓRMULA 1"
-                : "MÓDULO 7 — POR TRÁS DA EQUIPE"}
+                : activeModuleId === 7
+                ? "MÓDULO 7 — POR TRÁS DA EQUIPE"
+                : "MÓDULO 8 — DOMINANDO OS CIRCUITOS"}
             </p>
 
             <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-xl mb-8">
@@ -7780,7 +8873,9 @@ export function NovatosPage() {
                 ? "“Na Fórmula 1, ultrapassar não é apenas acelerar. É escolher o momento certo, entender o adversário e disputar cada centímetro dentro das regras.”"
                 : activeModuleId === 6
                 ? "“75 anos de velocidade, coragem e evolução: das pioneiras máquinas de Silverstone à revolução técnica de 2026.”"
-                : "“O piloto está na pista. Centenas de decisões acontecem nos bastidores.”"}
+                : activeModuleId === 7
+                ? "“O piloto está na pista. Centenas de decisões acontecem nos bastidores.”"
+                : "“Uma curva pode decidir uma corrida. Aprenda a enxergar o que os pilotos enxergam.”"}
             </p>
 
             {/* Botão de Ação CTA */}
@@ -8161,7 +9256,7 @@ export function NovatosPage() {
               </div>
 
               <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white mb-1">
-                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : activeModuleId === 2 ? "MÓDULO 2 CONCLUÍDO" : activeModuleId === 3 ? "MÓDULO 3 CONCLUÍDO" : activeModuleId === 4 ? "MÓDULO 4 CONCLUÍDO" : activeModuleId === 5 ? "MÓDULO 5 CONCLUÍDO" : activeModuleId === 6 ? "MÓDULO 6 CONCLUÍDO" : "MÓDULO 7 CONCLUÍDO"}
+                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : activeModuleId === 2 ? "MÓDULO 2 CONCLUÍDO" : activeModuleId === 3 ? "MÓDULO 3 CONCLUÍDO" : activeModuleId === 4 ? "MÓDULO 4 CONCLUÍDO" : activeModuleId === 5 ? "MÓDULO 5 CONCLUÍDO" : activeModuleId === 6 ? "MÓDULO 6 CONCLUÍDO" : activeModuleId === 7 ? "MÓDULO 7 CONCLUÍDO" : "MÓDULO 8 CONCLUÍDO"}
               </h2>
 
               <p className="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-4">
@@ -8199,13 +9294,21 @@ export function NovatosPage() {
                     : (quizScore ?? 0) >= 5
                     ? "“Bom começo! Reveja os períodos técnicos, a trajetória de Ayrton Senna e as inovações de segurança.”"
                     : "“Toda grande jornada histórica começa com o primeiro passo. Reveja as cenas da linha do tempo e tente novamente.”"
-                  : (quizScore ?? 0) >= 9
-                  ? "“Excelente! Você tem visão de Team Principal: domina a sinergia entre engenharia, mecânica, dados e liderança estratégica.”"
-                  : (quizScore ?? 0) >= 7
-                  ? "“Muito bem! Você compreende o trabalho nos bastidores da equipe. Revise os detalhes técnicos para refinar suas decisões.”"
+                  : activeModuleId === 7
+                  ? (quizScore ?? 0) >= 9
+                    ? "“Excelente! Você tem visão de Team Principal: domina a sinergia entre engenharia, mecânica, dados e liderança estratégica.”"
+                    : (quizScore ?? 0) >= 7
+                    ? "“Muito bem! Você compreende o trabalho nos bastidores da equipe. Revise os detalhes técnicos para refinar suas decisões.”"
+                    : (quizScore ?? 0) >= 5
+                    ? "“Bom começo! Reveja as cenas sobre telemetria, limite de custos e estratégia de pit wall.”"
+                    : "“Liderar uma equipe exige aprendizado constante. Reveja as cenas do módulo e tente novamente.”"
+                  : (quizScore ?? 0) === 10
+                  ? "“Volta perfeita no quiz! Você concluiu o desafio com domínio dos conceitos fundamentais.”"
+                  : (quizScore ?? 0) >= 8
+                  ? "“Excelente! Você está aprendendo a enxergar a estratégia por trás das curvas.”"
                   : (quizScore ?? 0) >= 5
-                  ? "“Bom começo! Reveja as cenas sobre telemetria, limite de custos e estratégia de pit wall.”"
-                  : "“Liderar uma equipe exige aprendizado constante. Reveja as cenas do módulo e tente novamente.”"}
+                  ? "“Boa evolução! Você já reconhece vários elementos importantes de uma volta.”"
+                  : "“Você está começando a ler a pista. Revise as cenas e tente novamente.”"}
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-3">
@@ -8246,6 +9349,19 @@ export function NovatosPage() {
                   >
                     <Sparkles className="w-3.5 h-3.5 text-[#E10600]" />
                     <span>Rever o Desafio do Chefe</span>
+                  </button>
+                )}
+
+                {activeModuleId === 8 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      goToScene(7)
+                    }}
+                    className="px-4 py-2 rounded-xl bg-[#E10600]/20 hover:bg-[#E10600]/30 text-white text-xs font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 border border-[#E10600]/40"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-[#E10600]" />
+                    <span>Rever o Desafio da Volta</span>
                   </button>
                 )}
 
