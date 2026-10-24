@@ -6411,7 +6411,7 @@ if (activeModuleId === 1) {
             </div>
 
             {cueIndex === 1 && renderMarianaSyncBadge("01. O SIGNIFICADO DA FÓRMULA", "A Padronização do Regulamento", "A FIA estabeleceu a Fórmula 1 como o topo das regras técnicas para consagrar o melhor piloto do mundo.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O TRIUNFO DE FARINA", "Silverstone, 13 de Maio de 1950", "Giuseppe Farina e a lendária Alfa Romeo 158 \'Alfetta\' cravaram a primeira vitória oficial da história.")}
+            {cueIndex === 2 && renderMarianaSyncBadge("02. O TRIUNFO DE FARINA", "Silverstone, 13 de Maio de 1950", "Giuseppe Farina e a lendária Alfa Romeo 158 'Alfetta' cravaram a primeira vitória oficial da história.")}
             {cueIndex === 3 && renderMarianaSyncBadge("03. A ERA DA CORAGEM", "Pioneirismo Sem Concessões", "Carros com motor dianteiro, pneus estreitos e segurança mínima em circuitos desenhados em pistas de pouso.")}
 
             <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">

@@ -71,8 +71,9 @@ const getColumns = (season: number): TableColumn<PracticeRow>[] => [
 
 export function PracticeResults({ season, countryName }: { season: number; countryName: string | null }) {
   const columns = useMemo(() => getColumns(season), [season])
+  const isSupported = Boolean(countryName && season >= 2023)
   const [sessions, setSessions] = useState<Session[]>([])
-  const [loadingSessions, setLoadingSessions] = useState(true)
+  const [loadingSessions, setLoadingSessions] = useState(isSupported)
   const [selectedSessionKey, setSelectedSessionKey] = useState<number | null>(null)
   
   const [data, setData] = useState<PracticeRow[]>([])
@@ -81,7 +82,6 @@ export function PracticeResults({ season, countryName }: { season: number; count
 
   useEffect(() => {
     if (!countryName || season < 2023) {
-      setLoadingSessions(false)
       return
     }
 

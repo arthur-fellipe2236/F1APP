@@ -128,11 +128,13 @@ export function Layout() {
   const { resolvedTheme } = useTheme()
   const location = useLocation()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [prevPathname, setPrevPathname] = useState(location.pathname)
 
-  // Close mobile menu on page navigation
-  useEffect(() => {
+  // Close mobile menu on page navigation without cascading effect renders
+  if (prevPathname !== location.pathname) {
+    setPrevPathname(location.pathname)
     setIsMobileMenuOpen(false)
-  }, [location.pathname])
+  }
 
   useEffect(() => {
     const html = document.documentElement

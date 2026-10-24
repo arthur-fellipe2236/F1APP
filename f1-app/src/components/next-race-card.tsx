@@ -156,6 +156,7 @@ export function NextRaceCard({
     if (series === "f3") return api.nextF3Race()
     return api.nextRace()
   }, [series])
+  const [now] = useState(() => Date.now())
   const data: any = query.data
   if (query.error || !data) return null
 
@@ -191,7 +192,6 @@ export function NextRaceCard({
   }
 
   const sessions = data.sessions ?? []
-  const now = Date.now()
   const nextSession =
     sessions.find(
       (session: LiveSessionEntry) =>
