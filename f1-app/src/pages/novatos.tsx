@@ -35,6 +35,84 @@ export interface GlossaryTerm {
 
 export const GLOSSARY_TERMS: GlossaryTerm[] = [
   {
+    id: "team_principal",
+    term: "Team Principal",
+    category: "Geral",
+    definition: "Líder geral e diretor executivo da equipe, responsável pela gestão esportiva, financeira, contratações e representação oficial perante a FIA.",
+  },
+  {
+    id: "engenheiro_corrida",
+    term: "Engenheiro de corrida",
+    category: "Geral",
+    definition: "Ponto central de comunicação no rádio com o piloto durante as sessões, orientando acertos mecânicos, ritmo e procedimentos operacionais.",
+  },
+  {
+    id: "engenheiro_desempenho",
+    term: "Engenheiro de desempenho",
+    category: "Carro",
+    definition: "Especialista técnico que analisa dados de telemetria, comportamento dos pneus, freios e equilíbrio dinâmico para extrair velocidade máxima do carro.",
+  },
+  {
+    id: "estrategista",
+    term: "Estrategista",
+    category: "Pista",
+    definition: "Profissional que utiliza modelos matemáticos e simulações para calcular o melhor momento de paradas nos boxes, escolha de pneus e reação ao tráfego.",
+  },
+  {
+    id: "pit_wall",
+    term: "Pit wall",
+    category: "Pista",
+    definition: "Estação de comando instalada na mureta dos boxes voltada para a reta principal, onde chefes e engenheiros acompanham a corrida em múltiplos monitores.",
+  },
+  {
+    id: "pit_crew",
+    term: "Pit crew",
+    category: "Pista",
+    definition: "Equipe de mecânicos altamente treinados que executa a troca dos quatro pneus em cerca de dois segundos e eventuais ajustes de asa.",
+  },
+  {
+    id: "garagem",
+    term: "Garagem",
+    category: "Pista",
+    definition: "Área fechada nos boxes onde o carro é inspecionado, reparado, calibrado e abastecido com sistemas de engenharia de ponta.",
+  },
+  {
+    id: "gps",
+    term: "GPS",
+    category: "Geral",
+    definition: "Sistema oficial de posicionamento por satélite que rastreia as coordenadas de todos os carros no circuito para análise de setores e segurança.",
+  },
+  {
+    id: "dados_desempenho",
+    term: "Dados de desempenho",
+    category: "Carro",
+    definition: "Informações coletadas por sensores sobre velocidade em curvas, forças G, pressão de freios e temperaturas para guiar o trabalho de evolução do carro.",
+  },
+  {
+    id: "setup",
+    term: "Setup",
+    category: "Carro",
+    definition: "Conjunto de regulagens mecânicas e aerodinâmicas (inclinação de asas, rigidez de molas, altura do solo, cambagem) adaptado para cada circuito.",
+  },
+  {
+    id: "degradacao_pneus",
+    term: "Degradação dos pneus",
+    category: "Carro",
+    definition: "Perda gradual de aderência e aumento do tempo de volta causada pelo superaquecimento e desgaste da borracha ao longo de sequências de voltas.",
+  },
+  {
+    id: "cost_cap",
+    term: "Cost cap",
+    category: "Campeonato",
+    definition: "Teto orçamentário anual regulamentado pela FIA para limitar os custos elegíveis de desenvolvimento dos carros e promover equilíbrio esportivo.",
+  },
+  {
+    id: "simulacao",
+    term: "Simulação",
+    category: "Geral",
+    definition: "Modelagem virtual e computacional de cenários de corrida, escoamento de ar (CFD) ou acertos de suspensão para validar hipóteses antes da pista.",
+  },
+  {
     id: "formula",
     term: "Fórmula",
     category: "Geral",
@@ -433,6 +511,14 @@ export interface ModuleScene {
     | "mod6_senna_brazil_legacy"
     | "mod6_modern_f1_2026"
     | "mod6_history_summary"
+    | "mod7_team_roles"
+    | "mod7_radio_communication"
+    | "mod7_pitwall_command"
+    | "mod7_pitstop_anatomy"
+    | "mod7_telemetry_analysis"
+    | "mod7_two_drivers_one_team"
+    | "mod7_cost_cap_development"
+    | "mod7_team_principal_challenge"
 }
 
 export const CINEMATIC_MUSIC_URL = "/audio/novatos/modulo1/trilha_cinematografica.mp3"
@@ -590,6 +676,101 @@ export const MODULE_1_SCENES: ModuleScene[] = [
 // ============================================================================
 // CENAS DO MÓDULO 6 — A HISTÓRIA DA FÓRMULA 1 (75 ANOS DE EVOLUÇÃO)
 // ============================================================================
+
+// ============================================================================
+// CENAS DO MÓDULO 7 — POR TRÁS DA EQUIPE: ENGENHEIROS, ESTRATÉGIA E DADOS
+// ============================================================================
+export const MODULE_7_SCENES: ModuleScene[] = [
+  {
+    id: "m7_c1",
+    number: 1,
+    title: "Uma Equipe é Muito Mais do que um Carro",
+    subtitle: "Quem faz a Fórmula 1 acontecer nos bastidores",
+    imageUrl: "/backgrounds/bg-mercedes.webp",
+    audioUrl: "/audio/novatos/modulo7/cena01.mp3",
+    narrationTranscript:
+      "Olá! Seja bem-vindo ao Módulo 7 de Novatos na F1: Por Trás da Equipe! Quando você assiste a uma corrida, é fácil focar apenas no piloto que está no cockpit. Mas a verdade é que um carro de Fórmula 1 é operado por centenas de pessoas altamente especializadas. Na liderança geral está o Team Principal, que coordena as diretrizes esportivas e financeiras. Ao lado do piloto atuam os engenheiros de corrida e de desempenho, ajustando cada parâmetro mecânico. Na fábrica e nos boxes, projetistas aerodinâmicos, analistas de dados, mecânicos de montagem e equipes de logística trabalham em perfeita sintonia. O piloto é quem acelera na pista, mas o resultado final é uma vitória de todo o time.",
+    visualEffectType: "mod7_team_roles",
+  },
+  {
+    id: "m7_c2",
+    number: 2,
+    title: "O Engenheiro e o Rádio",
+    subtitle: "Uma voz no rádio. Uma equipe inteira por trás",
+    imageUrl: "/backgrounds/bg-ferrari.webp",
+    audioUrl: "/audio/novatos/modulo7/cena02.mp3",
+    narrationTranscript:
+      "A relação entre o piloto e seu engenheiro de corrida é uma das parcerias mais intensas do esporte. Durante a prova, o engenheiro é o único elo de voz do piloto com o mundo exterior. Ele precisa filtrar milhares de informações para transmitir apenas o que é essencial: tráfego, ritmo dos adversários, modo de motor e condições de pista. Quando o piloto relata pelo rádio que o carro está saindo de frente em uma curva, os engenheiros comparam essa sensação humana com os dados dos sensores para sugerir ajustes na asa ou no diferencial. É uma conversa rápida, codificada e onde cada segundo de hesitação custa posições.",
+    visualEffectType: "mod7_radio_communication",
+  },
+  {
+    id: "m7_c3",
+    number: 3,
+    title: "O Pit Wall: Centro de Decisões",
+    subtitle: "A corrida também é disputada na estratégia",
+    imageUrl: "/backgrounds/bg-redbull.webp",
+    audioUrl: "/audio/novatos/modulo7/cena03.mp3",
+    narrationTranscript:
+      "Ao lado da pista, de frente para a reta principal, fica o famoso Pit Wall. Ali sentam os líderes da equipe: o chefe de equipe, o diretor esportivo e os chefes de estratégia e engenharia. Em suas telas brilhantes, eles acompanham um fluxo contínuo de dados: intervalos em tempo real, telemetria de degradação dos pneus, radares meteorológicos e simulações probabilísticas. É no pit wall que se decide se a equipe deve arriscar um undercut, estender uma sequência de voltas ou reagir a um Safety Car. Cada comando enviado pelo rádio é fruto de cálculos matemáticos para maximizar as chances de pontos.",
+    visualEffectType: "mod7_pitwall_command",
+  },
+  {
+    id: "m7_c4",
+    number: 4,
+    title: "Mecânicos e Pit Stops",
+    subtitle: "Segundos que exigem meses de preparação",
+    imageUrl: "/backgrounds/bg-mclaren.webp",
+    audioUrl: "/audio/novatos/modulo7/cena04.mp3",
+    narrationTranscript:
+      "No pit lane, uma parada nos boxes dura pouco mais de dois segundos, mas exige meses de treinamento atlético e precisão milimétrica. Cerca de vinte mecânicos atuam em sincronia perfeita: erguem o carro com macacos dianteiro e traseiro, desaparafusam as porcas com pistolas pneumáticas de alta velocidade, retiram as rodas antigas, encaixam os novos compostos e liberam o piloto com um sinal luminoso. Além da troca rápida, os mecânicos são responsáveis por montar, inspecionar e revisar cada componente do carro entre as sessões. Um trabalho exaustivo onde a segurança é sempre a regra número um.",
+    visualEffectType: "mod7_pitstop_anatomy",
+  },
+  {
+    id: "m7_c5",
+    number: 5,
+    title: "Telemetria e Dados",
+    subtitle: "O carro fala através de mais de 300 sensores",
+    imageUrl: "/backgrounds/bg-audi.webp",
+    audioUrl: "/audio/novatos/modulo7/cena05.mp3",
+    narrationTranscript:
+      "Um carro de Fórmula 1 moderno possui mais de trezentos sensores distribuídos por todos os sistemas. Eles medem pressão hidráulica, temperatura dos freios, rotação do motor, velocidade das rodas e aceleração lateral. Esses dados são transmitidos instantaneamente para a garagem e para a fábrica através da telemetria. Os engenheiros conseguem sobrepor duas voltas na tela do computador para ver exatamente onde o piloto freou mais cedo ou acelerou melhor na saída de uma curva. A telemetria não pilota o carro remotamente, mas serve como um raio-x digital para diagnosticar problemas e encontrar frações de segundo.",
+    visualEffectType: "mod7_telemetry_analysis",
+  },
+  {
+    id: "m7_c6",
+    number: 6,
+    title: "Dois Pilotos, Uma Equipe",
+    subtitle: "Cooperação e competição no limite da pista",
+    imageUrl: "/backgrounds/bg-cadillac.webp",
+    audioUrl: "/audio/novatos/modulo7/cena06.mp3",
+    narrationTranscript:
+      "Na Fórmula 1, seu companheiro de equipe é a sua primeira referência e também o seu maior rival, porque ele é o único na pista que pilota exatamente o mesmo equipamento que você. Mas a equipe pontua de forma combinada no Campeonato de Construtores, que é de onde vem a maior parte da premiação financeira. Por isso, os pilotos compartilham seus dados de telemetria e trabalham juntos no acerto do carro. Quando os dois carros disputam a mesma curva na pista, a equipe exige respeito mútuo, pois uma colisão entre companheiros é o pior cenário possível para qualquer escuderia.",
+    visualEffectType: "mod7_two_drivers_one_team",
+  },
+  {
+    id: "m7_c7",
+    number: 7,
+    title: "Desenvolvimento e Limite de Custos",
+    subtitle: "O desafio do Cost Cap na busca por desempenho",
+    imageUrl: "/backgrounds/bg-williams.webp",
+    audioUrl: "/audio/novatos/modulo7/cena07.mp3",
+    narrationTranscript:
+      "Construir um carro vencedor exige um imenso investimento tecnológico. No passado, equipes com orçamentos gigantescos gastavam centenas de milhões de dólares a mais que as equipes menores. Para equilibrar o grid e garantir a sobrevivência financeira do esporte, a FIA implementou o regulamento de Cost Cap, que estabelece um teto de gastos rigoroso para o desenvolvimento dos carros. Com esse limite, as equipes não podem simplesmente gastar sem parar; elas precisam escolher com inteligência onde aplicar cada recurso, equilibrando atualizações aerodinâmicas, confiabilidade mecânica e testes no túnel de vento.",
+    visualEffectType: "mod7_cost_cap_development",
+  },
+  {
+    id: "m7_c8",
+    number: 8,
+    title: "Desafio: Você é o Chefe da Equipe",
+    subtitle: "A corrida está em suas mãos na reta final",
+    imageUrl: "/backgrounds/bg-default.webp",
+    audioUrl: "/audio/novatos/modulo7/cena08.mp3",
+    narrationTranscript:
+      "Agora que você conheceu todos os bastidores de uma equipe de Fórmula 1, chegou a sua vez de liderar! Na nossa simulação interativa, você vai assumir o papel de chefe de equipe na reta final de uma corrida imprevisível. Analise os relatos do piloto, avalie a telemetria, monitore a aproximação dos adversários e tome as decisões certas sobre pneus e estratégia. Lembre-se: na Fórmula 1, velocidade na pista é fundamental, mas transformar dados em decisões corretas é o que separa os vencedores dos derrotados. Boa sorte no comando da equipe!",
+    visualEffectType: "mod7_team_principal_challenge",
+  },
+]
+
 export const MODULE_6_SCENES: ModuleScene[] = [
   {
     id: "m6_c1",
@@ -1175,6 +1356,143 @@ export const MODULE_1_QUIZ_QUESTIONS: QuizQuestion[] = [
 // ============================================================================
 // QUESTIONÁRIO FINAL — MÓDULO 6 (10 PERGUNTAS SOBRE A HISTÓRIA DA F1)
 // ============================================================================
+
+// ============================================================================
+// QUESTIONÁRIO FINAL — MÓDULO 7 (10 PERGUNTAS SOBRE OS BASTIDORES DA EQUIPE)
+// ============================================================================
+export const MODULE_7_QUIZ_QUESTIONS: QuizQuestion[] = [
+  {
+    id: 1,
+    question: "Pergunta 1 — Qual é a principal função do engenheiro de corrida?",
+    options: [
+      { letter: "A", text: "Conduzir o carro durante a corrida." },
+      { letter: "B", text: "Atuar como ponto central de comunicação técnica com o piloto e ajudar a analisar o desempenho." },
+      { letter: "C", text: "Decidir sozinho todos os regulamentos da categoria." },
+      { letter: "D", text: "Trabalhar exclusivamente na publicidade da equipe." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Correto! O engenheiro de corrida conecta as informações do piloto, os dados e as decisões técnicas relevantes.",
+  },
+  {
+    id: 2,
+    question: "Pergunta 2 — O que é o pit wall?",
+    options: [
+      { letter: "A", text: "A parede que separa o motor do cockpit." },
+      { letter: "B", text: "Uma área junto à pista onde determinados integrantes acompanham a sessão e coordenam decisões." },
+      { letter: "C", text: "O nome oficial do volante." },
+      { letter: "D", text: "Um tipo de pneu." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Exato! O pit wall é a estação de comando na mureta dos boxes onde os principais líderes e estrategistas monitoram a corrida.",
+  },
+  {
+    id: 3,
+    question: "Pergunta 3 — Por que os mecânicos são fundamentais para uma equipe?",
+    options: [
+      { letter: "A", text: "Porque substituem os pilotos durante a corrida." },
+      { letter: "B", text: "Porque decidem todas as penalidades." },
+      { letter: "C", text: "Porque preparam, inspecionam, mantêm e reparam os carros, além de executar operações como pit stops." },
+      { letter: "D", text: "Porque controlam remotamente o carro na pista." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Perfeito! Os mecânicos preparam, ajustam e garantem a integridade mecânica do carro, além de executar pit stops ultravelozes.",
+  },
+  {
+    id: 4,
+    question: "Pergunta 4 — O que é telemetria?",
+    options: [
+      { letter: "A", text: "Um sistema que permite controlar livremente a direção do carro à distância." },
+      { letter: "B", text: "Um método de transmissão e análise de dados técnicos do veículo." },
+      { letter: "C", text: "Uma estratégia obrigatória de troca de pneus." },
+      { letter: "D", text: "Um tipo de classificação do campeonato." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Muito bem! A telemetria coleta e transmite em tempo real centenas de parâmetros de sensores do carro para diagnóstico da engenharia.",
+  },
+  {
+    id: 5,
+    question: "Pergunta 5 — Por que a equipe analisa os dados junto com o relato do piloto?",
+    options: [
+      { letter: "A", text: "Porque os dados sempre substituem a percepção do piloto." },
+      { letter: "B", text: "Porque o relato do piloto nunca é útil." },
+      { letter: "C", text: "Porque as duas fontes de informação podem se complementar para entender o comportamento do carro." },
+      { letter: "D", text: "Porque a equipe precisa ignorar as condições da pista." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Exato! A percepção do piloto e os dados dos sensores se complementam para identificar as causas exatas do comportamento do carro.",
+  },
+  {
+    id: 6,
+    question: "Pergunta 6 — Qual é uma das responsabilidades de um estrategista?",
+    options: [
+      { letter: "A", text: "Avaliar cenários de corrida, pneus, tráfego e possíveis paradas." },
+      { letter: "B", text: "Definir sozinho todas as regras da FIA." },
+      { letter: "C", text: "Fabricar todos os componentes do carro pessoalmente." },
+      { letter: "D", text: "Substituir o piloto em todas as decisões de pilotagem." },
+    ],
+    correctLetter: "A",
+    feedback:
+      "Correto! O estrategista avalia janelas de pit stop, degradação de compostos, tráfego e probabilidades para maximizar pontos.",
+  },
+  {
+    id: 7,
+    question: "Pergunta 7 — Por que companheiros de equipe podem cooperar e competir ao mesmo tempo?",
+    options: [
+      { letter: "A", text: "Porque nunca disputam posições entre si." },
+      { letter: "B", text: "Porque buscam resultados individuais enquanto também contribuem para o campeonato de construtores." },
+      { letter: "C", text: "Porque apenas um dos pilotos pode marcar pontos em uma temporada." },
+      { letter: "D", text: "Porque todos os regulamentos exigem que um piloto deixe o outro vencer." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Excelente! Ambos competem pelo campeonato individual de pilotos, mas somam forças para o cobiçado Campeonato de Construtores.",
+  },
+  {
+    id: 8,
+    question: "Pergunta 8 — O que é o limite de custos da F1?",
+    options: [
+      { letter: "A", text: "Uma regra que determina quanto cada piloto pode ganhar em pontos." },
+      { letter: "B", text: "Um limite que inclui absolutamente todas as despesas sem exceções." },
+      { letter: "C", text: "Um conjunto de regras financeiras que limita determinados custos elegíveis das equipes." },
+      { letter: "D", text: "Uma regra que obriga todas as equipes a gastar exatamente o mesmo valor." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Correto! O Cost Cap define um limite orçamentário para despesas elegíveis de desenvolvimento, favorecendo o equilíbrio sustentável.",
+  },
+  {
+    id: 9,
+    question: "Pergunta 9 — Se um piloto relata perda de aderência, qual é uma abordagem técnica adequada?",
+    options: [
+      { letter: "A", text: "Ignorar a informação." },
+      { letter: "B", text: "Mandar o piloto acelerar sem avaliar o problema." },
+      { letter: "C", text: "Analisar o relato, os dados disponíveis e as condições de pista e pneus." },
+      { letter: "D", text: "Trocar imediatamente todos os componentes do carro." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Parabéns! Uma equipe de ponta combina a sensação descrita pelo piloto com a telemetria térmica e de pressão dos pneus.",
+  },
+  {
+    id: 10,
+    question: "Pergunta 10 — O que determina o sucesso de uma equipe de F1?",
+    options: [
+      { letter: "A", text: "Apenas o orçamento." },
+      { letter: "B", text: "Apenas a habilidade do piloto." },
+      { letter: "C", text: "Apenas a velocidade de uma parada nos boxes." },
+      { letter: "D", text: "A combinação de engenharia, pilotagem, estratégia, confiabilidade, organização e execução." },
+    ],
+    correctLetter: "D",
+    feedback:
+      "Perfeito! Na Fórmula 1, vencer depende de transformar informação, preparação coletiva e decisões integradas em desempenho.",
+  },
+]
+
 export const MODULE_6_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 1,
@@ -1849,6 +2167,7 @@ const STORAGE_MOD3_KEY = "f1_novatos_mod3_state_v1"
 const STORAGE_MOD4_KEY = "f1_novatos_mod4_state_v1"
 const STORAGE_MOD5_KEY = "f1_novatos_mod5_state_v1"
 const STORAGE_MOD6_KEY = "f1_novatos_mod6_state_v1"
+const STORAGE_MOD7_KEY = "f1_novatos_mod7_state_v1"
 const STORAGE_ACTIVE_MODULE_KEY = "f1_novatos_active_module_v1"
 
 interface PersistedModuleState {
@@ -1882,16 +2201,18 @@ export function NovatosPage() {
   // ==========================================================================
   // ESTADO DO MÓDULO ATIVO (MÓDULO 1 OU MÓDULO 2)
   // ==========================================================================
-  const [activeModuleId, setActiveModuleId] = useState<1 | 2 | 3 | 4 | 5 | 6>(() => {
+  const [activeModuleId, setActiveModuleId] = useState<1 | 2 | 3 | 4 | 5 | 6 | 7>(() => {
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search)
       const modParam = urlParams.get("modulo") || urlParams.get("mod")
+      if (modParam === "7") return 7
       if (modParam === "6") return 6
       if (modParam === "5") return 5
       if (modParam === "4") return 4
       if (modParam === "3") return 3
       if (modParam === "2") return 2
       const saved = localStorage.getItem(STORAGE_ACTIVE_MODULE_KEY)
+      if (saved === "7") return 7
       if (saved === "6") return 6
       if (saved === "5") return 5
       if (saved === "4") return 4
@@ -1901,9 +2222,9 @@ export function NovatosPage() {
     return 1
   })
 
-  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : activeModuleId === 2 ? MODULE_2_SCENES : activeModuleId === 3 ? MODULE_3_SCENES : activeModuleId === 4 ? MODULE_4_SCENES : activeModuleId === 5 ? MODULE_5_SCENES : MODULE_6_SCENES
-  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : activeModuleId === 2 ? MODULE_2_QUIZ_QUESTIONS : activeModuleId === 3 ? MODULE_3_QUIZ_QUESTIONS : activeModuleId === 4 ? MODULE_4_QUIZ_QUESTIONS : activeModuleId === 5 ? MODULE_5_QUIZ_QUESTIONS : MODULE_6_QUIZ_QUESTIONS
-  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : activeModuleId === 2 ? STORAGE_MOD2_KEY : activeModuleId === 3 ? STORAGE_MOD3_KEY : activeModuleId === 4 ? STORAGE_MOD4_KEY : activeModuleId === 5 ? STORAGE_MOD5_KEY : STORAGE_MOD6_KEY
+  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : activeModuleId === 2 ? MODULE_2_SCENES : activeModuleId === 3 ? MODULE_3_SCENES : activeModuleId === 4 ? MODULE_4_SCENES : activeModuleId === 5 ? MODULE_5_SCENES : activeModuleId === 6 ? MODULE_6_SCENES : MODULE_7_SCENES
+  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : activeModuleId === 2 ? MODULE_2_QUIZ_QUESTIONS : activeModuleId === 3 ? MODULE_3_QUIZ_QUESTIONS : activeModuleId === 4 ? MODULE_4_QUIZ_QUESTIONS : activeModuleId === 5 ? MODULE_5_QUIZ_QUESTIONS : activeModuleId === 6 ? MODULE_6_QUIZ_QUESTIONS : MODULE_7_QUIZ_QUESTIONS
+  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : activeModuleId === 2 ? STORAGE_MOD2_KEY : activeModuleId === 3 ? STORAGE_MOD3_KEY : activeModuleId === 4 ? STORAGE_MOD4_KEY : activeModuleId === 5 ? STORAGE_MOD5_KEY : activeModuleId === 6 ? STORAGE_MOD6_KEY : STORAGE_MOD7_KEY
 
   // Stage: "opening" (Hero Landing), "lesson" (Scenes 1-8), "quiz" (Final Test)
   const [viewStage, setViewStage] = useState<"opening" | "lesson" | "quiz">("opening")
@@ -1997,6 +2318,20 @@ export function NovatosPage() {
   const [m6SelectedEraCompare, setM6SelectedEraCompare] = useState<"1950" | "2014" | "2026">("2026")
   const [m6FavoriteEra, setM6FavoriteEra] = useState<string | null>(null)
   const [m6BrazilianDriverDetail, setM6BrazilianDriverDetail] = useState<"fittipaldi" | "piquet" | "barrichello" | "massa" | null>(null)
+
+  // Interactive Scene States — Module 7
+  const [m7SelectedRole, setM7SelectedRole] = useState<"tp" | "race_eng" | "perf_eng" | "strategist" | "mechanic" | "aero" | "data">("tp")
+  const [m7SelectedRadioSim, setM7SelectedRadioSim] = useState<1 | 2 | 3>(1)
+  const [m7SelectedPitWallMetric, setM7SelectedPitWallMetric] = useState<"gap" | "tire" | "traffic" | "weather">("gap")
+  const [m7PitStopStep, setM7PitStopStep] = useState<1 | 2 | 3 | 4 | 5>(1)
+  const [m7TelemetryPoint, setM7TelemetryPoint] = useState<1 | 2 | 3>(1)
+  const [m7TeammateDecision, setM7TeammateDecision] = useState<"swap" | "free" | "hold" | null>(null)
+  const [m7BudgetAero, setM7BudgetAero] = useState<number>(40)
+  const [m7BudgetReliability, setM7BudgetReliability] = useState<number>(35)
+  const [m7BudgetSimulation, setM7BudgetSimulation] = useState<number>(25)
+  const [m7ChallengeStep, setM7ChallengeStep] = useState<1 | 2 | 3>(1)
+  const [m7ChallengeAnswers, setM7ChallengeAnswers] = useState<Record<number, string>>({})
+
 
 
   // Quiz State
@@ -2102,9 +2437,9 @@ export function NovatosPage() {
     setQuizScore(state.quizScore)
   }, [currentStorageKey])
 
-  // Troca de módulo (Módulo 1 a 6)
+  // Troca de módulo (Módulo 1 a 7)
   const handleSelectModule = useCallback(
-    (modId: 1 | 2 | 3 | 4 | 5 | 6) => {
+    (modId: 1 | 2 | 3 | 4 | 5 | 6 | 7) => {
       if (modId === activeModuleId) return
       // Para áudios e timers
       if (countdownTimerRef.current) {
@@ -2132,8 +2467,8 @@ export function NovatosPage() {
       }
 
       // Carrega estado do novo módulo
-      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : modId === 2 ? STORAGE_MOD2_KEY : modId === 3 ? STORAGE_MOD3_KEY : modId === 4 ? STORAGE_MOD4_KEY : modId === 5 ? STORAGE_MOD5_KEY : STORAGE_MOD6_KEY
-      const maxLen = modId === 1 ? MODULE_1_SCENES.length : modId === 2 ? MODULE_2_SCENES.length : modId === 3 ? MODULE_3_SCENES.length : modId === 4 ? MODULE_4_SCENES.length : modId === 5 ? MODULE_5_SCENES.length : MODULE_6_SCENES.length
+      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : modId === 2 ? STORAGE_MOD2_KEY : modId === 3 ? STORAGE_MOD3_KEY : modId === 4 ? STORAGE_MOD4_KEY : modId === 5 ? STORAGE_MOD5_KEY : modId === 6 ? STORAGE_MOD6_KEY : STORAGE_MOD7_KEY
+      const maxLen = modId === 1 ? MODULE_1_SCENES.length : modId === 2 ? MODULE_2_SCENES.length : modId === 3 ? MODULE_3_SCENES.length : modId === 4 ? MODULE_4_SCENES.length : modId === 5 ? MODULE_5_SCENES.length : modId === 6 ? MODULE_6_SCENES.length : MODULE_7_SCENES.length
       const s = loadPersistedState(targetKey)
       setVisitedScenes(s.visitedScenes)
       setSceneIndex(s.lastSceneIndex < maxLen ? s.lastSceneIndex : 0)
@@ -2273,6 +2608,12 @@ export function NovatosPage() {
       setM6Timeline1950Open(false)
       setM6ReflectionAnswered(false)
       setM6BrazilianDriverDetail(null)
+      setM7SelectedRadioSim(1)
+      setM7TeammateDecision(null)
+      setM7ChallengeStep(1)
+      setM7ChallengeAnswers({})
+      setM7PitStopStep(1)
+      setM7TelemetryPoint(1)
     },
     [currentScenes.length, stopAllAudio]
   )
@@ -3589,6 +3930,12 @@ export function NovatosPage() {
       setM6Timeline1950Open(false)
       setM6ReflectionAnswered(false)
       setM6BrazilianDriverDetail(null)
+      setM7SelectedRadioSim(1)
+      setM7TeammateDecision(null)
+      setM7ChallengeStep(1)
+      setM7ChallengeAnswers({})
+      setM7PitStopStep(1)
+      setM7TelemetryPoint(1)
                   }}
                   className="w-full py-1 text-[10px] text-zinc-400 hover:text-white underline cursor-pointer text-center block"
                 >
@@ -5245,6 +5592,12 @@ export function NovatosPage() {
       setM6Timeline1950Open(false)
       setM6ReflectionAnswered(false)
       setM6BrazilianDriverDetail(null)
+      setM7SelectedRadioSim(1)
+      setM7TeammateDecision(null)
+      setM7ChallengeStep(1)
+      setM7ChallengeAnswers({})
+      setM7PitStopStep(1)
+      setM7TelemetryPoint(1)
                   }}
                   className="w-full py-1 text-[10px] text-zinc-400 hover:text-white underline cursor-pointer text-center block"
                 >
@@ -6553,6 +6906,696 @@ export function NovatosPage() {
       }
     }
 
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 7: POR TRÁS DA EQUIPE: ENGENHEIROS, ESTRATÉGIA E DADOS
+    // ------------------------------------------------------------------------
+    if (activeModuleId === 7) {
+      // CENA 1: UMA EQUIPE É MUITO MAIS DO QUE UM CARRO
+      if (currentScene.visualEffectType === "mod7_team_roles") {
+        const roles = [
+          {
+            id: "tp" as const,
+            title: "Team Principal",
+            loc: "Paddock / Pit Wall",
+            desc: "Líder supremo e porta-voz da equipe. Define o orçamento, contrata pilotos, gerencia conflitos e responde diretamente aos acionistas e à FIA.",
+          },
+          {
+            id: "race_eng" as const,
+            title: "Engenheiro de Corrida",
+            loc: "Pit Wall / Rádio",
+            desc: "A voz exclusiva do piloto no rádio. Traduz telemetria em orientações precisas sobre ritmo, botões do volante e mudanças de estratégia.",
+          },
+          {
+            id: "perf_eng" as const,
+            title: "Engenheiro de Desempenho",
+            loc: "Garagem / Boxes",
+            desc: "Mergulha nos dados de suspensão, cambagem, pressão de freios e pneus para encontrar décimos de segundo no acerto do monoposto.",
+          },
+          {
+            id: "strategist" as const,
+            title: "Estrategistas de Prova",
+            loc: "Pit Wall / Mission Control",
+            desc: "Calculam probabilidades matemáticas em supercomputadores: janelas de pit stop, ritmo relativo, tempo perdido em tráfego e janelas de Safety Car.",
+          },
+          {
+            id: "mechanic" as const,
+            title: "Mecânicos e Pit Crew",
+            loc: "Boxes / Pit Lane",
+            desc: "Atletas da precisão mecânica: executam a troca de pneus em 2 segundos e montam o carro peça por peça entre as sessões.",
+          },
+          {
+            id: "aero" as const,
+            title: "Departamento Aerodinâmico",
+            loc: "Fábrica / Túnel de Vento",
+            desc: "Centenas de engenheiros que projetam asas, difusores e assoalhos em CFD (dinâmica dos fluidos) para maximizar o downforce.",
+          },
+          {
+            id: "data" as const,
+            title: "Analistas e Mission Control",
+            loc: "Sala de Operações Remota",
+            desc: "Operam na sede da equipe a milhares de quilômetros da pista, processando gigabytes de telemetria ao vivo durante o GP.",
+          },
+        ]
+
+        const activeRole = roles.find((r) => r.id === m7SelectedRole) || roles[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Organograma da Escuderia</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">BASTIDORES</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Selecione uma função para ver o que ela faz:
+            </p>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              {roles.map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => setM7SelectedRole(r.id)}
+                  className={cn(
+                    "py-1 px-1 rounded text-[9px] font-bold truncate transition-all cursor-pointer text-center",
+                    m7SelectedRole === r.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {r.title}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px]">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-black text-white">{activeRole.title}</span>
+                <span className="text-[9px] font-mono text-cyan-400 font-bold">{activeRole.loc}</span>
+              </div>
+              <p className="text-zinc-300 leading-relaxed mb-2">{activeRole.desc}</p>
+              <div className="p-1.5 rounded bg-black/60 border border-white/5 text-[9px] text-zinc-400">
+                ⭐ <em>Mais de 80% da equipe trabalha longe dos holofotes, nas fábricas e centros de dados.</em>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 2: O ENGENHEIRO DE CORRIDA E A COMUNICAÇÃO
+      if (currentScene.visualEffectType === "mod7_radio_communication") {
+        const radioMessages = [
+          {
+            id: 1 as const,
+            raw: "“Box, box, box! Confirme delta de entrada positivo.”",
+            context: "Chamada Imediata para Parada nos Boxes",
+            meaning: "A equipe convoca o piloto para o pit stop. Ele deve confirmar e respeitar a velocidade limite no pit lane sem tomar punição.",
+            why: "A comunicação rápida impede que o piloto passe da entrada dos boxes sem trocar os pneus desgastados.",
+          },
+          {
+            id: 2 as const,
+            raw: "“Estamos vendo subesterço na curva 4. Sugerimos flap dianteiro +2 cliques na parada.”",
+            context: "Correção de Equilíbrio Aerodinâmico",
+            meaning: "O piloto sentiu o carro espalhar de frente. A telemetria confirmou a perda de rotação dianteira e a equipe já programou o ajuste dos mecânicos na asa.",
+            why: "Ajustar o ângulo da asa dianteira aumenta a aderência da frente e devolve o equilíbrio nas curvas rápidas.",
+          },
+          {
+            id: 3 as const,
+            raw: "“Modo de motor Strat 2 disponível por 2 voltas para tentar o undercut.”",
+            context: "Liberação de Potência Máxima",
+            meaning: "Autorização para utilizar o mapa de motor mais agressivo e consumir a reserva de energia elétrica da bateria para fazer a volta de classificação na corrida.",
+            why: "Garante a velocidade necessária para superar o rival direto no momento em que ele fizer sua parada.",
+          },
+        ]
+
+        const activeMsg = radioMessages.find((m) => m.id === m7SelectedRadioSim) || radioMessages[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Comunicação no Cockpit</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">RÁDIO AO VIVO</span>
+            </div>
+
+            <div className="p-1 rounded bg-[#E10600]/10 border border-[#E10600]/30 text-[9px] font-mono text-center text-[#E10600] font-bold uppercase mb-2">
+              SIMULAÇÃO DIDÁTICA — MENSAGENS CODIFICADAS
+            </div>
+
+            <div className="space-y-1 mb-2.5">
+              {radioMessages.map((m) => (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => setM7SelectedRadioSim(m.id)}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer flex items-center justify-between",
+                    m7SelectedRadioSim === m.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  <span className="truncate">{m.context}</span>
+                  <span className="text-[9px] opacity-70">➔</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px]">
+              <p className="text-amber-400 font-mono italic mb-1.5 text-xs">{activeMsg.raw}</p>
+              <p className="text-zinc-200 mb-1 leading-snug">
+                <strong>O que significa:</strong> {activeMsg.meaning}
+              </p>
+              <div className="p-1.5 rounded bg-black/60 border border-white/5 text-[9px] text-zinc-400 mt-1.5">
+                💡 <strong>Por que importa:</strong> {activeMsg.why}
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 3: O PIT WALL: O CENTRO DE DECISÕES
+      if (currentScene.visualEffectType === "mod7_pitwall_command") {
+        const metrics = [
+          {
+            id: "gap" as const,
+            label: "Intervalos (Gaps)",
+            val: "+2.4s Frente / +1.2s Trás",
+            desc: "Permite calcular se a janela para o undercut está aberta ou se o piloto corre risco de ser atacado com DRS.",
+          },
+          {
+            id: "tire" as const,
+            label: "Vida dos Pneus",
+            val: "Médio C3 (24 voltas)",
+            desc: "Monitora a perda de tempo por volta em relação ao pneu novo. Quando a perda passa de 0.8s, a parada se torna urgente.",
+          },
+          {
+            id: "traffic" as const,
+            label: "Janela de Tráfego",
+            val: "Pista Livre após Parada (P7)",
+            desc: "Avalia onde o carro retornará caso pare imediatamente. Parar e voltar preso atrás de carros mais lentos arruína o ritmo.",
+          },
+          {
+            id: "weather" as const,
+            label: "Radar Meteorológico",
+            val: "Chuva Leve em 8 min",
+            desc: "Determina se vale a pena estender o pneu slick para trocar diretamente pelo intermediário quando a chuva cair.",
+          },
+        ]
+
+        const activeMetric = metrics.find((m) => m.id === m7SelectedPitWallMetric) || metrics[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Painel do Pit Wall</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">MONITOR AO VIVO</span>
+            </div>
+
+            <div className="p-1.5 rounded bg-white/5 border border-white/10 text-[9px] font-mono text-zinc-400 text-center uppercase mb-2">
+              EXEMPLO ILUSTRATIVO — CORRIDA FICTÍCIA
+            </div>
+
+            {/* Status Bar Fictícia do Carro */}
+            <div className="grid grid-cols-3 gap-1 p-2 rounded-lg bg-zinc-900 border border-white/10 text-center mb-2.5 text-[9px] font-mono">
+              <div>
+                <span className="text-zinc-500 block">POSIÇÃO</span>
+                <span className="text-white font-black text-sm">P3</span>
+              </div>
+              <div>
+                <span className="text-zinc-500 block">PNEU</span>
+                <span className="text-amber-400 font-black text-sm">MÉDIO</span>
+              </div>
+              <div>
+                <span className="text-zinc-500 block">VOLTAS</span>
+                <span className="text-cyan-400 font-black text-sm">18 REST.</span>
+              </div>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Clique em um indicador para ver a decisão estratégica:
+            </p>
+
+            <div className="grid grid-cols-2 gap-1 mb-2.5">
+              {metrics.map((m) => (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => setM7SelectedPitWallMetric(m.id)}
+                  className={cn(
+                    "py-1 px-1.5 rounded text-[9px] font-bold truncate transition-all cursor-pointer text-center",
+                    m7SelectedPitWallMetric === m.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {m.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px]">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-black text-white">{activeMetric.label}</span>
+                <span className="text-[9px] font-mono text-emerald-400 font-bold">{activeMetric.val}</span>
+              </div>
+              <p className="text-zinc-300 leading-relaxed">{activeMetric.desc}</p>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 4: MECÂNICOS E PIT STOPS
+      if (currentScene.visualEffectType === "mod7_pitstop_anatomy") {
+        const steps = [
+          {
+            id: 1 as const,
+            title: "1. Entrada no Pit Lane",
+            time: "0.0s",
+            desc: "O piloto aciona o limitador de velocidade de 80 km/h e alinha o carro na faixa de rolagem dos boxes.",
+          },
+          {
+            id: 2 as const,
+            title: "2. Parada na Marca Exata",
+            time: "0.0s - 0.2s",
+            desc: "O carro para exatamente sobre as marcas pintadas no chão. Os macacos dianteiro e traseiro levantam o carro instantaneamente.",
+          },
+          {
+            id: 3 as const,
+            title: "3. Troca dos 4 Pneus",
+            time: "0.2s - 1.8s",
+            desc: "Três mecânicos por roda: um opera a pistola pneumática, um retira a roda gasta e o terceiro encaixa o composto novo.",
+          },
+          {
+            id: 4 as const,
+            title: "4. Validação de Torque",
+            time: "1.8s - 2.1s",
+            desc: "Sensores nas pistolas enviam sinal eletrônico confirmando que as quatro porcas centrais estão travadas com torque seguro.",
+          },
+          {
+            id: 5 as const,
+            title: "5. Liberação com Luz Verde",
+            time: "2.2s",
+            desc: "O sistema baixa os macacos e acende o farol verde sobre o cockpit. O piloto arranca com liberação segura para a pista.",
+          },
+        ]
+
+        const activeStep = steps.find((s) => s.id === m7PitStopStep) || steps[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Anatomia do Pit Stop</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">2.2 SEGUNDOS</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Explore o passo a passo da coreografia nos boxes:
+            </p>
+
+            <div className="grid grid-cols-5 gap-1 mb-2.5">
+              {steps.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setM7PitStopStep(s.id)}
+                  className={cn(
+                    "py-1.5 px-1 rounded text-[9px] font-mono font-bold transition-all cursor-pointer text-center",
+                    m7PitStopStep === s.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  Passo {s.id}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px]">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-black text-white">{activeStep.title}</span>
+                <span className="text-[9px] font-mono text-[#E10600] font-bold">{activeStep.time}</span>
+              </div>
+              <p className="text-zinc-300 leading-relaxed mb-2">{activeStep.desc}</p>
+              <div className="p-1.5 rounded bg-black/60 border border-white/5 text-[9px] text-zinc-400">
+                ⚠️ <em>A segurança é prioritária: uma porca mal encaixada pode causar abandono ou penalidade severa.</em>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 5: TELEMETRIA E DADOS
+      if (currentScene.visualEffectType === "mod7_telemetry_analysis") {
+        const points = [
+          {
+            id: 1 as const,
+            title: "1. Ponto de Frenagem (Fim de Reta)",
+            valA: "Freio aos 115m (105 bar de pressão)",
+            valB: "Freio antecipado aos 132m (85 bar)",
+            diff: "Ganho de +0.18s na Volta A",
+            desc: "A telemetria mostra que na Volta A o piloto teve mais confiança, freou mais tarde e aplicou pressão máxima no pedal sem travar rodas.",
+          },
+          {
+            id: 2 as const,
+            title: "2. Velocidade Mínima no Ápice (Apex)",
+            valA: "142 km/h contínuos",
+            valB: "135 km/h com correção de volante",
+            diff: "Ganho de +0.12s na Volta A",
+            desc: "Na Volta A o equilíbrio aerodinâmico permitiu carregar 7 km/h a mais no meio da curva sem sofrer com saída de frente.",
+          },
+          {
+            id: 3 as const,
+            title: "3. Retomada de Aceleração (Saída)",
+            valA: "100% acelerador 0.25s antes",
+            valB: "Hesitação com patinagem de traseira",
+            diff: "Ganho de +0.15s na reta seguinte",
+            desc: "Tracionar mais cedo transfere velocidade para toda a reta. Décimos ganhos no ápice multiplicam-se na velocidade final.",
+          },
+        ]
+
+        const activePt = points.find((p) => p.id === m7TelemetryPoint) || points[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Telemetria Comparativa</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold">300+ SENSORES</span>
+            </div>
+
+            <div className="p-1 rounded bg-white/5 border border-white/10 text-[9px] font-mono text-center text-zinc-400 uppercase mb-2">
+              DADOS FICTÍCIOS PARA APRENDIZAGEM
+            </div>
+
+            {/* Comparação Gráfica Didática */}
+            <div className="p-2 rounded-lg bg-black/60 border border-white/10 text-[9px] font-mono mb-2">
+              <div className="flex items-center justify-between text-zinc-400 mb-1">
+                <span className="text-amber-400 font-bold">● Volta A (Rápida): 1:18.240</span>
+                <span className="text-cyan-400 font-bold">● Volta B: 1:18.690</span>
+              </div>
+              <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden flex">
+                <div className="bg-amber-400 h-full w-[65%]" />
+                <div className="bg-cyan-400 h-full w-[35%]" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-1 mb-2">
+              {points.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setM7TelemetryPoint(p.id)}
+                  className={cn(
+                    "py-1 px-1 rounded text-[9px] font-bold transition-all cursor-pointer text-center truncate",
+                    m7TelemetryPoint === p.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  Ponto {p.id}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px]">
+              <span className="text-xs font-black text-white block mb-1">{activePt.title}</span>
+              <p className="text-zinc-300 leading-relaxed mb-2">{activePt.desc}</p>
+              <div className="p-1.5 rounded bg-black/60 border border-white/5 text-[9px] text-emerald-400 font-mono">
+                ✓ {activePt.diff}
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 6: DOIS PILOTOS, UMA EQUIPE
+      if (currentScene.visualEffectType === "mod7_two_drivers_one_team") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Dilema de Companheiros</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">ESTRATÉGIA</span>
+            </div>
+
+            <div className="p-1 rounded bg-[#E10600]/10 border border-[#E10600]/30 text-[9px] font-mono text-center text-[#E10600] font-bold uppercase mb-2">
+              SIMULAÇÃO DIDÁTICA — FINAL DE GP
+            </div>
+
+            <div className="p-2 rounded-lg bg-white/5 border border-white/10 text-[10px] mb-2.5">
+              <strong className="text-white block mb-1">Cenário na Pista:</strong>
+              <p className="text-zinc-300 leading-snug">
+                Restam 8 voltas. <strong>Piloto 1 (P3)</strong> está com pneus desgastados. <strong>Piloto 2 (P4)</strong> vem 0.8s mais rápido por volta com pneus médios novos. O P2 rival está a apenas 2.5s à frente.
+              </p>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 font-bold mb-1.5">
+              Como você coordenaria os dois pilotos?
+            </p>
+
+            <div className="space-y-1 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM7TeammateDecision("swap")}
+                className={cn(
+                  "w-full text-left py-1.5 px-2 rounded-lg text-[9px] font-bold transition-all cursor-pointer",
+                  m7TeammateDecision === "swap" ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                1. Inversão Tática: Deixar P2 atacar o rival (devolver se não passar)
+              </button>
+              <button
+                type="button"
+                onClick={() => setM7TeammateDecision("free")}
+                className={cn(
+                  "w-full text-left py-1.5 px-2 rounded-lg text-[9px] font-bold transition-all cursor-pointer",
+                  m7TeammateDecision === "free" ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                2. Disputa Livre: Permitir duelo na pista sem ordens de equipe
+              </button>
+              <button
+                type="button"
+                onClick={() => setM7TeammateDecision("hold")}
+                className={cn(
+                  "w-full text-left py-1.5 px-2 rounded-lg text-[9px] font-bold transition-all cursor-pointer",
+                  m7TeammateDecision === "hold" ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                3. Manter Posições: Congelar P3 e P4 para garantir os pontos da equipe
+              </button>
+            </div>
+
+            {m7TeammateDecision && (
+              <div className="p-2 rounded-lg bg-black/70 border border-white/10 text-[9px] text-zinc-300 leading-relaxed">
+                {m7TeammateDecision === "swap" && (
+                  <span>
+                    ✅ <strong>Estratégia mais eficiente:</strong> Maximiza as chances da equipe conquistar um P2 no Mundial de Construtores com compromisso ético entre os dois pilotos.
+                  </span>
+                )}
+                {m7TeammateDecision === "free" && (
+                  <span>
+                    ⚠️ <strong>Alto risco esportivo:</strong> Duelo direto pode superaquecer os freios, gastar os pneus restantes e abrir espaço para o carro que vem em P5 se aproximar.
+                  </span>
+                )}
+                {m7TeammateDecision === "hold" && (
+                  <span>
+                    🛡️ <strong>Abordagem conservadora:</strong> Garante pontos seguros no Construtores, mas impede a equipe de disputar o segundo lugar com pneus mais novos.
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 7: DINHEIRO, DESENVOLVIMENTO E LIMITE DE CUSTOS
+      if (currentScene.visualEffectType === "mod7_cost_cap_development") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Desafio de Alocação</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">COST CAP FIA</span>
+            </div>
+
+            <div className="p-1 rounded bg-white/5 border border-white/10 text-[9px] font-mono text-center text-zinc-400 uppercase mb-2">
+              ORÇAMENTO DIDÁTICO: 100 UNIDADES
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Escolha uma estratégia de desenvolvimento:
+            </p>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  setM7BudgetAero(55)
+                  setM7BudgetReliability(25)
+                  setM7BudgetSimulation(20)
+                }}
+                className={cn(
+                  "py-1 px-1 rounded text-[9px] font-bold transition-all cursor-pointer text-center",
+                  m7BudgetAero === 55 ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                Foco Aerodinâmico
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setM7BudgetAero(30)
+                  setM7BudgetReliability(50)
+                  setM7BudgetSimulation(20)
+                }}
+                className={cn(
+                  "py-1 px-1 rounded text-[9px] font-bold transition-all cursor-pointer text-center",
+                  m7BudgetReliability === 50 ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                Foco Confiabilidade
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setM7BudgetAero(35)
+                  setM7BudgetReliability(35)
+                  setM7BudgetSimulation(30)
+                }}
+                className={cn(
+                  "py-1 px-1 rounded text-[9px] font-bold transition-all cursor-pointer text-center",
+                  m7BudgetSimulation === 30 ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                Equilíbrio Total
+              </button>
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px] space-y-1.5 mb-2">
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-400">🏎️ Aerodinâmica (Assoalho e Asas):</span>
+                <span className="font-mono text-white font-bold">{m7BudgetAero} pts</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-400">🔧 Confiabilidade (Câmbio e Motor):</span>
+                <span className="font-mono text-white font-bold">{m7BudgetReliability} pts</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-400">💻 Simulação e CFD (Mission Control):</span>
+                <span className="font-mono text-white font-bold">{m7BudgetSimulation} pts</span>
+              </div>
+            </div>
+
+            <div className="p-1.5 rounded bg-black/60 border border-white/5 text-[9px] text-zinc-300 leading-snug">
+              💡 <em>O Cost Cap impede despesas infinitas. Gastar muito em asas pode deixar o carro frágil; focar apenas em confiabilidade pode deixá-lo lento.</em>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 8: DESAFIO FINAL: VOCÊ É O CHEFE DA EQUIPE
+      if (currentScene.visualEffectType === "mod7_team_principal_challenge") {
+        const challenges = [
+          {
+            step: 1 as const,
+            title: "Decisão 1 — O piloto relata perda de aderência",
+            options: [
+              { id: "A", text: "Ignorar e mandar acelerar sem avaliação." },
+              { id: "B", text: "Comparar relato com telemetria e avaliar pneus." },
+              { id: "C", text: "Trocar o piloto imediatamente pelo reserva." },
+            ],
+            best: "B",
+            exp: "Correto! A telemetria térmica revela se o pneu está superaquecido ou no fim da vida útil, permitindo uma decisão fundamentada.",
+          },
+          {
+            step: 2 as const,
+            title: "Decisão 2 — Aumenta a chance de chuva leve",
+            options: [
+              { id: "A", text: "Trocar para pneus de chuva extrema agora mesmo." },
+              { id: "B", text: "Avaliar evolução meteorológica, tráfego e custo da parada." },
+              { id: "C", text: "Desligar o radar meteorológico da equipe." },
+            ],
+            best: "B",
+            exp: "Perfeito! Parar cedo demais para pneu de chuva destrói a borracha no asfalto ainda seco; esperar o ponto de crossover é vital.",
+          },
+          {
+            step: 3 as const,
+            title: "Decisão 3 — Carro da frente começa a perder ritmo",
+            options: [
+              { id: "A", text: "Considerar intervalo, pneus e planejar ataque seguro." },
+              { id: "B", text: "Mandar o piloto jogar o adversário para fora." },
+              { id: "C", text: "Desistir de competir e recolher para a garagem." },
+            ],
+            best: "A",
+            exp: "Excelente liderança! Avaliar o delta de ritmo e preparar a manobra com uso de energia garante o melhor resultado.",
+          },
+        ]
+
+        const currentCh = challenges.find((c) => c.step === m7ChallengeStep) || challenges[0]
+        const hasAnswered = !!m7ChallengeAnswers[m7ChallengeStep]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Comando do Team Principal</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">ETAPA {m7ChallengeStep} DE 3</span>
+            </div>
+
+            <div className="p-1 rounded bg-[#E10600]/10 border border-[#E10600]/30 text-[9px] font-mono text-center text-[#E10600] font-bold uppercase mb-2">
+              SIMULAÇÃO DIDÁTICA — NÃO É UMA CORRIDA REAL
+            </div>
+
+            <p className="text-[10px] font-bold text-white mb-2">{currentCh.title}</p>
+
+            <div className="space-y-1 mb-2.5">
+              {currentCh.options.map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setM7ChallengeAnswers({ ...m7ChallengeAnswers, [m7ChallengeStep]: opt.id })}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded-lg text-[9px] font-bold transition-all cursor-pointer flex items-center gap-1.5",
+                    m7ChallengeAnswers[m7ChallengeStep] === opt.id
+                      ? opt.id === currentCh.best
+                        ? "bg-emerald-600 text-white shadow-md"
+                        : "bg-red-600/80 text-white shadow-md"
+                      : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  <span className="font-mono font-black">{opt.id})</span>
+                  <span>{opt.text}</span>
+                </button>
+              ))}
+            </div>
+
+            {hasAnswered && (
+              <div className="p-2 rounded-lg bg-black/70 border border-white/10 text-[9px] text-zinc-300 mb-2.5">
+                {m7ChallengeAnswers[m7ChallengeStep] === currentCh.best ? (
+                  <span className="text-emerald-400 font-bold block mb-0.5">✓ {currentCh.exp}</span>
+                ) : (
+                  <span className="text-amber-400 font-bold block mb-0.5">⚠️ Abordagem arriscada! O ideal é: {currentCh.exp}</span>
+                )}
+              </div>
+            )}
+
+            <div className="flex items-center gap-1.5">
+              {m7ChallengeStep < 3 ? (
+                <button
+                  type="button"
+                  disabled={!hasAnswered}
+                  onClick={() => setM7ChallengeStep((prev) => ((prev + 1) as 1 | 2 | 3))}
+                  className="w-full py-1.5 px-3 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer text-center shadow-md"
+                >
+                  Próxima Decisão
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  disabled={!hasAnswered}
+                  onClick={() => {
+                    stopAllAudio()
+                    setViewStage("quiz")
+                  }}
+                  className="w-full py-2 px-3 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer text-center shadow-[0_0_20px_rgba(225,6,0,0.6)]"
+                >
+                  Fazer o Quiz (10 Questões)
+                </button>
+              )}
+            </div>
+          </div>
+        )
+      }
+    }
+
     return null
   }
 
@@ -6599,7 +7642,7 @@ export function NovatosPage() {
           {/* Fundo Cinematográfico com Parallax Suave */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <img
-              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : activeModuleId === 4 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 5 ? "/backgrounds/bg-redbull.webp" : "/novatos/modulo1/cena02_1950.jpg"}
+              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : activeModuleId === 4 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 5 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 6 ? "/novatos/modulo1/cena02_1950.jpg" : "/backgrounds/bg-mercedes.webp"}
               alt="Fundo Novatos na F1"
               className={cn(
                 "w-full h-full object-cover object-center brightness-40 contrast-125 scale-105",
@@ -6671,6 +7714,16 @@ export function NovatosPage() {
             >
               6. História da F1
             </button>
+            <button
+              type="button"
+              onClick={() => handleSelectModule(7)}
+              className={cn(
+                "px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide transition-all cursor-pointer",
+                activeModuleId === 7 ? "bg-[#E10600] text-white shadow-lg" : "text-zinc-400 hover:text-white"
+              )}
+            >
+              7. Bastidores da Equipe
+            </button>
           </div>
 
           {/* Hero Content */}
@@ -6688,7 +7741,9 @@ export function NovatosPage() {
                   ? "MÓDULO 4 • A MENTE POR TRÁS DA CORRIDA: ESTRATÉGIA E PNEUS"
                   : activeModuleId === 5
                   ? "MÓDULO 5 • A ARTE DE ULTRAPASSAR: REGRAS E DISPUTAS"
-                  : "MÓDULO 6 • A HISTÓRIA DA FÓRMULA 1: 75 ANOS DE EVOLUÇÃO"}
+                  : activeModuleId === 6
+                  ? "MÓDULO 6 • A HISTÓRIA DA FÓRMULA 1: 75 ANOS DE EVOLUÇÃO"
+                  : "MÓDULO 7 • POR TRÁS DA EQUIPE: ENGENHEIROS, ESTRATÉGIA E DADOS"}
               </span>
             </div>
 
@@ -6707,7 +7762,9 @@ export function NovatosPage() {
                 ? "MÓDULO 4 — A MENTE POR TRÁS DA CORRIDA"
                 : activeModuleId === 5
                 ? "MÓDULO 5 — A ARTE DE ULTRAPASSAR"
-                : "MÓDULO 6 — A HISTÓRIA DA FÓRMULA 1"}
+                : activeModuleId === 6
+                ? "MÓDULO 6 — A HISTÓRIA DA FÓRMULA 1"
+                : "MÓDULO 7 — POR TRÁS DA EQUIPE"}
             </p>
 
             <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-xl mb-8">
@@ -6721,7 +7778,9 @@ export function NovatosPage() {
                 ? "“Na Fórmula 1, velocidade é fundamental. Mas saber quando atacar, economizar pneus ou parar nos boxes pode mudar o resultado de uma corrida.”"
                 : activeModuleId === 5
                 ? "“Na Fórmula 1, ultrapassar não é apenas acelerar. É escolher o momento certo, entender o adversário e disputar cada centímetro dentro das regras.”"
-                : "“75 anos de velocidade, coragem e evolução: das pioneiras máquinas de Silverstone à revolução técnica de 2026.”"}
+                : activeModuleId === 6
+                ? "“75 anos de velocidade, coragem e evolução: das pioneiras máquinas de Silverstone à revolução técnica de 2026.”"
+                : "“O piloto está na pista. Centenas de decisões acontecem nos bastidores.”"}
             </p>
 
             {/* Botão de Ação CTA */}
@@ -7102,7 +8161,7 @@ export function NovatosPage() {
               </div>
 
               <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white mb-1">
-                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : activeModuleId === 2 ? "MÓDULO 2 CONCLUÍDO" : activeModuleId === 3 ? "MÓDULO 3 CONCLUÍDO" : activeModuleId === 4 ? "MÓDULO 4 CONCLUÍDO" : activeModuleId === 5 ? "MÓDULO 5 CONCLUÍDO" : "MÓDULO 6 CONCLUÍDO"}
+                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : activeModuleId === 2 ? "MÓDULO 2 CONCLUÍDO" : activeModuleId === 3 ? "MÓDULO 3 CONCLUÍDO" : activeModuleId === 4 ? "MÓDULO 4 CONCLUÍDO" : activeModuleId === 5 ? "MÓDULO 5 CONCLUÍDO" : activeModuleId === 6 ? "MÓDULO 6 CONCLUÍDO" : "MÓDULO 7 CONCLUÍDO"}
               </h2>
 
               <p className="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-4">
@@ -7132,13 +8191,21 @@ export function NovatosPage() {
                     : (quizScore ?? 0) >= 5
                     ? "“Bom começo! Reveja as cenas sobre defesa, ataque e disputas roda a roda.”"
                     : "“Toda boa leitura de corrida começa com aprendizado. Reveja as cenas e tente novamente.”"
+                  : activeModuleId === 6
+                  ? (quizScore ?? 0) >= 9
+                    ? "“Excelente! Você compreende com maestria os 75 anos de história, as eras técnicas e o legado que moldou a Fórmula 1 moderna.”"
+                    : (quizScore ?? 0) >= 7
+                    ? "“Muito bem! Você conhece os marcos essenciais da história do automobilismo. Revise as cenas para fixar os detalhes.”"
+                    : (quizScore ?? 0) >= 5
+                    ? "“Bom começo! Reveja os períodos técnicos, a trajetória de Ayrton Senna e as inovações de segurança.”"
+                    : "“Toda grande jornada histórica começa com o primeiro passo. Reveja as cenas da linha do tempo e tente novamente.”"
                   : (quizScore ?? 0) >= 9
-                  ? "“Excelente! Você compreende com maestria os 75 anos de história, as eras técnicas e o legado que moldou a Fórmula 1 moderna.”"
+                  ? "“Excelente! Você tem visão de Team Principal: domina a sinergia entre engenharia, mecânica, dados e liderança estratégica.”"
                   : (quizScore ?? 0) >= 7
-                  ? "“Muito bem! Você conhece os marcos essenciais da história do automobilismo. Revise as cenas para fixar os detalhes.”"
+                  ? "“Muito bem! Você compreende o trabalho nos bastidores da equipe. Revise os detalhes técnicos para refinar suas decisões.”"
                   : (quizScore ?? 0) >= 5
-                  ? "“Bom começo! Reveja os períodos técnicos, a trajetória de Ayrton Senna e as inovações de segurança.”"
-                  : "“Toda grande jornada histórica começa com o primeiro passo. Reveja as cenas da linha do tempo e tente novamente.”"}
+                  ? "“Bom começo! Reveja as cenas sobre telemetria, limite de custos e estratégia de pit wall.”"
+                  : "“Liderar uma equipe exige aprendizado constante. Reveja as cenas do módulo e tente novamente.”"}
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-3">
@@ -7166,6 +8233,19 @@ export function NovatosPage() {
                   >
                     <Clock className="w-3.5 h-3.5 text-[#E10600]" />
                     <span>Revisar Linha do Tempo</span>
+                  </button>
+                )}
+
+                {activeModuleId === 7 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      goToScene(7)
+                    }}
+                    className="px-4 py-2 rounded-xl bg-[#E10600]/20 hover:bg-[#E10600]/30 text-white text-xs font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 border border-[#E10600]/40"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-[#E10600]" />
+                    <span>Rever o Desafio do Chefe</span>
                   </button>
                 )}
 
