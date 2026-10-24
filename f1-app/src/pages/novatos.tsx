@@ -509,6 +509,78 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     definition: "Capacidade de modificar o estilo de pilotagem em tempo real conforme o carro fica mais leve, o equilíbrio dinâmico muda ou a pista perde aderência.",
   },
   {
+    id: "aerodinamica_2026",
+    term: "Aerodinâmica",
+    category: "Carro",
+    definition: "Estudo de como o ar interage com as superfícies do carro para produzir pressão descendente e controlar a resistência ao avanço.",
+  },
+  {
+    id: "arrasto_aerodinamico",
+    term: "Arrasto",
+    category: "Carro",
+    definition: "Resistência física imposta pelo ar ao deslocamento do veículo para frente, limitando a velocidade máxima nas retas.",
+  },
+  {
+    id: "pressao_aerodinamica",
+    term: "Pressão aerodinâmica",
+    category: "Carro",
+    definition: "Força vertical descendente (downforce) gerada pelo fluxo de ar sobre asas e assoalho que empurra os pneus contra o solo, aumentando a aderência em curvas.",
+  },
+  {
+    id: "aerodinamica_ativa",
+    term: "Aerodinâmica ativa",
+    category: "Carro",
+    definition: "Sistema introduzido em 2026 que altera a geometria das asas dianteira e traseira em tempo real (Straight Mode e Corner Mode) sob condições regulamentadas.",
+  },
+  {
+    id: "unidade_potencia_2026",
+    term: "Unidade de potência",
+    category: "Carro",
+    definition: "Conjunto propulsor integrado composto pelo motor a combustão V6 turbo sustentável e o sistema elétrico de recuperação e entrega de energia.",
+  },
+  {
+    id: "recuperacao_energia_ers",
+    term: "Sistema de recuperação de energia",
+    category: "Carro",
+    definition: "Dispositivos elétricos (MGU-K) que convertem a energia cinética das frenagens em eletricidade utilizável armazenada na bateria.",
+  },
+  {
+    id: "boost_mode_2026",
+    term: "Boost Mode",
+    category: "Carro",
+    definition: "Recurso de entrega de potência máxima controlada pelo piloto para ataque ou defesa, condicionado à carga disponível de bateria e regras vigentes.",
+  },
+  {
+    id: "overtake_mode_2026",
+    term: "Overtake Mode",
+    category: "Carro",
+    definition: "Modo regulamentado da geração 2026 que libera potência elétrica adicional quando o carro persegue um rival a menos de 1 segundo em ponto de detecção.",
+  },
+  {
+    id: "recharge_energia",
+    term: "Recharge",
+    category: "Carro",
+    definition: "Fase operacional ou estratégia de corrida onde a unidade de potência prioriza a recarga das células de bateria aproveitando zonas de frenagem e desaceleração.",
+  },
+  {
+    id: "telemetria_f1",
+    term: "Telemetria",
+    category: "Geral",
+    definition: "Transmissão e análise contínua de centenas de parâmetros dos sensores de bordo (velocidade, freios, aceleração, calor e energia) em tempo real.",
+  },
+  {
+    id: "monocoque_seguranca",
+    term: "Monocoque",
+    category: "Carro",
+    definition: "Célula de sobrevivência central ultrarresistente em fibra de carbono onde o piloto fica alojado, projetada para suportar desacelerações extremas.",
+  },
+  {
+    id: "combustivel_sustentavel_2026",
+    term: "Combustível sustentável avançado",
+    category: "Carro",
+    definition: "Combustível 100% livre de fontes fósseis, sintetizado a partir de captura de carbono ou resíduos biológicos não alimentares conforme as normas da FIA.",
+  },
+  {
     id: "reentrada_pista",
     term: "Reentrada na pista",
     category: "Pista",
@@ -631,6 +703,14 @@ export interface ModuleScene {
     | "mod9_champions_styles"
     | "mod9_adapting_uncertainty"
     | "mod9_champion_mindset_challenge"
+    | "mod10_integrated_system"
+    | "mod10_aerodynamics_balance"
+    | "mod10_active_aero_modes"
+    | "mod10_power_unit_hybrid"
+    | "mod10_boost_overtake_recharge"
+    | "mod10_telemetry_laps"
+    | "mod10_materials_safety"
+    | "mod10_engineer_challenge"
 }
 
 export const CINEMATIC_MUSIC_URL = "/audio/novatos/modulo1/trilha_cinematografica.mp3"
@@ -800,6 +880,101 @@ export const MODULE_1_SCENES: ModuleScene[] = [
 // ============================================================================
 // CENAS DO MÓDULO 9 — A MENTE DOS CAMPEÕES: VELOCIDADE, CONSISTÊNCIA E PSICOLÓGICO
 // ============================================================================
+
+// ============================================================================
+// CENAS DO MÓDULO 10 — A TECNOLOGIA POR TRÁS DA VELOCIDADE (ENGENHARIA E DADOS)
+// ============================================================================
+export const MODULE_10_SCENES: ModuleScene[] = [
+  {
+    id: "m10_c1",
+    number: 1,
+    title: "O Carro é um Sistema Integrado",
+    subtitle: "Engenharia sistêmica: cada componente conectado",
+    imageUrl: "/backgrounds/bg-cadillac.webp",
+    audioUrl: "/audio/novatos/modulo10/cena01.mp3",
+    narrationTranscript:
+      "Na Fórmula 1, a velocidade não vem de uma peça milagrosa. Ela nasce de centenas de decisões de engenharia trabalhando em conjunto. O motor, a aerodinâmica, a suspensão, os freios e a eletrônica formam um sistema integrado, onde cada alteração afeta o equilíbrio geral do carro.",
+    visualEffectType: "mod10_integrated_system",
+  },
+  {
+    id: "m10_c2",
+    number: 2,
+    title: "Aerodinâmica: Dominando o Ar",
+    subtitle: "Arrasto, pressão aerodinâmica e o compromisso da velocidade",
+    imageUrl: "/backgrounds/bg-ferrari.webp",
+    audioUrl: "/audio/novatos/modulo10/cena02.mp3",
+    narrationTranscript:
+      "O ar é ao mesmo tempo o melhor amigo e o maior rival de um carro de corrida. A pressão aerodinâmica empurra o carro contra o asfalto para contornar curvas em alta velocidade, enquanto o arrasto cria resistência nas retas. A engenharia vive na busca pelo compromisso ideal entre velocidade e aderência.",
+    visualEffectType: "mod10_aerodynamics_balance",
+  },
+  {
+    id: "m10_c3",
+    number: 3,
+    title: "Aerodinâmica Ativa: Os Modos de 2026",
+    subtitle: "Straight Mode vs Corner Mode: a revolução das asas móveis",
+    imageUrl: "/backgrounds/bg-mclaren.webp",
+    audioUrl: "/audio/novatos/modulo10/cena03.mp3",
+    narrationTranscript:
+      "Em 2026, a aerodinâmica dá um salto histórico com os modos ativos. No Straight Mode, os elementos móveis das asas reduzem o arrasto nas retas autorizadas para maximizar a velocidade. Já no Corner Mode, a pressão aerodinâmica é restabelecida para garantir máxima estabilidade e segurança nas curvas.",
+    visualEffectType: "mod10_active_aero_modes",
+  },
+  {
+    id: "m10_c4",
+    number: 4,
+    title: "Unidade de Potência: Combustão e Eletricidade",
+    subtitle: "Arquitetura híbrida e combustíveis 100% sustentáveis",
+    imageUrl: "/backgrounds/bg-mercedes.webp",
+    audioUrl: "/audio/novatos/modulo10/cena04.mp3",
+    narrationTranscript:
+      "A unidade de potência de 2026 é uma obra de engenharia sustentável e híbrida. Ela une um motor a combustão alimentado por combustíveis cem por cento sustentáveis a um sistema elétrico de altíssima eficiência. Potência é a rapidez com que a força é entregue; energia é o que você tem no tanque e na bateria para gastar com sabedoria ao longo da volta.",
+    visualEffectType: "mod10_power_unit_hybrid",
+  },
+  {
+    id: "m10_c5",
+    number: 5,
+    title: "Boost, Overtake Mode e Recharge",
+    subtitle: "Gestão inteligente de watts e quilowatts na pista",
+    imageUrl: "/backgrounds/bg-aston.webp",
+    audioUrl: "/audio/novatos/modulo10/cena05.mp3",
+    narrationTranscript:
+      "Administrar energia na pista exige inteligência tática. Com o Boost Mode, o piloto solicita potência extra quando as regras e a carga permitem. O Overtake Mode substitui o antigo papel do DRS, oferecendo energia extra em disputas diretas quando colado no rival. E no Recharge, os sistemas recuperam preciosa eletricidade a cada frenagem.",
+    visualEffectType: "mod10_boost_overtake_recharge",
+  },
+  {
+    id: "m10_c6",
+    number: 6,
+    title: "Telemetria: Os Dados que Revelam a Velocidade",
+    subtitle: "Comparando voltas: onde os milésimos são ganhos ou perdidos",
+    imageUrl: "/backgrounds/bg-williams.webp",
+    audioUrl: "/audio/novatos/modulo10/cena06.mp3",
+    narrationTranscript:
+      "A telemetria transforma cada centímetro da pista em dados matemáticos. Sensores registram velocidade, aceleração, frenagem e calor a cada milissegundo. Comparando duas voltas, os engenheiros descobrem exatamente onde o piloto ganhou tempo ou onde o acerto do carro pode ser refinado para a classificação.",
+    visualEffectType: "mod10_telemetry_laps",
+  },
+  {
+    id: "m10_c7",
+    number: 7,
+    title: "Materiais, Estrutura e Segurança",
+    subtitle: "Célula de sobrevivência, Halo e compósitos de alta resistência",
+    imageUrl: "/backgrounds/bg-haas.webp",
+    audioUrl: "/audio/novatos/modulo10/cena07.mp3",
+    narrationTranscript:
+      "A busca pela velocidade só é possível porque a segurança evoluiu na mesma proporção. A célula de sobrevivência em fibra de carbono, o Halo em titânio e as estruturas deformáveis de absorção de energia são projetados para proteger o piloto mesmo nos impactos mais severos, atendendo aos rigorosos testes da FIA.",
+    visualEffectType: "mod10_materials_safety",
+  },
+  {
+    id: "m10_c8",
+    number: 8,
+    title: "Desafio Final: Você É o Engenheiro da Equipe",
+    subtitle: "Simulação técnica em 3 decisões estratégicas de engenharia",
+    imageUrl: "/backgrounds/bg-default.webp",
+    audioUrl: "/audio/novatos/modulo10/cena08.mp3",
+    narrationTranscript:
+      "Você viu como a aerodinâmica, a energia híbrida, os dados e a segurança formam a máquina de Fórmula 1. Agora você assume o papel de engenheiro da equipe! Tome as decisões certas na pista e depois teste seus conhecimentos no quiz final da tecnologia!",
+    visualEffectType: "mod10_engineer_challenge",
+  },
+]
+
 export const MODULE_9_SCENES: ModuleScene[] = [
   {
     id: "m9_c1",
@@ -1670,6 +1845,143 @@ export const MODULE_1_QUIZ_QUESTIONS: QuizQuestion[] = [
 // ============================================================================
 // QUESTIONÁRIO FINAL — MÓDULO 9 (10 PERGUNTAS SOBRE A MENTE DOS CAMPEÕES)
 // ============================================================================
+
+// ============================================================================
+// QUESTIONÁRIO FINAL — MÓDULO 10 (10 PERGUNTAS SOBRE A TECNOLOGIA DA F1)
+// ============================================================================
+export const MODULE_10_QUIZ_QUESTIONS: QuizQuestion[] = [
+  {
+    id: 1,
+    question: "PERGUNTA 1 — Qual é a principal função da pressão aerodinâmica?",
+    options: [
+      { letter: "A", text: "Eliminar o peso do carro." },
+      { letter: "B", text: "Ajudar a pressionar o carro contra o solo e contribuir para a aderência." },
+      { letter: "C", text: "Recarregar a bateria diretamente." },
+      { letter: "D", text: "Substituir os pneus." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Correto! A pressão aerodinâmica (downforce) comprime o carro contra o asfalto, permitindo contornar curvas em alta velocidade com máxima estabilidade.",
+  },
+  {
+    id: 2,
+    question: "PERGUNTA 2 — O que é o arrasto aerodinâmico?",
+    options: [
+      { letter: "A", text: "A resistência do ar ao movimento do carro." },
+      { letter: "B", text: "A energia armazenada na bateria." },
+      { letter: "C", text: "O desgaste físico dos pneus." },
+      { letter: "D", text: "A força produzida exclusivamente pelos freios." },
+    ],
+    correctLetter: "A",
+    feedback:
+      "Muito bem! O arrasto é a resistência ao avanço imposta pelo ar, sendo o principal fator limitador da velocidade final nas retas.",
+  },
+  {
+    id: 3,
+    question: "PERGUNTA 3 — O que caracteriza a aerodinâmica ativa da geração de 2026?",
+    options: [
+      { letter: "A", text: "As asas são retiradas durante as retas." },
+      { letter: "B", text: "O piloto pode alterar qualquer componente sem restrições." },
+      { letter: "C", text: "Elementos aerodinâmicos podem mudar de configuração conforme os modos e as condições regulamentares." },
+      { letter: "D", text: "O carro não sofre resistência do ar." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Exato! Elementos móveis ajustam a angulação das asas dianteira e traseira entre Straight Mode (baixo arrasto) e Corner Mode (alta sustentação).",
+  },
+  {
+    id: 4,
+    question: "PERGUNTA 4 — Qual afirmação descreve melhor a unidade de potência da F1 em 2026?",
+    options: [
+      { letter: "A", text: "Ela utiliza exclusivamente um motor elétrico." },
+      { letter: "B", text: "Ela utiliza apenas combustível, sem sistema elétrico." },
+      { letter: "C", text: "Ela não precisa administrar energia durante a volta." },
+      { letter: "D", text: "Ela combina combustão e sistemas elétricos de potência e recuperação de energia." },
+    ],
+    correctLetter: "D",
+    feedback:
+      "Perfeito! A unidade propulsora de 2026 é híbrida, unindo motor térmico a combustível 100% sustentável e motores elétricos de altíssima regeneração.",
+  },
+  {
+    id: 5,
+    question: "PERGUNTA 5 — Qual é a diferença básica entre potência e energia?",
+    options: [
+      { letter: "A", text: "São sempre a mesma coisa." },
+      { letter: "B", text: "Potência indica a taxa de entrega de energia; energia é a quantidade disponível ou utilizada." },
+      { letter: "C", text: "Energia só existe em motores elétricos." },
+      { letter: "D", text: "Potência é uma medida exclusiva de velocidade." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Excelente! Potência é o ritmo instantâneo com que a energia é liberada, enquanto energia é o total acumulado que pode ser gerenciado na bateria e tanque.",
+  },
+  {
+    id: 6,
+    question: "PERGUNTA 6 — Qual é a melhor descrição do Boost Mode?",
+    options: [
+      { letter: "A", text: "Um recurso de utilização de potência que o piloto pode acionar conforme o sistema e as condições permitidas." },
+      { letter: "B", text: "Um dispositivo que altera a cor do carro." },
+      { letter: "C", text: "Um sistema exclusivo de frenagem." },
+      { letter: "D", text: "Um mecanismo que garante ultrapassagens." },
+    ],
+    correctLetter: "A",
+    feedback:
+      "Correto! O Boost Mode permite que o piloto solicite picos calculados de potência elétrica suplementar, condicionados à energia acumulada e regras esportivas.",
+  },
+  {
+    id: 7,
+    question: "PERGUNTA 7 — O que é o Overtake Mode na F1 de 2026?",
+    options: [
+      { letter: "A", text: "O antigo DRS com outro nome e funcionamento necessariamente idêntico." },
+      { letter: "B", text: "Um modo que permite ultrapassar qualquer carro sem restrições." },
+      { letter: "C", text: "Um recurso regulamentado de energia adicional associado a condições de proximidade de outro carro." },
+      { letter: "D", text: "Um sistema que elimina a necessidade de estratégia." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Muito bem! Substituindo o papel estratégico do DRS, o Overtake Mode concede uma liberação elétrica extra quando o piloto está colado no adversário.",
+  },
+  {
+    id: 8,
+    question: "PERGUNTA 8 — Para que serve a telemetria?",
+    options: [
+      { letter: "A", text: "Apenas para mostrar a classificação na televisão." },
+      { letter: "B", text: "Para substituir os engenheiros." },
+      { letter: "C", text: "Para garantir que o carro nunca apresente falhas." },
+      { letter: "D", text: "Para coletar e analisar dados que ajudam a entender o desempenho e o funcionamento do carro." },
+    ],
+    correctLetter: "D",
+    feedback:
+      "Exato! Centenas de sensores mapeiam a dinâmica do carro, permitindo que piloto e engenheiros identifiquem pontos de melhoria a cada curva.",
+  },
+  {
+    id: 9,
+    question: "PERGUNTA 9 — Qual é a função da célula de sobrevivência e de outros sistemas de segurança?",
+    options: [
+      { letter: "A", text: "Tornar o carro indestrutível." },
+      { letter: "B", text: "Ajudar a proteger o piloto por meio da estrutura e dos sistemas de segurança projetados para impactos e outros riscos." },
+      { letter: "C", text: "Aumentar exclusivamente a velocidade em reta." },
+      { letter: "D", text: "Substituir os equipamentos de proteção do piloto." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Perfeito! O monocoque em compósito de carbono, o Halo em titânio e as estruturas deformáveis absorvem a energia do choque, salvando vidas.",
+  },
+  {
+    id: 10,
+    question: "PERGUNTA 10 — Como uma equipe deve investigar uma perda de desempenho?",
+    options: [
+      { letter: "A", text: "Analisar dados relevantes, identificar possíveis causas e avaliar as mudanças de maneira fundamentada." },
+      { letter: "B", text: "Trocar todas as peças ao mesmo tempo." },
+      { letter: "C", text: "Presumir que o motor é sempre o problema." },
+      { letter: "D", text: "Ignorar as condições da pista." },
+    ],
+    correctLetter: "A",
+    feedback:
+      "Parabéns! Na engenharia de ponta, o rigor científico e a leitura meticulosa dos dados isolam as variáveis antes de qualquer ajuste mecânico.",
+  },
+]
+
 export const MODULE_9_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 1,
@@ -2746,6 +3058,7 @@ const STORAGE_MOD6_KEY = "f1_novatos_mod6_state_v1"
 const STORAGE_MOD7_KEY = "f1_novatos_mod7_state_v1"
 const STORAGE_MOD8_KEY = "f1_novatos_mod8_state_v1"
 const STORAGE_MOD9_KEY = "f1_novatos_mod9_state_v1"
+const STORAGE_MOD10_KEY = "f1_novatos_mod10_state_v1"
 const STORAGE_ACTIVE_MODULE_KEY = "f1_novatos_active_module_v1"
 
 interface PersistedModuleState {
@@ -2779,10 +3092,11 @@ export function NovatosPage() {
   // ==========================================================================
   // ESTADO DO MÓDULO ATIVO (MÓDULO 1 OU MÓDULO 2)
   // ==========================================================================
-  const [activeModuleId, setActiveModuleId] = useState<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9>(() => {
+  const [activeModuleId, setActiveModuleId] = useState<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10>(() => {
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search)
       const modParam = urlParams.get("modulo") || urlParams.get("mod")
+      if (modParam === "10") return 10
       if (modParam === "9") return 9
       if (modParam === "8") return 8
       if (modParam === "7") return 7
@@ -2792,6 +3106,7 @@ export function NovatosPage() {
       if (modParam === "3") return 3
       if (modParam === "2") return 2
       const saved = localStorage.getItem(STORAGE_ACTIVE_MODULE_KEY)
+      if (saved === "10") return 10
       if (saved === "9") return 9
       if (saved === "8") return 8
       if (saved === "7") return 7
@@ -2804,9 +3119,9 @@ export function NovatosPage() {
     return 1
   })
 
-  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : activeModuleId === 2 ? MODULE_2_SCENES : activeModuleId === 3 ? MODULE_3_SCENES : activeModuleId === 4 ? MODULE_4_SCENES : activeModuleId === 5 ? MODULE_5_SCENES : activeModuleId === 6 ? MODULE_6_SCENES : activeModuleId === 7 ? MODULE_7_SCENES : activeModuleId === 8 ? MODULE_8_SCENES : MODULE_9_SCENES
-  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : activeModuleId === 2 ? MODULE_2_QUIZ_QUESTIONS : activeModuleId === 3 ? MODULE_3_QUIZ_QUESTIONS : activeModuleId === 4 ? MODULE_4_QUIZ_QUESTIONS : activeModuleId === 5 ? MODULE_5_QUIZ_QUESTIONS : activeModuleId === 6 ? MODULE_6_QUIZ_QUESTIONS : activeModuleId === 7 ? MODULE_7_QUIZ_QUESTIONS : activeModuleId === 8 ? MODULE_8_QUIZ_QUESTIONS : MODULE_9_QUIZ_QUESTIONS
-  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : activeModuleId === 2 ? STORAGE_MOD2_KEY : activeModuleId === 3 ? STORAGE_MOD3_KEY : activeModuleId === 4 ? STORAGE_MOD4_KEY : activeModuleId === 5 ? STORAGE_MOD5_KEY : activeModuleId === 6 ? STORAGE_MOD6_KEY : activeModuleId === 7 ? STORAGE_MOD7_KEY : activeModuleId === 8 ? STORAGE_MOD8_KEY : STORAGE_MOD9_KEY
+  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : activeModuleId === 2 ? MODULE_2_SCENES : activeModuleId === 3 ? MODULE_3_SCENES : activeModuleId === 4 ? MODULE_4_SCENES : activeModuleId === 5 ? MODULE_5_SCENES : activeModuleId === 6 ? MODULE_6_SCENES : activeModuleId === 7 ? MODULE_7_SCENES : activeModuleId === 8 ? MODULE_8_SCENES : activeModuleId === 9 ? MODULE_9_SCENES : MODULE_10_SCENES
+  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : activeModuleId === 2 ? MODULE_2_QUIZ_QUESTIONS : activeModuleId === 3 ? MODULE_3_QUIZ_QUESTIONS : activeModuleId === 4 ? MODULE_4_QUIZ_QUESTIONS : activeModuleId === 5 ? MODULE_5_QUIZ_QUESTIONS : activeModuleId === 6 ? MODULE_6_QUIZ_QUESTIONS : activeModuleId === 7 ? MODULE_7_QUIZ_QUESTIONS : activeModuleId === 8 ? MODULE_8_QUIZ_QUESTIONS : activeModuleId === 9 ? MODULE_9_QUIZ_QUESTIONS : MODULE_10_QUIZ_QUESTIONS
+  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : activeModuleId === 2 ? STORAGE_MOD2_KEY : activeModuleId === 3 ? STORAGE_MOD3_KEY : activeModuleId === 4 ? STORAGE_MOD4_KEY : activeModuleId === 5 ? STORAGE_MOD5_KEY : activeModuleId === 6 ? STORAGE_MOD6_KEY : activeModuleId === 7 ? STORAGE_MOD7_KEY : activeModuleId === 8 ? STORAGE_MOD8_KEY : activeModuleId === 9 ? STORAGE_MOD9_KEY : STORAGE_MOD10_KEY
 
   // Stage: "opening" (Hero Landing), "lesson" (Scenes 1-8), "quiz" (Final Test)
   const [viewStage, setViewStage] = useState<"opening" | "lesson" | "quiz">("opening")
@@ -2937,6 +3252,19 @@ export function NovatosPage() {
   const [m9PlanAdaptChoice, setM9PlanAdaptChoice] = useState<"1" | "2" | "3" | null>(null)
   const [m9ChallengeStep, setM9ChallengeStep] = useState<1 | 2 | 3>(1)
   const [m9ChallengeAnswers, setM9ChallengeAnswers] = useState<Record<number, string>>({})
+  // Estados interativos do Módulo 10: A Tecnologia por Trás da Velocidade
+  const [m10SelectedSystem, setM10SelectedSystem] = useState<"aerodynamics" | "power_unit" | "electrical_battery" | "suspension_wheels" | "brakes" | "safety_structure" | "sensors_electronics">("aerodynamics")
+  const [m10AeroCircuit, setM10AeroCircuit] = useState<"straights" | "twisty">("straights")
+  const [m10AeroConfig, setM10AeroConfig] = useState<"configA" | "configB">("configB")
+  const [m10ActiveAeroMode, setM10ActiveAeroMode] = useState<"straight" | "corner">("straight")
+  const [m10PuComponent, setM10PuComponent] = useState<"ice" | "ers" | "battery" | "delivery" | "sustainable_fuel">("ice")
+  const [m10EnergyScenario, setM10EnergyScenario] = useState<1 | 2 | 3>(1)
+  const [m10EnergyPick, setM10EnergyPick] = useState<"boost" | "overtake" | "recharge" | null>(null)
+  const [m10TelemetryMetric, setM10TelemetryMetric] = useState<"braking" | "min_speed" | "exit_accel" | "consistency">("braking")
+  const [m10SafetyPart, setM10SafetyPart] = useState<"monocoque" | "halo" | "crash_structure" | "harness">("monocoque")
+  const [m10EngineerStep, setM10EngineerStep] = useState<1 | 2 | 3>(1)
+  const [m10EngineerAnswers, setM10EngineerAnswers] = useState<Record<number, string>>({})
+
 
 
 
@@ -3047,7 +3375,7 @@ export function NovatosPage() {
 
   // Troca de módulo (Módulo 1 a 8)
   const handleSelectModule = useCallback(
-    (modId: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9) => {
+    (modId: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10) => {
       if (modId === activeModuleId) return
       // Para áudios e timers
       if (countdownTimerRef.current) {
@@ -3075,8 +3403,8 @@ export function NovatosPage() {
       }
 
       // Carrega estado do novo módulo
-      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : modId === 2 ? STORAGE_MOD2_KEY : modId === 3 ? STORAGE_MOD3_KEY : modId === 4 ? STORAGE_MOD4_KEY : modId === 5 ? STORAGE_MOD5_KEY : modId === 6 ? STORAGE_MOD6_KEY : modId === 7 ? STORAGE_MOD7_KEY : modId === 8 ? STORAGE_MOD8_KEY : STORAGE_MOD9_KEY
-      const maxLen = modId === 1 ? MODULE_1_SCENES.length : modId === 2 ? MODULE_2_SCENES.length : modId === 3 ? MODULE_3_SCENES.length : modId === 4 ? MODULE_4_SCENES.length : modId === 5 ? MODULE_5_SCENES.length : modId === 6 ? MODULE_6_SCENES.length : modId === 7 ? MODULE_7_SCENES.length : modId === 8 ? MODULE_8_SCENES.length : MODULE_9_SCENES.length
+      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : modId === 2 ? STORAGE_MOD2_KEY : modId === 3 ? STORAGE_MOD3_KEY : modId === 4 ? STORAGE_MOD4_KEY : modId === 5 ? STORAGE_MOD5_KEY : modId === 6 ? STORAGE_MOD6_KEY : modId === 7 ? STORAGE_MOD7_KEY : modId === 8 ? STORAGE_MOD8_KEY : modId === 9 ? STORAGE_MOD9_KEY : STORAGE_MOD10_KEY
+      const maxLen = modId === 1 ? MODULE_1_SCENES.length : modId === 2 ? MODULE_2_SCENES.length : modId === 3 ? MODULE_3_SCENES.length : modId === 4 ? MODULE_4_SCENES.length : modId === 5 ? MODULE_5_SCENES.length : modId === 6 ? MODULE_6_SCENES.length : modId === 7 ? MODULE_7_SCENES.length : modId === 8 ? MODULE_8_SCENES.length : modId === 9 ? MODULE_9_SCENES.length : MODULE_10_SCENES.length
       const s = loadPersistedState(targetKey)
       setVisitedScenes(s.visitedScenes)
       setSceneIndex(s.lastSceneIndex < maxLen ? s.lastSceneIndex : 0)
@@ -3236,6 +3564,17 @@ export function NovatosPage() {
       setM9PlanAdaptChoice(null)
       setM9ChallengeStep(1)
       setM9ChallengeAnswers({})
+      setM10SelectedSystem("aerodynamics")
+      setM10AeroCircuit("straights")
+      setM10AeroConfig("configB")
+      setM10ActiveAeroMode("straight")
+      setM10PuComponent("ice")
+      setM10EnergyScenario(1)
+      setM10EnergyPick(null)
+      setM10TelemetryMetric("braking")
+      setM10SafetyPart("monocoque")
+      setM10EngineerStep(1)
+      setM10EngineerAnswers({})
     },
     [currentScenes.length, stopAllAudio]
   )
@@ -4572,6 +4911,17 @@ export function NovatosPage() {
       setM9PlanAdaptChoice(null)
       setM9ChallengeStep(1)
       setM9ChallengeAnswers({})
+      setM10SelectedSystem("aerodynamics")
+      setM10AeroCircuit("straights")
+      setM10AeroConfig("configB")
+      setM10ActiveAeroMode("straight")
+      setM10PuComponent("ice")
+      setM10EnergyScenario(1)
+      setM10EnergyPick(null)
+      setM10TelemetryMetric("braking")
+      setM10SafetyPart("monocoque")
+      setM10EngineerStep(1)
+      setM10EngineerAnswers({})
                   }}
                   className="w-full py-1 text-[10px] text-zinc-400 hover:text-white underline cursor-pointer text-center block"
                 >
@@ -6248,6 +6598,17 @@ export function NovatosPage() {
       setM9PlanAdaptChoice(null)
       setM9ChallengeStep(1)
       setM9ChallengeAnswers({})
+      setM10SelectedSystem("aerodynamics")
+      setM10AeroCircuit("straights")
+      setM10AeroConfig("configB")
+      setM10ActiveAeroMode("straight")
+      setM10PuComponent("ice")
+      setM10EnergyScenario(1)
+      setM10EnergyPick(null)
+      setM10TelemetryMetric("braking")
+      setM10SafetyPart("monocoque")
+      setM10EngineerStep(1)
+      setM10EngineerAnswers({})
                   }}
                   className="w-full py-1 text-[10px] text-zinc-400 hover:text-white underline cursor-pointer text-center block"
                 >
@@ -8253,6 +8614,764 @@ export function NovatosPage() {
     // ------------------------------------------------------------------------
     // MÓDULO 9: A MENTE DOS CAMPEÕES — VELOCIDADE, DISCIPLINA E CONSISTÊNCIA
     // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // MÓDULO 10: A TECNOLOGIA POR TRÁS DA VELOCIDADE — ENGENHARIA E DADOS
+    // ------------------------------------------------------------------------
+    if (activeModuleId === 10) {
+      // CENA 1: O CARRO É UM SISTEMA INTEGRADO (7 ÁREAS)
+      if (currentScene.visualEffectType === "mod10_integrated_system") {
+        const systems = [
+          {
+            id: "aerodynamics" as const,
+            name: "Aerodinâmica",
+            funcao: "Gerar pressão descendente e controlar o arrasto",
+            efeito: "Determina a velocidade em reta e a estabilidade em curvas",
+          },
+          {
+            id: "power_unit" as const,
+            name: "Unidade de Potência",
+            funcao: "Motor V6 turbo e sistemas de combustão avançada",
+            efeito: "Entrega de torque e potência para tracionar o chassi",
+          },
+          {
+            id: "electrical_battery" as const,
+            name: "Sistema Elétrico & Bateria",
+            funcao: "Armazenar e distribuir energia elétrica de alta densidade",
+            efeito: "Proporciona quase 50% da aceleração total em retas e saídas",
+          },
+          {
+            id: "suspension_wheels" as const,
+            name: "Suspensão & Rodas",
+            funcao: "Manter o contato contínuo dos pneus com o asfalto",
+            efeito: "Dita a precisão de inserção em curvas e absorve ondulações",
+          },
+          {
+            id: "brakes" as const,
+            name: "Sistema de Freios",
+            funcao: "Discos de carbono e freio elétrico regenerativo traseiro",
+            efeito: "Permite desacelerações de mais de 5G e recarrega a bateria",
+          },
+          {
+            id: "safety_structure" as const,
+            name: "Estrutura de Segurança",
+            funcao: "Monocoque em fibra de carbono, Halo e zonas de impacto",
+            efeito: "Preserva a célula de sobrevivência do piloto sob acidentes severos",
+          },
+          {
+            id: "sensors_electronics" as const,
+            name: "Sensores & Eletrônica",
+            funcao: "Mais de 300 sensores enviando milhões de parâmetros por segundo",
+            efeito: "Alimenta os engenheiros com telemetria para refinar o desempenho",
+          },
+        ]
+
+        const activeSys = systems.find((s) => s.id === m10SelectedSystem) || systems[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-90 max-w-[92vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Engenharia Sistêmica</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">7 SISTEMAS INTEGRADOS</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Selecione um subsistema para inspecionar sua cadeia de desempenho:
+            </p>
+
+            <div className="grid grid-cols-2 gap-1 mb-2">
+              {systems.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setM10SelectedSystem(s.id)}
+                  className={cn(
+                    "p-1 rounded text-[9px] font-bold text-left transition-all border truncate",
+                    m10SelectedSystem === s.id
+                      ? "bg-[#E10600] text-white border-[#E10600] shadow-sm"
+                      : "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10"
+                  )}
+                >
+                  {s.name}
+                </button>
+              ))}
+            </div>
+
+            {/* Cadeia Visual Didática: COMPONENTE -> FUNÇÃO -> EFEITO */}
+            <div className="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-[10px] space-y-1.5">
+              <div className="flex items-center gap-1.5 text-cyan-300 font-mono text-[9px] font-bold uppercase">
+                <span>COMPONENTE:</span>
+                <span className="text-white bg-white/10 px-1.5 py-0.5 rounded">{activeSys.name}</span>
+              </div>
+              <div>
+                <strong className="text-zinc-400 text-[9px] block uppercase">Função Primária:</strong>
+                <p className="text-zinc-200 leading-snug">{activeSys.funcao}</p>
+              </div>
+              <div className="pt-1 border-t border-white/10">
+                <strong className="text-emerald-400 text-[9px] block uppercase">Efeito no Desempenho Global:</strong>
+                <p className="text-zinc-300 leading-snug">{activeSys.efeito}</p>
+              </div>
+            </div>
+
+            <div className="mt-2 p-1.5 rounded bg-white/5 border border-white/5 text-[9px] text-zinc-400 italic leading-tight">
+              “Na F1, a velocidade não vem de uma peça milagrosa. Ela nasce de centenas de decisões trabalhando em conjunto.”
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 2: AERODINÂMICA: DOMINANDO O AR (COMPROMISSO ARRASTO VS DOWNFORCE)
+      if (currentScene.visualEffectType === "mod10_aerodynamics_balance") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Simulação Didática</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">COMPROMISSO AERODINÂMICO</span>
+            </div>
+
+            {/* Seletor de Circuito */}
+            <p className="text-[10px] text-zinc-300 mb-1 font-bold">1. Escolha as características da pista:</p>
+            <div className="flex gap-1.5 mb-2">
+              <button
+                type="button"
+                onClick={() => setM10AeroCircuit("straights")}
+                className={cn(
+                  "flex-1 p-1.5 rounded text-[10px] font-bold text-center border transition-all",
+                  m10AeroCircuit === "straights" ? "bg-cyan-600 text-white border-cyan-500" : "bg-white/5 border-white/10 text-zinc-300"
+                )}
+              >
+                Retas Longas (ex: Monza)
+              </button>
+              <button
+                type="button"
+                onClick={() => setM10AeroCircuit("twisty")}
+                className={cn(
+                  "flex-1 p-1.5 rounded text-[10px] font-bold text-center border transition-all",
+                  m10AeroCircuit === "twisty" ? "bg-amber-600 text-white border-amber-500" : "bg-white/5 border-white/10 text-zinc-300"
+                )}
+              >
+                Muitas Curvas (ex: Mônaco)
+              </button>
+            </div>
+
+            {/* Seletor de Configuração */}
+            <p className="text-[10px] text-zinc-300 mb-1 font-bold">2. Escolha o acerto aerodinâmico:</p>
+            <div className="flex gap-1.5 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM10AeroConfig("configA")}
+                className={cn(
+                  "flex-1 p-1.5 rounded text-[10px] font-bold text-center border transition-all",
+                  m10AeroConfig === "configA" ? "bg-[#E10600] text-white border-[#E10600]" : "bg-white/5 border-white/10 text-zinc-300"
+                )}
+              >
+                Config A: Alta Pressão (Downforce)
+              </button>
+              <button
+                type="button"
+                onClick={() => setM10AeroConfig("configB")}
+                className={cn(
+                  "flex-1 p-1.5 rounded text-[10px] font-bold text-center border transition-all",
+                  m10AeroConfig === "configB" ? "bg-[#E10600] text-white border-[#E10600]" : "bg-white/5 border-white/10 text-zinc-300"
+                )}
+              >
+                Config B: Baixo Arrasto (Velocidade)
+              </button>
+            </div>
+
+            {/* Análise Didática de Vantagens e Desvantagens */}
+            <div className="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-[10px] space-y-1.5">
+              <div className="flex justify-between items-center text-[9px] font-mono border-b border-white/10 pb-1">
+                <span className="text-zinc-400">CIRCUITO: {m10AeroCircuit === "straights" ? "RETAS LONGAS" : "CURVAS TRAVADAS"}</span>
+                <span className="text-amber-400 font-bold">{m10AeroConfig === "configA" ? "FOCO: ADERÊNCIA" : "FOCO: VELOCIDADE"}</span>
+              </div>
+              <p className="text-zinc-300 leading-snug">
+                {m10AeroConfig === "configA"
+                  ? "✓ Curvas contornadas com máxima aderência e frenagens curtas. ⚠️ Desvantagem: o arrasto elevado cria um 'muro de ar' nas retas, reduzindo a velocidade final em até 18 km/h."
+                  : "✓ Velocidade de reta excepcional com resistência do ar mínima. ⚠️ Desvantagem: o carro perde pressão aerodinâmica em curvas rápidas, exigindo freadas mais precoces."}
+              </p>
+              <div className="p-1 rounded bg-black/60 text-[9px] text-cyan-300 italic">
+                {m10AeroCircuit === "straights" && m10AeroConfig === "configB" && "✦ Excelente equilíbrio para pistas de alta velocidade com longas retas!"}
+                {m10AeroCircuit === "straights" && m10AeroConfig === "configA" && "✦ Muito arrasto para retas longas; tempo perdido nas retas supera o ganho nas curvas."}
+                {m10AeroCircuit === "twisty" && m10AeroConfig === "configA" && "✦ Excelente acerto para circuitos sinuosos onde a aderência em curva é prioridade!"}
+                {m10AeroCircuit === "twisty" && m10AeroConfig === "configB" && "✦ Pouca pressão para curvas lentas; o carro escorrega e desgasta pneus excessivamente."}
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 3: AERODINÂMICA ATIVA: OS MODOS DE 2026 (STRAIGHT MODE VS CORNER MODE)
+      if (currentScene.visualEffectType === "mod10_active_aero_modes") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Regulamento 2026</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">AERODINÂMICA ATIVA</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-2 font-bold">
+              Alterne a configuração das asas dianteira e traseira:
+            </p>
+
+            <div className="flex gap-1.5 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM10ActiveAeroMode("straight")}
+                className={cn(
+                  "flex-1 p-2 rounded text-[10px] font-bold text-center border transition-all",
+                  m10ActiveAeroMode === "straight"
+                    ? "bg-cyan-600 text-white border-cyan-400 shadow-md"
+                    : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                STRAIGHT MODE (Retas)
+              </button>
+              <button
+                type="button"
+                onClick={() => setM10ActiveAeroMode("corner")}
+                className={cn(
+                  "flex-1 p-2 rounded text-[10px] font-bold text-center border transition-all",
+                  m10ActiveAeroMode === "corner"
+                    ? "bg-amber-600 text-white border-amber-400 shadow-md"
+                    : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                )}
+              >
+                CORNER MODE (Curvas)
+              </button>
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-[10px] space-y-2">
+              <div className="flex items-center justify-between text-[11px] font-bold text-white">
+                <span>{m10ActiveAeroMode === "straight" ? "Modo de Reta Ativado" : "Modo de Curva Ativado"}</span>
+                <span className="px-1.5 py-0.5 rounded text-[8px] font-mono bg-white/10 text-cyan-300">
+                  {m10ActiveAeroMode === "straight" ? "BAIXO ARRASTO" : "ALTA PRESSÃO"}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-1 text-[9px] font-mono">
+                <div className="p-1 rounded bg-black/50 border border-white/5">
+                  <span className="text-zinc-400 block">ASA DIANTEIRA:</span>
+                  <span className="text-white">{m10ActiveAeroMode === "straight" ? "Flaps aliviados" : "Flaps inclinados"}</span>
+                </div>
+                <div className="p-1 rounded bg-black/50 border border-white/5">
+                  <span className="text-zinc-400 block">ASA TRASEIRA:</span>
+                  <span className="text-white">{m10ActiveAeroMode === "straight" ? "Perfil plano aberto" : "Perfil de alta carga"}</span>
+                </div>
+              </div>
+
+              <p className="text-zinc-300 leading-snug">
+                {m10ActiveAeroMode === "straight"
+                  ? "Nas zonas regulamentadas de reta, os elementos ativos mudam de posição para reduzir a área de arrasto frontal. O carro acelera com mais facilidade e atinge maior velocidade final sem desperdiçar combustível."
+                  : "Antes da frenagem e ao longo de toda a curva, os elementos retornam instantaneamente ao ângulo de alta sustentação, garantindo que os pneus tenham toda a aderência necessária para contornar no limite."}
+              </p>
+            </div>
+
+            <div className="mt-2 p-1.5 rounded bg-white/5 border border-white/5 text-[9px] text-zinc-400 leading-tight">
+              💡 <strong>Nota Histórica 2026:</strong> O DRS móvel das temporadas anteriores foi substituído pela aerodinâmica ativa integral combinada ao Overtake Mode elétrico.
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 4: UNIDADE DE POTÊNCIA: COMBUSTÃO E ELETRICIDADE (POTÊNCIA VS ENERGIA)
+      if (currentScene.visualEffectType === "mod10_power_unit_hybrid") {
+        const puParts = [
+          {
+            id: "ice" as const,
+            name: "Motor a Combustão (V6 Turbo)",
+            desc: "Motor térmico de 1.6 litro alimentado por combustíveis 100% sustentáveis, gerando cerca de 400 kW de potência.",
+          },
+          {
+            id: "ers" as const,
+            name: "MGU-K (Motor Gerador Cinético)",
+            desc: "Gerador elétrico de 350 kW acoplado ao eixo traseiro, que recupera energia nas frenagens e entrega torque instantâneo.",
+          },
+          {
+            id: "battery" as const,
+            name: "Bateria de Alta Densidade",
+            desc: "Células eletroquímicas ultraleves que armazenam a energia recuperada para ser descarregada nas saídas de curva e retas.",
+          },
+          {
+            id: "delivery" as const,
+            name: "Gestão de Entrega (50/50)",
+            desc: "Em 2026, a divisão média regulamentar busca aproximadamente 50% de potência da combustão e 50% de potência elétrica.",
+          },
+          {
+            id: "sustainable_fuel" as const,
+            name: "Combustível 100% Sustentável",
+            desc: "Formulação sintética e não fóssil desenvolvida para neutralizar a pegada de carbono sem perda de rendimento térmico.",
+          },
+        ]
+
+        const activePart = puParts.find((p) => p.id === m10PuComponent) || puParts[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Arquitetura Híbrida</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold">FLUXO DE POTÊNCIA</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Selecione um componente da unidade propulsora:
+            </p>
+
+            <div className="flex flex-wrap gap-1 mb-2">
+              {puParts.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setM10PuComponent(p.id)}
+                  className={cn(
+                    "px-2 py-1 rounded text-[9px] font-bold border transition-all",
+                    m10PuComponent === p.id
+                      ? "bg-cyan-600 text-white border-cyan-400"
+                      : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {p.name.split(" ")[0]} {p.name.split(" ")[1] || ""}
+                </button>
+              ))}
+            </div>
+
+            {/* Diagrama de Fluxo Didático */}
+            <div className="p-2 rounded bg-black/60 border border-white/10 mb-2 font-mono text-[8px] text-zinc-400 flex items-center justify-between">
+              <span>COMBUSTÍVEL → MOTOR TÉRMICO</span>
+              <span className="text-cyan-400">⚡</span>
+              <span>FRENAGEM → BATERIA → POTÊNCIA ELÉTRICA</span>
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-[10px]">
+              <strong className="text-white block mb-0.5">{activePart.name}</strong>
+              <p className="text-zinc-300 leading-snug mb-2">{activePart.desc}</p>
+              <div className="p-1.5 rounded bg-white/5 border border-white/5 text-[9px] text-amber-300">
+                ⚖️ <strong>Potência vs Energia:</strong> Potência é a velocidade com que a força é entregue (kW). Energia é a reserva total disponível para a volta (Joules).
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 5: BOOST, OVERTAKE MODE E RECHARGE
+      if (currentScene.visualEffectType === "mod10_boost_overtake_recharge") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Recursos de Energia</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">GESTÃO DE WATTS</span>
+            </div>
+
+            {/* Três Momentos da Corrida */}
+            <p className="text-[10px] text-zinc-300 mb-1 font-bold">1. Selecione o momento na pista:</p>
+            <div className="flex gap-1 mb-2">
+              <button
+                type="button"
+                onClick={() => { setM10EnergyScenario(1); setM10EnergyPick(null); }}
+                className={cn(
+                  "flex-1 p-1 rounded text-[9px] font-bold border transition-all text-center",
+                  m10EnergyScenario === 1 ? "bg-[#E10600] text-white border-[#E10600]" : "bg-white/5 border-white/10 text-zinc-300"
+                )}
+              >
+                1. Caça ao Rival (&lt;1s)
+              </button>
+              <button
+                type="button"
+                onClick={() => { setM10EnergyScenario(2); setM10EnergyPick(null); }}
+                className={cn(
+                  "flex-1 p-1 rounded text-[9px] font-bold border transition-all text-center",
+                  m10EnergyScenario === 2 ? "bg-[#E10600] text-white border-[#E10600]" : "bg-white/5 border-white/10 text-zinc-300"
+                )}
+              >
+                2. Defesa de Posição
+              </button>
+              <button
+                type="button"
+                onClick={() => { setM10EnergyScenario(3); setM10EnergyPick(null); }}
+                className={cn(
+                  "flex-1 p-1 rounded text-[9px] font-bold border transition-all text-center",
+                  m10EnergyScenario === 3 ? "bg-[#E10600] text-white border-[#E10600]" : "bg-white/5 border-white/10 text-zinc-300"
+                )}
+              >
+                3. Bateria Esgotada
+              </button>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1 font-bold">2. Escolha o modo operacional mais adequado:</p>
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM10EnergyPick("boost")}
+                className={cn(
+                  "p-1.5 rounded text-[9px] font-bold border text-center transition-all",
+                  m10EnergyPick === "boost" ? "bg-amber-600 text-white border-amber-400" : "bg-white/5 border-white/10 text-zinc-300"
+                )}
+              >
+                BOOST MODE
+              </button>
+              <button
+                type="button"
+                onClick={() => setM10EnergyPick("overtake")}
+                className={cn(
+                  "p-1.5 rounded text-[9px] font-bold border text-center transition-all",
+                  m10EnergyPick === "overtake" ? "bg-emerald-600 text-white border-emerald-400" : "bg-white/5 border-white/10 text-zinc-300"
+                )}
+              >
+                OVERTAKE MODE
+              </button>
+              <button
+                type="button"
+                onClick={() => setM10EnergyPick("recharge")}
+                className={cn(
+                  "p-1.5 rounded text-[9px] font-bold border text-center transition-all",
+                  m10EnergyPick === "recharge" ? "bg-blue-600 text-white border-blue-400" : "bg-white/5 border-white/10 text-zinc-300"
+                )}
+              >
+                RECHARGE
+              </button>
+            </div>
+
+            {m10EnergyPick && (
+              <div className="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-[10px] leading-snug">
+                {m10EnergyScenario === 1 && m10EnergyPick === "overtake" && (
+                  <span className="text-emerald-300">
+                    ✓ <strong>Decisão Correta:</strong> Por estar a menos de 1 segundo no ponto de detecção, o regulamento de 2026 libera o Overtake Mode com energia elétrica suplementar para emparelhar na reta!
+                  </span>
+                )}
+                {m10EnergyScenario === 1 && m10EnergyPick !== "overtake" && (
+                  <span className="text-amber-300">
+                    ⚠️ <strong>Avaliação:</strong> O Boost pode ser acionado, mas o Overtake Mode é o recurso específico concedido pelas regras para superar o rival na zona autorizada.
+                  </span>
+                )}
+                {m10EnergyScenario === 2 && m10EnergyPick === "boost" && (
+                  <span className="text-emerald-300">
+                    ✓ <strong>Decisão Correta:</strong> O Boost Mode permite despejar potência calculada para tracionar forte na saída e se defender da aproximação do adversário.
+                  </span>
+                )}
+                {m10EnergyScenario === 2 && m10EnergyPick !== "boost" && (
+                  <span className="text-amber-300">
+                    ⚠️ <strong>Avaliação:</strong> O Overtake Mode não está disponível para defesa, e o Recharge reduziria a potência na reta, facilitando a vida do atacante.
+                  </span>
+                )}
+                {m10EnergyScenario === 3 && m10EnergyPick === "recharge" && (
+                  <span className="text-emerald-300">
+                    ✓ <strong>Decisão Correta:</strong> Com carga baixa, o Recharge recupera a bateria nas zonas de frenagem pesada para permitir novos ataques nas voltas seguintes.
+                  </span>
+                )}
+                {m10EnergyScenario === 3 && m10EnergyPick !== "recharge" && (
+                  <span className="text-red-300">
+                    ❌ <strong>Risco Crítico:</strong> Tentar forçar Boost com a bateria zerada causa perda súbita de potência elétrica ('derate') no meio da reta.
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      // CENA 6: TELEMETRIA: OS DADOS QUE REVELAM A VELOCIDADE
+      if (currentScene.visualEffectType === "mod10_telemetry_laps") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Análise de Dados</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold">TELEMETRIA COMPARADA</span>
+            </div>
+
+            <div className="p-1 rounded bg-white/5 border border-white/10 text-[8px] font-mono text-center text-zinc-400 uppercase mb-2">
+              DADOS FICTÍCIOS PARA APRENDIZADO DIDÁTICO
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Selecione o parâmetro para comparar Volta A vs Volta B:
+            </p>
+
+            <div className="grid grid-cols-2 gap-1 mb-2.5">
+              <button
+                type="button"
+                onClick={() => setM10TelemetryMetric("braking")}
+                className={cn(
+                  "p-1.5 rounded text-[9px] font-bold border transition-all text-left",
+                  m10TelemetryMetric === "braking" ? "bg-cyan-600 text-white border-cyan-400" : "bg-white/5 border-white/10 text-zinc-300"
+                )}
+              >
+                1. Ponto de Frenagem
+              </button>
+              <button
+                type="button"
+                onClick={() => setM10TelemetryMetric("min_speed")}
+                className={cn(
+                  "p-1.5 rounded text-[9px] font-bold border transition-all text-left",
+                  m10TelemetryMetric === "min_speed" ? "bg-cyan-600 text-white border-cyan-400" : "bg-white/5 border-white/10 text-zinc-300"
+                )}
+              >
+                2. Velocidade Mínima
+              </button>
+              <button
+                type="button"
+                onClick={() => setM10TelemetryMetric("exit_accel")}
+                className={cn(
+                  "p-1.5 rounded text-[9px] font-bold border transition-all text-left",
+                  m10TelemetryMetric === "exit_accel" ? "bg-cyan-600 text-white border-cyan-400" : "bg-white/5 border-white/10 text-zinc-300"
+                )}
+              >
+                3. Aceleração na Saída
+              </button>
+              <button
+                type="button"
+                onClick={() => setM10TelemetryMetric("consistency")}
+                className={cn(
+                  "p-1.5 rounded text-[9px] font-bold border transition-all text-left",
+                  m10TelemetryMetric === "consistency" ? "bg-cyan-600 text-white border-cyan-400" : "bg-white/5 border-white/10 text-zinc-300"
+                )}
+              >
+                4. Delta Geral de Tempo
+              </button>
+            </div>
+
+            {/* Painel Gráfico Didático */}
+            <div className="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-[10px] space-y-2">
+              <div className="grid grid-cols-2 gap-1.5 font-mono text-[9px]">
+                <div className="p-1.5 rounded bg-black/60 border border-amber-500/30">
+                  <span className="text-amber-400 font-bold block mb-0.5">VOLTA A (Frenagem Tardia)</span>
+                  {m10TelemetryMetric === "braking" && <span className="text-zinc-300">Freia a 78m (-12m)</span>}
+                  {m10TelemetryMetric === "min_speed" && <span className="text-zinc-300">Ápice: 81 km/h</span>}
+                  {m10TelemetryMetric === "exit_accel" && <span className="text-zinc-300">100% acelerador a 42m</span>}
+                  {m10TelemetryMetric === "consistency" && <span className="text-zinc-300">Tempo: 1:19.420</span>}
+                </div>
+                <div className="p-1.5 rounded bg-black/60 border border-emerald-500/30">
+                  <span className="text-emerald-400 font-bold block mb-0.5">VOLTA B (Linha Fluida)</span>
+                  {m10TelemetryMetric === "braking" && <span className="text-zinc-300">Freia a 90m (Ideal)</span>}
+                  {m10TelemetryMetric === "min_speed" && <span className="text-zinc-300">Ápice: 88 km/h</span>}
+                  {m10TelemetryMetric === "exit_accel" && <span className="text-zinc-300">100% acelerador a 25m</span>}
+                  {m10TelemetryMetric === "consistency" && <span className="text-zinc-300">Tempo: 1:19.140 (-0.28s)</span>}
+                </div>
+              </div>
+
+              <p className="text-zinc-300 leading-snug">
+                {m10TelemetryMetric === "braking" && "Na Volta A, o piloto freou mais tarde, mas sobrecarregou os pneus e perdeu a linha ideal de contorno."}
+                {m10TelemetryMetric === "min_speed" && "A Volta B manteve velocidade mínima superior no ápice, garantindo menor perda de momento cinético."}
+                {m10TelemetryMetric === "exit_accel" && "A Volta B permitiu aplicar aceleração máxima 17 metros antes, gerando ganho acumulado em toda a reta subsequente."}
+                {m10TelemetryMetric === "consistency" && "A interpretação dos dados prova: velocidade maior em um ponto isolado não garante a volta mais rápida. O conjunto é o que vale!"}
+              </p>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 7: MATERIAIS, ESTRUTURA E SEGURANÇA
+      if (currentScene.visualEffectType === "mod10_materials_safety") {
+        const safetyItems = [
+          {
+            id: "monocoque" as const,
+            name: "Monocoque (Célula de Sobrevivência)",
+            desc: "Casulo de fibra de carbono e favo de mel de alumínio indeformável, projetado para suportar forças de compressão monumentais.",
+          },
+          {
+            id: "halo" as const,
+            name: "Halo de Titânio",
+            desc: "Arco de proteção sobre o cockpit pesando cerca de 9 kg, capaz de suportar o impacto estático de mais de 12 toneladas (o peso de dois ônibus).",
+          },
+          {
+            id: "crash_structure" as const,
+            name: "Estruturas Deformáveis de Impacto",
+            desc: "Cones de absorção frontal, lateral e traseira que se estilhaçam progressivamente para dissipar a energia cinética do choque.",
+          },
+          {
+            id: "harness" as const,
+            name: "Cinto de 6 Pontos & Dispositivo HANS",
+            desc: "Prende o tronco e impede a hiperextensão do pescoço em desacelerações brutais de mais de 50G.",
+          },
+        ]
+
+        const activeItem = safetyItems.find((i) => i.id === m10SafetyPart) || safetyItems[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Proteção ao Piloto</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">SEGURANÇA PASSIVA FIA</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Selecione um elemento de segurança do monoposto:
+            </p>
+
+            <div className="grid grid-cols-2 gap-1 mb-2.5">
+              {safetyItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setM10SafetyPart(item.id)}
+                  className={cn(
+                    "p-1.5 rounded text-[9px] font-bold border transition-all text-left",
+                    m10SafetyPart === item.id
+                      ? "bg-[#E10600] text-white border-[#E10600]"
+                      : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {item.name.split("(")[0]}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-[10px] space-y-1">
+              <strong className="text-white block text-[11px]">{activeItem.name}</strong>
+              <p className="text-zinc-300 leading-snug">{activeItem.desc}</p>
+            </div>
+
+            <div className="mt-2 p-1.5 rounded bg-white/5 border border-white/5 text-[9px] text-zinc-400 italic">
+              A engenharia de segurança mitiga riscos extremos por meio de normas e testes rígidos da FIA, mas o automobilismo sempre conterá riscos intrínsecos.
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 8: DESAFIO FINAL: VOCÊ É O ENGENHEIRO DA EQUIPE
+      if (currentScene.visualEffectType === "mod10_engineer_challenge") {
+        const engineerSteps = [
+          {
+            step: 1 as const,
+            title: "Decisão 1 — Compromisso Aerodinâmico",
+            scenario: "O circuito de testes possui uma reta de 1,2 km e um setor intermediário repleto de 'esses' de alta velocidade. Qual acerto recomendar?",
+            options: [
+              { id: "A", text: "Priorizar exclusivamente a velocidade em reta, reduzindo ao mínimo as asas." },
+              { id: "B", text: "Buscar um compromisso equilibrado entre arrasto e aderência conforme as características da pista." },
+              { id: "C", text: "Maximizar a pressão aerodinâmica sem considerar a perda nas retas." },
+            ],
+            correct: "B",
+            mariana: "Exato! Em engenharia, compromisso inteligente vence extremismos: o carro mantém velocidade competitiva na reta sem destracionar nas curvas rápidas.",
+            principle: "Equilíbrio entre arrasto induzido e carga aerodinâmica útil.",
+          },
+          {
+            step: 2 as const,
+            title: "Decisão 2 — Gestão de Energia Elétrica",
+            scenario: "O piloto persegue o rival e tem 85% de bateria no meio do setor 2. Faltam 2 retas e a frenagem final para fechar a volta. O que orientar pelo rádio?",
+            options: [
+              { id: "A", text: "Despejar toda a energia imediatamente sem avaliar as próximas zonas." },
+              { id: "B", text: "Considerar a proximidade, guardar energia para a zona de ultrapassagem e garantir recarga no grampo." },
+              { id: "C", text: "Nunca utilizar a energia elétrica para não correr risco de esgotá-la." },
+            ],
+            correct: "B",
+            mariana: "Perfeito! Gerenciar energia é pensar na volta inteira. Despejar carga no local errado deixa o piloto indefeso na reta mais longa.",
+            principle: "Distribuição tática de energia (SOC - State of Charge).",
+          },
+          {
+            step: 3 as const,
+            title: "Decisão 3 — Análise de Dados e Solução de Problemas",
+            scenario: "A telemetria aponta que o carro está perdendo 0,3s na saída da curva 4. O que a equipe de engenharia deve fazer antes do próximo treino?",
+            options: [
+              { id: "A", text: "Alterar a suspensão, asas e mapeamento de motor tudo junto imediatamente." },
+              { id: "B", text: "Comparar os dados com voltas anteriores, isolar a provável causa e avaliar ajustes de forma controlada." },
+              { id: "C", text: "Concluir sumariamente que a potência do motor é a única causa da perda." },
+            ],
+            correct: "B",
+            mariana: "Brilhante! O método científico da F1 exige isolar variáveis. Mudar tudo de uma vez impede saber o que realmente consertou ou piorou o carro.",
+            principle: "Rigor científico e isolamento de variáveis na telemetria.",
+          },
+        ]
+
+        const currentStepData = engineerSteps.find((s) => s.step === m10EngineerStep) || engineerSteps[0]
+        const answered = m10EngineerAnswers[m10EngineerStep]
+        const isAllDone = Object.keys(m10EngineerAnswers).length === 3
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Simulação Didática</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">
+                {isAllDone ? "ENGENHEIRO APROVADO" : `DECISÃO ${m10EngineerStep}/3`}
+              </span>
+            </div>
+
+            {!isAllDone ? (
+              <>
+                <div className="p-2 rounded-lg bg-zinc-900 border border-white/10 text-[10px] mb-2.5">
+                  <span className="text-white font-bold block mb-1">{currentStepData.title}</span>
+                  <p className="text-zinc-300 leading-snug">{currentStepData.scenario}</p>
+                </div>
+
+                <div className="flex flex-col gap-1.5 mb-2.5">
+                  {currentStepData.options.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setM10EngineerAnswers({ ...m10EngineerAnswers, [m10EngineerStep]: opt.id })}
+                      className={cn(
+                        "p-2 rounded text-[10px] font-bold text-left transition-all border",
+                        answered === opt.id
+                          ? opt.id === currentStepData.correct
+                            ? "bg-emerald-950/80 border-emerald-500 text-emerald-200"
+                            : "bg-red-950/80 border-red-500 text-red-200"
+                          : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                      )}
+                    >
+                      {opt.id}) {opt.text}
+                    </button>
+                  ))}
+                </div>
+
+                {answered && (
+                  <div className="mb-2">
+                    <div
+                      className={cn(
+                        "text-[9px] p-2 rounded border space-y-1",
+                        answered === currentStepData.correct
+                          ? "bg-emerald-950/40 border-emerald-500/30 text-emerald-200"
+                          : "bg-red-950/40 border-red-500/30 text-red-200"
+                      )}
+                    >
+                      <div>
+                        <strong>Veredito:</strong> {answered === currentStepData.correct ? "✓ Decisão Precisa!" : "❌ Decisão Inadequada!"}
+                      </div>
+                      <p className="text-zinc-300">{currentStepData.mariana}</p>
+                      <div className="pt-1 border-t border-white/10 text-[8px] font-mono text-cyan-300">
+                        ✦ Princípio de Engenharia: {currentStepData.principle}
+                      </div>
+                    </div>
+
+                    {answered === currentStepData.correct && m10EngineerStep < 3 && (
+                      <button
+                        type="button"
+                        onClick={() => setM10EngineerStep((prev) => ((prev + 1) as 1 | 2 | 3))}
+                        className="mt-2 w-full py-1.5 rounded bg-[#E10600] hover:bg-[#ff1a14] text-white text-[10px] font-black uppercase tracking-wider cursor-pointer transition-all"
+                      >
+                        Próxima Decisão →
+                      </button>
+                    )}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-center py-2">
+                <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-2 border border-emerald-500/40">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
+                <h4 className="text-white text-xs font-black uppercase mb-1">Engenharia de Elite Concluída!</h4>
+                <p className="text-zinc-300 text-[10px] leading-snug mb-3">
+                  Você balanceou o arrasto aerodinâmico, administrou a energia híbrida com estratégia e utilizou telemetria com rigor científico.
+                </p>
+                <div className="p-2 rounded bg-white/5 border border-white/10 text-[9px] text-zinc-400 mb-3 text-left space-y-0.5">
+                  <strong className="text-white block mb-0.5">✦ A TECNOLOGIA POR TRÁS DA VELOCIDADE:</strong>
+                  <div>• O ar influencia a aderência e o arrasto.</div>
+                  <div>• A energia precisa ser recuperada e utilizada estrategicamente.</div>
+                  <div>• Os dados ajudam a identificar oportunidades de melhoria.</div>
+                  <div>• A segurança depende de engenharia, testes e regulamentos.</div>
+                  <div>• O desempenho resulta do equilíbrio entre sistemas.</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setViewStage("quiz")}
+                  className="w-full py-2 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider shadow-[0_0_20px_rgba(225,6,0,0.6)] cursor-pointer transition-all"
+                >
+                  Fazer o Quiz Final (10 Questões)
+                </button>
+              </div>
+            )}
+          </div>
+        )
+      }
+    }
+
     if (activeModuleId === 9) {
       // CENA 1: VELOCIDADE NÃO É TUDO (5 PILARES)
       if (currentScene.visualEffectType === "mod9_qualities_overview") {
@@ -9774,7 +10893,7 @@ export function NovatosPage() {
           {/* Fundo Cinematográfico com Parallax Suave */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <img
-              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : activeModuleId === 4 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 5 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 6 ? "/novatos/modulo1/cena02_1950.jpg" : activeModuleId === 7 ? "/backgrounds/bg-mercedes.webp" : activeModuleId === 8 ? "/backgrounds/bg-aston.webp" : "/backgrounds/bg-redbull.webp"}
+              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : activeModuleId === 4 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 5 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 6 ? "/novatos/modulo1/cena02_1950.jpg" : activeModuleId === 7 ? "/backgrounds/bg-mercedes.webp" : activeModuleId === 8 ? "/backgrounds/bg-aston.webp" : activeModuleId === 9 ? "/backgrounds/bg-redbull.webp" : "/backgrounds/bg-audi.webp"}
               alt="Fundo Novatos na F1"
               className={cn(
                 "w-full h-full object-cover object-center brightness-40 contrast-125 scale-105",
@@ -9858,6 +10977,16 @@ export function NovatosPage() {
             </button>
             <button
               type="button"
+              onClick={() => handleSelectModule(10)}
+              className={cn(
+                "px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide transition-all cursor-pointer",
+                activeModuleId === 10 ? "bg-[#E10600] text-white shadow-lg" : "text-zinc-400 hover:text-white"
+              )}
+            >
+              10. Tecnologia da F1
+            </button>
+            <button
+              type="button"
               onClick={() => handleSelectModule(9)}
               className={cn(
                 "px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide transition-all cursor-pointer",
@@ -9897,7 +11026,7 @@ export function NovatosPage() {
                   ? "MÓDULO 6 • A HISTÓRIA DA FÓRMULA 1: 75 ANOS DE EVOLUÇÃO"
                   : activeModuleId === 7
                   ? "MÓDULO 7 • POR TRÁS DA EQUIPE: ENGENHEIROS, ESTRATÉGIA E DADOS"
-                  : activeModuleId === 8 ? "MÓDULO 8 • DOMINANDO OS CIRCUITOS: TRAJETÓRIAS E VOLTA RÁPIDA" : "MÓDULO 9 • A MENTE DOS CAMPEÕES: O QUE DEFINE UM VENCEDOR"}
+                  : activeModuleId === 8 ? "MÓDULO 8 • DOMINANDO OS CIRCUITOS: TRAJETÓRIAS E VOLTA RÁPIDA" : activeModuleId === 9 ? "MÓDULO 9 • A MENTE DOS CAMPEÕES: O QUE DEFINE UM VENCEDOR" : "MÓDULO 10 • A TECNOLOGIA POR TRÁS DA VELOCIDADE: ENGENHARIA E DADOS"}
               </span>
             </div>
 
@@ -9920,7 +11049,7 @@ export function NovatosPage() {
                 ? "MÓDULO 6 — A HISTÓRIA DA FÓRMULA 1"
                 : activeModuleId === 7
                 ? "MÓDULO 7 — POR TRÁS DA EQUIPE"
-                : activeModuleId === 8 ? "MÓDULO 8 — DOMINANDO OS CIRCUITOS" : "MÓDULO 9 — A MENTE DOS CAMPEÕES"}
+                : activeModuleId === 8 ? "MÓDULO 8 — DOMINANDO OS CIRCUITOS" : activeModuleId === 9 ? "MÓDULO 9 — A MENTE DOS CAMPEÕES" : "MÓDULO 10 — A TECNOLOGIA POR TRÁS DA VELOCIDADE"}
             </p>
 
             <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-xl mb-8">
@@ -10319,7 +11448,7 @@ export function NovatosPage() {
               </div>
 
               <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white mb-1">
-                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : activeModuleId === 2 ? "MÓDULO 2 CONCLUÍDO" : activeModuleId === 3 ? "MÓDULO 3 CONCLUÍDO" : activeModuleId === 4 ? "MÓDULO 4 CONCLUÍDO" : activeModuleId === 5 ? "MÓDULO 5 CONCLUÍDO" : activeModuleId === 6 ? "MÓDULO 6 CONCLUÍDO" : activeModuleId === 7 ? "MÓDULO 7 CONCLUÍDO" : activeModuleId === 8 ? "MÓDULO 8 CONCLUÍDO" : "MÓDULO 9 CONCLUÍDO"}
+                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : activeModuleId === 2 ? "MÓDULO 2 CONCLUÍDO" : activeModuleId === 3 ? "MÓDULO 3 CONCLUÍDO" : activeModuleId === 4 ? "MÓDULO 4 CONCLUÍDO" : activeModuleId === 5 ? "MÓDULO 5 CONCLUÍDO" : activeModuleId === 6 ? "MÓDULO 6 CONCLUÍDO" : activeModuleId === 7 ? "MÓDULO 7 CONCLUÍDO" : activeModuleId === 8 ? "MÓDULO 8 CONCLUÍDO" : activeModuleId === 9 ? "MÓDULO 9 CONCLUÍDO" : "MÓDULO 10 CONCLUÍDO"}
               </h2>
 
               <p className="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-4">
@@ -10365,7 +11494,15 @@ export function NovatosPage() {
                     : (quizScore ?? 0) >= 5
                     ? "“Bom começo! Reveja as cenas sobre telemetria, limite de custos e estratégia de pit wall.”"
                     : "“Liderar uma equipe exige aprendizado constante. Reveja as cenas do módulo e tente novamente.”"
-                                    : activeModuleId === 9
+                                    : activeModuleId === 10
+                  ? (quizScore ?? 0) === 10
+                    ? "“Desafio concluído! Você aprendeu os principais conceitos tecnológicos que ajudam a explicar a velocidade na Fórmula 1.”"
+                    : (quizScore ?? 0) >= 8
+                    ? "“Excelente! Você já consegue relacionar engenharia, energia e desempenho.”"
+                    : (quizScore ?? 0) >= 5
+                    ? "“Boa evolução! Você já compreende vários fundamentos da tecnologia de um carro de F1.”"
+                    : "“A engenharia da F1 é complexa, mas você já começou a descobrir seus segredos. Revise as cenas e tente novamente.”"
+                  : activeModuleId === 9
                   ? (quizScore ?? 0) === 10
                     ? "“Perfeito! Mente de Campeão Mundial! Você domina todos os pilares mentais, táticos e técnicos de um piloto extraordinário.”"
                     : (quizScore ?? 0) >= 8
@@ -10420,6 +11557,19 @@ export function NovatosPage() {
                   >
                     <Sparkles className="w-3.5 h-3.5 text-[#E10600]" />
                     <span>Rever o Desafio do Chefe</span>
+                  </button>
+                )}
+
+                {activeModuleId === 10 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      goToScene(7)
+                    }}
+                    className="px-4 py-2 rounded-xl bg-[#E10600]/20 hover:bg-[#E10600]/30 text-white text-xs font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 border border-[#E10600]/40"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-[#E10600]" />
+                    <span>Rever o Desafio do Engenheiro</span>
                   </button>
                 )}
 
