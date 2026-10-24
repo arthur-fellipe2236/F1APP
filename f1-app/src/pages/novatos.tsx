@@ -19,6 +19,7 @@ import {
   Minimize2,
   Wind,
   Sparkles,
+  Clock,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -33,6 +34,96 @@ export interface GlossaryTerm {
 }
 
 export const GLOSSARY_TERMS: GlossaryTerm[] = [
+  {
+    id: "formula",
+    term: "Fórmula",
+    category: "Geral",
+    definition: "Conjunto de regulamentos técnicos e esportivos rígidos e unificados que definem as condições de construção dos carros e de disputa da categoria.",
+  },
+  {
+    id: "grand_prix",
+    term: "Grand Prix",
+    category: "Geral",
+    definition: "Expressão tradicional ('Grande Prêmio') usada desde as origens do automobilismo para designar uma corrida principal de primeira grandeza.",
+  },
+  {
+    id: "campeonato_pilotos",
+    term: "Campeonato de pilotos",
+    category: "Campeonato",
+    definition: "Competição oficial da FIA que coroa o piloto individual que acumula a maior pontuação durante todas as etapas do ano.",
+  },
+  {
+    id: "campeonato_construtores",
+    term: "Campeonato de construtores",
+    category: "Campeonato",
+    definition: "Competição oficial entre as equipes e fabricantes de chassis, somando os pontos obtidos pelos dois carros de cada escuderia.",
+  },
+  {
+    id: "aerodinamica",
+    term: "Aerodinâmica",
+    category: "Carro",
+    definition: "Estudo e aplicação do fluxo de ar sobre e sob o carro para gerar estabilidade, resfriamento e pressão descendente sem arrasto excessivo.",
+  },
+  {
+    id: "downforce",
+    term: "Downforce",
+    category: "Carro",
+    definition: "Força aerodinâmica descendente gerada por asas, difusores e efeito solo que empurra o carro contra o asfalto, aumentando a velocidade em curvas.",
+  },
+  {
+    id: "unidade_potencia",
+    term: "Unidade de potência (Power Unit)",
+    category: "Carro",
+    definition: "Conjunto propulsor integrado composto pelo motor de combustão interna (ICE), turbo e sistemas elétricos de recuperação e entrega de energia.",
+  },
+  {
+    id: "hibrido",
+    term: "Híbrido",
+    category: "Carro",
+    definition: "Sistema que combina propulsão a combustão tradicional com motores elétricos e baterias para maximizar a potência e a eficiência energética.",
+  },
+  {
+    id: "halo",
+    term: "Halo",
+    category: "Carro",
+    definition: "Estrutura curva de proteção em titânio instalada sobre o cockpit desde 2018 para proteger a cabeça do piloto contra impactos e detritos.",
+  },
+  {
+    id: "hans",
+    term: "HANS (Head and Neck Support)",
+    category: "Carro",
+    definition: "Dispositivo de segurança obrigatório apoiado nos ombros e conectado ao capacete para evitar desacelerações extremas e lesões na coluna cervical.",
+  },
+  {
+    id: "regulamento_tecnico",
+    term: "Regulamento técnico",
+    category: "Geral",
+    definition: "Caderno oficial de normas da FIA que determina as dimensões, pesos, materiais, motores e aerodinâmica permitidos em cada geração de carros.",
+  },
+  {
+    id: "regulamento_esportivo",
+    term: "Regulamento esportivo",
+    category: "Geral",
+    definition: "Conjunto de regras da FIA que disciplina o formato do fim de semana, procedimentos de largada, conduta em pista, bandeiras e penalidades.",
+  },
+  {
+    id: "pole_position",
+    term: "Pole position",
+    category: "Pista",
+    definition: "A primeira posição do grid de largada, conquistada pelo piloto mais rápido na sessão classificatória oficial.",
+  },
+  {
+    id: "era_hibrida",
+    term: "Era híbrida",
+    category: "Geral",
+    definition: "Período da F1 iniciado em 2014 com a adoção dos motores V6 turbo híbridos com recuperação de energia térmica e cinética.",
+  },
+  {
+    id: "recharge",
+    term: "Recharge (Recuperação de Energia)",
+    category: "Carro",
+    definition: "Gerenciamento e recuperação de energia cinética nas frenagens e de fluxo térmico para recarregar o sistema de baterias da unidade de potência.",
+  },
   {
     id: "estrategia_corrida",
     term: "Estratégia de corrida",
@@ -334,6 +425,14 @@ export interface ModuleScene {
     | "mod5_stewards_investigations"
     | "mod5_overtaking_challenges"
     | "mod5_overtaking_summary"
+    | "mod6_birth_of_f1"
+    | "mod6_cars_evolution"
+    | "mod6_legendary_drivers"
+    | "mod6_rivalries"
+    | "mod6_safety_evolution"
+    | "mod6_senna_brazil_legacy"
+    | "mod6_modern_f1_2026"
+    | "mod6_history_summary"
 }
 
 export const CINEMATIC_MUSIC_URL = "/audio/novatos/modulo1/trilha_cinematografica.mp3"
@@ -487,6 +586,101 @@ export const MODULE_1_SCENES: ModuleScene[] = [
 // ============================================================================
 // CENAS DO MÓDULO 5 — A ARTE DE ULTRAPASSAR: ATAQUE, DEFESA E REGRAS
 // ============================================================================
+
+// ============================================================================
+// CENAS DO MÓDULO 6 — A HISTÓRIA DA FÓRMULA 1 (75 ANOS DE EVOLUÇÃO)
+// ============================================================================
+export const MODULE_6_SCENES: ModuleScene[] = [
+  {
+    id: "m6_c1",
+    number: 1,
+    title: "O Nascimento da Fórmula 1",
+    subtitle: "Antes de tudo, a largada: 1950 e as origens dos GPs",
+    imageUrl: "/novatos/modulo1/cena02_1950.jpg",
+    audioUrl: "/audio/novatos/modulo6/cena01.mp3",
+    narrationTranscript:
+      "Olá! Bem-vindo ao Módulo 6 de Novatos na F1. Hoje vamos viajar por 75 anos de velocidade, coragem e evolução. Antes de existir um campeonato mundial oficial, as corridas de Grand Prix já empolgavam multidões pela Europa desde o final do século dezenove. Mas após a Segunda Guerra Mundial, o automobilismo se reorganizou e a Federação Internacional de Automobilismo estabeleceu a Fórmula 1. A palavra Fórmula significa exatamente isso: um conjunto rígido de regras técnicas e esportivas para nivelar a disputa. O marco inaugural do campeonato aconteceu em treze de maio de 1950, no circuito de Silverstone, no Grande Prêmio da Grã-Bretanha. O italiano Giuseppe Farina, ao volante de uma Alfa Romeo, venceu a corrida e tornou-se o primeiro campeão mundial da história. Naquela época, os carros tinham motor dianteiro, não havia asas aerodinâmicas e a segurança era quase inexistente. Uma era de bravura que plantou as raízes de tudo o que vemos hoje.",
+    visualEffectType: "mod6_birth_of_f1",
+  },
+  {
+    id: "m6_c2",
+    number: 2,
+    title: "A Revolução dos Carros",
+    subtitle: "Máquinas que mudaram o esporte: dos anos 50 a 2026",
+    imageUrl: "/backgrounds/bg-alpine.webp",
+    audioUrl: "/audio/novatos/modulo6/cena02.mp3",
+    narrationTranscript:
+      "A Fórmula 1 nunca parou no tempo. Cada década transformou profundamente as máquinas na pista. Nos anos 1950, os carros eram tubulares, com pneus estreitos e mecânica tradicional. Já nos anos 1960, a Cooper e a Lotus consolidaram uma revolução: posicionar o motor atrás do piloto, melhorando o centro de gravidade e a agilidade nas curvas. Nos anos 1970 e 1980, surgiu a aerodinâmica com as primeiras asas e o efeito solo, acompanhada pela explosão dos motores turbo, que ultrapassavam mil cavalos em classificação. Nos anos 1990 e 2000, entraram em cena a fibra de carbono, suspensões ativas e eletrônica de ponta com os potentes motores V10. Em 2014, teve início a Era Híbrida, combinando motores de combustão com potentes sistemas elétricos de recuperação de energia. E para 2026, chega a nova geração: carros com aerodinâmica ativa e unidades de potência com divisão praticamente igual entre potência térmica e elétrica.",
+    visualEffectType: "mod6_cars_evolution",
+  },
+  {
+    id: "m6_c3",
+    number: 3,
+    title: "Os Pilotos que Marcaram Época",
+    subtitle: "Os nomes que entraram para a história",
+    imageUrl: "/backgrounds/bg-ferrari.webp",
+    audioUrl: "/audio/novatos/modulo6/cena03.mp3",
+    narrationTranscript:
+      "Ao longo de mais de sete décadas, milhares de pilotos disputaram curvas no limite, mas alguns nomes se tornaram imortais. Comparar épocas distantes exige muito cuidado, porque Juan Manuel Fangio, pentacampeão nos anos 1950, corria com óculos de motociclista e circuitos de rua sem proteção. Nos anos 1960, o escocês Jim Clark assombrou o mundo pela suavidade e precisão ao volante. Jackie Stewart conquistou três títulos e liderou a cruzada pioneira pela segurança das pistas. Niki Lauda provou determinação inacreditável ao sobreviver a um terrível acidente em 1976 e voltar a vencer. Alain Prost destacou-se pela inteligência estratégica como O Professor. Ayrton Senna encantou o planeta com velocidade pura em voltas rápidas e maestria na chuva. Michael Schumacher redefiniu o condicionamento físico e o trabalho de equipe com sete títulos mundiais, marca igualada por Lewis Hamilton, recordista absoluto de poles e vitórias. Cada um dominou sua era dentro de suas próprias circunstâncias históricas.",
+    visualEffectType: "mod6_legendary_drivers",
+  },
+  {
+    id: "m6_c4",
+    number: 4,
+    title: "Rivalidades que Definiram Gerações",
+    subtitle: "Quando a disputa vai além da velocidade",
+    imageUrl: "/backgrounds/bg-mclaren.webp",
+    audioUrl: "/audio/novatos/modulo6/cena04.mp3",
+    narrationTranscript:
+      "A história da Fórmula 1 também é feita de grandes duelos. Rivalidades intensas colocaram estilos opostos frente a frente e pararam o mundo esportivo. Em 1976, o carisma impulsivo do britânico James Hunt mediu forças contra a meticulosidade austríaca de Niki Lauda, decidido sob chuva torrencial em Fuji. No final dos anos 1980 e início dos anos 1990, Ayrton Senna e Alain Prost protagonizaram a rivalidade mais emblemática do automobilismo dentro da mesma equipe, a McLaren. A velocidade visceral e determinação de Senna contrastavam com a precisão tática e consistência de Prost, gerando decisões de campeonato históricas. Décadas depois, Michael Schumacher travou batalhas épicas contra Damon Hill, Jacques Villeneuve e Mika Häkkinen, enquanto Lewis Hamilton viveu disputas eletrizantes contra Nico Rosberg e Max Verstappen. Uma rivalidade de verdade não depende de atritos pessoais, mas da busca implacável por cada milésimo de segundo.",
+    visualEffectType: "mod6_rivalries",
+  },
+  {
+    id: "m6_c5",
+    number: 5,
+    title: "A Segurança: Lições Vitais",
+    subtitle: "Evoluir também significa proteger vidas",
+    imageUrl: "/backgrounds/bg-haas.webp",
+    audioUrl: "/audio/novatos/modulo6/cena05.mp3",
+    narrationTranscript:
+      "Nas primeiras décadas da Fórmula 1, o perigo fazia parte da rotina. Pilotos usavam capacetes abertos de couro, macacões de tecido comum e corriam em pistas cercadas por árvores e postes. Foi graças à coragem de pilotos como Jackie Stewart e à evolução técnica que a segurança se tornou prioridade absoluta. Surgiram células de sobrevivência em fibra de carbono, tanques de combustível deformáveis, macacões à prova de fogo e o dispositivo HANS para proteger a coluna cervical. O trágico fim de semana de Imola em 1994, com as mortes de Roland Ratzenberger e Ayrton Senna, gerou uma comoção mundial que acelerou reformas profundas em circuitos, testes de impacto e protocolos médicos chefiados pelo Professor Sid Watkins. Mais recentemente, em 2018, a FIA introduziu o Halo, estrutura de titânio sobre o cockpit que já salvou vidas em múltiplos incidentes graves. O automobilismo nunca será totalmente isento de riscos, mas a missão contínua da engenharia é proteger a vida de quem está ao volante.",
+    visualEffectType: "mod6_safety_evolution",
+  },
+  {
+    id: "m6_c6",
+    number: 6,
+    title: "Ayrton Senna e o Legado Brasileiro",
+    subtitle: "O Brasil que acelerou o mundo",
+    imageUrl: "/radio/senna.jpg",
+    audioUrl: "/audio/novatos/modulo6/cena06.mp3",
+    narrationTranscript:
+      "Para os brasileiros, a Fórmula 1 tem uma ligação emocional profunda. Nascido em São Paulo em 1960, Ayrton Senna estreou na F1 em 1984 pela Toleman, brilhou na Lotus e alcançou o topo do mundo na McLaren, conquistando os campeonatos mundiais de 1988, 1990 e 1991. Suas voltas de classificação quase perfeitas e sua habilidade inacreditável no asfalto molhado transformaram suas vitórias em momentos de orgulho nacional nas manhãs de domingo. O acidente fatal em Imola, no dia primeiro de maio de 1994, interrompeu sua trajetória, mas seu legado transcendeu o esporte com a criação do Instituto Ayrton Senna, que apoia a educação de milhões de jovens. Senna faz parte de uma linhagem de ouro que inclui Emerson Fittipaldi, primeiro brasileiro campeão do mundo, Nelson Piquet, com três títulos mundiais, além de grandes vencedores e vice-campeões como Rubens Barrichello e Felipe Massa. O Brasil construiu capítulos essenciais da história da Fórmula 1.",
+    visualEffectType: "mod6_senna_brazil_legacy",
+  },
+  {
+    id: "m6_c7",
+    number: 7,
+    title: "A F1 Moderna e a Revolução de 2026",
+    subtitle: "O futuro também faz parte da história",
+    imageUrl: "/backgrounds/bg-cadillac.webp",
+    audioUrl: "/audio/novatos/modulo6/cena07.mp3",
+    narrationTranscript:
+      "Hoje, a Fórmula 1 é o laboratório de engenharia mais avançado e assistido do planeta. Centenas de engenheiros utilizam simulações em supercomputadores, túneis de vento e inteligência de dados para otimizar frações de segundo. E em 2026, a categoria dá mais um salto monumental. Os carros adotam combustíveis cem por cento sustentáveis, reduzindo a pegada ambiental. As novas unidades de potência passam a ter praticamente metade de sua propulsão vinda de motores elétricos, com recuperação maciça de energia. O clássico DRS dá lugar à aerodinâmica ativa, alternando as asas entre Corner Mode nas curvas e Straight Mode nas retas. Além disso, pilotos ganham recursos como o Overtake Mode para disputas diretas. A história nos mostra que toda grande mudança de regulamento redefine quem constrói o melhor carro e reabre a disputa pelo campeonato.",
+    visualEffectType: "mod6_modern_f1_2026",
+  },
+  {
+    id: "m6_c8",
+    number: 8,
+    title: "O Que a História nos Ensina",
+    subtitle: "A próxima volta começa agora: 75 anos de paixão",
+    imageUrl: "/backgrounds/bg-default.webp",
+    audioUrl: "/audio/novatos/modulo6/cena08.mp3",
+    narrationTranscript:
+      "Ao conhecer a trajetória da Fórmula 1, você passa a assistir a cada corrida com outros olhos. Você percebe que o domínio de uma equipe depende de acertar o regulamento da época; que cada piloto lendário superou desafios únicos de seu tempo; que cada dispositivo de segurança no carro tem uma história de aprendizado por trás; e que a busca pela inovação nunca cessa. Agora que você completou a jornada pelos 75 anos da Fórmula 1, é hora de testar seus conhecimentos e fixar o que aprendeu. Faça o nosso quiz de 10 perguntas ou revise os fatos marcantes da linha do tempo. Bem-vindo à história da Fórmula 1. A sua próxima volta começa agora!",
+    visualEffectType: "mod6_history_summary",
+  },
+]
+
 export const MODULE_5_SCENES: ModuleScene[] = [
   {
     id: "m5_c1",
@@ -977,6 +1171,143 @@ export const MODULE_1_QUIZ_QUESTIONS: QuizQuestion[] = [
 // ============================================================================
 // QUESTIONÁRIO FINAL — MÓDULO 5 (10 PERGUNTAS SOBRE ULTRAPASSAGENS)
 // ============================================================================
+
+// ============================================================================
+// QUESTIONÁRIO FINAL — MÓDULO 6 (10 PERGUNTAS SOBRE A HISTÓRIA DA F1)
+// ============================================================================
+export const MODULE_6_QUIZ_QUESTIONS: QuizQuestion[] = [
+  {
+    id: 1,
+    question: "Questão 1 — Quando começou o Campeonato Mundial de Fórmula 1?",
+    options: [
+      { letter: "A", text: "1930" },
+      { letter: "B", text: "1950" },
+      { letter: "C", text: "1960" },
+      { letter: "D", text: "1975" },
+    ],
+    correctLetter: "B",
+    feedback:
+      "O Campeonato Mundial de Fórmula 1 foi oficialmente inaugurado em 13 de maio de 1950, no circuito de Silverstone, no Grande Prêmio da Grã-Bretanha.",
+  },
+  {
+    id: 2,
+    question: "Questão 2 — Quem foi o primeiro campeão mundial de pilotos da Fórmula 1?",
+    options: [
+      { letter: "A", text: "Juan Manuel Fangio" },
+      { letter: "B", text: "Giuseppe Farina" },
+      { letter: "C", text: "Jim Clark" },
+      { letter: "D", text: "Alberto Ascari" },
+    ],
+    correctLetter: "B",
+    feedback:
+      "O piloto italiano Giuseppe Farina venceu a temporada inaugural de 1950 ao volante de uma Alfa Romeo 158, tornando-se o primeiro campeão mundial da história.",
+  },
+  {
+    id: 3,
+    question: "Questão 3 — O que significa dizer que a Fórmula 1 segue uma \"fórmula\" de regras?",
+    options: [
+      { letter: "A", text: "Todos os carros precisam ser idênticos." },
+      { letter: "B", text: "Os pilotos devem utilizar o mesmo estilo de pilotagem." },
+      { letter: "C", text: "Os carros e as equipes devem respeitar regulamentos técnicos e esportivos." },
+      { letter: "D", text: "Todas as corridas precisam acontecer no mesmo circuito." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "A palavra 'Fórmula' define o conjunto de regulamentos técnicos e desportivos aos quais todos os carros, motores e competidores devem obedecer estritamente.",
+  },
+  {
+    id: 4,
+    question: "Questão 4 — Por que mudanças de regulamento podem alterar a ordem competitiva das equipes?",
+    options: [
+      { letter: "A", text: "Porque podem favorecer soluções técnicas diferentes." },
+      { letter: "B", text: "Porque garantem que a mesma equipe vença todas as corridas." },
+      { letter: "C", text: "Porque eliminam a necessidade de estratégia." },
+      { letter: "D", text: "Porque tornam os carros exatamente iguais." },
+    ],
+    correctLetter: "A",
+    feedback:
+      "Grandes alterações regulamentares zeram conceitos antigos e premiam as escuderias que interpretam e desenvolvem soluções de engenharia mais eficientes sob o novo livro de regras.",
+  },
+  {
+    id: 5,
+    question: "Questão 5 — O que tornou as unidades de potência híbridas importantes para a F1 moderna?",
+    options: [
+      { letter: "A", text: "Elas eliminaram completamente os motores de combustão." },
+      { letter: "B", text: "Elas combinaram motor de combustão e sistemas elétricos de energia." },
+      { letter: "C", text: "Elas acabaram com a necessidade de combustível." },
+      { letter: "D", text: "Elas tornaram a aerodinâmica irrelevante." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "Introduzidas em 2014, as unidades híbridas uniram o motor a combustão V6 turbo aos sistemas elétricos de recuperação de energia (MGU-K e MGU-H), elevando a eficiência térmica acima de 50%.",
+  },
+  {
+    id: 6,
+    question: "Questão 6 — Como devemos comparar pilotos de épocas diferentes?",
+    options: [
+      { letter: "A", text: "Considerando somente a velocidade máxima dos carros." },
+      { letter: "B", text: "Considerando apenas o número de seguidores." },
+      { letter: "C", text: "Ignorando os regulamentos e as condições históricas." },
+      { letter: "D", text: "Considerando títulos, adversários, carros, regras e contexto histórico." },
+    ],
+    correctLetter: "D",
+    feedback:
+      "Comparações entre gerações distintas exigem respeito ao contexto: as condições de segurança, número de GPs por ano, confiabilidade mecânica e regulamentos eram incomparáveis.",
+  },
+  {
+    id: 7,
+    question: "Questão 7 — Qual foi uma das funções do Halo introduzido na F1 em 2018?",
+    options: [
+      { letter: "A", text: "Aumentar a velocidade nas retas." },
+      { letter: "B", text: "Proteger o cockpit contra determinados impactos e objetos." },
+      { letter: "C", text: "Substituir os cintos de segurança." },
+      { letter: "D", text: "Controlar automaticamente a direção do carro." },
+    ],
+    correctLetter: "B",
+    feedback:
+      "O Halo é uma estrutura curva de titânio fixada ao redor do cockpit que suporta até 12 toneladas e foi desenvolvida para proteger a cabeça do piloto contra impactos externos e objetos.",
+  },
+  {
+    id: 8,
+    question: "Questão 8 — Quantos campeonatos mundiais de pilotos Ayrton Senna conquistou?",
+    options: [
+      { letter: "A", text: "Um" },
+      { letter: "B", text: "Dois" },
+      { letter: "C", text: "Três" },
+      { letter: "D", text: "Cinco" },
+    ],
+    correctLetter: "C",
+    feedback:
+      "Ayrton Senna conquistou três títulos mundiais de pilotos na Fórmula 1: em 1988, 1990 e 1991, todos pilotando pela equipe McLaren.",
+  },
+  {
+    id: 9,
+    question: "Questão 9 — O que é correto afirmar sobre a história da segurança na Fórmula 1?",
+    options: [
+      { letter: "A", text: "A segurança ficou pronta em uma única temporada." },
+      { letter: "B", text: "O Halo eliminou todos os riscos do automobilismo." },
+      { letter: "C", text: "A segurança evoluiu por meio de diversas mudanças técnicas, médicas e de procedimentos." },
+      { letter: "D", text: "A segurança depende exclusivamente da habilidade do piloto." },
+    ],
+    correctLetter: "C",
+    feedback:
+      "A segurança na F1 é fruto de aprendizado acumulado por décadas: células em fibra de carbono, barreiras deformáveis, HANS, Halo e rigorosos protocolos médicos.",
+  },
+  {
+    id: 10,
+    question: "Questão 10 — O que caracteriza a nova etapa técnica da F1 em 2026?",
+    options: [
+      { letter: "A", text: "O retorno integral aos carros de 1950." },
+      { letter: "B", text: "A ausência de sistemas elétricos." },
+      { letter: "C", text: "A eliminação de todas as regras técnicas." },
+      { letter: "D", text: "Uma nova geração de carros, aerodinâmica ativa e unidades de potência com maior participação elétrica." },
+    ],
+    correctLetter: "D",
+    feedback:
+      "O regulamento de 2026 combina aerodinâmica ativa móvel (Corner e Straight Mode), combustíveis 100% sustentáveis e divisão praticamente igualitária entre potência térmica e elétrica.",
+  },
+]
+
 export const MODULE_5_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 1,
@@ -1517,6 +1848,7 @@ const STORAGE_MOD2_KEY = "f1_novatos_mod2_state_v1"
 const STORAGE_MOD3_KEY = "f1_novatos_mod3_state_v1"
 const STORAGE_MOD4_KEY = "f1_novatos_mod4_state_v1"
 const STORAGE_MOD5_KEY = "f1_novatos_mod5_state_v1"
+const STORAGE_MOD6_KEY = "f1_novatos_mod6_state_v1"
 const STORAGE_ACTIVE_MODULE_KEY = "f1_novatos_active_module_v1"
 
 interface PersistedModuleState {
@@ -1550,15 +1882,17 @@ export function NovatosPage() {
   // ==========================================================================
   // ESTADO DO MÓDULO ATIVO (MÓDULO 1 OU MÓDULO 2)
   // ==========================================================================
-  const [activeModuleId, setActiveModuleId] = useState<1 | 2 | 3 | 4 | 5>(() => {
+  const [activeModuleId, setActiveModuleId] = useState<1 | 2 | 3 | 4 | 5 | 6>(() => {
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search)
       const modParam = urlParams.get("modulo") || urlParams.get("mod")
+      if (modParam === "6") return 6
       if (modParam === "5") return 5
       if (modParam === "4") return 4
       if (modParam === "3") return 3
       if (modParam === "2") return 2
       const saved = localStorage.getItem(STORAGE_ACTIVE_MODULE_KEY)
+      if (saved === "6") return 6
       if (saved === "5") return 5
       if (saved === "4") return 4
       if (saved === "3") return 3
@@ -1567,9 +1901,9 @@ export function NovatosPage() {
     return 1
   })
 
-  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : activeModuleId === 2 ? MODULE_2_SCENES : activeModuleId === 3 ? MODULE_3_SCENES : activeModuleId === 4 ? MODULE_4_SCENES : MODULE_5_SCENES
-  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : activeModuleId === 2 ? MODULE_2_QUIZ_QUESTIONS : activeModuleId === 3 ? MODULE_3_QUIZ_QUESTIONS : activeModuleId === 4 ? MODULE_4_QUIZ_QUESTIONS : MODULE_5_QUIZ_QUESTIONS
-  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : activeModuleId === 2 ? STORAGE_MOD2_KEY : activeModuleId === 3 ? STORAGE_MOD3_KEY : activeModuleId === 4 ? STORAGE_MOD4_KEY : STORAGE_MOD5_KEY
+  const currentScenes = activeModuleId === 1 ? MODULE_1_SCENES : activeModuleId === 2 ? MODULE_2_SCENES : activeModuleId === 3 ? MODULE_3_SCENES : activeModuleId === 4 ? MODULE_4_SCENES : activeModuleId === 5 ? MODULE_5_SCENES : MODULE_6_SCENES
+  const currentQuizQuestions = activeModuleId === 1 ? MODULE_1_QUIZ_QUESTIONS : activeModuleId === 2 ? MODULE_2_QUIZ_QUESTIONS : activeModuleId === 3 ? MODULE_3_QUIZ_QUESTIONS : activeModuleId === 4 ? MODULE_4_QUIZ_QUESTIONS : activeModuleId === 5 ? MODULE_5_QUIZ_QUESTIONS : MODULE_6_QUIZ_QUESTIONS
+  const currentStorageKey = activeModuleId === 1 ? STORAGE_MOD1_KEY : activeModuleId === 2 ? STORAGE_MOD2_KEY : activeModuleId === 3 ? STORAGE_MOD3_KEY : activeModuleId === 4 ? STORAGE_MOD4_KEY : activeModuleId === 5 ? STORAGE_MOD5_KEY : STORAGE_MOD6_KEY
 
   // Stage: "opening" (Hero Landing), "lesson" (Scenes 1-8), "quiz" (Final Test)
   const [viewStage, setViewStage] = useState<"opening" | "lesson" | "quiz">("opening")
@@ -1651,6 +1985,19 @@ export function NovatosPage() {
   const [m5ChallengeStep, setM5ChallengeStep] = useState<1 | 2 | 3 | 4>(1)
   const [m5ChallengeAnswers, setM5ChallengeAnswers] = useState<Record<number, string>>({})
   const [m5ShowSummaryReview, setM5ShowSummaryReview] = useState<boolean>(false)
+
+  // Interactive Scene States — Module 6
+  const [m6Timeline1950Open, setM6Timeline1950Open] = useState<boolean>(false)
+  const [m6ReflectionAnswered, setM6ReflectionAnswered] = useState<boolean>(false)
+  const [m6SelectedDecade, setM6SelectedDecade] = useState<"50s" | "60s" | "70s_80s" | "90s_00s" | "10s" | "20s" | "2026">("50s")
+  const [m6SelectedDriver, setM6SelectedDriver] = useState<"fangio" | "clark" | "stewart" | "lauda" | "prost" | "senna" | "schumacher" | "hamilton">("senna")
+  const [m6SelectedRivalry, setM6SelectedRivalry] = useState<"hunt_lauda" | "senna_prost" | "schumi_rivals" | "hamilton_rivals">("senna_prost")
+  const [m6SelectedSafetyPoint, setM6SelectedSafetyPoint] = useState<"capacete" | "monocoque" | "cintos" | "hans" | "halo">("halo")
+  const [m6SelectedSennaMilestone, setM6SelectedSennaMilestone] = useState<number>(1)
+  const [m6SelectedEraCompare, setM6SelectedEraCompare] = useState<"1950" | "2014" | "2026">("2026")
+  const [m6FavoriteEra, setM6FavoriteEra] = useState<string | null>(null)
+  const [m6BrazilianDriverDetail, setM6BrazilianDriverDetail] = useState<"fittipaldi" | "piquet" | "barrichello" | "massa" | null>(null)
+
 
   // Quiz State
   const [quizQuestionIndex, setQuizQuestionIndex] = useState(0)
@@ -1755,9 +2102,9 @@ export function NovatosPage() {
     setQuizScore(state.quizScore)
   }, [currentStorageKey])
 
-  // Troca de módulo (Módulo 1 vs Módulo 2)
+  // Troca de módulo (Módulo 1 a 6)
   const handleSelectModule = useCallback(
-    (modId: 1 | 2 | 3 | 4 | 5) => {
+    (modId: 1 | 2 | 3 | 4 | 5 | 6) => {
       if (modId === activeModuleId) return
       // Para áudios e timers
       if (countdownTimerRef.current) {
@@ -1785,8 +2132,8 @@ export function NovatosPage() {
       }
 
       // Carrega estado do novo módulo
-      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : modId === 2 ? STORAGE_MOD2_KEY : modId === 3 ? STORAGE_MOD3_KEY : modId === 4 ? STORAGE_MOD4_KEY : STORAGE_MOD5_KEY
-      const maxLen = modId === 1 ? MODULE_1_SCENES.length : modId === 2 ? MODULE_2_SCENES.length : modId === 3 ? MODULE_3_SCENES.length : modId === 4 ? MODULE_4_SCENES.length : MODULE_5_SCENES.length
+      const targetKey = modId === 1 ? STORAGE_MOD1_KEY : modId === 2 ? STORAGE_MOD2_KEY : modId === 3 ? STORAGE_MOD3_KEY : modId === 4 ? STORAGE_MOD4_KEY : modId === 5 ? STORAGE_MOD5_KEY : STORAGE_MOD6_KEY
+      const maxLen = modId === 1 ? MODULE_1_SCENES.length : modId === 2 ? MODULE_2_SCENES.length : modId === 3 ? MODULE_3_SCENES.length : modId === 4 ? MODULE_4_SCENES.length : modId === 5 ? MODULE_5_SCENES.length : MODULE_6_SCENES.length
       const s = loadPersistedState(targetKey)
       setVisitedScenes(s.visitedScenes)
       setSceneIndex(s.lastSceneIndex < maxLen ? s.lastSceneIndex : 0)
@@ -1923,6 +2270,9 @@ export function NovatosPage() {
       setM5ChallengeStep(1)
       setM5ChallengeAnswers({})
       setM5ShowSummaryReview(false)
+      setM6Timeline1950Open(false)
+      setM6ReflectionAnswered(false)
+      setM6BrazilianDriverDetail(null)
     },
     [currentScenes.length, stopAllAudio]
   )
@@ -3236,6 +3586,9 @@ export function NovatosPage() {
       setM5ChallengeStep(1)
       setM5ChallengeAnswers({})
       setM5ShowSummaryReview(false)
+      setM6Timeline1950Open(false)
+      setM6ReflectionAnswered(false)
+      setM6BrazilianDriverDetail(null)
                   }}
                   className="w-full py-1 text-[10px] text-zinc-400 hover:text-white underline cursor-pointer text-center block"
                 >
@@ -4889,6 +5242,9 @@ export function NovatosPage() {
       setM5ChallengeStep(1)
       setM5ChallengeAnswers({})
       setM5ShowSummaryReview(false)
+      setM6Timeline1950Open(false)
+      setM6ReflectionAnswered(false)
+      setM6BrazilianDriverDetail(null)
                   }}
                   className="w-full py-1 text-[10px] text-zinc-400 hover:text-white underline cursor-pointer text-center block"
                 >
@@ -5458,6 +5814,745 @@ export function NovatosPage() {
 
 
 
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 6: A HISTÓRIA DA FÓRMULA 1 (75 ANOS DE EVOLUÇÃO)
+    // ------------------------------------------------------------------------
+    if (activeModuleId === 6) {
+      // CENA 1: O NASCIMENTO DA FÓRMULA 1 (1950)
+      if (currentScene.visualEffectType === "mod6_birth_of_f1") {
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Marco Inaugural</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">13 DE MAIO DE 1950</span>
+            </div>
+
+            <div className="p-2 rounded-lg bg-white/5 border border-white/10 mb-2.5">
+              <div className="flex items-center justify-between text-[11px] font-bold text-white mb-1">
+                <span>Silverstone • GP da Grã-Bretanha</span>
+                <span className="text-amber-400">21 Carros</span>
+              </div>
+              <p className="text-[10px] text-zinc-300 leading-snug">
+                Vencedor: <strong className="text-white">Giuseppe Farina</strong> (Alfa Romeo 158 'Alfetta'). O italiano tornou-se o primeiro campeão mundial da história da F1.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setM6Timeline1950Open(!m6Timeline1950Open)}
+              className="w-full py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/15 text-[10px] font-bold text-zinc-200 transition-all cursor-pointer flex items-center justify-between mb-2"
+            >
+              <span>O que significa a palavra &quot;Fórmula&quot;?</span>
+              <span className="text-[#E10600] font-black">{m6Timeline1950Open ? "▲" : "▼"}</span>
+            </button>
+
+            {m6Timeline1950Open && (
+              <div className="p-2 rounded-lg bg-[#E10600]/10 border border-[#E10600]/30 text-[10px] text-zinc-300 leading-relaxed mb-2">
+                Uma <strong>Fórmula</strong> é um conjunto unificado de regras técnicas (dimensões, motores) e desportivas (pontuação, largada) estabelecido pela FIA para padronizar e nivelar a disputa.
+              </div>
+            )}
+
+            <div className="p-2 rounded-lg bg-zinc-900/90 border border-white/10">
+              <p className="text-[10px] font-bold text-zinc-300 mb-1">Pergunta de Reflexão:</p>
+              <p className="text-[10px] text-zinc-400 italic mb-2">
+                &quot;O que faz uma competição continuar reconhecível mesmo quando seus carros e regras mudam tanto?&quot;
+              </p>
+              <button
+                type="button"
+                onClick={() => setM6ReflectionAnswered(!m6ReflectionAnswered)}
+                className="w-full py-1 px-2 rounded bg-[#E10600]/20 hover:bg-[#E10600]/30 text-[#E10600] text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer text-center"
+              >
+                {m6ReflectionAnswered ? "Ocultar Reflexão" : "Ver Reflexão Pedagógica"}
+              </button>
+              {m6ReflectionAnswered && (
+                <p className="mt-2 text-[9px] text-zinc-300 leading-relaxed border-t border-white/10 pt-1.5">
+                  A essência que transcende os 75 anos é o <strong>espírito humano de superação</strong>: pilotos desafiando os limites físicos em máquinas no estado da arte da engenharia.
+                </p>
+              )}
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 2: A REVOLUÇÃO DOS CARROS (LINHA DO TEMPO EM DÉCADAS)
+      if (currentScene.visualEffectType === "mod6_cars_evolution") {
+        const decades = [
+          {
+            id: "50s" as const,
+            label: "1950s",
+            name: "Motor Dianteiro",
+            tech: "Chassis tubular e motor à frente do piloto",
+            desc: "Carros estreitos, mecânica clássica, ausência de asas e freios a tambor. Velocidade vinha da pura potência bruta.",
+          },
+          {
+            id: "60s" as const,
+            label: "1960s",
+            name: "Motor Traseiro",
+            tech: "Revolução da Cooper e Lotus (monocoque)",
+            desc: "O motor passou para trás do piloto, rebaixando o centro de gravidade e multiplicando a agilidade nas curvas.",
+          },
+          {
+            id: "70s_80s" as const,
+            label: "70s/80s",
+            name: "Asas & Turbo",
+            tech: "Efeito solo e motores turbo (+1000 cv)",
+            desc: "Colin Chapman introduziu o efeito solo com assoalhos em asa invertida. A era turbo explodiu com potências insanas.",
+          },
+          {
+            id: "90s_00s" as const,
+            label: "90s/00s",
+            name: "Eletrônica & V10",
+            tech: "Fibra de carbono, telemetria e motores V10",
+            desc: "Suspensão ativa, câmbio semi-automático e motores V10 a 20.000 rpm. A F1 tornou-se ultratecnológica.",
+          },
+          {
+            id: "10s" as const,
+            label: "2010s",
+            name: "Era Híbrida",
+            tech: "V6 turbo 1.6L com MGU-K e MGU-H",
+            desc: "Em 2014, a introdução das unidades híbridas elevou a eficiência térmica para mais de 50%. Em 2018, veio o Halo.",
+          },
+          {
+            id: "20s" as const,
+            label: "2020s",
+            name: "Efeito Solo",
+            tech: "Túneis Venturi e rodas aro 18 polegadas",
+            desc: "Revolução de 2022 para permitir perseguições coladas sem perda excessiva de downforce pelo ar turbulento.",
+          },
+          {
+            id: "2026" as const,
+            label: "2026",
+            name: "Aero Ativa",
+            tech: "Corner/Straight Mode e 50% Elétrico",
+            desc: "Asas móveis na dianteira e traseira substituem o DRS. Combustíveis 100% sustentáveis e motor elétrico de 350 kW.",
+          },
+        ]
+
+        const activeDecade = decades.find((d) => d.id === m6SelectedDecade) || decades[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Evolução Técnica</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold">75 ANOS DE MÁQUINAS</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-2 font-bold">
+              Selecione uma era para ver a transformação:
+            </p>
+
+            <div className="grid grid-cols-4 sm:grid-cols-7 gap-1 mb-3">
+              {decades.map((d) => (
+                <button
+                  key={d.id}
+                  type="button"
+                  onClick={() => setM6SelectedDecade(d.id)}
+                  className={cn(
+                    "py-1 px-1 rounded text-[9px] font-mono font-bold transition-all cursor-pointer text-center",
+                    m6SelectedDecade === d.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-400 hover:bg-white/10"
+                  )}
+                >
+                  {d.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-black text-white">{activeDecade.name}</span>
+                <span className="text-[9px] font-mono text-[#E10600] font-bold">{activeDecade.tech}</span>
+              </div>
+              <p className="text-[10px] text-zinc-300 leading-relaxed mb-2">
+                {activeDecade.desc}
+              </p>
+              <div className="p-1.5 rounded bg-black/50 text-[9px] text-zinc-400 border border-white/5">
+                💡 <em>Uma inovação regulamentar pode zerar vantagens e consagrar uma nova equipe campeã.</em>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 3: OS PILOTOS QUE MARCARAM ÉPOCA
+      if (currentScene.visualEffectType === "mod6_legendary_drivers") {
+        const drivers = [
+          {
+            id: "fangio" as const,
+            name: "Juan Manuel Fangio",
+            period: "1950 – 1958",
+            teams: "Alfa Romeo, Maserati, Mercedes, Ferrari",
+            titles: 5,
+            wins: "24 vitórias (47% de aproveitamento)",
+            trait: "Precisão mecânica e respeito entre rivais",
+            fact: "Conquistou 5 títulos mundiais por 4 construtores diferentes, recorde que permanece até hoje.",
+          },
+          {
+            id: "clark" as const,
+            name: "Jim Clark",
+            period: "1960 – 1968",
+            teams: "Lotus",
+            titles: 2,
+            wins: "25 vitórias",
+            trait: "Suavidade incomparável na pilotagem",
+            fact: "Detém o recorde de 8 Grand Chelems (pole, vitória de ponta a ponta e volta mais rápida).",
+          },
+          {
+            id: "stewart" as const,
+            name: "Jackie Stewart",
+            period: "1965 – 1973",
+            teams: "BRM, Matra, Tyrrell",
+            titles: 3,
+            wins: "27 vitórias",
+            trait: "Visão pioneira de sobrevivência e segurança",
+            fact: "Liderou a revolução por barreiras de proteção, macacões antichama e hospitais móveis nos autódromos.",
+          },
+          {
+            id: "lauda" as const,
+            name: "Niki Lauda",
+            period: "1971 – 1985",
+            teams: "March, BRM, Ferrari, Brabham, McLaren",
+            titles: 3,
+            wins: "25 vitórias",
+            trait: "Determinação sobre-humana e raciocínio técnico",
+            fact: "Retornou às pistas apenas 42 dias após sofrer queimaduras graves em Nürburgring 1976.",
+          },
+          {
+            id: "prost" as const,
+            name: "Alain Prost",
+            period: "1980 – 1993",
+            teams: "Renault, McLaren, Ferrari, Williams",
+            titles: 4,
+            wins: "51 vitórias",
+            trait: "O Professor: cálculo tático e economia mecânica",
+            fact: "Venceu corridas administrando freios e combustível com precisão cirúrgica antes da era dos computadores modernos.",
+          },
+          {
+            id: "senna" as const,
+            name: "Ayrton Senna",
+            period: "1984 – 1994",
+            teams: "Toleman, Lotus, McLaren, Williams",
+            titles: 3,
+            wins: "41 vitórias, 65 poles",
+            trait: "Velocidade visceral em qualificação e maestria na chuva",
+            fact: "Dominou 6 vitórias históricas no estreito circuito de rua de Mônaco, 5 delas consecutivas.",
+          },
+          {
+            id: "schumacher" as const,
+            name: "Michael Schumacher",
+            period: "1991 – 2012",
+            teams: "Jordan, Benetton, Ferrari, Mercedes",
+            titles: 7,
+            wins: "91 vitórias, 68 poles",
+            trait: "Condicionamento físico implacável e liderança técnica",
+            fact: "Conquistou 5 títulos mundiais consecutivos pela Scuderia Ferrari (2000 a 2004).",
+          },
+          {
+            id: "hamilton" as const,
+            name: "Lewis Hamilton",
+            period: "2007 – presente",
+            teams: "McLaren, Mercedes",
+            titles: 7,
+            wins: "105+ vitórias, 104+ poles",
+            trait: "Consistência extraordinária e combate roda a roda limpo",
+            fact: "Maior vencedor da história da F1 em número absoluto de vitórias e pole positions.",
+          },
+        ]
+
+        const currentDriver = drivers.find((d) => d.id === m6SelectedDriver) || drivers[5]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Galeria de Lendas</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">CAMPEÕES MARCANTES</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Clique em um piloto para ver sua ficha histórica:
+            </p>
+
+            <div className="grid grid-cols-4 gap-1 mb-2.5">
+              {drivers.map((d) => (
+                <button
+                  key={d.id}
+                  type="button"
+                  onClick={() => setM6SelectedDriver(d.id)}
+                  className={cn(
+                    "py-1 px-1 rounded text-[9px] font-bold truncate transition-all cursor-pointer text-center",
+                    m6SelectedDriver === d.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {d.name.split(" ").pop()}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px]">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-black text-white">{currentDriver.name}</span>
+                <span className="px-1.5 py-0.5 rounded bg-[#E10600] text-white font-black text-[9px]">
+                  {currentDriver.titles} {currentDriver.titles === 1 ? "TÍTULO" : "TÍTULOS"}
+                </span>
+              </div>
+              <p className="text-zinc-400 font-mono text-[9px] mb-1">
+                {currentDriver.period} • {currentDriver.teams}
+              </p>
+              <p className="text-zinc-300 font-bold mb-1">
+                📊 {currentDriver.wins}
+              </p>
+              <p className="text-zinc-300 leading-snug mb-1.5">
+                <strong>Estilo:</strong> {currentDriver.trait}
+              </p>
+              <div className="p-1.5 rounded bg-black/60 border border-white/5 text-[9px] text-zinc-300">
+                ⭐ <strong>Fato Histórico:</strong> {currentDriver.fact}
+              </div>
+            </div>
+
+            <p className="text-[9px] text-zinc-500 mt-2 italic text-center">
+              * Comparar pilotos exige contexto: carros, calendários e confiabilidade variaram enormemente.
+            </p>
+          </div>
+        )
+      }
+
+      // CENA 4: RIVALIDADES QUE DEFINIRAM GERAÇÕES
+      if (currentScene.visualEffectType === "mod6_rivalries") {
+        const rivalries = [
+          {
+            id: "hunt_lauda" as const,
+            title: "Hunt vs Lauda (1976)",
+            context: "Carisma impulsivo contra disciplina calculada",
+            desc: "A temporada de 1976 levou o automobilismo às manchetes globais. Após o grave acidente de Lauda em Nürburgring e seu retorno heroico 42 dias depois, o campeonato foi decidido sob chuva torrencial em Fuji.",
+            dynamic: "Respeito mútuo entre dois estilos de vida e pilotagem opostos.",
+          },
+          {
+            id: "senna_prost" as const,
+            title: "Senna vs Prost (1988–1993)",
+            context: "A rivalidade mais icônica da história da F1",
+            desc: "Companheiros na McLaren com carros dominantes (MP4/4 venceu 15 de 16 GPs em 1988). A busca por cada milímetro gerou colisões célebres no GP do Japão em 1989 e 1990 que definiram títulos mundiais.",
+            dynamic: "Intensidade visceral e velocidade pura contra cálculo estratégico e consistência.",
+          },
+          {
+            id: "schumi_rivals" as const,
+            title: "Schumacher vs Grandes Rivais (1994–2006)",
+            context: "Batalhas com Hill, Villeneuve e Häkkinen",
+            desc: "Michael Schumacher enfrentou Damon Hill e Jacques Villeneuve nos anos 90, e travou duelos memoráveis de cavalheirismo e precisão milimétrica contra Mika Häkkinen entre 1998 e 2000.",
+            dynamic: "Consistência de ferro e liderança da reconstrução histórica da Ferrari.",
+          },
+          {
+            id: "hamilton_rivals" as const,
+            title: "Hamilton vs Rosberg & Verstappen (2014–2021)",
+            context: "A era de ouro da rivalidade moderna",
+            desc: "Hamilton e Rosberg travaram uma guerra psicológica interna na Mercedes até 2016. Em 2021, Hamilton e Max Verstappen disputaram o título mais tenso e equilibrado do século 21 até a volta final em Abu Dhabi.",
+            dynamic: "Equipes no ápice da engenharia com margens de vitória de centésimos de segundo.",
+          },
+        ]
+
+        const activeRivalry = rivalries.find((r) => r.id === m6SelectedRivalry) || rivalries[1]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Duelos Históricos</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">RIVALIDADES</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-2 font-bold">
+              Selecione um embate que marcou época:
+            </p>
+
+            <div className="space-y-1 mb-2.5">
+              {rivalries.map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => setM6SelectedRivalry(r.id)}
+                  className={cn(
+                    "w-full text-left py-1.5 px-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer flex items-center justify-between",
+                    m6SelectedRivalry === r.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  <span>{r.title}</span>
+                  <span className="text-[9px] opacity-70">➔</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px]">
+              <p className="text-white font-black mb-1">{activeRivalry.title}</p>
+              <p className="text-[#E10600] font-mono text-[9px] mb-1.5">{activeRivalry.context}</p>
+              <p className="text-zinc-300 leading-relaxed mb-2">{activeRivalry.desc}</p>
+              <div className="p-1.5 rounded bg-black/60 border border-white/5 text-[9px] text-zinc-400">
+                🔍 <strong>Fato vs Mídia:</strong> {activeRivalry.dynamic}
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 5: A SEGURANÇA: LIÇÕES VITAIS
+      if (currentScene.visualEffectType === "mod6_safety_evolution") {
+        const safetyElements = [
+          {
+            id: "capacete" as const,
+            title: "Capacete Balístico",
+            desc: "Evoluiu de toucas de couro e tecido para cascos de fibra de carbono e zylon capazes de repelir projéteis a 250 km/h.",
+          },
+          {
+            id: "monocoque" as const,
+            title: "Célula de Sobrevivência",
+            desc: "Introduzida pela McLaren em 1981 em fibra de carbono. Uma concha ultrarresistente projetada para manter o cockpit intacto.",
+          },
+          {
+            id: "cintos" as const,
+            title: "Cinto de 6 Pontos",
+            desc: "Mantém o piloto completamente integrado à estrutura do carro, com sistema de destravamento em menos de 1 segundo.",
+          },
+          {
+            id: "hans" as const,
+            title: "Dispositivo HANS (2003)",
+            desc: "Fixado aos ombros e conectado ao capacete, impede a flexão violenta da cabeça e previne fraturas na base do crânio.",
+          },
+          {
+            id: "halo" as const,
+            title: "Halo de Titânio (2018)",
+            desc: "Estrutura curva de 7 kg que suporta 12 toneladas (o peso de dois ônibus londrinos) contra detritos e capotamentos.",
+          },
+        ]
+
+        const activeItem = safetyElements.find((e) => e.id === m6SelectedSafetyPoint) || safetyElements[4]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Proteção de Vidas</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">SEGURANÇA CONTÍNUA</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Clique nos dispositivos de sobrevivência:
+            </p>
+
+            <div className="flex flex-wrap gap-1 mb-2.5">
+              {safetyElements.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setM6SelectedSafetyPoint(item.id)}
+                  className={cn(
+                    "py-1 px-2 rounded-lg text-[9px] font-bold transition-all cursor-pointer",
+                    m6SelectedSafetyPoint === item.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {item.title}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 mb-2">
+              <span className="text-xs font-black text-white block mb-1">{activeItem.title}</span>
+              <p className="text-[10px] text-zinc-300 leading-relaxed">{activeItem.desc}</p>
+            </div>
+
+            <div className="p-2 rounded-lg bg-black/60 border border-white/10 text-[9px] text-zinc-300">
+              <strong className="text-white">O Marco de Imola 1994:</strong> As perdas de Roland Ratzenberger e Ayrton Senna catalisaram reformas médicas lideradas pelo Prof. Sid Watkins e novos testes de impacto que salvaram dezenas de vidas nos anos seguintes.
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 6: AYRTON SENNA E O LEGADO BRASILEIRO
+      if (currentScene.visualEffectType === "mod6_senna_brazil_legacy") {
+        const milestones = [
+          {
+            step: 1,
+            year: "1984",
+            team: "Toleman",
+            desc: "Estreia impressionante e o lendário 2º lugar no GP de Mônaco debaixo de chuva torrencial.",
+          },
+          {
+            step: 2,
+            year: "1985–87",
+            team: "Lotus",
+            desc: "Primeira vitória em Estoril na chuva e consagração definitiva como o 'Rei das Pole Positions'.",
+          },
+          {
+            step: 3,
+            year: "1988",
+            team: "McLaren",
+            desc: "Primeiro campeonato mundial com 8 vitórias históricas e a épica recuperação em Suzuka.",
+          },
+          {
+            step: 4,
+            year: "1990–91",
+            team: "McLaren",
+            desc: "Bicampeão e tricampeão mundial; a inesquecível vitória em Interlagos 1991 travado em 6ª marcha.",
+          },
+          {
+            step: 5,
+            year: "1994",
+            team: "Williams",
+            desc: "Início de temporada em Imola e a despedida precoce que comoveu o planeta e transformou o automobilismo.",
+          },
+          {
+            step: 6,
+            year: "Legado",
+            team: "Instituto Ayrton Senna",
+            desc: "Mais de 35 milhões de estudantes brasileiros beneficiados em programas de educação pública de qualidade.",
+          },
+        ]
+
+        const activeMilestone = milestones.find((m) => m.step === m6SelectedSennaMilestone) || milestones[0]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Trajetória e Memória</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">LEGADO BRASILEIRO</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Marcos da carreira de Ayrton Senna:
+            </p>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              {milestones.map((m) => (
+                <button
+                  key={m.step}
+                  type="button"
+                  onClick={() => setM6SelectedSennaMilestone(m.step)}
+                  className={cn(
+                    "py-1 px-1 rounded text-[9px] font-bold transition-all cursor-pointer text-center truncate",
+                    m6SelectedSennaMilestone === m.step ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {m.year}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px] mb-2">
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-black text-white">{activeMilestone.year}</span>
+                <span className="text-[#E10600] font-mono text-[9px]">{activeMilestone.team}</span>
+              </div>
+              <p className="text-zinc-300 leading-relaxed">{activeMilestone.desc}</p>
+            </div>
+
+            {/* Linhagem de Ouro Brasileira */}
+            <div className="p-2 rounded-lg bg-black/60 border border-white/10 text-[9px]">
+              <span className="text-zinc-400 block font-bold mb-1">Outros Pilotos Brasileiros Históricos (clique para ver):</span>
+              <div className="grid grid-cols-4 gap-1 text-zinc-300 mb-1.5">
+                <button
+                  type="button"
+                  onClick={() => setM6BrazilianDriverDetail(m6BrazilianDriverDetail === "fittipaldi" ? null : "fittipaldi")}
+                  className={cn("py-0.5 px-1 rounded truncate cursor-pointer transition-all", m6BrazilianDriverDetail === "fittipaldi" ? "bg-[#E10600] text-white" : "bg-white/5 hover:bg-white/10")}
+                >
+                  Fittipaldi (2x 🏆)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setM6BrazilianDriverDetail(m6BrazilianDriverDetail === "piquet" ? null : "piquet")}
+                  className={cn("py-0.5 px-1 rounded truncate cursor-pointer transition-all", m6BrazilianDriverDetail === "piquet" ? "bg-[#E10600] text-white" : "bg-white/5 hover:bg-white/10")}
+                >
+                  Piquet (3x 🏆)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setM6BrazilianDriverDetail(m6BrazilianDriverDetail === "barrichello" ? null : "barrichello")}
+                  className={cn("py-0.5 px-1 rounded truncate cursor-pointer transition-all", m6BrazilianDriverDetail === "barrichello" ? "bg-[#E10600] text-white" : "bg-white/5 hover:bg-white/10")}
+                >
+                  Barrichello
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setM6BrazilianDriverDetail(m6BrazilianDriverDetail === "massa" ? null : "massa")}
+                  className={cn("py-0.5 px-1 rounded truncate cursor-pointer transition-all", m6BrazilianDriverDetail === "massa" ? "bg-[#E10600] text-white" : "bg-white/5 hover:bg-white/10")}
+                >
+                  Massa
+                </button>
+              </div>
+
+              {m6BrazilianDriverDetail === "fittipaldi" && (
+                <p className="text-zinc-300 border-t border-white/10 pt-1">
+                  <strong>Emerson Fittipaldi:</strong> Campeão em 1972 (Lotus) e 1974 (McLaren), 14 vitórias e pioneiro que abriu as portas da F1 para o Brasil.
+                </p>
+              )}
+              {m6BrazilianDriverDetail === "piquet" && (
+                <p className="text-zinc-300 border-t border-white/10 pt-1">
+                  <strong>Nelson Piquet:</strong> Tricampeão mundial (1981, 1983 pela Brabham e 1987 pela Williams), 23 vitórias e mestre do desenvolvimento técnico.
+                </p>
+              )}
+              {m6BrazilianDriverDetail === "barrichello" && (
+                <p className="text-zinc-300 border-t border-white/10 pt-1">
+                  <strong>Rubens Barrichello:</strong> 11 vitórias na F1, 68 pódios, vice-campeão em 2002 e 2004 e um dos pilotos com maior longevidade da história (322 largadas).
+                </p>
+              )}
+              {m6BrazilianDriverDetail === "massa" && (
+                <p className="text-zinc-300 border-t border-white/10 pt-1">
+                  <strong>Felipe Massa:</strong> 11 vitórias pela Ferrari, 41 pódios, vice-campeão mundial em 2008 e símbolo de resiliência e velocidade.
+                </p>
+              )}
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 7: A F1 MODERNA E A REVOLUÇÃO DE 2026
+      if (currentScene.visualEffectType === "mod6_modern_f1_2026") {
+        const comparisons = [
+          {
+            era: "1950" as const,
+            title: "1950 • Origem Mecânica",
+            power: "~350 cv • Motor Dianteiro puro a combustão",
+            aero: "Sem asas aerodinâmicas • Arrasto elevado",
+            energy: "Combustível convencional com chumbo",
+            overtake: "Puro vácuo mecânico e frenagem direta",
+          },
+          {
+            era: "2014" as const,
+            title: "2014 • Era Híbrida Turbo",
+            power: "~1000 cv • V6 turbo 1.6L + MGU-K + MGU-H",
+            aero: "Asas fixas + abertura móvel do flap DRS",
+            energy: "Gasolina E10 comercial com eficiência de 50%",
+            overtake: "Zona de DRS a menos de 1s do rival",
+          },
+          {
+            era: "2026" as const,
+            title: "2026 • Nova Geração Ativa",
+            power: "~1000 cv • Divisão 50% térmica e 50% elétrica (350 kW)",
+            aero: "Aerodinâmica Ativa: Corner Mode e Straight Mode",
+            energy: "Combustíveis avançados 100% sustentáveis",
+            overtake: "Overtake Mode elétrico + Boost direto",
+          },
+        ]
+
+        const activeCompare = comparisons.find((c) => c.era === m6SelectedEraCompare) || comparisons[2]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Salto Tecnológico</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold">COMPARAÇÃO DE ERAS</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+              Selecione uma era para comparar os pilares técnicos:
+            </p>
+
+            <div className="grid grid-cols-3 gap-1 mb-2.5">
+              {comparisons.map((c) => (
+                <button
+                  key={c.era}
+                  type="button"
+                  onClick={() => setM6SelectedEraCompare(c.era)}
+                  className={cn(
+                    "py-1.5 px-1 rounded-lg text-[9px] font-bold transition-all cursor-pointer text-center",
+                    m6SelectedEraCompare === c.era ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {c.era}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 text-[10px] space-y-1.5 mb-2">
+              <span className="font-black text-white text-xs block mb-1">{activeCompare.title}</span>
+              <div>
+                <span className="text-zinc-400 block text-[9px] font-mono uppercase">⚡ Potência:</span>
+                <span className="text-zinc-200">{activeCompare.power}</span>
+              </div>
+              <div>
+                <span className="text-zinc-400 block text-[9px] font-mono uppercase">🏎️ Aerodinâmica:</span>
+                <span className="text-zinc-200">{activeCompare.aero}</span>
+              </div>
+              <div>
+                <span className="text-zinc-400 block text-[9px] font-mono uppercase">🌱 Combustível:</span>
+                <span className="text-zinc-200">{activeCompare.energy}</span>
+              </div>
+              <div>
+                <span className="text-zinc-400 block text-[9px] font-mono uppercase">🏁 Ultrapassagem:</span>
+                <span className="text-zinc-200">{activeCompare.overtake}</span>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 8: O QUE A HISTÓRIA NOS ENSINA (SÍNTESE E TRANSIÇÃO PARA QUIZ)
+      if (currentScene.visualEffectType === "mod6_history_summary") {
+        const favoriteOptions = [
+          { id: "50s", label: "Anos 50 (Pioneiros)" },
+          { id: "70s", label: "Anos 70/80 (Asas & Turbo)" },
+          { id: "senna_prost", label: "Era Senna vs Prost" },
+          { id: "v10", label: "Anos 2000 (Motores V10)" },
+          { id: "2026", label: "Nova Era de 2026" },
+        ]
+
+        return (
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-88 max-w-[90vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Síntese dos 75 Anos</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">CONCLUSÃO</span>
+            </div>
+
+            <div className="space-y-1 mb-2.5 text-[10px] text-zinc-300">
+              <div className="flex items-center gap-1.5 p-1 rounded bg-white/5">
+                <span className="text-amber-400 font-bold">1.</span>
+                <span>Regulamentos técnicos moldam as dinastias e o equilíbrio.</span>
+              </div>
+              <div className="flex items-center gap-1.5 p-1 rounded bg-white/5">
+                <span className="text-amber-400 font-bold">2.</span>
+                <span>Grandes pilotos devem ser avaliados no contexto de sua época.</span>
+              </div>
+              <div className="flex items-center gap-1.5 p-1 rounded bg-white/5">
+                <span className="text-amber-400 font-bold">3.</span>
+                <span>A segurança evolui pelo aprendizado contínuo para salvar vidas.</span>
+              </div>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 font-bold mb-1.5">
+              Se você pudesse visitar uma era da F1, qual escolheria?
+            </p>
+
+            <div className="flex flex-wrap gap-1 mb-3">
+              {favoriteOptions.map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setM6FavoriteEra(opt.id)}
+                  className={cn(
+                    "py-1 px-2 rounded-lg text-[9px] font-bold transition-all cursor-pointer",
+                    m6FavoriteEra === opt.id ? "bg-[#E10600] text-white shadow-md" : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  )}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
+            {m6FavoriteEra && (
+              <p className="text-[9px] text-emerald-400 mb-2.5 leading-snug">
+                Excelente escolha! Cada período tem histórias incríveis de coragem e engenharia que tornam a F1 um patrimônio esportivo imortal.
+              </p>
+            )}
+
+            <button
+              type="button"
+              onClick={() => {
+                stopAllAudio()
+                setViewStage("quiz")
+              }}
+              className="w-full py-2 px-3 rounded-lg bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider shadow-[0_0_20px_rgba(225,6,0,0.6)] transition-all cursor-pointer text-center"
+            >
+              Iniciar Questionário (10 Perguntas)
+            </button>
+          </div>
+        )
+      }
+    }
+
     return null
   }
 
@@ -5504,7 +6599,7 @@ export function NovatosPage() {
           {/* Fundo Cinematográfico com Parallax Suave */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <img
-              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : activeModuleId === 4 ? "/backgrounds/bg-redbull.webp" : "/backgrounds/bg-redbull.webp"}
+              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : activeModuleId === 4 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 5 ? "/backgrounds/bg-redbull.webp" : "/novatos/modulo1/cena02_1950.jpg"}
               alt="Fundo Novatos na F1"
               className={cn(
                 "w-full h-full object-cover object-center brightness-40 contrast-125 scale-105",
@@ -5564,7 +6659,17 @@ export function NovatosPage() {
                 activeModuleId === 5 ? "bg-[#E10600] text-white shadow-lg" : "text-zinc-400 hover:text-white"
               )}
             >
-              5. A Arte de Ultrapassar
+              5. Ultrapassagens
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSelectModule(6)}
+              className={cn(
+                "px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide transition-all cursor-pointer",
+                activeModuleId === 6 ? "bg-[#E10600] text-white shadow-lg" : "text-zinc-400 hover:text-white"
+              )}
+            >
+              6. História da F1
             </button>
           </div>
 
@@ -5581,7 +6686,9 @@ export function NovatosPage() {
                   ? "MÓDULO 3 • DENTRO DA CORRIDA: APRENDA A ACOMPANHAR A TRANSMISSÃO"
                   : activeModuleId === 4
                   ? "MÓDULO 4 • A MENTE POR TRÁS DA CORRIDA: ESTRATÉGIA E PNEUS"
-                  : "MÓDULO 5 • A ARTE DE ULTRAPASSAR: REGRAS E DISPUTAS"}
+                  : activeModuleId === 5
+                  ? "MÓDULO 5 • A ARTE DE ULTRAPASSAR: REGRAS E DISPUTAS"
+                  : "MÓDULO 6 • A HISTÓRIA DA FÓRMULA 1: 75 ANOS DE EVOLUÇÃO"}
               </span>
             </div>
 
@@ -5598,7 +6705,9 @@ export function NovatosPage() {
                 ? "MÓDULO 3 — DENTRO DA CORRIDA"
                 : activeModuleId === 4
                 ? "MÓDULO 4 — A MENTE POR TRÁS DA CORRIDA"
-                : "MÓDULO 5 — A ARTE DE ULTRAPASSAR"}
+                : activeModuleId === 5
+                ? "MÓDULO 5 — A ARTE DE ULTRAPASSAR"
+                : "MÓDULO 6 — A HISTÓRIA DA FÓRMULA 1"}
             </p>
 
             <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-xl mb-8">
@@ -5610,7 +6719,9 @@ export function NovatosPage() {
                 ? "“Os carros estão no grid. Os pilotos estão preparados. Mas você sabe interpretar tudo o que está prestes a acontecer?”"
                 : activeModuleId === 4
                 ? "“Na Fórmula 1, velocidade é fundamental. Mas saber quando atacar, economizar pneus ou parar nos boxes pode mudar o resultado de uma corrida.”"
-                : "“Na Fórmula 1, ultrapassar não é apenas acelerar. É escolher o momento certo, entender o adversário e disputar cada centímetro dentro das regras.”"}
+                : activeModuleId === 5
+                ? "“Na Fórmula 1, ultrapassar não é apenas acelerar. É escolher o momento certo, entender o adversário e disputar cada centímetro dentro das regras.”"
+                : "“75 anos de velocidade, coragem e evolução: das pioneiras máquinas de Silverstone à revolução técnica de 2026.”"}
             </p>
 
             {/* Botão de Ação CTA */}
@@ -5620,7 +6731,7 @@ export function NovatosPage() {
               className="inline-flex items-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-sm sm:text-base font-black uppercase tracking-wider shadow-[0_0_30px_rgba(225,6,0,0.65)] hover:shadow-[0_0_40px_rgba(225,6,0,0.85)] transition-all cursor-pointer transform hover:scale-105 active:scale-95"
             >
               <Play className="w-5 h-5 fill-white" />
-              <span>{activeModuleId === 1 ? "COMEÇAR DO ZERO" : activeModuleId === 2 ? "INICIAR EXPERIÊNCIA" : activeModuleId === 3 ? "INICIAR TRANSMISSÃO" : "INICIAR TRANSMISSÃO"}</span>
+              <span>{activeModuleId === 1 ? "COMEÇAR DO ZERO" : activeModuleId === 2 ? "INICIAR EXPERIÊNCIA" : activeModuleId === 3 ? "INICIAR TRANSMISSÃO" : activeModuleId === 6 ? "INICIAR EXPERIÊNCIA" : "INICIAR TRANSMISSÃO"}</span>
             </button>
 
             {/* Acessos Rápidos no Rodapé da Abertura */}
@@ -5991,7 +7102,7 @@ export function NovatosPage() {
               </div>
 
               <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white mb-1">
-                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : activeModuleId === 2 ? "MÓDULO 2 CONCLUÍDO" : activeModuleId === 3 ? "MÓDULO 3 CONCLUÍDO" : activeModuleId === 4 ? "MÓDULO 4 CONCLUÍDO" : "MÓDULO 5 CONCLUÍDO"}
+                {activeModuleId === 1 ? "MÓDULO 1 CONCLUÍDO" : activeModuleId === 2 ? "MÓDULO 2 CONCLUÍDO" : activeModuleId === 3 ? "MÓDULO 3 CONCLUÍDO" : activeModuleId === 4 ? "MÓDULO 4 CONCLUÍDO" : activeModuleId === 5 ? "MÓDULO 5 CONCLUÍDO" : "MÓDULO 6 CONCLUÍDO"}
               </h2>
 
               <p className="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-4">
@@ -6013,13 +7124,21 @@ export function NovatosPage() {
                     : (quizScore ?? 0) >= 5
                     ? "“Bom começo! Refaça as cenas sobre pneus, pit stops e decisões estratégicas para consolidar o conhecimento.”"
                     : "“Toda grande estratégia começa com aprendizado. Reveja as cenas e tente novamente.”"
+                  : activeModuleId === 5
+                  ? (quizScore ?? 0) >= 9
+                    ? "“Excelente! Você já consegue interpretar os principais elementos de uma disputa de F1.”"
+                    : (quizScore ?? 0) >= 7
+                    ? "“Muito bem! Você entendeu os fundamentos. Revise os detalhes regulamentares para melhorar ainda mais.”"
+                    : (quizScore ?? 0) >= 5
+                    ? "“Bom começo! Reveja as cenas sobre defesa, ataque e disputas roda a roda.”"
+                    : "“Toda boa leitura de corrida começa com aprendizado. Reveja as cenas e tente novamente.”"
                   : (quizScore ?? 0) >= 9
-                  ? "“Excelente! Você já consegue interpretar os principais elementos de uma disputa de F1.”"
+                  ? "“Excelente! Você compreende com maestria os 75 anos de história, as eras técnicas e o legado que moldou a Fórmula 1 moderna.”"
                   : (quizScore ?? 0) >= 7
-                  ? "“Muito bem! Você entendeu os fundamentos. Revise os detalhes regulamentares para melhorar ainda mais.”"
+                  ? "“Muito bem! Você conhece os marcos essenciais da história do automobilismo. Revise as cenas para fixar os detalhes.”"
                   : (quizScore ?? 0) >= 5
-                  ? "“Bom começo! Reveja as cenas sobre defesa, ataque e disputas roda a roda.”"
-                  : "“Toda boa leitura de corrida começa com aprendizado. Reveja as cenas e tente novamente.”"}
+                  ? "“Bom começo! Reveja os períodos técnicos, a trajetória de Ayrton Senna e as inovações de segurança.”"
+                  : "“Toda grande jornada histórica começa com o primeiro passo. Reveja as cenas da linha do tempo e tente novamente.”"}
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-3">
@@ -6036,6 +7155,19 @@ export function NovatosPage() {
                 >
                   Refazer Questionário
                 </button>
+
+                {activeModuleId === 6 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      goToScene(0)
+                    }}
+                    className="px-4 py-2 rounded-xl bg-[#E10600]/20 hover:bg-[#E10600]/30 text-white text-xs font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 border border-[#E10600]/40"
+                  >
+                    <Clock className="w-3.5 h-3.5 text-[#E10600]" />
+                    <span>Revisar Linha do Tempo</span>
+                  </button>
+                )}
 
                 <button
                   type="button"
