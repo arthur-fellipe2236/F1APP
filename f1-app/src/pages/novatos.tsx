@@ -11648,8 +11648,10 @@ export function NovatosPage() {
                   type="button"
                   onClick={() => {
                     clearCountdownTimer()
-                    if (sceneIndex < currentScenes.length - 1) goToScene(sceneIndex + 1)
-                    else setViewStage("quiz")
+                    if (sceneIndex < currentScenes.length - 1) {
+                      autoPlayNextSceneRef.current = true
+                      goToScene(sceneIndex + 1)
+                    }
                   }}
                   className="px-2.5 py-1 rounded bg-[#E10600] hover:bg-[#ff1a14] text-white text-[11px] font-black uppercase cursor-pointer"
                 >
@@ -11752,8 +11754,10 @@ export function NovatosPage() {
               <button
                 type="button"
                 onClick={() => {
-                  if (sceneIndex < currentScenes.length - 1) goToScene(sceneIndex + 1)
-                  else {
+                  if (sceneIndex < currentScenes.length - 1) {
+                    if (isPlaying) autoPlayNextSceneRef.current = true
+                    goToScene(sceneIndex + 1)
+                  } else {
                     stopAllAudio()
                     setViewStage("quiz")
                   }
