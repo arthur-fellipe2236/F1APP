@@ -20,11 +20,12 @@ def token_required(f):
             return jsonify({"message": "Token is missing!"}), 401
             
         try:
-            data = jwt.decode(token, current_app.config.get("SECRET_KEY") or "f1-secret-key-123", algorithms=["HS256"])
-            current_user = User.query.get(data["user_id"])
+            secret = current_app.config.get("SECRET_KEY") or "f1-dev-fallback-secret-key-change-in-production"
+            data = jwt.decode(token, secret, algorithms=["HS256"])
+            current_user = db.session.get(User, data["user_id"])
             if not current_user:
                 raise Exception("User not found")
-        except Exception as e:
+        except Exception:
             return jsonify({"message": "Token is invalid!"}), 401
             
         return f(current_user, *args, **kwargs)
@@ -39,8 +40,9 @@ def optional_token(f):
             if len(parts) == 2 and parts[0] == "Bearer":
                 token = parts[1]
                 try:
-                    data = jwt.decode(token, current_app.config.get("SECRET_KEY") or "f1-secret-key-123", algorithms=["HS256"])
-                    current_user = User.query.get(data.get("user_id"))
+                    secret = current_app.config.get("SECRET_KEY") or "f1-dev-fallback-secret-key-change-in-production"
+                    data = jwt.decode(token, secret, algorithms=["HS256"])
+                    current_user = db.session.get(User, data.get("user_id"))
                 except Exception:
                     current_user = None
         return f(current_user, *args, **kwargs)
@@ -52,7 +54,14 @@ def register():
     if not data or not data.get("username") or not data.get("password"):
         return jsonify({"message": "Missing username or password"}), 400
         
-    if User.query.filter_by(username=data["username"]).first():
+    username = str(data["username"]).strip()
+    password = str(data["password"])
+    if len(username) < 3:
+        return jsonify({"message": "Username must have at least 3 characters"}), 400
+    if len(password) < 6:
+        return jsonify({"message": "Password must have at least 6 characters"}), 400
+        
+    if User.query.filter_by(username=username).first():
         return jsonify({"message": "Username already exists"}), 400
         
     new_user = User(username=data["username"])
@@ -73,9 +82,10 @@ def login():
     if not user or not user.check_password(data["password"]):
         return jsonify({"message": "Invalid credentials"}), 401
         
+    secret = current_app.config.get("SECRET_KEY") or "f1-dev-fallback-secret-key-change-in-production"
     token = jwt.encode(
-        {"user_id": user.id, "exp": datetime.datetime.utcnow() + datetime.timedelta(days=30)},
-        current_app.config.get("SECRET_KEY") or "f1-secret-key-123",
+        {"user_id": user.id, "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=30)},
+        secret,
         algorithm="HS256"
     )
     

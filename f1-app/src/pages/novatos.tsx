@@ -3088,6 +3088,32 @@ function loadPersistedState(key: string): PersistedModuleState {
 }
 
 
+
+export function getModuleHeroBackground(moduleId: number): string {
+  switch (moduleId) {
+    case 1:
+      return "/backgrounds/bg-ferrari.webp"
+    case 2:
+      return "/backgrounds/bg-default.webp"
+    case 3:
+      return "/backgrounds/bg-mclaren.webp"
+    case 4:
+    case 5:
+      return "/backgrounds/bg-redbull.webp"
+    case 6:
+      return "/novatos/modulo1/cena02_1950.jpg"
+    case 7:
+      return "/backgrounds/bg-mercedes.webp"
+    case 8:
+      return "/backgrounds/bg-aston.webp"
+    case 9:
+      return "/backgrounds/bg-redbull.webp"
+    case 10:
+    default:
+      return "/backgrounds/bg-audi.webp"
+  }
+}
+
 export function NovatosPage() {
   // ==========================================================================
   // ESTADO DO MÓDULO ATIVO (MÓDULO 1 OU MÓDULO 2)
@@ -3127,7 +3153,19 @@ export function NovatosPage() {
   const [viewStage, setViewStage] = useState<"opening" | "lesson" | "quiz">("opening")
 
   // Scene Navigation
-  const [sceneIndex, setSceneIndex] = useState(0)
+  const [sceneIndex, setSceneIndex] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search)
+      const modParam = urlParams.get("modulo") || urlParams.get("mod")
+      const mod = Number(modParam) || 1
+      const key = mod === 1 ? STORAGE_MOD1_KEY : mod === 2 ? STORAGE_MOD2_KEY : mod === 3 ? STORAGE_MOD3_KEY : mod === 4 ? STORAGE_MOD4_KEY : mod === 5 ? STORAGE_MOD5_KEY : mod === 6 ? STORAGE_MOD6_KEY : mod === 7 ? STORAGE_MOD7_KEY : mod === 8 ? STORAGE_MOD8_KEY : mod === 9 ? STORAGE_MOD9_KEY : STORAGE_MOD10_KEY
+      const s = loadPersistedState(key)
+      if (typeof s.lastSceneIndex === "number" && s.lastSceneIndex >= 0 && s.lastSceneIndex < 8) {
+        return s.lastSceneIndex
+      }
+    }
+    return 0
+  })
   const currentScene = currentScenes[sceneIndex] || currentScenes[0]
 
   // Persisted progress
@@ -3312,39 +3350,37 @@ export function NovatosPage() {
       ctx.resume().catch(() => {})
     }
 
-    if (!isAudioContextInitRef.current) {
-      try {
-        if (narrationAudioRef.current && !narrationSourceRef.current) {
-          narrationSourceRef.current = ctx.createMediaElementSource(narrationAudioRef.current)
-          narrationGainRef.current = ctx.createGain()
-          narrationSourceRef.current.connect(narrationGainRef.current)
-          narrationGainRef.current.connect(ctx.destination)
-        }
-
-        if (musicAudioRef.current && !musicSourceRef.current) {
-          musicSourceRef.current = ctx.createMediaElementSource(musicAudioRef.current)
-          musicGainRef.current = ctx.createGain()
-          musicSourceRef.current.connect(musicGainRef.current)
-          musicGainRef.current.connect(ctx.destination)
-        }
-
-        if (ambientAudioRef.current && !ambientSourceRef.current) {
-          ambientSourceRef.current = ctx.createMediaElementSource(ambientAudioRef.current)
-          ambientGainRef.current = ctx.createGain()
-          ambientSourceRef.current.connect(ambientGainRef.current)
-          ambientGainRef.current.connect(ctx.destination)
-        }
-
-        isAudioContextInitRef.current = true
-      } catch (err) {
-        console.warn("Web Audio API GainNodes já conectados ou indisponíveis:", err)
+    try {
+      if (narrationAudioRef.current && !narrationSourceRef.current) {
+        narrationSourceRef.current = ctx.createMediaElementSource(narrationAudioRef.current)
+        narrationGainRef.current = ctx.createGain()
+        narrationSourceRef.current.connect(narrationGainRef.current)
+        narrationGainRef.current.connect(ctx.destination)
       }
+
+      if (musicAudioRef.current && !musicSourceRef.current) {
+        musicSourceRef.current = ctx.createMediaElementSource(musicAudioRef.current)
+        musicGainRef.current = ctx.createGain()
+        musicSourceRef.current.connect(musicGainRef.current)
+        musicGainRef.current.connect(ctx.destination)
+      }
+
+      if (ambientAudioRef.current && !ambientSourceRef.current) {
+        ambientSourceRef.current = ctx.createMediaElementSource(ambientAudioRef.current)
+        ambientGainRef.current = ctx.createGain()
+        ambientSourceRef.current.connect(ambientGainRef.current)
+        ambientGainRef.current.connect(ctx.destination)
+      }
+
+      isAudioContextInitRef.current = true
+    } catch (err) {
+      console.warn("Web Audio API GainNodes já conectados ou indisponíveis:", err)
     }
 
     // Aplica volumes imediatamente
     const currentNarrationVol = isMuted ? 0 : narrationVolume
     const currentMusicVol = isMuted || !isMusicActive ? 0 : musicVolume
-    const currentAmbientVol = isMuted || activeModuleId === 2 ? 0 : ambientVolume
+    const currentAmbientVol = isMuted || activeModuleId !== 1 ? 0 : ambientVolume
 
     if (narrationGainRef.current) {
       narrationGainRef.current.gain.setValueAtTime(currentNarrationVol, ctx.currentTime)
@@ -3371,7 +3407,11 @@ export function NovatosPage() {
     setVisitedScenes(state.visitedScenes)
     setQuizCompleted(state.quizCompleted)
     setQuizScore(state.quizScore)
-  }, [currentStorageKey])
+    const maxLen = currentScenes.length
+    if (typeof state.lastSceneIndex === "number" && state.lastSceneIndex >= 0 && state.lastSceneIndex < maxLen) {
+      setSceneIndex(state.lastSceneIndex)
+    }
+  }, [currentStorageKey, currentScenes.length])
 
   // Troca de módulo (Módulo 1 a 8)
   const handleSelectModule = useCallback(
@@ -3444,7 +3484,7 @@ export function NovatosPage() {
 
     const targetNarration = isMuted ? 0 : narrationVolume
     let targetMusic = isMuted || !isMusicActive ? 0 : musicVolume
-    let targetAmbient = isMuted || activeModuleId === 2 ? 0 : ambientVolume
+    let targetAmbient = isMuted || activeModuleId !== 1 ? 0 : ambientVolume
 
     // Quando Mariana fala, a música abaixa para 22%
     if (isPlaying && targetNarration > 0) {
@@ -3597,8 +3637,8 @@ export function NovatosPage() {
       if (sceneIndex < currentScenes.length - 1) {
         goToScene(sceneIndex + 1)
       } else {
-        stopAllAudio()
-        setViewStage("quiz")
+        // Na última cena, preserva a navegação e não força saída automática do módulo
+        setIsPlaying(false)
       }
       return
     }
@@ -10867,7 +10907,10 @@ export function NovatosPage() {
         preload="auto"
         onEnded={() => {
           setIsPlaying(false)
-          startPostNarrationCountdown()
+          // Avanço automático de 5s só ocorre se não for a última cena do módulo
+          if (sceneIndex < currentScenes.length - 1) {
+            startPostNarrationCountdown()
+          }
         }}
       />
       <audio
@@ -10893,7 +10936,7 @@ export function NovatosPage() {
           {/* Fundo Cinematográfico com Parallax Suave */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <img
-              src={activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : activeModuleId === 4 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 5 ? "/backgrounds/bg-redbull.webp" : activeModuleId === 6 ? "/novatos/modulo1/cena02_1950.jpg" : activeModuleId === 7 ? "/backgrounds/bg-mercedes.webp" : activeModuleId === 8 ? "/backgrounds/bg-aston.webp" : activeModuleId === 9 ? "/backgrounds/bg-redbull.webp" : "/backgrounds/bg-audi.webp"}
+              src={getModuleHeroBackground(activeModuleId)}
               alt="Fundo Novatos na F1"
               className={cn(
                 "w-full h-full object-cover object-center brightness-40 contrast-125 scale-105",
@@ -11628,7 +11671,7 @@ export function NovatosPage() {
           >
             <div onClick={(e) => e.stopPropagation()} className="relative w-screen h-dvh overflow-hidden">
               <img
-                src={viewStage === "opening" ? (activeModuleId === 1 ? "/backgrounds/bg-ferrari.webp" : activeModuleId === 2 ? "/backgrounds/bg-default.webp" : activeModuleId === 3 ? "/backgrounds/bg-mclaren.webp" : "/backgrounds/bg-redbull.webp") : currentScene.imageUrl}
+                src={viewStage === "opening" ? getModuleHeroBackground(activeModuleId) : currentScene.imageUrl}
                 data-testid="fullscreen-expanded-img"
                 className={cn(
                   "w-screen h-dvh object-cover object-center select-none",

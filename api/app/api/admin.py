@@ -19,17 +19,22 @@ def admin_required(f):
 @admin_required
 def submit_manual_results(current_user):
     data = request.get_json()
-    race_id = data.get('race_id')
-    results = data.get('results') # list of {driver_id: int, position: int, points: float, fastest_lap: bool}
-    
-    if not race_id or not results:
-        return jsonify({'message': 'race_id and results required'}), 400
+    if not isinstance(data, dict):
+        return jsonify({'message': 'Invalid payload format'}), 400
         
-    race = Race.query.get(race_id)
+    race_id = data.get('race_id')
+    results = data.get('results')
+    
+    if not race_id or not isinstance(results, list):
+        return jsonify({'message': 'race_id and a list of results are required'}), 400
+        
+    race = db.session.get(Race, race_id)
     if not race:
         return jsonify({'message': 'Race not found'}), 404
         
     for r in results:
+        if not isinstance(r, dict):
+            continue
         driver_id = r.get('driver_id')
         pos = r.get('position')
         pts = r.get('points', 0)
@@ -45,7 +50,7 @@ def submit_manual_results(current_user):
             existing.fastest_lap = fl
             existing.status = 'finished'
         else:
-            driver = Driver.query.get(driver_id)
+            driver = db.session.get(Driver, driver_id)
             if driver:
                 new_res = RaceResult(
                     race_id=race_id,
