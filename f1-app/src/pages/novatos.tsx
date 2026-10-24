@@ -3184,7 +3184,6 @@ export function NovatosPage() {
   // Independent Volume Sliders
   const [narrationVolume, setNarrationVolume] = useState(1.0)
   const [musicVolume, setMusicVolume] = useState(0.28)
-  const [ambientVolume, setAmbientVolume] = useState(0.18)
 
   // Accessibility & UI Modals
   const [isGlossaryOpen, setIsGlossaryOpen] = useState(false)
@@ -3194,7 +3193,39 @@ export function NovatosPage() {
   const [reduceMotion, setReduceMotion] = useState(false)
 
   // Interactive Scene States — Module 1
-  const [mod1ActiveComponent, setMod1ActiveComponent] = useState<number | null>(null)
+  const [m1Scene3Element, setM1Scene3Element] = useState<"formula" | "pilots" | "teams" | "championship">("formula")
+  const [m1SelectedPart, setM1SelectedPart] = useState<number>(1)
+  const [m1StartStep, setM1StartStep] = useState<"idle" | "light_1" | "light_2" | "light_3" | "light_4" | "all_on" | "lights_out" | "racing">("idle")
+  const m1StartTimersRef = useRef<NodeJS.Timeout[]>([])
+  const [m1ReviewHotspot, setM1ReviewHotspot] = useState<number>(1)
+  const [m1ShowAllSummary, setM1ShowAllSummary] = useState<boolean>(false)
+
+  const clearM1StartTimers = useCallback(() => {
+    m1StartTimersRef.current.forEach((t) => clearTimeout(t))
+    m1StartTimersRef.current = []
+  }, [])
+
+  const handleRunStartSequence = useCallback(() => {
+    clearM1StartTimers()
+    setM1StartStep("idle")
+
+    const t1 = setTimeout(() => setM1StartStep("light_1"), 800)
+    const t2 = setTimeout(() => setM1StartStep("light_2"), 1800)
+    const t3 = setTimeout(() => setM1StartStep("light_3"), 2800)
+    const t4 = setTimeout(() => setM1StartStep("light_4"), 3800)
+    const t5 = setTimeout(() => setM1StartStep("all_on"), 4800)
+    // Pausa de expectativa com as 5 luzes vermelhas acesas
+    const t6 = setTimeout(() => setM1StartStep("lights_out"), 6800)
+    // Largada após o apagamento
+    const t7 = setTimeout(() => setM1StartStep("racing"), 7200)
+
+    m1StartTimersRef.current = [t1, t2, t3, t4, t5, t6, t7]
+  }, [clearM1StartTimers])
+
+  const handleResetStartSequence = useCallback(() => {
+    clearM1StartTimers()
+    setM1StartStep("idle")
+  }, [clearM1StartTimers])
 
   // Interactive Scene States — Module 2
   const [m2Hotspot, setM2Hotspot] = useState<number>(1)
@@ -3317,18 +3348,16 @@ export function NovatosPage() {
   // Audio References
   const narrationAudioRef = useRef<HTMLAudioElement | null>(null)
   const musicAudioRef = useRef<HTMLAudioElement | null>(null)
-  const ambientAudioRef = useRef<HTMLAudioElement | null>(null)
   const radioAudioRef = useRef<HTMLAudioElement | null>(null)
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const autoPlayNextSceneRef = useRef<boolean>(false)
 
   // Web Audio API References
   const audioContextRef = useRef<AudioContext | null>(null)
   const narrationGainRef = useRef<GainNode | null>(null)
   const musicGainRef = useRef<GainNode | null>(null)
-  const ambientGainRef = useRef<GainNode | null>(null)
   const narrationSourceRef = useRef<MediaElementAudioSourceNode | null>(null)
   const musicSourceRef = useRef<MediaElementAudioSourceNode | null>(null)
-  const ambientSourceRef = useRef<MediaElementAudioSourceNode | null>(null)
   const isAudioContextInitRef = useRef<boolean>(false)
 
   // ==========================================================================
@@ -3365,12 +3394,7 @@ export function NovatosPage() {
         musicGainRef.current.connect(ctx.destination)
       }
 
-      if (ambientAudioRef.current && !ambientSourceRef.current) {
-        ambientSourceRef.current = ctx.createMediaElementSource(ambientAudioRef.current)
-        ambientGainRef.current = ctx.createGain()
-        ambientSourceRef.current.connect(ambientGainRef.current)
-        ambientGainRef.current.connect(ctx.destination)
-      }
+
 
       isAudioContextInitRef.current = true
     } catch (err) {
@@ -3380,7 +3404,6 @@ export function NovatosPage() {
     // Aplica volumes imediatamente
     const currentNarrationVol = isMuted ? 0 : narrationVolume
     const currentMusicVol = isMuted || !isMusicActive ? 0 : musicVolume
-    const currentAmbientVol = isMuted || activeModuleId !== 1 ? 0 : ambientVolume
 
     if (narrationGainRef.current) {
       narrationGainRef.current.gain.setValueAtTime(currentNarrationVol, ctx.currentTime)
@@ -3394,12 +3417,8 @@ export function NovatosPage() {
       musicAudioRef.current.volume = currentMusicVol
     }
 
-    if (ambientGainRef.current) {
-      ambientGainRef.current.gain.setValueAtTime(currentAmbientVol, ctx.currentTime)
-    } else if (ambientAudioRef.current) {
-      ambientAudioRef.current.volume = currentAmbientVol
-    }
-  }, [isMuted, isMusicActive, narrationVolume, musicVolume, ambientVolume, activeModuleId])
+
+  }, [isMuted, isMusicActive, narrationVolume, musicVolume, activeModuleId])
 
   // Carrega estado persistido
   useEffect(() => {
@@ -3429,10 +3448,7 @@ export function NovatosPage() {
         narrationAudioRef.current.pause()
         narrationAudioRef.current.currentTime = 0
       }
-      if (ambientAudioRef.current) {
-        ambientAudioRef.current.pause()
-        ambientAudioRef.current.currentTime = 0
-      }
+
 
       setActiveModuleId(modId)
       if (typeof window !== "undefined") {
@@ -3484,12 +3500,10 @@ export function NovatosPage() {
 
     const targetNarration = isMuted ? 0 : narrationVolume
     let targetMusic = isMuted || !isMusicActive ? 0 : musicVolume
-    let targetAmbient = isMuted || activeModuleId !== 1 ? 0 : ambientVolume
 
     // Quando Mariana fala, a música abaixa para 22%
     if (isPlaying && targetNarration > 0) {
       targetMusic = targetMusic * 0.22
-      targetAmbient = targetAmbient * 0.4
     }
 
     if (ctx && isAudioContextInitRef.current) {
@@ -3501,16 +3515,12 @@ export function NovatosPage() {
         musicGainRef.current.gain.cancelScheduledValues(now)
         musicGainRef.current.gain.linearRampToValueAtTime(targetMusic, now + 0.25)
       }
-      if (ambientGainRef.current) {
-        ambientGainRef.current.gain.cancelScheduledValues(now)
-        ambientGainRef.current.gain.linearRampToValueAtTime(targetAmbient, now + 0.25)
-      }
+
     } else {
       if (narrationAudioRef.current) narrationAudioRef.current.volume = targetNarration
       if (musicAudioRef.current) musicAudioRef.current.volume = targetMusic
-      if (ambientAudioRef.current) ambientAudioRef.current.volume = targetAmbient
     }
-  }, [isPlaying, isMuted, isMusicActive, narrationVolume, musicVolume, ambientVolume, activeModuleId])
+  }, [isPlaying, isMuted, isMusicActive, narrationVolume, musicVolume, activeModuleId])
 
   // Limpa o timer de contagem regressiva
   const clearCountdownTimer = useCallback(() => {
@@ -3523,6 +3533,7 @@ export function NovatosPage() {
 
   const handleCancelCountdown = useCallback(() => {
     clearCountdownTimer()
+    autoPlayNextSceneRef.current = false
   }, [clearCountdownTimer])
 
   // Para todo o áudio da cena
@@ -3532,10 +3543,7 @@ export function NovatosPage() {
       narrationAudioRef.current.pause()
       narrationAudioRef.current.currentTime = 0
     }
-    if (ambientAudioRef.current) {
-      ambientAudioRef.current.pause()
-      ambientAudioRef.current.currentTime = 0
-    }
+
     if (radioAudioRef.current) {
       radioAudioRef.current.pause()
       radioAudioRef.current.currentTime = 0
@@ -3551,7 +3559,12 @@ export function NovatosPage() {
       setSceneIndex(index)
       setVisitedScenes((prev) => (prev.includes(index + 1) ? prev : [...prev, index + 1]))
       setViewStage("lesson")
-      setMod1ActiveComponent(null)
+      setM1Scene3Element("formula")
+      setM1SelectedPart(1)
+      clearM1StartTimers()
+      setM1StartStep("idle")
+      setM1ReviewHotspot(1)
+      setM1ShowAllSummary(false)
       setM2Hotspot(1)
       setM2SummaryCard(null)
       setM3WeekendFormat("traditional")
@@ -3635,6 +3648,7 @@ export function NovatosPage() {
     if (countdownSeconds <= 0) {
       clearCountdownTimer()
       if (sceneIndex < currentScenes.length - 1) {
+        autoPlayNextSceneRef.current = true
         goToScene(sceneIndex + 1)
       } else {
         // Na última cena, preserva a navegação e não força saída automática do módulo
@@ -3660,15 +3674,12 @@ export function NovatosPage() {
 
     if (isPlaying) {
       if (narrationAudioRef.current) narrationAudioRef.current.pause()
-      if (ambientAudioRef.current) ambientAudioRef.current.pause()
       setIsPlaying(false)
     } else {
       if (musicAudioRef.current && isMusicActive && !isMuted) {
         musicAudioRef.current.play().catch(() => {})
       }
-      if (ambientAudioRef.current && activeModuleId === 1 && !isMuted) {
-        ambientAudioRef.current.play().catch(() => {})
-      }
+
       if (narrationAudioRef.current) {
         narrationAudioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false))
       }
@@ -3683,17 +3694,46 @@ export function NovatosPage() {
       narrationAudioRef.current.currentTime = 0
       narrationAudioRef.current.play().then(() => setIsPlaying(true)).catch(() => {})
     }
-    if (ambientAudioRef.current && activeModuleId === 1) {
-      ambientAudioRef.current.currentTime = 0
-      ambientAudioRef.current.play().catch(() => {})
-    }
+
   }, [initWebAudioContext, clearCountdownTimer, activeModuleId])
 
-  // Iniciar Experiência
+  // Reproduz automaticamente a narração da nova cena se acionada por avanço ou início
+  useEffect(() => {
+    if (viewStage !== "lesson") return
+
+    if (autoPlayNextSceneRef.current) {
+      autoPlayNextSceneRef.current = false
+      initWebAudioContext()
+
+      // Trilha sonora
+      if (musicAudioRef.current && isMusicActive && !isMuted && musicAudioRef.current.paused) {
+        musicAudioRef.current.play().catch(() => {})
+      }
+
+      // Narração da nova cena
+      if (narrationAudioRef.current) {
+        narrationAudioRef.current.currentTime = 0
+        const playPromise = narrationAudioRef.current.play()
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              setIsPlaying(true)
+            })
+            .catch((err) => {
+              console.warn("Autoplay da narração bloqueado pelo navegador:", err)
+              setIsPlaying(false)
+            })
+        }
+      }
+    }
+  }, [sceneIndex, viewStage, isMusicActive, isMuted, initWebAudioContext])
+
+  // Iniciar Experiência (Cena 1 começa com narração automática)
   const handleStartExperience = useCallback(() => {
     initWebAudioContext()
     clearCountdownTimer()
     setViewStage("lesson")
+    autoPlayNextSceneRef.current = true
     goToScene(0)
   }, [initWebAudioContext, clearCountdownTimer, goToScene])
 
@@ -3740,39 +3780,204 @@ export function NovatosPage() {
         )
       }
 
-      if (currentScene.visualEffectType === "machine_hotspots") {
-        const components = [
-          { id: 1, name: "Asa dianteira", top: "72%", left: "18%" },
-          { id: 2, name: "Asa traseira", top: "28%", left: "82%" },
-          { id: 3, name: "Pneus", top: "66%", left: "32%" },
-          { id: 4, name: "Freios", top: "62%", left: "38%" },
-          { id: 5, name: "Halo", top: "42%", left: "50%" },
-          { id: 6, name: "Cockpit", top: "48%", left: "54%" },
-          { id: 7, name: "Unidade de potência", top: "46%", left: "68%" },
+      // CENA 3: O SIGNIFICADO DA FÓRMULA 1 (4 ELEMENTOS INDEPENDENTES)
+      if (currentScene.visualEffectType === "parallax_track") {
+        const formulaElements = [
+          {
+            id: "formula" as const,
+            badge: "ELEMENTO 1 • REGULAMENTO",
+            title: "A Fórmula (O Conjunto de Regras)",
+            desc: "A palavra 'Fórmula' representa o código estrito de regras técnicas e esportivas da FIA. Peso mínimo, aerodinâmica, motores sustentáveis e teto orçamentário: todos constroem seus carros respeitando o mesmo regulamento.",
+            highlight: "Não vence quem tem motor livre, mas quem extrai mais desempenho dentro das mesmas regras.",
+          },
+          {
+            id: "pilots" as const,
+            badge: "ELEMENTO 2 • OS COMPETIDORES",
+            title: "Os Pilotos (Atletas no Limite)",
+            desc: "Apenas 20 pilotos no mundo ocupam esses cockpits. Eles suportam mais de 5G de desaceleração nas curvas e tomam decisões a mais de 300 km/h com reflexos cirúrgicos de milissegundos.",
+            highlight: "Disputa roda a roda em que um único metro de frenagem atrasada define ultrapassagem ou abandono.",
+          },
+          {
+            id: "teams" as const,
+            badge: "ELEMENTO 3 • O COLETIVO",
+            title: "As Equipes (Centenas nos Bastidores)",
+            desc: "O piloto acelera na pista, mas a vitória é um esporte de equipe. Mecânicos trocam 4 pneus em menos de 2 segundos, engenheiros analisam telemetria no pit wall e projetistas refinam o carro na fábrica.",
+            highlight: "Comunicação contínua pelo rádio e decisões estratégicas de boxes decidem Grandes Prêmios.",
+          },
+          {
+            id: "championship" as const,
+            badge: "ELEMENTO 4 • O FORMATO",
+            title: "O Campeonato (Pilotos e Construtores)",
+            desc: "Ao longo de mais de 20 Grandes Prêmios em circuitos pelo planeta, cada corrida distribui pontos para os 10 primeiros. No fim do ano, duas taças mundiais são entregues: o Mundial de Pilotos e o Mundial de Construtores.",
+            highlight: "Cada ponto somado ao longo de nove meses conta na consagração dos grandes campeões.",
+          },
         ]
 
+        const activeElem = formulaElements.find((e) => e.id === m1Scene3Element) || formulaElements[0]
+
         return (
-          <>
-            {components.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setMod1ActiveComponent(mod1ActiveComponent === c.id ? null : c.id)}
-                style={{ top: c.top, left: c.left }}
-                className={cn(
-                  "absolute -translate-x-1/2 -translate-y-1/2 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-lg",
-                  mod1ActiveComponent === c.id
-                    ? "bg-[#E10600] text-white ring-2 ring-white scale-110 shadow-[0_0_20px_rgba(225,6,0,0.8)]"
-                    : "bg-black/85 text-white border border-white/30 hover:border-[#E10600] hover:scale-105"
-                )}
-              >
-                <span className="w-4 h-4 rounded-full bg-[#E10600] text-white flex items-center justify-center text-[10px] font-black">
-                  {c.id}
+          <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-90 max-w-[92vw] bg-black/90 border border-white/20 rounded-xl p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Introdução Visual</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">O QUE É A F1</span>
+            </div>
+
+            <p className="text-[10px] text-zinc-300 mb-2 font-bold">
+              Descubra os 4 pilares que definem a categoria:
+            </p>
+
+            <div className="grid grid-cols-2 gap-1.5 mb-2.5">
+              {formulaElements.map((elem) => (
+                <button
+                  key={elem.id}
+                  type="button"
+                  onClick={() => setM1Scene3Element(elem.id)}
+                  className={cn(
+                    "p-1.5 rounded text-[10px] font-bold text-left transition-all border",
+                    m1Scene3Element === elem.id
+                      ? "bg-[#E10600] text-white border-[#E10600] shadow-md"
+                      : "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10"
+                  )}
+                >
+                  {elem.title.split("(")[0]}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-[10px] space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-white text-[11px]">{activeElem.title}</span>
+                <span className="px-1.5 py-0.5 rounded bg-white/10 text-cyan-300 font-mono text-[8px] uppercase">
+                  {activeElem.badge.split("•")[1] || activeElem.badge}
                 </span>
-                <span className="hidden sm:inline font-bold">{c.name}</span>
-              </button>
-            ))}
-          </>
+              </div>
+              <p className="text-zinc-200 leading-snug">{activeElem.desc}</p>
+              <div className="p-1.5 rounded bg-black/60 border border-white/5 text-[9px] text-amber-300 italic">
+                “{activeElem.highlight}”
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      // CENA 4: CONHECENDO AS PARTES DO CARRO (10 COMPONENTES VISUAIS)
+      if (currentScene.visualEffectType === "machine_hotspots") {
+        const carParts = [
+          {
+            id: 1,
+            name: "Asa dianteira",
+            area: "Frente do carro",
+            desc: "Direciona o fluxo de ar para todo o carro e gera a pressão aerodinâmica inicial para que as rodas dianteiras estercem com precisão milimétrica.",
+            importance: "Garante que o carro responda prontamente ao volante nas entradas de curva.",
+          },
+          {
+            id: 2,
+            name: "Assoalho (Efeito Solo)",
+            area: "Fundo do chassi",
+            desc: "Canais inferiores que aceleram o ar sob o carro, criando uma sucção (efeito solo) responsável por mais de 50% de toda a aderência aerodinâmica.",
+            importance: "Cola o carro ao solo em altas velocidades sem gerar arrasto excessivo nas retas.",
+          },
+          {
+            id: 3,
+            name: "Cockpit & Halo",
+            area: "Habitáculo do piloto",
+            desc: "Célula de sobrevivência em fibra de carbono encimada pelo Halo de titânio (capaz de suportar 12 toneladas de força estática).",
+            importance: "Protege a cabeça e o corpo do piloto em acidentes graves.",
+          },
+          {
+            id: 4,
+            name: "Volante de Corrida",
+            area: "Controles do piloto",
+            desc: "Computador de bordo com tela colorida e mais de 30 seletores: regula mapas de motor, diferencial, freio e comunicação de rádio.",
+            importance: "Permite que o piloto ajuste o comportamento do carro curva a curva.",
+          },
+          {
+            id: 5,
+            name: "Pneus de Competição",
+            area: "As 4 rodas",
+            desc: "O único elo entre o carro e o asfalto. Compostos macios, médios, duros e de chuva que operam a mais de 100°C.",
+            importance: "Sua condição dita a frenagem, tração e o momento das paradas nos boxes.",
+          },
+          {
+            id: 6,
+            name: "Freios de Carbono",
+            area: "Discos e pinças",
+            desc: "Discos ventilados em compósito carbono-carbono que atingem até 1000°C e geram mais de 5G de força de frenagem.",
+            importance: "Reduzem a velocidade de 330 para 80 km/h em menos de 2,5 segundos.",
+          },
+          {
+            id: 7,
+            name: "Suspensão",
+            area: "Brazos dianteiros e traseiros",
+            desc: "Geometria push-rod / pull-rod com amortecedores internos que controlam a rolagem e o mergulho do chassi.",
+            importance: "Mantém a plataforma aerodinâmica estável e os pneus colados na zebra.",
+          },
+          {
+            id: 8,
+            name: "Asa traseira",
+            area: "Traseira do carro",
+            desc: "Perfil aerodinâmico superior que pressiona as rodas traseiras contra o asfalto durante a aceleração e curvas rápidas.",
+            importance: "Evita que a traseira destracione e perca estabilidade em alta velocidade.",
+          },
+          {
+            id: 9,
+            name: "Unidade de Potência",
+            area: "Coração do monoposto",
+            desc: "Conjunto propulsor híbrido: motor térmico V6 turbo de 1.6L aliado a motores elétricos de alta regeneração cinética.",
+            importance: "Entrega cerca de 1000 cavalos de potência com consumo altamente eficiente.",
+          },
+          {
+            id: 10,
+            name: "Transmissão & Difusor",
+            area: "Traseira inferior",
+            desc: "Câmbio sequencial de 8 marchas em fibra de carbono e difusor traseiro que expande o ar do assoalho.",
+            importance: "Transfere o torque do motor para o asfalto com trocas de marcha instantâneas.",
+          },
+        ]
+
+        const activePart = carParts.find((p) => p.id === m1SelectedPart) || carParts[0]
+
+        return (
+          <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20 w-90 max-w-[92vw] bg-black/90 border border-white/20 rounded-xl p-3 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Guia de Componentes</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">
+                {activePart.id}/10 • {activePart.name}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-5 gap-1 mb-2">
+              {carParts.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setM1SelectedPart(p.id)}
+                  className={cn(
+                    "p-1 rounded text-[9px] font-bold text-center border transition-all truncate",
+                    m1SelectedPart === p.id
+                      ? "bg-[#E10600] text-white border-[#E10600] shadow-sm"
+                      : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                  )}
+                  title={p.name}
+                >
+                  {p.id}. {p.name.split(" ")[0]}
+                </button>
+              ))}
+            </div>
+
+            <div className="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-[10px] space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-white text-[11px]">{activePart.name}</span>
+                <span className="text-[8px] font-mono text-zinc-400 bg-white/5 px-1.5 py-0.5 rounded uppercase">
+                  Região: {activePart.area}
+                </span>
+              </div>
+              <p className="text-zinc-200 leading-snug">{activePart.desc}</p>
+              <div className="p-1.5 rounded bg-black/60 border border-white/5 text-[9px] text-cyan-300">
+                ⚡ <strong>Papel Vital:</strong> {activePart.importance}
+              </div>
+            </div>
+          </div>
         )
       }
 
@@ -3799,21 +4004,100 @@ export function NovatosPage() {
         )
       }
 
+      // CENA 6: SEQUÊNCIA DAS LUZES DA LARGADA (5 ETAPAS FUNCIONAIS)
       if (currentScene.visualEffectType === "starting_grid") {
+        const lightCount =
+          m1StartStep === "light_1"
+            ? 1
+            : m1StartStep === "light_2"
+            ? 2
+            : m1StartStep === "light_3"
+            ? 3
+            : m1StartStep === "light_4"
+            ? 4
+            : m1StartStep === "all_on"
+            ? 5
+            : 0
+
         return (
-          <div className="absolute top-4 inset-x-0 z-20 flex justify-center">
-            <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-black/90 border border-white/20 shadow-2xl backdrop-blur-md">
-              <div className="flex items-center gap-2">
-                {[1, 2, 3, 4, 5].map((light) => (
-                  <div
-                    key={light}
-                    className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[#E10600] shadow-[0_0_15px_#E10600] animate-pulse"
-                  />
-                ))}
+          <div className="absolute top-3 inset-x-0 z-20 flex flex-col items-center px-3">
+            <div className="max-w-md w-full rounded-2xl bg-black/95 border border-white/20 p-3 sm:p-4 shadow-2xl backdrop-blur-md text-center">
+              <div className="flex items-center justify-between pb-2 mb-3 border-b border-white/10">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Pórtico Oficial FIA</span>
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">
+                  PROCEDIMENTO DE LARGADA
+                </span>
               </div>
-              <span className="text-[10px] sm:text-xs font-mono font-black uppercase text-zinc-300">
-                LARGADA F1
-              </span>
+
+              {/* Pórtico com 5 colunas de luzes */}
+              <div className="flex items-center justify-center gap-2 sm:gap-3 py-3 px-4 bg-zinc-950 rounded-xl border border-white/10 shadow-inner mb-3">
+                {[1, 2, 3, 4, 5].map((idx) => {
+                  const isRedOn = lightCount >= idx
+                  const isRacing = m1StartStep === "racing"
+                  return (
+                    <div key={idx} className="flex flex-col items-center gap-1">
+                      <div
+                        className={cn(
+                          "w-5 h-5 sm:w-7 sm:h-7 rounded-full border-2 transition-all duration-200",
+                          isRacing
+                            ? "bg-emerald-500 border-emerald-300 shadow-[0_0_20px_#10b981]"
+                            : isRedOn
+                            ? "bg-[#E10600] border-red-400 shadow-[0_0_20px_#e10600]"
+                            : "bg-zinc-800 border-zinc-700 opacity-40"
+                        )}
+                      />
+                      <span className="text-[8px] font-mono text-zinc-500 font-bold">{idx}</span>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Feedback de Estado da Largada */}
+              <div className="p-2 rounded-lg bg-white/5 border border-white/10 text-xs mb-3 font-mono">
+                {m1StartStep === "idle" && (
+                  <span className="text-zinc-400">Grid formado. Aguardando procedimento de largada...</span>
+                )}
+                {m1StartStep.startsWith("light_") && (
+                  <span className="text-amber-300 font-bold animate-pulse">
+                    Acendendo luzes vermelhas ({lightCount}/5)... Motores acelerando!
+                  </span>
+                )}
+                {m1StartStep === "all_on" && (
+                  <span className="text-[#E10600] font-black tracking-wider animate-pulse">
+                    ⚠️ 5 LUZES ACESAS! TENSÃO MÁXIMA! ATENÇÃO AO APAGAMENTO!
+                  </span>
+                )}
+                {m1StartStep === "lights_out" && (
+                  <span className="text-white font-black tracking-widest text-sm">
+                    ● LUZES APAGADAS! ●
+                  </span>
+                )}
+                {m1StartStep === "racing" && (
+                  <span className="text-emerald-400 font-black tracking-widest text-sm animate-bounce block">
+                    🏎️ LARGADA AUTORIZADA! PÉ NO FUNDO PARA A CURVA 1!
+                  </span>
+                )}
+              </div>
+
+              {/* Botões de Ação */}
+              <div className="flex items-center justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleRunStartSequence}
+                  className="px-4 py-2 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider shadow-lg transition-all cursor-pointer"
+                >
+                  {m1StartStep === "idle" ? "Iniciar Luzes da Largada" : "Repetir Largada"}
+                </button>
+                {m1StartStep !== "idle" && (
+                  <button
+                    type="button"
+                    onClick={handleResetStartSequence}
+                    className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-zinc-300 text-xs font-bold uppercase transition-all cursor-pointer"
+                  >
+                    Resetar
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )
@@ -3844,11 +4128,137 @@ export function NovatosPage() {
         )
       }
 
+      // CENA 8: REVISÃO FINAL VISUAL DO MÓDULO 1
       if (currentScene.visualEffectType === "checkered_finish") {
+        const reviewTopics = [
+          {
+            id: 1,
+            title: "1. O Significado da F1",
+            area: "Conceito Global",
+            summary: "A 'Fórmula' é o conjunto estrito de regulamentos técnicos e esportivos da FIA que iguala os parâmetros e desafia os melhores construtores do mundo.",
+          },
+          {
+            id: 2,
+            title: "2. Os Pilotos de Elite",
+            area: "Competidores",
+            summary: "20 atletas excepcionais submetidos a até 5G de força lateral, combinando preparo físico extremo e decisões tomadas em milésimos de segundo.",
+          },
+          {
+            id: 3,
+            title: "3. O Poder da Equipe",
+            area: "Trabalho Coletivo",
+            summary: "A vitória nasce do trabalho conjunto: mecânicos em paradas de boxes de 2s, engenheiros no pit wall e projetistas na fábrica.",
+          },
+          {
+            id: 4,
+            title: "4. As Partes da Máquina",
+            area: "Anatomia do Carro",
+            summary: "Asa dianteira, assoalho com efeito solo, freios a 1000°C, Halo de titânio e unidade de potência híbrida de 1000 cv em harmonia no limite.",
+          },
+          {
+            id: 5,
+            title: "5. Pneus & Aderência",
+            area: "Dinâmica de Pista",
+            summary: "O único contato com o asfalto. A gestão de temperatura e o desgaste dos compostos definem o ritmo e as janelas de pit stop.",
+          },
+          {
+            id: 6,
+            title: "6. A Largada de 5 Luzes",
+            area: "Procedimento",
+            summary: "O momento mais elétrico da corrida: 5 luzes vermelhas acendem uma a uma e apagam simultaneamente para autorizar a aceleração cega.",
+          },
+          {
+            id: 7,
+            title: "7. A Corrida & Transmissão",
+            area: "Estratégia e GAP",
+            summary: "Como acompanhar a torre de tempos, entender a diferença para o líder (GAP) e o intervalo para o adversário direto (INT) até a bandeira quadriculada.",
+          },
+        ]
+
+        const activeRev = reviewTopics.find((t) => t.id === m1ReviewHotspot) || reviewTopics[0]
+
         return (
-          <div className="absolute top-4 right-4 z-20 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/80 border border-white/20 shadow-xl backdrop-blur-md">
-            <div className="w-5 h-5 rounded bg-white text-black font-black text-center text-xs leading-5">🏁</div>
-            <span className="text-xs font-black uppercase tracking-wider text-white">Bandeirada Final</span>
+          <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20 w-92 max-w-[92vw] bg-black/90 border border-white/20 rounded-xl p-3 sm:p-3.5 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-white/10">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Conclusão do Módulo 1</span>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">
+                REVISÃO INTEGRADA
+              </span>
+            </div>
+
+            {!m1ShowAllSummary ? (
+              <>
+                <p className="text-[10px] text-zinc-300 mb-1.5 font-bold">
+                  Selecione um ponto da jornada para revisar o que você aprendeu:
+                </p>
+
+                <div className="flex flex-wrap gap-1 mb-2">
+                  {reviewTopics.map((topic) => (
+                    <button
+                      key={topic.id}
+                      type="button"
+                      onClick={() => setM1ReviewHotspot(topic.id)}
+                      className={cn(
+                        "px-2 py-1 rounded text-[9px] font-bold border transition-all text-left",
+                        m1ReviewHotspot === topic.id
+                          ? "bg-[#E10600] text-white border-[#E10600] shadow-sm"
+                          : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10"
+                      )}
+                    >
+                      {topic.title.split(".")[1]}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="p-2.5 rounded-lg bg-zinc-900 border border-white/10 text-[10px] space-y-1 mb-2.5">
+                  <div className="flex items-center justify-between">
+                    <strong className="text-white text-[11px]">{activeRev.title}</strong>
+                    <span className="text-[8px] font-mono text-cyan-300 bg-white/5 px-1.5 py-0.5 rounded uppercase">
+                      {activeRev.area}
+                    </span>
+                  </div>
+                  <p className="text-zinc-200 leading-snug">{activeRev.summary}</p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setM1ShowAllSummary(true)}
+                  className="w-full py-1.5 px-3 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer border border-white/15"
+                >
+                  📖 Ver Tudo o que Aprendi no Módulo 1
+                </button>
+              </>
+            ) : (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between pb-1 border-b border-white/10">
+                  <span className="text-xs font-bold text-white uppercase">Dossiê Completo • Módulo 1</span>
+                  <button
+                    type="button"
+                    onClick={() => setM1ShowAllSummary(false)}
+                    className="text-[10px] text-cyan-400 hover:underline cursor-pointer"
+                  >
+                    Voltar aos Pontos
+                  </button>
+                </div>
+
+                <div className="max-h-56 overflow-y-auto space-y-1.5 pr-1 text-[9px] leading-relaxed">
+                  {reviewTopics.map((t) => (
+                    <div key={t.id} className="p-1.5 rounded bg-zinc-900/80 border border-white/5">
+                      <strong className="text-white block text-[10px] mb-0.5">{t.title}</strong>
+                      <p className="text-zinc-300">{t.summary}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setViewStage("quiz")}
+                  className="w-full py-2 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider shadow-lg transition-all cursor-pointer text-center"
+                >
+                  Iniciar o Questionário do Módulo 1 →
+                </button>
+              </div>
+            )}
           </div>
         )
       }
@@ -10919,14 +11329,7 @@ export function NovatosPage() {
         preload="auto"
         loop
       />
-      {activeModuleId === 1 && currentScene.ambientAudioUrl && (
-        <audio
-          ref={ambientAudioRef}
-          src={currentScene.ambientAudioUrl}
-          preload="auto"
-          loop
-        />
-      )}
+
 
       {/* ==================================================================== */}
       {/* TELA DE ABERTURA (HERO LANDING)                                      */}
@@ -11331,21 +11734,7 @@ export function NovatosPage() {
                 />
               </div>
 
-              {/* Volume Ambiente (Somente Módulo 1) */}
-              {activeModuleId === 1 && (
-                <div className="hidden sm:flex items-center gap-1.5">
-                  <span className="text-[10px] font-mono uppercase text-zinc-300">Ambiente:</span>
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.05"
-                    value={isMuted ? 0 : ambientVolume}
-                    onChange={(e) => setAmbientVolume(parseFloat(e.target.value))}
-                    className="w-16 accent-amber-400 cursor-pointer"
-                  />
-                </div>
-              )}
+
             </div>
 
             {/* Navegação Entre Cenas: Anterior / Próximo */}
