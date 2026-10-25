@@ -314,10 +314,12 @@ export function PitstopAnimation({
       <div className="pointer-events-none absolute bottom-4 left-4 z-20 flex flex-col gap-1.5 sm:bottom-6 sm:left-6">
         <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/80 px-4 py-2.5 backdrop-blur-md shadow-2xl">
           <div className="flex flex-col">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">TEMPO DE BOX (STOP TIME)</span>
+            <span className="text-[10px] sm:text-xs font-mono uppercase tracking-wider text-amber-400 font-bold">
+              SIMULAÇÃO DIDÁTICA • TEMPO ILUSTRATIVO: 2,14 s
+            </span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-white">
-                {pitTimerLabel}
+                {pitTimerLabel.replace(".", ",")}
               </span>
               <span className={`text-xs font-mono font-bold uppercase ${isGreenLight ? "text-green-400" : "text-amber-400"}`}>
                 {phase === "entry" && "APROXIMAÇÃO"}
