@@ -22,6 +22,9 @@ import {
   Clock,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { StartingGridAnimation } from "@/components/starting-grid-animation"
+import { CarMechanicsAnimation } from "@/components/car-mechanics-animation"
+import { PitstopAnimation } from "@/components/pitstop-animation"
 
 // ============================================================================
 // GLOSSÁRIO INICIAL — 12 TERMOS OFICIAIS
@@ -3645,16 +3648,20 @@ export function NovatosPage() {
     // MÓDULO 1 • CENA 4: machine_hotspots
     // ------------------------------------------------------------------------
     if (currentScene.visualEffectType === "machine_hotspots") {
-      const cueIndex = audioCurrentTime < 6.0 ? 1 : audioCurrentTime < 12.0 ? 2 : audioCurrentTime < 18.0 ? 3 : audioCurrentTime < 24.0 ? 4 : 5
+      const cueIndex =
+        audioCurrentTime < 4.2 ? 1 :
+        audioCurrentTime < 11.2 ? 2 :
+        audioCurrentTime < 18.8 ? 3 :
+        audioCurrentTime < 26.8 ? 4 : 5
       return (
         <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
-          {renderTopHUD("ANATOMIA DO CARRO", "REGULAMENTO 2026")}
+          {renderTopHUD("A MÁQUINA", "SISTEMAS INTEGRADOS")}
           <div className="flex-1 pointer-events-none" />
-          {cueIndex === 1 && renderMarianaSyncBadge("Asa Dianteira", "Controla o fluxo inicial de ar e downforce frontal")}
-          {cueIndex === 2 && renderMarianaSyncBadge("Assoalho & Difusor", "Efeito solo por sucção aerodinâmica sem arrasto")}
-          {cueIndex === 3 && renderMarianaSyncBadge("Pneus de Corrida", "Aderência mecânica e janelas térmicas operacionais")}
-          {cueIndex === 4 && renderMarianaSyncBadge("Freios de Carbono", "Desaceleração brutal a até 1.000°C sob 5G")}
-          {cueIndex === 5 && renderMarianaSyncBadge("Cockpit & Halo", "Célula monocoque em titânio testada a 120 kN")}
+          {cueIndex === 1 && renderMarianaSyncBadge("Engenharia no Limite", "Monoposto de alta precisão projetado para máxima performance")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Aerodinâmica & Downforce", "Pressão do ar empurra o carro contra o solo gerando aderência")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Aderência & Frenagem", "Pneus no asfalto e discos de carbono dissipando energia cinética")}
+          {cueIndex === 4 && renderMarianaSyncBadge("Unidade de Potência Híbrida", "Motor de combustão V6 Turbo e recuperação de energia elétrica")}
+          {cueIndex === 5 && renderMarianaSyncBadge("Integração Total", "Sistemas mecânicos, elétricos e aerodinâmicos em harmonia")}
         </div>
       )
     }
@@ -3663,14 +3670,18 @@ export function NovatosPage() {
     // MÓDULO 1 • CENA 5: pitstop_team
     // ------------------------------------------------------------------------
     if (currentScene.visualEffectType === "pitstop_team") {
-      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      const cueIndex =
+        audioCurrentTime < 4.2 ? 1 :
+        audioCurrentTime < 11.0 ? 2 :
+        audioCurrentTime < 16.5 ? 3 : 4
       return (
         <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
-          {renderTopHUD("PILOTOS E EQUIPES", `FASE ${cueIndex} DE 3`)}
+          {renderTopHUD("PILOTOS E EQUIPES", audioCurrentTime >= 16.3 ? "SAÍDA LIBERADA" : "PIT STOP EM ANDAMENTO")}
           <div className="flex-1 pointer-events-none" />
-          {cueIndex === 1 && renderMarianaSyncBadge("DOIS CAMPEONATOS AO MESMO TEMPO", "Campeonato de Pilotos e Campeonato de Construtores d…")}
-          {cueIndex === 2 && renderMarianaSyncBadge("O PAPEL DO PILOTO", "Inteligência de corrida, preservação mecânica e paci…")}
-          {cueIndex === 3 && renderMarianaSyncBadge("A FORÇA DA EQUIPE", "Estratégia de boxes no pit wall e trabalho cirúrgico…")}
+          {cueIndex === 1 && renderMarianaSyncBadge("Duas Disputas Simultâneas", "Mundial de Pilotos e Construtores em paralelo")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Posicionamento no Box", "Piloto freia no colchete demarcado")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Pit Stop de 2 Segundos", "Mecânicos erguem o carro e trocam os 4 pneus")}
+          {cueIndex === 4 && renderMarianaSyncBadge("Trabalho de Equipe & Saída", "Luz verde ativada e aceleração imediata")}
         </div>
       )
     }
@@ -3679,21 +3690,14 @@ export function NovatosPage() {
     // MÓDULO 1 • CENA 6: starting_grid
     // ------------------------------------------------------------------------
     if (currentScene.visualEffectType === "starting_grid") {
-      const cueIndex = audioCurrentTime < 6.0 ? 1 : audioCurrentTime < 12.0 ? 2 : 3
-      const lightsCount = audioCurrentTime < 2.0 ? 0 : audioCurrentTime < 4.0 ? 1 : audioCurrentTime < 6.0 ? 2 : audioCurrentTime < 8.0 ? 3 : audioCurrentTime < 10.0 ? 4 : audioCurrentTime < 12.0 ? 5 : 0
-      const lightsOut = audioCurrentTime >= 12.0 && audioCurrentTime < 14.5
+      const cueIndex = audioCurrentTime < 13.8 ? 1 : audioCurrentTime < 17.6 ? 2 : 3
       return (
         <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
-          {renderTopHUD("PROCEDIMENTO DE LARGADA", "GRID OFICIAL FIA")}
-          <div className="pointer-events-auto mx-auto mt-2 flex items-center gap-2 p-2 rounded-2xl bg-black/80 border border-white/15 backdrop-blur-md shadow-2xl">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <span key={i} className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full transition-all duration-300", i <= lightsCount && !lightsOut ? "bg-[#E10600] shadow-[0_0_15px_#E10600] scale-110" : "bg-zinc-800 border border-zinc-700")} />
-            ))}
-          </div>
+          {renderTopHUD("PROCEDIMENTO DE LARGADA", audioCurrentTime >= 17.6 ? "LARGADA AUTORIZADA" : "GRID OFICIAL FIA")}
           <div className="flex-1 pointer-events-none" />
-          {cueIndex === 1 && renderMarianaSyncBadge("Alinhamento no Grid", "Pilotos posicionam as máquinas nos colchetes")}
-          {cueIndex === 2 && renderMarianaSyncBadge("Sequência de 5 Luzes", "Acendem uma a uma a cada segundo")}
-          {cueIndex === 3 && renderMarianaSyncBadge("Luzes Apagadas!", "Aceleração imediata e disputa pela primeira curva")}
+          {cueIndex === 1 && renderMarianaSyncBadge("Formação do Grid", "Pilotos alinham os carros nos colchetes")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Sequência de 5 Luzes", "Acendimento progressivo e expectativa máxima")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Luzes Apagadas!", "Arrancada imediata rumo à primeira curva")}
         </div>
       )
     }
@@ -5207,18 +5211,40 @@ export function NovatosPage() {
 
           {/* Palco Principal da Imagem + Efeitos Visuais */}
           <div className="relative flex-1 min-h-[380px] sm:min-h-[460px] rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-black flex items-center justify-center">
-            <img
-              src={currentScene.imageUrl}
-              alt={currentScene.title}
-              className={cn(
-                "w-full h-full object-cover object-center select-none",
-                !reduceMotion && (activeModuleId === 1 ? `f1-scene-motion-${currentScene.number}` : "f1-scene-motion-1"),
-                currentScene.visualEffectType === "vintage_1950" && "sepia-[0.25] contrast-125 brightness-90"
-              )}
-            />
+            {currentScene.visualEffectType === "starting_grid" ? (
+              <StartingGridAnimation
+                currentTime={audioCurrentTime}
+                isPlaying={isPlaying}
+                reduceMotion={reduceMotion}
+              />
+            ) : currentScene.visualEffectType === "machine_hotspots" ? (
+              <CarMechanicsAnimation
+                currentTime={audioCurrentTime}
+                isPlaying={isPlaying}
+                reduceMotion={reduceMotion}
+              />
+            ) : currentScene.visualEffectType === "pitstop_team" ? (
+              <PitstopAnimation
+                currentTime={audioCurrentTime}
+                isPlaying={isPlaying}
+                reduceMotion={reduceMotion}
+              />
+            ) : (
+              <>
+                <img
+                  src={currentScene.imageUrl}
+                  alt={currentScene.title}
+                  className={cn(
+                    "w-full h-full object-cover object-center select-none",
+                    !reduceMotion && (activeModuleId === 1 ? `f1-scene-motion-${currentScene.number}` : "f1-scene-motion-1"),
+                    currentScene.visualEffectType === "vintage_1950" && "sepia-[0.25] contrast-125 brightness-90"
+                  )}
+                />
 
-            {/* Gradientes Sutis de Contraste Cinematográfico (sem escurecer excessivamente a imagem) */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/25" />
+                {/* Gradientes Sutis de Contraste Cinematográfico (sem escurecer excessivamente a imagem) */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/25" />
+              </>
+            )}
 
             {/* Overlays Interativos por Cena */}
             {renderVisualOverlay()}
