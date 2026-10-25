@@ -3680,10 +3680,10 @@ export function NovatosPage() {
     // MÓDULO 1 • CENA 6: starting_grid
     // ------------------------------------------------------------------------
     if (currentScene.visualEffectType === "starting_grid") {
-      const cueIndex = audioCurrentTime < 11.5 ? 1 : audioCurrentTime < 17.5 ? 2 : 3
+      const cueIndex = audioCurrentTime < 13.8 ? 1 : audioCurrentTime < 17.6 ? 2 : 3
       return (
         <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
-          {renderTopHUD("PROCEDIMENTO DE LARGADA", audioCurrentTime >= 17.5 ? "LARGADA AUTORIZADA" : "GRID OFICIAL FIA")}
+          {renderTopHUD("PROCEDIMENTO DE LARGADA", audioCurrentTime >= 17.6 ? "LARGADA AUTORIZADA" : "GRID OFICIAL FIA")}
           <div className="flex-1 pointer-events-none" />
           {cueIndex === 1 && renderMarianaSyncBadge("Formação do Grid", "Pilotos alinham os carros nos colchetes")}
           {cueIndex === 2 && renderMarianaSyncBadge("Sequência de 5 Luzes", "Acendimento progressivo e expectativa máxima")}

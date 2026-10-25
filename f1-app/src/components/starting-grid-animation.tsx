@@ -28,21 +28,26 @@ export function StartingGridAnimation({
   // --------------------------------------------------------------------------
   const t = Math.max(0, currentTime)
 
-  // Sequência de 5 Luzes
+  // Sequência de 5 Luzes — Sincronizada com a Forma de Onda Acústica Real de cena06.mp3:
+  // - 0.0s a 13.8s: Formação do grid, expectativa (0 luzes)
+  // - 13.8s a 16.2s: Acendimento progressivo das 5 luzes vermelhas (0.6s de intervalo)
+  // - 16.2s a 17.6s: 5 luzes acesas em tensão máxima e 11.800 RPM ("...aguardam o sinal de partida")
+  // - 17.6s: Apagamento simultâneo das luzes (blackout total FIA no exato corte vocal)
+  // - 17.6s a 26.0s: Arrancada e aceleração total ("Ao longo da corrida, disputam posições...")
   const lightsCount =
-    t < 11.5 ? 0 :
-    t < 12.5 ? 1 :
-    t < 13.5 ? 2 :
-    t < 14.5 ? 3 :
-    t < 15.5 ? 4 :
-    t < 17.5 ? 5 : 0 // Apagamento simultâneo aos 17.5s
+    t < 13.8 ? 0 :
+    t < 14.4 ? 1 :
+    t < 15.0 ? 2 :
+    t < 15.6 ? 3 :
+    t < 16.2 ? 4 :
+    t < 17.6 ? 5 : 0 // Apagamento simultâneo aos 17.6s
 
-  const isLightsOut = t >= 17.5
-  const isAllLightsOn = t >= 15.5 && t < 17.5
-  const isRacing = t >= 17.5
+  const isLightsOut = t >= 17.6
+  const isAllLightsOn = t >= 16.2 && t < 17.6
+  const isRacing = t >= 17.6
 
   // Tempo decorrido após a largada (em segundos)
-  const launchElapsed = Math.max(0, t - 17.5)
+  const launchElapsed = Math.max(0, t - 17.6)
 
   // Curva de aceleração física do carro (0 a 1)
   // Fórmula exponencial suave: nos primeiros 0.5s traciona, depois dispara
