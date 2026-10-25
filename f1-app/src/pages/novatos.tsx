@@ -23,6 +23,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { StartingGridAnimation } from "@/components/starting-grid-animation"
+import { CarMechanicsAnimation } from "@/components/car-mechanics-animation"
 
 // ============================================================================
 // GLOSSÁRIO INICIAL — 12 TERMOS OFICIAIS
@@ -3646,16 +3647,20 @@ export function NovatosPage() {
     // MÓDULO 1 • CENA 4: machine_hotspots
     // ------------------------------------------------------------------------
     if (currentScene.visualEffectType === "machine_hotspots") {
-      const cueIndex = audioCurrentTime < 6.0 ? 1 : audioCurrentTime < 12.0 ? 2 : audioCurrentTime < 18.0 ? 3 : audioCurrentTime < 24.0 ? 4 : 5
+      const cueIndex =
+        audioCurrentTime < 4.2 ? 1 :
+        audioCurrentTime < 11.2 ? 2 :
+        audioCurrentTime < 18.8 ? 3 :
+        audioCurrentTime < 26.8 ? 4 : 5
       return (
         <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
-          {renderTopHUD("ANATOMIA DO CARRO", "REGULAMENTO 2026")}
+          {renderTopHUD("A MÁQUINA", "SISTEMAS INTEGRADOS")}
           <div className="flex-1 pointer-events-none" />
-          {cueIndex === 1 && renderMarianaSyncBadge("Asa Dianteira", "Controla o fluxo inicial de ar e downforce frontal")}
-          {cueIndex === 2 && renderMarianaSyncBadge("Assoalho & Difusor", "Efeito solo por sucção aerodinâmica sem arrasto")}
-          {cueIndex === 3 && renderMarianaSyncBadge("Pneus de Corrida", "Aderência mecânica e janelas térmicas operacionais")}
-          {cueIndex === 4 && renderMarianaSyncBadge("Freios de Carbono", "Desaceleração brutal a até 1.000°C sob 5G")}
-          {cueIndex === 5 && renderMarianaSyncBadge("Cockpit & Halo", "Célula monocoque em titânio testada a 120 kN")}
+          {cueIndex === 1 && renderMarianaSyncBadge("Engenharia no Limite", "Monoposto de alta precisão projetado para máxima performance")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Aerodinâmica & Downforce", "Pressão do ar empurra o carro contra o solo gerando aderência")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Aderência & Frenagem", "Pneus no asfalto e discos de carbono dissipando energia cinética")}
+          {cueIndex === 4 && renderMarianaSyncBadge("Unidade de Potência Híbrida", "Motor de combustão V6 Turbo e recuperação de energia elétrica")}
+          {cueIndex === 5 && renderMarianaSyncBadge("Integração Total", "Sistemas mecânicos, elétricos e aerodinâmicos em harmonia")}
         </div>
       )
     }
@@ -5207,6 +5212,12 @@ export function NovatosPage() {
                 isPlaying={isPlaying}
                 reduceMotion={reduceMotion}
               />
+            ) : currentScene.visualEffectType === "machine_hotspots" ? (
+              <CarMechanicsAnimation
+                currentTime={audioCurrentTime}
+                isPlaying={isPlaying}
+                reduceMotion={reduceMotion}
+              />
             ) : (
               <>
                 <img
@@ -5218,6 +5229,7 @@ export function NovatosPage() {
                     currentScene.visualEffectType === "vintage_1950" && "sepia-[0.25] contrast-125 brightness-90"
                   )}
                 />
+
                 {/* Gradientes Sutis de Contraste Cinematográfico (sem escurecer excessivamente a imagem) */}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/25" />
               </>
