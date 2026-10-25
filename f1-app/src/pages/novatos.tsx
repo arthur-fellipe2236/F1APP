@@ -3195,54 +3195,6 @@ export function NovatosPage() {
   // Sincronização em Tempo Real com a Narração de Mariana (em segundos)
   const [audioCurrentTime, setAudioCurrentTime] = useState<number>(0)
 
-  // Interactive Scene States — Module 1
-  const [m1Scene3Element, setM1Scene3Element] = useState<"formula" | "pilots" | "teams" | "championship">("formula")
-  const [m1SelectedPart, setM1SelectedPart] = useState<number>(1)
-  const [m1StartStep, setM1StartStep] = useState<"idle" | "light_1" | "light_2" | "light_3" | "light_4" | "all_on" | "lights_out" | "racing">("idle")
-  const m1StartTimersRef = useRef<NodeJS.Timeout[]>([])
-  const [m1ReviewHotspot, setM1ReviewHotspot] = useState<number>(1)
-  const [m1ShowAllSummary, setM1ShowAllSummary] = useState<boolean>(false)
-
-  const clearM1StartTimers = useCallback(() => {
-    m1StartTimersRef.current.forEach((t) => clearTimeout(t))
-    m1StartTimersRef.current = []
-  }, [])
-
-  // Procedimento Oficial de Largada FIA (Semáforo de 5 Etapas sem Luz Verde, com Espera Variável)
-  const handleRunStartSequence = useCallback(() => {
-    clearM1StartTimers()
-    setM1StartStep("idle")
-
-    // Acendimento progressivo de 1 segundo entre cada luz vermelha
-    const t1 = setTimeout(() => setM1StartStep("light_1"), 800)
-    const t2 = setTimeout(() => setM1StartStep("light_2"), 1800)
-    const t3 = setTimeout(() => setM1StartStep("light_3"), 2800)
-    const t4 = setTimeout(() => setM1StartStep("light_4"), 3800)
-    const t5 = setTimeout(() => setM1StartStep("all_on"), 4800)
-
-    // Intervalo de expectativa imprevisível entre 1,0s e 3,0s (conforme regulamento esportivo da FIA)
-    const variableHoldMs = 1000 + Math.floor(Math.random() * 2000)
-    const blackoutTime = 4800 + variableHoldMs
-
-    // APAGAMENTO SIMULTÂNEO de todas as 5 luzes vermelhas (Blecaute total no pórtico)
-    const t6 = setTimeout(() => setM1StartStep("lights_out"), blackoutTime)
-
-    // Arrancada dos monopostos SOMENTE após o apagamento (tempo de reação de 250ms)
-    const t7 = setTimeout(() => setM1StartStep("racing"), blackoutTime + 250)
-
-    m1StartTimersRef.current = [t1, t2, t3, t4, t5, t6, t7]
-  }, [clearM1StartTimers])
-
-  const handleResetStartSequence = useCallback(() => {
-    clearM1StartTimers()
-    setM1StartStep("idle")
-  }, [clearM1StartTimers])
-
-  // Interactive Scene States — Module 2
-  const [m2Hotspot, setM2Hotspot] = useState<number>(1)
-  const [m2AeroZone, setM2AeroZone] = useState<"front_wing" | "floor" | "rear_wing">("front_wing")
-  const [m2TireCompound, setM2TireCompound] = useState<"soft" | "medium" | "hard">("soft")
-
   // Quiz State
   const [quizQuestionIndex, setQuizQuestionIndex] = useState(0)
   const [quizAnswers, setQuizAnswers] = useState<Record<number, "A" | "B" | "C" | "D">>({})
@@ -3464,15 +3416,6 @@ export function NovatosPage() {
       setSceneIndex(index)
       setVisitedScenes((prev) => (prev.includes(index + 1) ? prev : [...prev, index + 1]))
       setViewStage("lesson")
-      setM1Scene3Element("formula")
-      setM1SelectedPart(1)
-      clearM1StartTimers()
-      setM1StartStep("idle")
-      setM1ReviewHotspot(1)
-      setM1ShowAllSummary(false)
-      setM2Hotspot(1)
-      setM2AeroZone("front_wing")
-      setM2TireCompound("soft")
     },
     [currentScenes.length, stopAllAudio]
   )
@@ -3604,4623 +3547,1331 @@ export function NovatosPage() {
   // ==========================================================================
   // RENDERIZADOR DE EFEITOS E INTERATIVIDADE ESPECÍFICOS POR CENA
   // ==========================================================================
+  // ==========================================================================
+  // RENDERIZADOR VISUAL ULTRA-LIMPO E CINEMATOGRÁFICO POR CENA
+  // Diretriz: A Mariana explica, a imagem demonstra e o texto apenas destaca o essencial.
+  // Centro 100% desobstruído; textos nas extremidades; uma informação por vez.
+  // ==========================================================================
   const renderVisualOverlay = () => {
-    // ----------------------------------------------------------------------
-    // BANNER FLUTUANTE DE SINCRONIZAÇÃO EM TEMPO REAL COM A MARIANA
-    // Revela o conceito exato que a narradora está explicando naquele instante
-    // ----------------------------------------------------------------------
-    const renderMarianaSyncBadge = (badgeText: string, conceptTitle: string, shortDesc: string) => (
-      <div className="pointer-events-auto max-w-xl mx-auto w-full mb-3 rounded-xl bg-black/85 border border-white/20 p-2.5 sm:p-3 backdrop-blur-md shadow-2xl animate-fade-in text-center">
-        <div className="flex items-center justify-center gap-2 mb-1">
-          <span className="w-2 h-2 rounded-full bg-[#E10600] animate-ping" />
-          <span className="text-[10px] font-mono font-black uppercase text-[#E10600] tracking-wider">
-            {badgeText}
+    // Cápsula horizontal flutuante na faixa inferior discreta (sincronizada com Mariana)
+    const renderMarianaSyncBadge = (conceptTitle: string, shortDesc?: string) => {
+      const cleanT = conceptTitle.replace(/^\d+[.\s-]+/, "").toUpperCase()
+      const cleanD = shortDesc ? shortDesc.split(/[.;:]/)[0].trim() : ""
+
+      return (
+        <div className="pointer-events-auto w-fit max-w-[92%] sm:max-w-2xl mx-auto mb-2 rounded-full bg-black/75 border border-white/15 px-4 py-1.5 backdrop-blur-md shadow-2xl animate-fade-in flex items-center justify-center gap-2.5 text-center transition-all duration-300">
+          <span className="w-2 h-2 rounded-full bg-[#E10600] animate-pulse shrink-0" />
+          <span className="text-[11px] sm:text-xs font-mono font-black uppercase text-white tracking-wider shrink-0">
+            {cleanT}
           </span>
+          {cleanD && (
+            <>
+              <span className="text-zinc-500 text-xs hidden sm:inline">•</span>
+              <span className="text-[11px] sm:text-xs text-zinc-300 font-medium truncate max-w-xs sm:max-w-md hidden sm:inline">
+                {cleanD}
+              </span>
+            </>
+          )}
         </div>
-        <div className="text-xs sm:text-sm font-black text-white uppercase tracking-wide mb-1">
-          {conceptTitle}
-        </div>
-        <p className="text-[11px] sm:text-xs text-zinc-300 leading-snug">
-          {shortDesc}
-        </p>
+      )
+    }
+
+    // Extremidade superior: Título à esquerda, dado essencial à direita (sem linhas divisórias invasivas)
+    const renderTopHUD = (title: string, tag?: string) => (
+      <div className="w-full flex items-center justify-between pointer-events-none mb-auto">
+        <span className="pointer-events-auto text-[10px] sm:text-[11px] font-mono font-black uppercase text-zinc-200 bg-black/60 px-3 py-1 rounded-full border border-white/10 backdrop-blur-md shadow-md">
+          {title}
+        </span>
+        {tag && (
+          <span className="pointer-events-auto text-[9px] sm:text-[10px] font-mono font-bold uppercase text-cyan-400 bg-black/60 border border-cyan-500/20 px-2.5 py-0.5 rounded-full backdrop-blur-md shadow-md">
+            {tag}
+          </span>
+        )}
       </div>
     )
 
-if (activeModuleId === 1) {
-      // ----------------------------------------------------------------------
-      // BANNER FLUTUANTE DE SINCRONIZAÇÃO EM TEMPO REAL COM A MARIANA
-      // Revela o conceito exato que a narradora está explicando naquele instante
-      // ----------------------------------------------------------------------
-      // (renderMarianaSyncBadge hoisted globally to renderVisualOverlay)
-
-
-      // ======================================================================
-      // CENA 1: A ABERTURA (16.2s)
-      // ======================================================================
-      if (currentScene.visualEffectType === "rear_shimmer") {
-        // Sincronização temporal por trecho da fala
-        const cueIndex = audioCurrentTime < 4.5 ? 1 : audioCurrentTime < 9.5 ? 2 : 3
-
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            {/* Efeitos de Iluminação Noturna na Traseira */}
+    // ------------------------------------------------------------------------
+    // MÓDULO 1 • CENA 1: rear_shimmer
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "rear_shimmer") {
+      const cueIndex = audioCurrentTime < 4.5 ? 1 : audioCurrentTime < 9.5 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("O UNIVERSO DA FÓRMULA 1", "ABERTURA")}
+          <div className="flex-1 pointer-events-none relative flex items-center justify-center">
             <div className="pointer-events-none absolute bottom-[18%] left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[#E10600]/80 shadow-[0_0_35px_#E10600] animate-pulse" />
-            <div className="pointer-events-none absolute bottom-[16%] left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-white shadow-[0_0_20px_#ffffff] animate-ping opacity-75" />
-
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                INTRODUÇÃO AO UNIVERSO DA FÓRMULA 1
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                TRECHO 0{cueIndex} DE 03
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              {cueIndex === 1 && (
-                <div className="p-4 rounded-2xl bg-black/75 border border-white/15 backdrop-blur-md text-center max-w-md shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                    ENGENHARIA DE PONTA
-                  </span>
-                  <h3 className="text-sm sm:text-base font-black text-white uppercase mb-1">
-                    O Esporte a Motor Mais Tecnológico do Planeta
-                  </h3>
-                  <p className="text-xs text-zinc-300">
-                    Onde a física aerodinâmica, a ciência dos materiais e a precisão humana operam no limite absoluto.
-                  </p>
-                </div>
-              )}
-
-              {cueIndex === 2 && (
-                <div className="p-4 rounded-2xl bg-black/80 border border-[#E10600]/40 backdrop-blur-md text-center max-w-lg shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-[#E10600] font-bold uppercase tracking-widest block mb-1">
-                    HARMONIA INTEGRADA
-                  </span>
-                  <div className="grid grid-cols-2 gap-2 text-xs font-mono text-left mt-2">
-                    <div className="p-2 rounded bg-white/5 border border-white/10">
-                      <strong className="text-white block">🏎️ VELOCIDADE</strong>
-                      <span className="text-[10px] text-zinc-400">Curvas de alta e retas a mais de 340 km/h.</span>
-                    </div>
-                    <div className="p-2 rounded bg-white/5 border border-white/10">
-                      <strong className="text-white block">📊 ESTRATÉGIA</strong>
-                      <span className="text-[10px] text-zinc-400">Paradas de box, pneus e cálculos de ritmo.</span>
-                    </div>
-                    <div className="p-2 rounded bg-white/5 border border-white/10">
-                      <strong className="text-white block">👤 TALENTO</strong>
-                      <span className="text-[10px] text-zinc-400">20 pilotos com reflexos de milissegundos.</span>
-                    </div>
-                    <div className="p-2 rounded bg-white/5 border border-white/10">
-                      <strong className="text-white block">👥 EQUIPE</strong>
-                      <span className="text-[10px] text-zinc-400">Centenas de especialistas nos bastidores.</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {cueIndex === 3 && (
-                <div className="p-4 rounded-2xl bg-black/75 border border-emerald-500/40 backdrop-blur-md text-center max-w-md shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                    COMECE DO ZERO
-                  </span>
-                  <h3 className="text-sm sm:text-base font-black text-white uppercase mb-1">
-                    Curva por Curva
-                  </h3>
-                  <p className="text-xs text-zinc-300">
-                    Você não precisa de conhecimento prévio. Vamos desvendar cada detalhe técnico com clareza e emoção.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("MARIANA DA RÁDIO F1", "O PINÁCULO DA VELOCIDADE", "Acompanhe a narração para compreender como a engenharia e o talento humano constroem as corridas.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("MARIANA DA RÁDIO F1", "OS 4 PILARES DA F1", "Velocidade, estratégia tática, talento de pilotagem e trabalho de equipe nos boxes.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("MARIANA DA RÁDIO F1", "GUIA DO INICIANTE", "Aprenda no seu ritmo: cada cena traz conceitos essenciais para você curtir as transmissões.")}
           </div>
-        )
-      }
-
-      // ======================================================================
-      // CENA 2: COMO TUDO COMEÇOU (28.1s)
-      // ======================================================================
-      if (currentScene.visualEffectType === "vintage_1950") {
-        const cueIndex = audioCurrentTime < 7.5 ? 1 : audioCurrentTime < 15.5 ? 2 : 3
-
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_40%,_rgba(0,0,0,0.65)_100%)] opacity-85" />
-
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm relative z-10">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                HISTÓRIA • O NASCIMENTO DA FÓRMULA 1 (1950)
-              </span>
-              <span className="text-[10px] font-mono text-amber-400 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded">
-                TRECHO 0{cueIndex} DE 03
-              </span>
-            </div>
-
-            <div className="relative z-10 flex-1 flex items-center justify-center">
-              {cueIndex === 1 && (
-                <div className="p-4 rounded-2xl bg-black/80 border border-amber-500/30 backdrop-blur-md text-center max-w-md shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-widest block mb-1">
-                    ERA PIONEIRA
-                  </span>
-                  <h3 className="text-sm sm:text-base font-black text-white mb-1">
-                    Monopostos Clássicos
-                  </h3>
-                  <p className="text-xs text-zinc-300">
-                    Carros com motores dianteiros pesados, pneus estreitos e ausência total de asas ou eletrônica embarcada.
-                  </p>
-                </div>
-              )}
-
-              {cueIndex === 2 && (
-                <div className="p-4 rounded-2xl bg-black/85 border border-[#E10600]/40 backdrop-blur-md text-center max-w-lg shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-[#E10600] font-bold uppercase tracking-widest block mb-1">
-                    CHANCELA OFICIAL
-                  </span>
-                  <h3 className="text-sm sm:text-base font-black text-white mb-1">
-                    13 de Maio de 1950 • Silverstone (FIA)
-                  </h3>
-                  <p className="text-xs text-zinc-300">
-                    A Federação Internacional do Automóvel oficializou o primeiro Campeonato Mundial de Pilotos da história.
-                  </p>
-                </div>
-              )}
-
-              {cueIndex === 3 && (
-                <div className="p-4 rounded-2xl bg-black/80 border border-cyan-500/30 backdrop-blur-md text-center max-w-md shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                    EVOLUÇÃO GLOBAL
-                  </span>
-                  <h3 className="text-sm sm:text-base font-black text-white mb-1">
-                    75 Anos de Coragem e Tecnologia
-                  </h3>
-                  <p className="text-xs text-zinc-300">
-                    Pilotos e equipes desbravando circuitos pelo mundo, transformando a segurança e alcançando a era de 2026.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div className="relative z-10">
-              {cueIndex === 1 && renderMarianaSyncBadge("MARIANA DA RÁDIO F1", "A ORIGEM DOS MONOPOSTOS", "Carros históricos sem aerodinâmica moderna: a coragem do piloto definia cada volta.")}
-              {cueIndex === 2 && renderMarianaSyncBadge("MARIANA DA RÁDIO F1", "O MUNDIAL ORGANIZADO PELA FIA", "Criação do regulamento oficial unificado em 1950 na pista inglesa de Silverstone.")}
-              {cueIndex === 3 && renderMarianaSyncBadge("MARIANA DA RÁDIO F1", "CIRCUITOS PELO PLANETA", "Das pistas históricas aos circuitos modernos nos 5 continentes.")}
-            </div>
-          </div>
-        )
-      }
-
-      // ======================================================================
-      // CENA 3: O SIGNIFICADO DA FÓRMULA 1 (23.5s) — DADOS TÉCNICOS AUDITADOS
-      // ======================================================================
-      if (currentScene.visualEffectType === "parallax_track") {
-        // Sincronização automática com Mariana caso o aluno não tenha clicado manualmente
-        const autoMode = audioCurrentTime < 8.0 ? "formula" : audioCurrentTime < 14.5 ? "pilots" : "teams"
-        const effectiveMode = isPlaying ? autoMode : m1Scene3Element
-
-        const formulaFocusModes = [
-          {
-            id: "formula" as const,
-            badge: "CONCEITO 1 • REGULAMENTO FIA",
-            title: "O que Significa a Palavra 'Fórmula'?",
-            subtitle: "Prescrição técnica e esportiva estrita da FIA",
-            details: "A 'Fórmula' é o conjunto oficial de regras técnicas da Federação Internacional do Automóvel. Ela estipula limites rigorosos de massa mínima homologada, envelope aerodinâmico, combustíveis 100% sustentáveis e teto orçamentário igual para todos os construtores.",
-            highlight: "Não vence quem tem motor livre, mas quem extrai mais rendimento dentro das mesmas regras.",
-            hudCoord: "REGULAMENTO FIA • ENVELOPE HOMOLOGADO PARA TODOS",
-          },
-          {
-            id: "pilots" as const,
-            badge: "CONCEITO 2 • CATEGORIA RAINHA",
-            title: "Por que o Número '1'?",
-            subtitle: "A divisão máxima dos monopostos internacionais",
-            details: "O número 1 identifica o ápice do automobilismo mundial (com a pirâmide didática de acesso F4 ➔ F3 ➔ F2 ➔ F1). Suas máquinas geram forças de aceleração lateral e frenagem que variam conforme a curva, atingindo picos de 4G a 5G em trechos de alta velocidade.",
-            highlight: "Apenas 20 pilotos no planeta ocupam o grid da categoria mais veloz do mundo.",
-            hudCoord: "ESCALA DE MONOPOSTOS: F4 ➔ F3 ➔ F2 ➔ F1 (CATEGORIA MÁXIMA)",
-          },
-          {
-            id: "teams" as const,
-            badge: "CONCEITO 3 • BASTIDORES & PARADAS",
-            title: "Equipes, Pit Wall e Comunicação",
-            subtitle: "A vitória construída por centenas de especialistas",
-            details: "Atrás de cada piloto operam analistas de telemetria em tempo real e mecânicos de box. Uma parada normal de troca de pneus dura entre 2,0s e 2,5s. O recorde histórico oficial pertence à McLaren (1,80s no GP do Catar 2023), superando a marca da Red Bull de 1,82s (Brasil 2019).",
-            highlight: "Dezenas de canais de dados conectam o carro ao pit wall a cada fração de segundo.",
-            hudCoord: "TELEMETRIA DE BOXES • RECORDES HISTÓRICOS DE PARADA",
-          },
-          {
-            id: "championship" as const,
-            badge: "CONCEITO 4 • O CAMPEONATO MUNDIAL",
-            title: "Dois Títulos Globais em Disputa",
-            subtitle: "Mundial de Pilotos e Mundial de Construtores",
-            details: "Ao longo de mais de 20 Grandes Prêmios, cada corrida distribui pontos oficiais FIA para os 10 primeiros (25, 18, 15, 12, 10, 8, 6, 4, 2, 1). No fim do ano, coroam-se o Campeão Mundial de Pilotos (glória pessoal) e o Campeão de Construtores (premiação financeira e prestígio).",
-            highlight: "A soma contínua de pontos ao longo da temporada define quem escreve a história.",
-            hudCoord: "PONTUAÇÃO FIA • 25 PTS PARA A VITÓRIA",
-          },
-        ]
-
-        const activeMode = formulaFocusModes.find((m) => m.id === effectiveMode) || formulaFocusModes[0]
-
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#E10600] animate-ping" />
-                <span className="text-xs sm:text-sm font-mono font-black uppercase tracking-wider text-white">
-                  FIA FORMULA 1 • CONCEITO E ESTRUTURA OFICIAL
-                </span>
-              </div>
-              <span className="text-[10px] font-mono uppercase text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                {activeMode.hudCoord}
-              </span>
-            </div>
-
-            <div className="relative flex-1 flex items-center justify-center">
-              {effectiveMode === "formula" && (
-                <div className="relative w-full max-w-2xl p-4 border border-cyan-500/40 rounded-xl bg-black/75 backdrop-blur-md flex flex-col justify-between shadow-[0_0_30px_rgba(6,182,212,0.15)] animate-fade-in text-center">
-                  <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                    DIRETRIZES TÉCNICAS E ESPORTIVAS FIA
-                  </span>
-                  <div className="text-center font-mono text-cyan-300 text-xs sm:text-sm font-black tracking-widest uppercase bg-cyan-950/40 py-2 px-3 rounded-lg border border-cyan-500/30 inline-block mx-auto mb-2">
-                    A "FÓRMULA" = REGRAS TÉCNICAS E ORÇAMENTÁRIAS IDÊNTICAS PARA TODOS
-                  </div>
-                  <p className="text-xs text-zinc-200">
-                    Massa mínima homologada, geometria de segurança, combustíveis sustentáveis e limite de gastos: a vitória depende da inteligência dentro das regras.
-                  </p>
-                </div>
-              )}
-
-              {effectiveMode === "pilots" && (
-                <div className="relative w-full max-w-md p-4 rounded-xl border border-[#E10600]/40 bg-black/75 backdrop-blur-md text-center shadow-[0_0_35px_rgba(225,6,0,0.25)] animate-fade-in">
-                  <span className="text-amber-400 font-mono text-[10px] font-bold tracking-widest block mb-1">
-                    EXIGÊNCIA FÍSICA E FORÇAS G
-                  </span>
-                  <div className="text-2xl sm:text-3xl font-mono font-black text-white tracking-wider mb-1">
-                    4G A 5G <span className="text-sm text-[#E10600] font-sans">EM CURVAS RÁPIDAS</span>
-                  </div>
-                  <p className="text-[11px] text-zinc-300">
-                    A carga gravitacional varia conforme o traçado, o raio e a velocidade de cada curva, exigindo condicionamento extremo no pescoço.
-                  </p>
-                </div>
-              )}
-
-              {effectiveMode === "teams" && (
-                <div className="relative w-full max-w-lg p-3.5 rounded-xl border border-emerald-500/40 bg-black/80 backdrop-blur-md shadow-[0_0_30px_rgba(16,185,129,0.2)] animate-fade-in">
-                  <div className="flex items-center justify-between text-[10px] font-mono text-emerald-400 pb-1 mb-2 border-b border-emerald-500/30">
-                    <span>PIT WALL & EFICIÊNCIA DE PARADAS</span>
-                    <span className="animate-pulse">● LIVE TELEMETRY</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-center text-xs font-mono">
-                    <div className="p-2 rounded bg-white/5 border border-white/10">
-                      <span className="text-zinc-400 text-[9px] block">PARADA NORMAL</span>
-                      <span className="text-white font-black text-sm text-emerald-400">2,0s a 2,5s</span>
-                      <span className="text-[8px] text-zinc-500 block">Tempo médio de troca</span>
-                    </div>
-                    <div className="p-2 rounded bg-white/5 border border-white/10">
-                      <span className="text-zinc-400 text-[9px] block">RECORDE HISTÓRICO</span>
-                      <span className="text-white font-black text-sm text-amber-400">1,80s (McLaren)</span>
-                      <span className="text-[8px] text-zinc-500 block">GP do Catar 2023</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {effectiveMode === "championship" && (
-                <div className="relative w-full max-w-md p-3.5 rounded-xl border border-yellow-500/40 bg-black/80 backdrop-blur-md text-center shadow-[0_0_35px_rgba(234,179,8,0.2)] animate-fade-in">
-                  <div className="text-[10px] font-mono text-yellow-400 uppercase tracking-widest mb-1">
-                    DOIS TÍTULOS PARALELOS OFICIAIS
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-left text-xs font-mono mt-2">
-                    <div className="p-2 rounded bg-yellow-950/20 border border-yellow-500/20">
-                      <span className="text-yellow-300 font-bold text-[11px] block">🏆 MUNDIAL PILOTOS</span>
-                      <span className="text-zinc-300 text-[10px]">Glória pessoal do piloto que somar mais pontos.</span>
-                    </div>
-                    <div className="p-2 rounded bg-yellow-950/20 border border-yellow-500/20">
-                      <span className="text-yellow-300 font-bold text-[11px] block">🏆 CONSTRUTORES</span>
-                      <span className="text-zinc-300 text-[10px]">Soma dos dois carros; define premiação financeira.</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="pointer-events-auto w-full max-w-4xl mx-auto rounded-2xl bg-black/90 border border-white/20 p-3 sm:p-4 backdrop-blur-xl shadow-2xl">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mb-2.5">
-                {formulaFocusModes.map((mode) => {
-                  const isActive = effectiveMode === mode.id
-                  return (
-                    <button
-                      key={mode.id}
-                      type="button"
-                      onClick={() => setM1Scene3Element(mode.id)}
-                      className={cn(
-                        "p-2 rounded-xl text-left transition-all border cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E10600]",
-                        isActive
-                          ? "bg-[#E10600] text-white border-red-500 shadow-lg"
-                          : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
-                      )}
-                    >
-                      <span className="text-[9px] font-mono block opacity-80">{mode.badge.split("•")[0]}</span>
-                      <span className="text-xs font-black truncate block">{mode.title.split("?")[0]}</span>
-                    </button>
-                  )
-                })}
-              </div>
-
-              <div className="p-2.5 rounded-xl bg-zinc-950 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs leading-relaxed">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-black text-white text-sm">{activeMode.title}</span>
-                    <span className="text-[10px] text-zinc-400 font-mono italic">— {activeMode.subtitle}</span>
-                  </div>
-                  <p className="text-zinc-200">{activeMode.details}</p>
-                </div>
-                <div className="sm:max-w-[280px] p-2 rounded-lg bg-black/60 border border-[#E10600]/30 text-[#E10600] font-bold text-[11px] leading-snug">
-                  ⚡ {activeMode.highlight}
-                </div>
-              </div>
-            </div>
-          </div>
-        )
-      }
-
-      // ======================================================================
-      // CENA 4: AS PEÇAS DO CARRO (31.8s) — DADOS TÉCNICOS 2026 AUDITADOS
-      // ======================================================================
-      if (currentScene.visualEffectType === "machine_hotspots") {
-        // Seleção sincronizada com a fala de Mariana caso áudio esteja ativo
-        const autoPartId =
-          audioCurrentTime < 6.0 ? 1 :
-          audioCurrentTime < 13.0 ? 2 :
-          audioCurrentTime < 18.5 ? 5 :
-          audioCurrentTime < 24.5 ? 9 : 3
-
-        const effectivePartId = isPlaying ? autoPartId : m1SelectedPart
-
-        const carComponents = [
-          {
-            id: 1,
-            name: "Asa Dianteira",
-            tag: "AERODINÂMICA ATIVA 2026",
-            framing: "Enquadramento frontal focado nos elementos aerodinâmicos móveis",
-            hudDiagram: "REGULAMENTO 2026 • CORNER MODE (CURVA) & STRAIGHT MODE (RETA)",
-            desc: "Na geração técnica de 2026, a asa dianteira atua de forma ativa e coordenada com a asa traseira, ajustando seus flaps para máxima sustentação em curvas e baixo arrasto em retas.",
-            importance: "Garante o direcionamento inicial e a estabilidade da frente do carro em alta velocidade.",
-            visualType: "front_wing",
-          },
-          {
-            id: 2,
-            name: "Assoalho & Difusor",
-            tag: "FLUXO & DIFUSOR 2026",
-            framing: "Vista técnica da parte inferior e do difusor traseiro",
-            hudDiagram: "ASSOALHO PARCIALMENTE PLANO • DIFUSOR DE ALTA EXPANSÃO",
-            desc: "A geração de 2026 adota assoalho mais plano e difusor refinado para reduzir o efeito porpoising. A aceleração do ar sob o chassi gera diferença de pressão (princípio de Bernoulli), colando o monoposto ao asfalto.",
-            importance: "Produz sustentação negativa sem depender unicamente de asas que prejudicam a velocidade em retas.",
-            visualType: "floor_ground_effect",
-          },
-          {
-            id: 3,
-            name: "Cockpit & Halo",
-            tag: "HOMOLOGAÇÃO FIA",
-            framing: "Célula de sobrevivência e estrutura de proteção em titânio",
-            hudDiagram: "TITÂNIO GRAU 5 • ENSAIO ESTÁTICO DE 120 kN (PADRÃO FIA 8869-2018)",
-            desc: "O cockpit protege o piloto em posição reclinada de alta eficiência biomecânica. Acima da cabeça, o Halo de titânio é submetido em ensaio de homologação da FIA a cargas de 120 kN (aproximadamente 12 toneladas de força).",
-            importance: "Proteção vital comprovada contra desacelerações severas e impactos de detritos em pista.",
-            visualType: "cockpit_halo",
-          },
-          {
-            id: 4,
-            name: "Volante de Corrida",
-            tag: "CENTRO DE COMANDOS",
-            framing: "Close-up dos seletores rotativos e visor digital ilustrativo",
-            hudDiagram: "EXEMPLO ILUSTRATIVO DE SIMULAÇÃO • MARCHA, RPM E DELTA",
-            desc: "O volante funciona como o computador de bordo do piloto. Durante a volta, o piloto ajusta o balanço de frenagem entre os eixos dianteiro e traseiro, diferencial de curva e comunicação de rádio.",
-            importance: "Permite ao piloto gerenciar o comportamento dinâmico do monoposto a cada curva.",
-            visualType: "steering_wheel",
-          },
-          {
-            id: 5,
-            name: "Pneus de Competição",
-            tag: "CONTATO COM A PISTA",
-            framing: "Roda e pneu slick Pirelli deformando sobre o asfalto",
-            hudDiagram: "PIRELLI 18 POLEGADAS • COMPOSTOS SLICK, INTERMEDIÁRIO E CHUVA",
-            desc: "O único elo entre o monoposto e o solo. Cada composto possui sua janela térmica operacional própria (geralmente entre 85°C e 110°C) e sua taxa de degradação dita as estratégias de parada de box.",
-            importance: "Determina a tração na aceleração, estabilidade lateral em curvas e eficiência de frenagem.",
-            visualType: "tires_contact",
-          },
-          {
-            id: 6,
-            name: "Freios de Carbono",
-            tag: "DESACELERAÇÃO EXTREMA",
-            framing: "Disco de freio carbono-carbono com dutos de ventilação",
-            hudDiagram: "DISCOS VENTILADOS • PICOS DE ATÉ 1.000°C • DESACELERAÇÕES DE ATÉ 5G",
-            desc: "Discos ventilados em compósito carbono-carbono operando sob dutos de refrigeração forçada. Em pontos de freada brusca, como a primeira curva de Monza, as desacelerações superam 5G e as temperaturas beiram 1.000°C.",
-            importance: "Reduzem a velocidade de 330 para 80 km/h em poucos metros antes do ponto de tangência.",
-            visualType: "carbon_brakes",
-          },
-          {
-            id: 7,
-            name: "Suspensão",
-            tag: "SOLUÇÕES DE PROJETO",
-            framing: "Braços triangulares de suspensão e amortecedores internos",
-            hudDiagram: "CONFIGURAÇÕES PUSH-ROD OU PULL-ROD • CONTROLE DE MERGULHO",
-            desc: "Projetistas escolhem entre as geometrias push-rod e pull-rod de acordo com o empacotamento aerodinâmico e centro de gravidade do chassi, mantendo a plataforma do assoalho estável sobre as zebras.",
-            importance: "Mantém a distância do assoalho em relação ao solo milimetricamente controlada.",
-            visualType: "suspension",
-          },
-          {
-            id: 8,
-            name: "Asa Traseira e Aero Ativa",
-            tag: "REVOLUÇÃO 2026",
-            framing: "Asa traseira integrada à aerodinâmica ativa e Overtake Mode",
-            hudDiagram: "AERODINÂMICA ATIVA + OVERTAKE MODE (SUBSTITUI O DRS TRADICIONAL)",
-            desc: "Na era técnica de 2026, o DRS tradicional dá lugar à aerodinâmica ativa coordenada (asas dianteira e traseira alternando entre modos de curva e reta) e ao Overtake Mode para disputas de ultrapassagem.",
-            importance: "Equilibra pressão máxima para curvas e velocidade eficiente nas retas de ultrapassagem.",
-            visualType: "rear_wing_drs",
-          },
-          {
-            id: 9,
-            name: "Unidade de Potência 2026",
-            tag: "V6 TURBO + 350 KW MGU-K",
-            framing: "Conjunto híbrido térmico e elétrico (sem MGU-H)",
-            hudDiagram: "MOTOR V6 TURBO 1.6L + MOTOR ELÉTRICO MGU-K DE 350 KW (SEM MGU-H)",
-            desc: "A unidade de potência de 2026 removeu o MGU-H para simplificar os custos e ampliou a entrega do MGU-K elétrico para 350 kW (~470 cv), funcionando com combustíveis 100% sustentáveis em uma divisão ~50/50.",
-            importance: "O motor de competição mais eficiente do mundo, com participação elétrica triplicada.",
-            visualType: "power_unit",
-          },
-          {
-            id: 10,
-            name: "Transmissão & Diferencial",
-            tag: "CONJUNTO TRASEIRO",
-            framing: "Câmbio sequencial de 8 marchas e rampa do difusor",
-            hudDiagram: "CÂMBIO SEAMLESS DE 8 VELOCIDADES • DIFERENCIAL INTEGRADO",
-            desc: "Câmbio com carcaça de fibra de carbono que realiza trocas em milissegundos sem interromper a entrega de torque, posicionado logo acima do difusor aerodinâmico traseiro.",
-            importance: "Transfere a propulsão híbrida instantaneamente para o eixo traseiro tracionar no asfalto.",
-            visualType: "transmission_diffuser",
-          },
-        ]
-
-        const activeComp = carComponents.find((c) => c.id === effectivePartId) || carComponents[0]
-
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#E10600] text-white font-black">
-                  PEÇA {activeComp.id}/10
-                </span>
-                <span className="text-xs sm:text-sm font-mono font-black uppercase text-white tracking-wider">
-                  ANATOMIA TÉCNICA 2026 • {activeComp.name}
-                </span>
-              </div>
-              <span className="text-[9px] font-mono text-zinc-400 bg-black/60 border border-white/10 px-2 py-0.5 rounded hidden sm:inline">
-                {activeComp.hudDiagram}
-              </span>
-            </div>
-
-            <div className="relative flex-1 flex items-center justify-center">
-              {activeComp.visualType === "front_wing" && (
-                <div className="relative w-full max-w-xl p-4 rounded-2xl bg-black/75 border border-cyan-500/40 backdrop-blur-md text-center shadow-[0_0_35px_rgba(6,182,212,0.2)] animate-fade-in">
-                  <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                    AERODINÂMICA ATIVA INTEGRADA (2026)
-                  </span>
-                  <div className="py-2 text-base font-mono font-black text-white">
-                    CORNER MODE (CURVAS) ⮀ STRAIGHT MODE (RETAS)
-                  </div>
-                  <p className="text-[11px] text-zinc-300">
-                    Flaps móveis na asa dianteira reduzem o arrasto em retas de forma coordenada com a asa traseira.
-                  </p>
-                </div>
-              )}
-
-              {activeComp.visualType === "floor_ground_effect" && (
-                <div className="relative w-full max-w-xl p-4 rounded-2xl bg-black/75 border border-blue-500/40 backdrop-blur-md text-center shadow-[0_0_35px_rgba(59,130,246,0.2)] animate-fade-in">
-                  <span className="text-[10px] font-mono text-blue-400 font-bold uppercase tracking-widest block mb-1">
-                    ASSOALHO PARCIALMENTE PLANO & DIFUSOR TRASEIRO
-                  </span>
-                  <div className="py-2 text-base font-mono font-black text-white">
-                    SUCÇÃO POR DIFERENÇA DE PRESSÃO (BERNOULLI)
-                  </div>
-                  <p className="text-[11px] text-zinc-300">
-                    O fluxo de ar acelerado sob o assoalho puxa o carro ao solo de forma estável, sem oscilações violentas.
-                  </p>
-                </div>
-              )}
-
-              {activeComp.visualType === "cockpit_halo" && (
-                <div className="relative w-full max-w-xl p-4 rounded-2xl bg-black/75 border border-amber-500/40 backdrop-blur-md text-center shadow-[0_0_35px_rgba(245,158,11,0.2)] animate-fade-in">
-                  <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-widest block mb-1">
-                    ENSAIO REGULAMENTAR FIA STANDARD 8869-2018
-                  </span>
-                  <div className="py-2 text-2xl font-mono font-black text-white">
-                    RESISTÊNCIA ESTÁTICA DE <span className="text-[#E10600]">120 kN</span> (~12 TONELADAS)
-                  </div>
-                  <p className="text-[11px] text-zinc-300">
-                    Célula monocoque em fibra de carbono encimada pela estrutura em titânio Grau 5.
-                  </p>
-                </div>
-              )}
-
-              {activeComp.visualType === "steering_wheel" && (
-                <div className="relative w-full max-w-xl p-4 rounded-2xl bg-black/85 border border-purple-500/40 backdrop-blur-md text-center shadow-[0_0_35px_rgba(168,85,247,0.2)] animate-fade-in">
-                  <div className="flex items-center justify-between text-[10px] font-mono text-purple-400 mb-2 border-b border-purple-500/20 pb-1">
-                    <span>PAINEL DIGITAL (EXEMPLO ILUSTRATIVO)</span>
-                    <span>BALANÇO DE FREIO & DIFERENCIAL</span>
-                  </div>
-                  <div className="py-2 flex items-center justify-center gap-3 text-xs font-mono font-bold text-white">
-                    <span className="px-2 py-1 rounded bg-red-600/30 border border-red-500/40">MARCHA: 7</span>
-                    <span className="px-2 py-1 rounded bg-purple-600/30 border border-purple-500/40">RPM: 11.850</span>
-                    <span className="px-2 py-1 rounded bg-emerald-600/30 border border-emerald-500/40">DELTA: -0.142s</span>
-                  </div>
-                  <p className="text-[11px] text-zinc-300">
-                    Seletores dinâmicos permitem ao piloto reconfigurar parâmetros mecânicos em cada trecho do circuito.
-                  </p>
-                </div>
-              )}
-
-              {activeComp.visualType === "tires_contact" && (
-                <div className="relative w-full max-w-xl p-4 rounded-2xl bg-black/75 border border-red-500/40 backdrop-blur-md text-center shadow-[0_0_35px_rgba(225,6,0,0.2)] animate-fade-in">
-                  <span className="text-[10px] font-mono text-[#E10600] font-bold uppercase tracking-widest block mb-1">
-                    PIRELLI 18 POLEGADAS • DEGRADAÇÃO E ADERÊNCIA
-                  </span>
-                  <div className="py-2 text-lg font-mono font-black text-white">
-                    JANELAS OPERACIONAIS TÍPICAS: <span className="text-amber-400">85°C A 110°C</span>
-                  </div>
-                  <p className="text-[11px] text-zinc-300">
-                    A temperatura ideal varia por composto; manter a borracha na janela térmica correta evita derrapagens.
-                  </p>
-                </div>
-              )}
-
-              {activeComp.visualType === "carbon_brakes" && (
-                <div className="relative w-full max-w-xl p-4 rounded-2xl bg-black/80 border border-orange-500/40 backdrop-blur-md text-center shadow-[0_0_35px_rgba(249,115,22,0.25)] animate-fade-in">
-                  <span className="text-[10px] font-mono text-orange-400 font-bold uppercase tracking-widest block mb-1">
-                    FREIOS CARBONO-CARBONO VENTILADOS
-                  </span>
-                  <div className="py-2 text-xl font-mono font-black text-orange-300">
-                    PICOS DE ATÉ 1.000°C SOB DESACELERAÇÕES DE 5G
-                  </div>
-                  <p className="text-[11px] text-zinc-300">
-                    Freadas brutais antes de curvas lentas exigem centenas de quilos de força no pedal para frear em segundos.
-                  </p>
-                </div>
-              )}
-
-              {activeComp.visualType === "suspension" && (
-                <div className="relative w-full max-w-xl p-4 rounded-2xl bg-black/75 border border-emerald-500/40 backdrop-blur-md text-center shadow-[0_0_35px_rgba(16,185,129,0.2)] animate-fade-in">
-                  <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                    GEOMETRIAS PUSH-ROD OU PULL-ROD
-                  </span>
-                  <div className="py-2 text-base font-mono font-black text-white">
-                    ESTABILIDADE DA PLATAFORMA DO ASSOALHO
-                  </div>
-                  <p className="text-[11px] text-zinc-300">
-                    A escolha entre push-rod ou pull-rod depende do projeto de empacotamento aerodinâmico de cada construtor.
-                  </p>
-                </div>
-              )}
-
-              {activeComp.visualType === "rear_wing_drs" && (
-                <div className="relative w-full max-w-xl p-4 rounded-2xl bg-black/75 border border-red-500/40 backdrop-blur-md text-center shadow-[0_0_35px_rgba(225,6,0,0.25)] animate-fade-in">
-                  <span className="text-[10px] font-mono text-red-400 font-bold uppercase tracking-widest block mb-1">
-                    AERODINÂMICA ATIVA & OVERTAKE MODE (2026)
-                  </span>
-                  <div className="py-2 text-base font-mono font-black text-white">
-                    SUBSTITUIÇÃO DO DRS TRADICIONAL
-                  </div>
-                  <p className="text-[11px] text-zinc-300">
-                    Em vez de flap único de DRS, as asas operam em modo duplo de baixa resistência, com potência elétrica extra para o ataque.
-                  </p>
-                </div>
-              )}
-
-              {activeComp.visualType === "power_unit" && (
-                <div className="relative w-full max-w-xl p-4 rounded-2xl bg-black/80 border border-yellow-500/40 backdrop-blur-md text-center shadow-[0_0_35px_rgba(234,179,8,0.2)] animate-fade-in">
-                  <span className="text-[10px] font-mono text-yellow-400 font-bold uppercase tracking-widest block mb-1">
-                    UNIDADE PROPULSORA 2026 (SEM MGU-H)
-                  </span>
-                  <div className="py-2 text-xl font-mono font-black text-white">
-                    V6 TURBO 1.6L + <span className="text-emerald-400">MGU-K DE 350 KW (~470 CV)</span>
-                  </div>
-                  <p className="text-[11px] text-zinc-300">
-                    Combustíveis 100% sustentáveis e motor elétrico triplicado, alcançando uma divisão equilibrada de cerca de 50/50.
-                  </p>
-                </div>
-              )}
-
-              {activeComp.visualType === "transmission_diffuser" && (
-                <div className="relative w-full max-w-xl p-4 rounded-2xl bg-black/75 border border-cyan-500/40 backdrop-blur-md text-center shadow-[0_0_35px_rgba(6,182,212,0.2)] animate-fade-in">
-                  <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                    CÂMBIO SEAMLESS DE 8 MARCHAS & DIFUSOR
-                  </span>
-                  <div className="py-2 text-base font-mono font-black text-white">
-                    TRANSFERÊNCIA INSTANTÂNEA DE TORQUE
-                  </div>
-                  <p className="text-[11px] text-zinc-300">
-                    O câmbio sequencial sem perda de tração trabalha integrado ao difusor traseiro para expulsar o ar do assoalho.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div className="pointer-events-auto w-full max-w-5xl mx-auto rounded-2xl bg-black/90 border border-white/20 p-2.5 sm:p-3.5 backdrop-blur-xl shadow-2xl">
-              <div className="flex items-center gap-1.5 overflow-x-auto scroll-smooth pb-1.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:none">
-                {carComponents.map((comp) => {
-                  const isActive = effectivePartId === comp.id
-                  return (
-                    <button
-                      key={comp.id}
-                      type="button"
-                      onClick={() => setM1SelectedPart(comp.id)}
-                      className={cn(
-                        "shrink-0 px-2.5 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wide transition-all border cursor-pointer whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E10600]",
-                        isActive
-                          ? "bg-[#E10600] text-white border-red-500 shadow-md scale-102"
-                          : "bg-white/5 border-white/5 text-zinc-400 hover:text-white hover:bg-white/10"
-                      )}
-                    >
-                      <span className="opacity-70 mr-1 font-mono">{comp.id}.</span>
-                      {comp.name}
-                    </button>
-                  )
-                })}
-              </div>
-
-              <div className="p-2.5 rounded-xl bg-zinc-950 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs mt-1">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-black text-white text-sm">{activeComp.name}</span>
-                    <span className="text-[10px] text-zinc-400 font-mono italic">({activeComp.framing})</span>
-                  </div>
-                  <p className="text-zinc-200">{activeComp.desc}</p>
-                </div>
-                <div className="sm:max-w-[280px] p-2 rounded-lg bg-black/60 border border-cyan-500/30 text-cyan-300 font-bold text-[11px] leading-snug">
-                  ⚡ <strong>Papel Vital:</strong> {activeComp.importance}
-                </div>
-              </div>
-            </div>
-          </div>
-        )
-      }
-
-      // ======================================================================
-      // CENA 5: PILOTOS E EQUIPES (27.2s)
-      // ======================================================================
-      if (currentScene.visualEffectType === "pitstop_team") {
-        const cueIndex = audioCurrentTime < 8.5 ? 1 : audioCurrentTime < 17.5 ? 2 : 3
-
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                PILOTOS E EQUIPES • TRABALHO COLETIVO E TÍTULOS
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                TRECHO 0{cueIndex} DE 03
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              {cueIndex === 1 && (
-                <div className="p-4 rounded-2xl bg-black/80 border border-white/15 backdrop-blur-md text-center max-w-md shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                    DUAS DISPUTAS SIMULTÂNEAS
-                  </span>
-                  <h3 className="text-sm sm:text-base font-black text-white mb-1">
-                    Pilotos e Construtores
-                  </h3>
-                  <p className="text-xs text-zinc-300">
-                    O piloto luta pelo campeonato individual de prestígio, enquanto a equipe soma os pontos de seus dois carros para o título de construtores.
-                  </p>
-                </div>
-              )}
-
-              {cueIndex === 2 && (
-                <div className="p-4 rounded-2xl bg-black/80 border border-amber-500/40 backdrop-blur-md text-center max-w-md shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-widest block mb-1">
-                    GESTÃO TÉCNICA
-                  </span>
-                  <h3 className="text-sm sm:text-base font-black text-white mb-1">
-                    Além do Pé no Acelerador
-                  </h3>
-                  <p className="text-xs text-zinc-300">
-                    Velocidade pura não é suficiente: o piloto precisa preservar os pneus, administrar o combustível e gerenciar o ritmo de corrida.
-                  </p>
-                </div>
-              )}
-
-              {cueIndex === 3 && (
-                <div className="p-4 rounded-2xl bg-black/80 border border-emerald-500/40 backdrop-blur-md text-center max-w-md shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                    OS BASTIDORES
-                  </span>
-                  <h3 className="text-sm sm:text-base font-black text-white mb-1">
-                    Estratégia, Rádio e Mecânicos
-                  </h3>
-                  <p className="text-xs text-zinc-300">
-                    A comunicação contínua entre engenheiro e piloto e trocas de pneus em 2 segundos definem Grandes Prêmios.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div>
-              {cueIndex === 1 && renderMarianaSyncBadge("MARIANA DA RÁDIO F1", "DOIS CAMPEONATOS AO MESMO TEMPO", "Campeonato de Pilotos e Campeonato de Construtores disputados volta a volta.")}
-              {cueIndex === 2 && renderMarianaSyncBadge("MARIANA DA RÁDIO F1", "O PAPEL DO PILOTO", "Inteligência de corrida, preservação mecânica e paciência tática nas ultrapassagens.")}
-              {cueIndex === 3 && renderMarianaSyncBadge("MARIANA DA RÁDIO F1", "A FORÇA DA EQUIPE", "Estratégia de boxes no pit wall e trabalho cirúrgico dos mecânicos na troca de pneus.")}
-            </div>
-          </div>
-        )
-      }
-
-      // ======================================================================
-      // CENA 6: COMO ACONTECE UMA CORRIDA (32.4s) — PÓRTICO FIA SEM LUZ VERDE
-      // ======================================================================
-      if (currentScene.visualEffectType === "starting_grid") {
-        const lightCount =
-          m1StartStep === "light_1" ? 1 :
-          m1StartStep === "light_2" ? 2 :
-          m1StartStep === "light_3" ? 3 :
-          m1StartStep === "light_4" ? 4 :
-          m1StartStep === "all_on" ? 5 : 0
-
-        const isRacing = m1StartStep === "racing"
-        const isSuspense = m1StartStep === "all_on"
-        const isLightsOut = m1StartStep === "lights_out"
-
-        // Sincronização automática com Mariana quando áudio estiver tocando
-        const cueIndex = audioCurrentTime < 8.5 ? 1 : audioCurrentTime < 14.5 ? 2 : audioCurrentTime < 21.5 ? 3 : 4
-
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20 overflow-hidden">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#E10600] animate-pulse" />
-                <span className="text-xs sm:text-sm font-mono font-black uppercase text-white tracking-wider">
-                  PROCEDIMENTO OFICIAL DE LARGADA FIA • CIRCUITO PRINCIPAL
-                </span>
-              </div>
-              <span className="text-[10px] font-mono text-zinc-400 bg-black/60 border border-white/10 px-2.5 py-0.5 rounded">
-                SIMULAÇÃO: {m1StartStep.toUpperCase()} • FASE {cueIndex}/4
-              </span>
-            </div>
-
-            <div className="relative flex-1 flex flex-col items-center justify-center">
-              {/* Estrutura Metálica Superior do Pórtico de Largada */}
-              <div className="relative w-full max-w-xl mx-auto flex flex-col items-center">
-                <div className="w-full h-3 bg-gradient-to-r from-zinc-700 via-zinc-500 to-zinc-700 rounded-t border-t border-white/30 shadow-md" />
-
-                {/* Painel com as 5 Colunas de Luzes FIA (Sem lâmpadas verdes - sinal oficial é o apagamento) */}
-                <div className="w-full bg-zinc-950/95 border-x border-b border-white/20 rounded-b-2xl p-4 sm:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-md">
-                  <div className="text-[10px] font-mono text-center uppercase tracking-widest text-zinc-400 mb-3">
-                    PÓRTICO OFICIAL DA DIREÇÃO DE PROVA FIA
-                  </div>
-
-                  <div className="grid grid-cols-5 gap-3 sm:gap-6 justify-items-center">
-                    {[1, 2, 3, 4, 5].map((idx) => {
-                      const isRedOn = lightCount >= idx && !isLightsOut && !isRacing
-                      return (
-                        <div key={idx} className="flex flex-col items-center gap-2">
-                          <div className="w-9 sm:w-14 h-16 sm:h-22 bg-black rounded-xl border border-zinc-700 p-1 flex flex-col justify-between items-center shadow-inner relative">
-                            {/* Lente Superior Vermelha */}
-                            <div
-                              className={cn(
-                                "w-6 h-6 sm:w-9 sm:h-9 rounded-full border transition-all duration-150",
-                                isRedOn
-                                  ? "bg-[#E10600] border-red-400 shadow-[0_0_30px_#e10600,0_0_60px_rgba(225,6,0,0.8)]"
-                                  : "bg-zinc-900 border-zinc-800 opacity-20"
-                              )}
-                            />
-                            {/* Lente Inferior Dupla Vermelha */}
-                            <div
-                              className={cn(
-                                "w-6 h-6 sm:w-9 sm:h-9 rounded-full border transition-all duration-150",
-                                isRedOn
-                                  ? "bg-[#E10600] border-red-400 shadow-[0_0_30px_#e10600,0_0_60px_rgba(225,6,0,0.8)]"
-                                  : "bg-zinc-900 border-zinc-800 opacity-20"
-                              )}
-                            />
-                          </div>
-                          <span className="text-[9px] font-mono text-zinc-500 font-bold">LUZ {idx}</span>
-                        </div>
-                      )
-                    })}
-                  </div>
-
-                  {/* Reflexo Vermelho Realista sobre o Asfalto */}
-                  {lightCount > 0 && !isLightsOut && !isRacing && (
-                    <div className="mt-3 w-full h-8 bg-gradient-to-b from-[#E10600]/30 via-[#E10600]/10 to-transparent blur-md rounded-full transition-all duration-200" />
-                  )}
-                </div>
-              </div>
-
-              {/* Mensagens de Feedback Sincronizadas da Simulação */}
-              <div className="relative mt-4 w-full max-w-lg text-center font-mono">
-                {isSuspense && (
-                  <div className="p-2.5 rounded-xl bg-black/90 border border-red-500 text-[#E10600] font-black text-sm tracking-widest shadow-[0_0_30px_rgba(225,6,0,0.6)] animate-pulse">
-                    ⚠️ 5 LUZES ACESAS! MOTORES EM ALTO GIRO! ESPERA IMPREVISÍVEL (1s A 3s)...
-                  </div>
-                )}
-                {isLightsOut && (
-                  <div className="p-2.5 rounded-xl bg-black/95 border border-white text-white font-black text-base tracking-widest shadow-2xl animate-ping">
-                    ● LUZES APAGADAS! SINAL OFICIAL DA FIA! ●
-                  </div>
-                )}
-                {isRacing && (
-                  <div className="p-3 rounded-xl bg-black/90 border border-emerald-500/80 text-white font-black text-sm sm:text-base tracking-wider shadow-[0_0_35px_rgba(16,185,129,0.5)] animate-fade-in">
-                    <span className="text-emerald-400 block text-base sm:text-lg mb-1">
-                      🏎️💨 LARGADA AUTORIZADA! PÉ NO FUNDO PARA A CURVA 1!
-                    </span>
-                    <span className="text-[10px] text-zinc-400 font-mono font-normal block">
-                      (Simulação educacional da arrancada — O sinal oficial da FIA de largada é o apagamento das 5 luzes)
-                    </span>
-                  </div>
-                )}
-                {m1StartStep.startsWith("light_") && (
-                  <div className="p-2 rounded-xl bg-black/80 border border-amber-500/50 text-amber-300 text-xs font-bold">
-                    Acendendo luzes progressivas ({lightCount}/5 a cada 1 segundo)... Pilotos acionando embreagem!
-                  </div>
-                )}
-                {m1StartStep === "idle" && (
-                  <div className="p-2 rounded-xl bg-black/70 border border-white/10 text-zinc-400 text-xs">
-                    Monopostos alinhados nos colchetes do grid. Clique abaixo para iniciar a simulação oficial da FIA.
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="pointer-events-auto w-full max-w-2xl mx-auto rounded-2xl bg-black/90 border border-white/20 p-3 backdrop-blur-xl shadow-2xl flex items-center justify-between gap-3">
-              <div className="text-left text-xs font-mono">
-                <span className="text-zinc-400 block text-[10px]">DIREÇÃO DE PROVA FIA</span>
-                <span className="font-bold text-white">Semáforo de Largada</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handleRunStartSequence}
-                  className="px-5 py-2.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider shadow-[0_0_20px_rgba(225,6,0,0.5)] transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
-                >
-                  {m1StartStep === "idle" ? "Iniciar Luzes da Largada" : "Repetir Procedimento"}
-                </button>
-                {m1StartStep !== "idle" && (
-                  <button
-                    type="button"
-                    onClick={handleResetStartSequence}
-                    className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-zinc-300 text-xs font-bold uppercase transition-all cursor-pointer"
-                  >
-                    Resetar
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        )
-      }
-
-      // ======================================================================
-      // CENA 7: O QUE OBSERVAR DURANTE A PROVA (26.9s)
-      // ======================================================================
-      if (currentScene.visualEffectType === "telemetry_wall") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                O QUE OBSERVAR • TORRE DE TEMPOS E ESTRATÉGIA
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                TRECHO 0{cueIndex} DE 03
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              {cueIndex === 1 && (
-                <div className="p-4 rounded-2xl bg-black/85 border border-cyan-500/30 backdrop-blur-md max-w-md w-full shadow-2xl animate-fade-in">
-                  <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10 font-mono text-xs">
-                    <span className="font-bold text-cyan-400">TORRE DE TRANSMISSÃO</span>
-                    <span className="text-[10px] text-zinc-400">GAP / INT</span>
-                  </div>
-                  <div className="space-y-1.5 font-mono text-xs">
-                    <div className="flex justify-between items-center p-1 rounded bg-white/5">
-                      <span className="text-white font-bold">1. VER (Líder)</span>
-                      <span className="text-emerald-400 font-bold">LÍDER</span>
-                    </div>
-                    <div className="flex justify-between items-center p-1 rounded bg-white/5">
-                      <span className="text-white font-bold">2. NOR</span>
-                      <span className="text-amber-300 font-bold">GAP +2.140s • INT +2.140s</span>
-                    </div>
-                    <div className="flex justify-between items-center p-1 rounded bg-white/5">
-                      <span className="text-white font-bold">3. LEC</span>
-                      <span className="text-zinc-300 font-bold">GAP +3.200s • INT +1.060s</span>
-                    </div>
-                  </div>
-                  <p className="text-[10px] text-zinc-400 mt-2">
-                    GAP mede a distância em segundos até o líder; INT mede a distância para o carro à frente.
-                  </p>
-                </div>
-              )}
-
-              {cueIndex === 2 && (
-                <div className="p-4 rounded-2xl bg-black/80 border border-amber-500/30 backdrop-blur-md text-center max-w-md shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-widest block mb-1">
-                    GESTÃO DE COMPOSTOS
-                  </span>
-                  <h3 className="text-sm sm:text-base font-black text-white mb-1">
-                    Pneus e Janelas de Paradas
-                  </h3>
-                  <p className="text-xs text-zinc-300">
-                    Compostos Macios (vermelho) oferecem aderência imediata com maior desgaste; Médios (amarelo) equilibram durabilidade; Duros (branco) suportam longos trechos.
-                  </p>
-                </div>
-              )}
-
-              {cueIndex === 3 && (
-                <div className="p-4 rounded-2xl bg-black/80 border border-emerald-500/30 backdrop-blur-md text-center max-w-md shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                    ESTRATÉGIA DE PISTA
-                  </span>
-                  <h3 className="text-sm sm:text-base font-black text-white mb-1">
-                    Undercut e Overcut
-                  </h3>
-                  <p className="text-xs text-zinc-300">
-                    Parar uma volta antes com pneus novos pode garantir a ultrapassagem na saída dos boxes, sem necessidade de disputa roda a roda na pista.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div>
-              {cueIndex === 1 && renderMarianaSyncBadge("MARIANA DA RÁDIO F1", "LEITURA DA TORRE DE TEMPOS", "Observe o GAP para saber quem lidera e o INT para antecipar ultrapassagens.")}
-              {cueIndex === 2 && renderMarianaSyncBadge("MARIANA DA RÁDIO F1", "PNEUS E RITMO DE CORRIDA", "A degradação dos pneus define a hora exata da parada nos boxes.")}
-              {cueIndex === 3 && renderMarianaSyncBadge("MARIANA DA RÁDIO F1", "VITÓRIA PELA ESTRATÉGIA", "Muitas posições são ganhas na eficiência do pit stop e nas voltas rápidas com pista limpa.")}
-            </div>
-          </div>
-        )
-      }
-
-      // ======================================================================
-      // CENA 8: VOCÊ ESTÁ PRONTO PARA COMEÇAR (20.2s) — REVISÃO HOLÍSTICA
-      // ======================================================================
-      if (currentScene.visualEffectType === "checkered_finish") {
-        // Revelação progressiva sincronizada com a fala de encerramento
-        const autoDomainId = audioCurrentTime < 7.0 ? 1 : audioCurrentTime < 13.5 ? 3 : 5
-        const effectiveDomainId = isPlaying ? autoDomainId : m1ReviewHotspot
-
-        const reviewDomains = [
-          {
-            id: 1,
-            title: "Aerodinâmica & Assoalho",
-            tag: "DOWNFORCE & BERNOULLI",
-            focusArea: "Asas ativas ajustáveis e assoalho parcialmente plano que gera sucção para curvas sem arrasto excessivo.",
-            essence: "Aderência gerada pelo fluxo de ar acelerado sob o monoposto.",
-          },
-          {
-            id: 2,
-            title: "Pneus & Aderência",
-            tag: "CONTATO MECÂNICO",
-            focusArea: "Pirelli 18 polegadas operando em janelas térmicas específicas de 85°C a 110°C conforme o composto.",
-            essence: "Quatro manchas de contato que determinam tração, frenagem e curvas.",
-          },
-          {
-            id: 3,
-            title: "Cockpit & Halo de Titânio",
-            tag: "SEGURANÇA REGULAMENTAR",
-            focusArea: "Estrutura em titânio Grau 5 homologada para suportar 120 kN de ensaio estático (FIA 8869-2018).",
-            essence: "Proteção biomecânica comprovada contra impactos severos.",
-          },
-          {
-            id: 4,
-            title: "Unidade Propulsora 2026",
-            tag: "HÍBRIDO V6 + 350 KW MGU-K",
-            focusArea: "V6 Turbo a combustão sustentável com motor elétrico ampliado para 350 kW e remoção do MGU-H.",
-            essence: "Eficiência térmica recorde com divisão de cerca de 50% térmica e 50% elétrica.",
-          },
-          {
-            id: 5,
-            title: "Procedimento da Largada",
-            tag: "5 LUZES VERMELHAS FIA",
-            focusArea: "Alinhamento no grid, 5 luzes acendendo a cada segundo e arrancada autorizada no apagamento simultâneo.",
-            essence: "Reação em milissegundos sem semáforo verde: o sinal de partida é o blecaute.",
-          },
-          {
-            id: 6,
-            title: "Equipes e os Dois Mundiais",
-            tag: "A DISPUTA GLOBAL",
-            focusArea: "20 pilotos de elite, paradas de boxes de 2 segundos e pontuação oficial para Pilotos e Construtores.",
-            essence: "Engenharia coletiva de alta tecnologia decidida nos milésimos de segundo.",
-          },
-        ]
-
-        const activeDomain = reviewDomains.find((d) => d.id === effectiveDomainId) || reviewDomains[0]
-
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <div className="flex items-center gap-2">
-                <span className="text-xs sm:text-sm font-mono font-black uppercase text-white tracking-wider">
-                  SÍNTESE VISUAL DO APRENDIZADO • MÓDULO 1 CONCLUÍDO
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setM1ShowAllSummary(true)}
-                className="pointer-events-auto px-3.5 py-1.5 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider shadow-[0_0_20px_rgba(225,6,0,0.5)] transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
-              >
-                Ver Dossiê Completo
-              </button>
-            </div>
-
-            <div className="relative flex-1 flex items-center justify-center">
-              <div className="relative w-full max-w-xl p-4 sm:p-5 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-xl text-center shadow-[0_0_40px_rgba(0,0,0,0.8)] animate-fade-in">
-                <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400 mb-2 border-b border-white/10 pb-1.5">
-                  <span className="text-[#E10600] font-black uppercase tracking-wider">{activeDomain.tag}</span>
-                  <span>DOMÍNIO 0{activeDomain.id} DE 06</span>
-                </div>
-                <h3 className="text-base sm:text-lg font-black text-white mb-2">{activeDomain.title}</h3>
-                <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed mb-3">
-                  {activeDomain.focusArea}
-                </p>
-                <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-cyan-300 font-mono text-xs font-bold">
-                  ⚡ Síntese: {activeDomain.essence}
-                </div>
-              </div>
-            </div>
-
-            <div className="pointer-events-auto w-full max-w-4xl mx-auto rounded-2xl bg-black/90 border border-white/20 p-2.5 sm:p-3.5 backdrop-blur-xl shadow-2xl">
-              <div className="grid grid-cols-2 sm:grid-cols-6 gap-1.5">
-                {reviewDomains.map((dom) => {
-                  const isActive = effectiveDomainId === dom.id
-                  return (
-                    <button
-                      key={dom.id}
-                      type="button"
-                      onClick={() => setM1ReviewHotspot(dom.id)}
-                      className={cn(
-                        "p-2 rounded-xl text-left transition-all border cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E10600]",
-                        isActive
-                          ? "bg-[#E10600] text-white border-red-500 shadow-lg scale-102"
-                          : "bg-white/5 border-white/10 text-zinc-400 hover:text-white hover:bg-white/10"
-                      )}
-                    >
-                      <span className="text-[9px] font-mono block opacity-70">0{dom.id}</span>
-                      <span className="text-xs font-black truncate block">{dom.title.split(" ")[0]}</span>
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-
-            {m1ShowAllSummary && (
-              <div
-                role="dialog"
-                aria-modal="true"
-                aria-label="Dossiê Completo de Revisão do Módulo 1"
-                className="pointer-events-auto fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
-              >
-                <div className="max-w-2xl w-full max-h-[85vh] overflow-y-auto rounded-2xl bg-zinc-950 border border-white/20 p-5 shadow-2xl text-left">
-                  <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
-                    <div>
-                      <span className="text-[10px] font-mono uppercase text-[#E10600] font-bold block">
-                        Dossiê Educacional F1
-                      </span>
-                      <h3 className="text-lg font-black text-white">Tudo o Que Você Aprendeu no Módulo 1</h3>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setM1ShowAllSummary(false)}
-                      className="px-3 py-1 rounded bg-white/10 hover:bg-white/20 text-zinc-300 text-xs font-bold cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-                    >
-                      Fechar
-                    </button>
-                  </div>
-
-                  <div className="space-y-3 mb-5">
-                    {reviewDomains.map((dom) => (
-                      <div key={dom.id} className="p-3 rounded-xl bg-white/5 border border-white/10">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-bold text-white">{dom.title}</span>
-                          <span className="text-[9px] font-mono text-cyan-400 uppercase">{dom.tag}</span>
-                        </div>
-                        <p className="text-xs text-zinc-300 leading-relaxed mb-1">{dom.focusArea}</p>
-                        <span className="text-[11px] text-amber-300 italic block">“{dom.essence}”</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setM1ShowAllSummary(false)
-                        setViewStage("quiz")
-                      }}
-                      className="px-4 py-2 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase cursor-pointer shadow-lg"
-                    >
-                      Pronto para o Questionário! →
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )
-      }
+          {cueIndex === 1 && renderMarianaSyncBadge("O Pináculo da Velocidade", "Engenharia e talento humano no limite absoluto")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Os 4 Pilares da F1", "Velocidade, estratégia, talento e trabalho em equipe")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Guia do Iniciante", "Conceitos essenciais explicados curva por curva")}
+        </div>
+      )
     }
 
     // ------------------------------------------------------------------------
-    // MÓDULO 2: A MÁQUINA (COMO FUNCIONA UM CARRO DE F1)
+    // MÓDULO 1 • CENA 2: vintage_1950
     // ------------------------------------------------------------------------
-    
-
-    // ------------------------------------------------------------------------
-    // MÓDULO 2: A MÁQUINA (COMO FUNCIONA UM CARRO DE F1)
-    // ------------------------------------------------------------------------
-    if (activeModuleId === 2) {
-      // CENA 1: A MÁQUINA POR INTEIRO (22.3s)
-      if (currentScene.visualEffectType === "mod2_machine_overview") {
-        const cueIndex = audioCurrentTime < 7.5 ? 1 : audioCurrentTime < 15.0 ? 2 : 3
-        const m2Components = [
-          { id: 1, name: "Asa Dianteira", top: "72%", left: "20%", text: "Controla o fluxo inicial de ar e gera carga aerodinâmica frontal.", zone: "AERODINÂMICA" },
-          { id: 2, name: "Pneus Pirelli 18\"", top: "66%", left: "34%", text: "Único ponto de contato com o asfalto. Aderência mecânica essencial.", zone: "CONTATO" },
-          { id: 3, name: "Cockpit & Volante", top: "46%", left: "52%", text: "Célula de sobrevivência e centro de controle digital do piloto.", zone: "COMANDO" },
-          { id: 4, name: "Freios de Carbono", top: "62%", left: "40%", text: "Operam a até 1.000°C sob desacelerações superiores a 5G.", zone: "FRENAGEM" },
-          { id: 5, name: "Unidade de Potência 2026", top: "48%", left: "68%", text: "V6 Turbo 1.6L híbrido com MGU-K elétrico de 350 kW.", zone: "PROPULSÃO" },
-        ]
-        const effectiveId = cueIndex === 2 ? 1 : m2Hotspot
-        const activeComp = m2Components.find((c) => c.id === effectiveId) || m2Components[0]
-
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 02 • ANATOMIA E HARMONIA DA MÁQUINA
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            {/* Hotspots Interativos com destaque sincronizado */}
-            <div className="relative flex-1">
-              {m2Components.map((c) => {
-                const isAutoHighlighted = (cueIndex === 1) || (cueIndex === 2 && (c.id === 1 || c.id === 2))
-                return (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => setM2Hotspot(c.id)}
-                    style={{ top: c.top, left: c.left }}
-                    className={cn(
-                      "pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-black transition-all cursor-pointer shadow-xl",
-                      m2Hotspot === c.id || isAutoHighlighted
-                        ? "bg-[#E10600] text-white ring-2 ring-white scale-110 shadow-[0_0_25px_rgba(225,6,0,0.8)]"
-                        : "bg-black/85 text-zinc-300 border border-white/30 hover:border-[#E10600]"
-                    )}
-                  >
-                    <span className="w-4 h-4 rounded-full bg-white text-black flex items-center justify-center text-[10px] font-black">
-                      {c.id}
-                    </span>
-                    <span className="hidden sm:inline font-bold uppercase">{c.name}</span>
-                  </button>
-                )
-              })}
-            </div>
-
-            {/* Mariana Sync Badge */}
-            {cueIndex === 1 && renderMarianaSyncBadge("01. VISÃO SISTÊMICA", "Sistemas em Harmonia Perfeita", "A velocidade nasce da integração conjunta entre aerodinâmica, pneus, motor, freios e equilíbrio mecânico.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. AJUSTE MILIMÉTRICO", "Sensibilidade Extrema de Acerto", "Mudanças mínimas na asa ou na pressão dos pneus transformam radicalmente a dirigibilidade do monoposto.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. HOMEM E MÁQUINA", "Organismo Único no Limite", "O piloto traduz o comportamento físico do carro para que a engenharia refine o acerto a cada volta.")}
-
-            {/* Info Card Flutuante */}
-            <div className="pointer-events-auto max-w-xl mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-3 shadow-2xl backdrop-blur-md flex items-center justify-between gap-3">
-              <div className="text-left text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-wider block">{activeComp.zone}</span>
-                <span className="font-bold text-white">{activeComp.id}. {activeComp.name}</span>
-                <p className="text-[11px] text-zinc-300 mt-0.5">{activeComp.text}</p>
-              </div>
-              <div className="shrink-0 flex gap-1">
-                {m2Components.map((c) => (
-                  <button
-                    key={c.id}
-                    onClick={() => setM2Hotspot(c.id)}
-                    className={cn(
-                      "w-6 h-6 rounded text-[10px] font-mono font-bold transition-all",
-                      m2Hotspot === c.id ? "bg-[#E10600] text-white" : "bg-white/10 text-zinc-400 hover:text-white"
-                    )}
-                  >
-                    {c.id}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 2: AERODINÂMICA: DOWNFORCE E ARRASTO (27.8s)
-      if (currentScene.visualEffectType === "mod2_aerodynamics") {
-        const cueIndex = audioCurrentTime < 9.0 ? 1 : audioCurrentTime < 18.0 ? 2 : 3
-        const aeroZones = {
-          front_wing: { title: "Asa Dianteira", desc: "Organiza o fluxo de ar inicial e direciona vórtices limpos para o assoalho." },
-          floor: { title: "Assoalho & Difusor", desc: "Gera a maior parte da carga aerodinâmica (downforce) sem produzir arrasto excessivo." },
-          rear_wing: { title: "Asa Traseira", desc: "Pressiona as rodas traseiras para tração em curvas, mas impõe arrasto em retas." },
-        }
-        const activeZone = aeroZones[m2AeroZone]
-
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <svg className="pointer-events-none absolute inset-0 w-full h-full opacity-60 z-10" viewBox="0 0 1000 600" fill="none">
-              <path d="M 50,380 Q 250,360 400,320 T 750,260 T 950,220" stroke={cueIndex === 2 ? "#E10600" : "#00E5FF"} strokeWidth="3" strokeDasharray="8 6" className={!reduceMotion ? "animate-pulse" : ""} />
-              <path d="M 50,420 Q 300,410 500,400 T 800,380 T 950,370" stroke="#00E5FF" strokeWidth="2" strokeDasharray="10 8" />
-              <path d="M 50,450 Q 350,470 650,460 T 950,440" stroke="#E10600" strokeWidth="2" strokeDasharray="6 4" />
-            </svg>
-
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm z-20">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                AERODINÂMICA • DOWNFORCE VS ARRASTO (DRAG)
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              {cueIndex === 1 && (
-                <div className="p-4 rounded-2xl bg-black/80 border border-cyan-500/40 backdrop-blur-md text-center max-w-md shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                    FORÇA VERTICAL DESCENDENTE
-                  </span>
-                  <div className="text-xl font-mono font-black text-white py-1">
-                    DOWNFORCE: PRESSÃO AO SOLO ↓
-                  </div>
-                  <p className="text-xs text-zinc-300">
-                    O ar atua como uma mão invisível empurrando os pneus contra a pista, multiplicando a velocidade nas curvas.
-                  </p>
-                </div>
-              )}
-              {cueIndex === 2 && (
-                <div className="p-4 rounded-2xl bg-black/80 border border-red-500/40 backdrop-blur-md text-center max-w-md shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-red-400 font-bold uppercase tracking-widest block mb-1">
-                    RESISTÊNCIA AO AVANÇO
-                  </span>
-                  <div className="text-xl font-mono font-black text-white py-1">
-                    ARRASTO (DRAG): FORÇA OPOSTA ⮂
-                  </div>
-                  <p className="text-xs text-zinc-300">
-                    Quanto maior a asa, mais aderência nas curvas, porém menor a velocidade máxima atingível nas retas longas.
-                  </p>
-                </div>
-              )}
-              {cueIndex === 3 && (
-                <div className="p-4 rounded-2xl bg-black/80 border border-amber-500/40 backdrop-blur-md text-center max-w-md shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-widest block mb-1">
-                    O DILEMA DA ENGENHARIA
-                  </span>
-                  <div className="text-xl font-mono font-black text-white py-1">
-                    EFICIÊNCIA AERODINÂMICA (L/D)
-                  </div>
-                  <p className="text-xs text-zinc-300">
-                    O segredo é encontrar a carga aerodinâmica exata para ganhar tempo nas curvas sem virar presa fácil nas retas.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. DOWNFORCE", "Aderência em Alta Velocidade", "O ar empurra o carro para baixo, aumentando o atrito dos pneus sem adicionar massa real.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. ARRASTO (DRAG)", "A Barreira Invisível nas Retas", "A resistência do ar freia o monoposto, exigindo compromissos milimétricos de inclinação das asas.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. O COMPROMISSO", "Eficiência Aerodinâmica L/D", "Engenheiros equilibram sustentação negativa e arrasto para o tempo de volta ideal.")}
-
-            <div className="pointer-events-auto max-w-md mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-3 shadow-2xl backdrop-blur-md">
-              <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Áreas do Fluxo</span>
-                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-600 text-white font-black">{m2AeroZone.toUpperCase()}</span>
-              </div>
-              <div className="grid grid-cols-3 gap-1 mb-2">
-                {(["front_wing", "floor", "rear_wing"] as const).map((zone) => (
-                  <button
-                    key={zone}
-                    type="button"
-                    onClick={() => setM2AeroZone(zone)}
-                    className={cn(
-                      "py-1 rounded text-[10px] font-black uppercase text-center transition-all cursor-pointer",
-                      m2AeroZone === zone ? "bg-[#E10600] text-white shadow-md" : "bg-white/10 text-zinc-300 hover:bg-white/20"
-                    )}
-                  >
-                    {zone === "front_wing" ? "Asa Diant." : zone === "floor" ? "Assoalho" : "Asa Tras."}
-                  </button>
-                ))}
-              </div>
-              <p className="text-[11px] text-zinc-300"><strong>{activeZone.title}:</strong> {activeZone.desc}</p>
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 3: PNEUS: O CONTATO COM A PISTA (32.6s)
-      if (currentScene.visualEffectType === "mod2_tires") {
-        const cueIndex = audioCurrentTime < 10.5 ? 1 : audioCurrentTime < 21.0 ? 2 : 3
-        const tiresInfo = {
-          soft: { name: "Macio (Vermelho)", grip: "Máxima (10/10)", life: "Curta (15-20 voltas)", temp: "85°C - 100°C" },
-          medium: { name: "Médio (Amarelo)", grip: "Equilibrada (8/10)", life: "Média (25-35 voltas)", temp: "90°C - 105°C" },
-          hard: { name: "Duro (Branco)", grip: "Moderada (6/10)", life: "Longa (40+ voltas)", temp: "95°C - 110°C" },
-        }
-        const activeTire = tiresInfo[m2TireCompound]
-
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                PNEUS PIRELLI 18\" • JANELA TÉRMICA & COMPOSTOS
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              {cueIndex === 1 && (
-                <div className="p-4 rounded-2xl bg-black/85 border border-amber-500/50 backdrop-blur-md text-center max-w-md shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-widest block mb-1">
-                    TEMPERATURA OPERACIONAL IDEAL
-                  </span>
-                  <div className="text-2xl font-mono font-black text-white py-1">
-                    85°C A 110°C
-                  </div>
-                  <p className="text-xs text-zinc-300">
-                    Pneus frios escorregam sem aderência mecânica; pneus superaquecidos sofrem bolhas (blistering) e degradação instantânea.
-                  </p>
-                </div>
-              )}
-              {cueIndex === 2 && (
-                <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md text-center max-w-lg shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                    TRIPLA ESCOLHA DE SLICKS SECOS
-                  </span>
-                  <div className="grid grid-cols-3 gap-2 py-2">
-                    <div className="p-2 rounded bg-red-950/40 border border-red-500/40 text-red-300 text-xs font-bold">
-                      🔴 MACIO<br/><span className="text-[10px] text-zinc-400">Grip Rápido</span>
-                    </div>
-                    <div className="p-2 rounded bg-yellow-950/40 border border-yellow-500/40 text-yellow-300 text-xs font-bold">
-                      🟡 MÉDIO<br/><span className="text-[10px] text-zinc-400">Versátil</span>
-                    </div>
-                    <div className="p-2 rounded bg-zinc-900 border border-zinc-500/40 text-zinc-300 text-xs font-bold">
-                      ⚪ DURO<br/><span className="text-[10px] text-zinc-400">Resistente</span>
-                    </div>
-                  </div>
-                  <p className="text-xs text-zinc-300">
-                    Compostos macios dão volta rápida na classificação; médios e duros constroem o ritmo das corridas de domingo.
-                  </p>
-                </div>
-              )}
-              {cueIndex === 3 && (
-                <div className="p-4 rounded-2xl bg-black/85 border border-blue-500/50 backdrop-blur-md text-center max-w-md shadow-2xl animate-fade-in">
-                  <span className="text-[10px] font-mono text-blue-400 font-bold uppercase tracking-widest block mb-1">
-                    CONDIÇÕES DE CHUVA
-                  </span>
-                  <div className="flex items-center justify-center gap-3 py-1 text-sm font-mono font-bold text-white">
-                    <span className="px-2 py-1 rounded bg-emerald-950/60 border border-emerald-500/50 text-emerald-300">🟢 INTERMEDIÁRIO (30 L/s)</span>
-                    <span className="px-2 py-1 rounded bg-blue-950/60 border border-blue-500/50 text-blue-300">🔵 FULL WET (85 L/s)</span>
-                  </div>
-                  <p className="text-xs text-zinc-300">
-                    Sulcos profundos na banda de rodagem drenam dezenas de litros de água por segundo para evitar aquaplanagem a 300 km/h.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. JANELA TÉRMICA", "O Ponto de Contato com a Pista", "Pneus frios não geram atrito químico com o asfalto; superaquecidos desmancham em poucas curvas.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. MACIO, MÉDIO E DURO", "Aderência vs Durabilidade", "O pneu mais macio oferece velocidade imediata, mas o melhor pneu é aquele que se adapta à estratégia.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. PISTA MOLHADA", "Drenagem Extrema Contra Aquaplanagem", "Intermediários e pneus de chuva pesada canalizam a água e salvam o carro em condições imprevisíveis.")}
-
-            <div className="pointer-events-auto max-w-md mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-3 shadow-2xl backdrop-blur-md">
-              <div className="flex items-center justify-between gap-1 mb-2">
-                {(["soft", "medium", "hard"] as const).map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    onClick={() => setM2TireCompound(c)}
-                    className={cn(
-                      "flex-1 py-1 rounded text-[10px] font-black uppercase text-center transition-all cursor-pointer",
-                      m2TireCompound === c ? "bg-[#E10600] text-white" : "bg-white/10 text-zinc-300 hover:bg-white/20"
-                    )}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
-              <div className="text-[11px] text-zinc-300 flex justify-between">
-                <span><strong>Composto:</strong> {activeTire.name}</span>
-                <span><strong>Temp:</strong> {activeTire.temp}</span>
-              </div>
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 4: COCKPIT E VOLANTE: O CENTRO DE COMANDO (28.4s)
-      if (currentScene.visualEffectType === "mod2_steering_wheel") {
-        const cueIndex = audioCurrentTime < 9.0 ? 1 : audioCurrentTime < 18.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                VOLANTE MULTIFUNCIONAL • CENTRAL DE COMANDO A 300 KM/H
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-purple-500/40 backdrop-blur-md max-w-lg w-full text-center shadow-[0_0_35px_rgba(168,85,247,0.25)] animate-fade-in">
-                <div className="flex items-center justify-between text-[10px] font-mono text-purple-400 mb-2 border-b border-purple-500/20 pb-1">
-                  <span>TELEMETRIA INTEGRADA</span>
-                  <span>SIMULAÇÃO DE PAINEL DIGITAL</span>
-                </div>
-                <div className="py-2 flex items-center justify-center gap-3 text-xs font-mono font-bold text-white">
-                  <span className={cn("px-2.5 py-1 rounded transition-all", cueIndex === 2 ? "bg-red-600 text-white animate-pulse" : "bg-red-600/30 text-zinc-300")}>
-                    MARCHA: 7
-                  </span>
-                  <span className="px-2.5 py-1 rounded bg-purple-600/30 text-zinc-300">
-                    RPM: 11.850
-                  </span>
-                  <span className={cn("px-2.5 py-1 rounded transition-all", cueIndex === 3 ? "bg-emerald-600 text-white animate-pulse" : "bg-emerald-600/30 text-zinc-300")}>
-                    DELTA: -0.142s
-                  </span>
-                </div>
-                <div className="mt-2 grid grid-cols-2 gap-2 text-[10px] font-mono text-zinc-300">
-                  <div className="p-1.5 rounded bg-white/5 border border-white/10">
-                    BALANÇO DE FREIO: <strong>56.5% F</strong>
-                  </div>
-                  <div className="p-1.5 rounded bg-white/5 border border-white/10">
-                    MAPA ELÉTRICO: <strong>MODE ATTACK</strong>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. COMPUTADOR DE BORDO", "Mais que um Volante de Direção", "Reúne dezenas de controles de telemetria, regulagens de injeção e comunicação constante.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. BORBOLETAS & FREIOS", "Paddles de Marcha e Balanço", "Trocas sequenciais sem tirar as mãos do volante e ajuste fino do equilíbrio de frenagem entre eixos.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. RÁDIO & DISPLAY CENTRAL", "Comunicação e Tempos de Volta", "O piloto monitora tempos delta, marcha e rotação enquanto recebe instruções táticas do engenheiro.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              💡 <em>Exemplo ilustrativo: botões rotativos permitem ao piloto alterar centenas de parâmetros dinâmicos curva por curva.</em>
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 5: FREIOS: CONTROLAR A VELOCIDADE (25.8s)
-      if (currentScene.visualEffectType === "mod2_brakes") {
-        const cueIndex = audioCurrentTime < 8.5 ? 1 : audioCurrentTime < 17.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                FREIOS DE CARBONO-CARBONO • ENERGIA CINÉTICA EM CALOR
-              </span>
-              <span className="text-[10px] font-mono text-orange-400 bg-orange-950/60 border border-orange-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-orange-500/40 backdrop-blur-md max-w-md w-full text-center shadow-[0_0_35px_rgba(249,115,22,0.25)] animate-fade-in">
-                <span className="text-[10px] font-mono text-orange-400 font-bold uppercase tracking-widest block mb-1">
-                  PICO TÉRMICO SOB DESACELERAÇÃO
-                </span>
-                <div className="py-2 text-3xl font-mono font-black text-orange-400">
-                  {cueIndex === 1 ? "1.000°C" : cueIndex === 2 ? "FLUXO DE DUTOS" : "ESTABILIDADE > 5G"}
-                </div>
-                <p className="text-xs text-zinc-300">
-                  {cueIndex === 1 && "Os discos de fibra de carbono brilham incandescentes ao converter o movimento violento em calor em menos de dois segundos."}
-                  {cueIndex === 2 && "Dutos de refrigeração aerodinâmicos canalizam o ar limpo diretamente para as pinças e discos para evitar colapso térmico."}
-                  {cueIndex === 3 && "O piloto regula a distribuição de pressão entre as rodas dianteiras e traseiras para manter a trajetória perfeita na entrada da curva."}
-                </p>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. CALOR INCANDESCENTE", "Desaceleração a Mais de 1.000°C", "A energia cinética é convertida em calor brutal em poucos metros sob forças de até 5G.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. REFRIGERAÇÃO ATIVA", "Dutos de Resfriamento", "O ar frio é conduzido diretamente aos tambores de roda para manter os componentes na faixa ideal.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. ESTABILIDADE DE ENTRADA", "Equilíbrio entre Eixos Dianteiro e Traseiro", "Evita o travamento das rodas traseiras antes do piloto apontar para o ápice da curva.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-400">
-              Discos em fibra de carbono trabalham na faixa de 300°C a 1.000°C.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 6: UNIDADE DE POTÊNCIA HÍBRIDA 2026 (27.2s)
-      if (currentScene.visualEffectType === "mod2_power_unit") {
-        const cueIndex = audioCurrentTime < 9.0 ? 1 : audioCurrentTime < 18.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                UNIDADE DE POTÊNCIA HÍBRIDA 2026 • EFICIÊNCIA SUSTENTÁVEL
-              </span>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-emerald-500/40 backdrop-blur-md max-w-lg w-full text-center shadow-[0_0_35px_rgba(16,185,129,0.25)] animate-fade-in">
-                <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                  CONFIGURAÇÃO OFICIAL 2026 (SEM MGU-H)
-                </span>
-                <div className="grid grid-cols-2 gap-3 py-2">
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 1 ? "bg-emerald-950/60 border-emerald-400" : "bg-black/60 border-white/10")}>
-                    <span className="text-[10px] font-mono text-zinc-400 block">PARTE TÉRMICA</span>
-                    <strong className="text-sm text-white">V6 TURBO 1.6L</strong>
-                    <span className="text-[10px] text-emerald-300 block mt-1">100% Combustível Sustentável</span>
-                  </div>
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 2 || cueIndex === 3 ? "bg-cyan-950/60 border-cyan-400" : "bg-black/60 border-white/10")}>
-                    <span className="text-[10px] font-mono text-zinc-400 block">PARTE ELÉTRICA</span>
-                    <strong className="text-sm text-white">MGU-K 350 KW</strong>
-                    <span className="text-[10px] text-cyan-300 block mt-1">~470 cv elétricos instantâneos</span>
-                  </div>
-                </div>
-                <div className="text-xs text-zinc-300 mt-1">
-                  Potência combinada superior a 1.000 cv com divisão equilibrada de 50% combustão e 50% energia elétrica.
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. COMBUSTÃO SUSTENTÁVEL", "Motor V6 Turbo 1.6L Eficiente", "Alimentado integralmente por combustíveis 100% sustentáveis e não fósseis.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. RECUPERAÇÃO CINÉTICA", "MGU-K Elétrico de 350 kW", "Recupera energia cinética nas frenagens, armazenando-a em bateria de alto rendimento.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. ENTREGA ESTRATÉGICA", "Potência Instantânea Extra", "Liberação tática de energia para ultrapassagens e retomadas violentas nas saídas de curva.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-[10px] font-mono text-zinc-400">
-              Regulamento 2026: O sistema MGU-H foi totalmente eliminado, simplificando os custos e amplificando o MGU-K.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 7: ACERTO DO CARRO E ESTRATÉGIA (26.8s)
-      if (currentScene.visualEffectType === "mod2_setup_strategy") {
-        const cueIndex = audioCurrentTime < 9.0 ? 1 : audioCurrentTime < 17.5 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                ACERTO MECÂNICO VS ESTRATÉGIA DE CORRIDA
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  CONFIGURAÇÕES POR CIRCUITO
-                </span>
-                <div className="grid grid-cols-2 gap-3 py-2 text-left">
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 1 ? "bg-red-950/50 border-red-500 shadow-md" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">RETAS LONGAS (MONZA)</strong>
-                    <p className="text-[11px] text-zinc-300 mt-1">Asas baixas, mínimo arrasto, foco em velocidade final superior a 350 km/h.</p>
-                  </div>
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 2 ? "bg-cyan-950/50 border-cyan-500 shadow-md" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">TRAVADO (MÔNACO)</strong>
-                    <p className="text-[11px] text-zinc-300 mt-1">Asas altas, máxima sustentação negativa para colar os pneus nas curvas lentas.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. BAIXO ARRASTO", "Pistas de Velocidade Pura", "As equipes reduzem as asas para cortar o arrasto e voar nas retas infinitas.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. MÁXIMO DOWNFORCE", "Circuitos Urbanos e Sinuosos", "Aumentam os flaps para garantir aderência em curvas apertadas onde a velocidade de ponta é secundária.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. ACERTO VS ESTRATÉGIA", "A Diferença Conceitual", "O acerto prepara a máquina na garagem antes da largada; a estratégia decide as paradas e pneus durante a prova.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              A engenharia adapta o carro às características topográficas de cada país.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 8: TUDO TRABALHANDO JUNTO (20.5s)
-      if (currentScene.visualEffectType === "mod2_full_integration") {
-        const cueIndex = audioCurrentTime < 10.0 ? 1 : 2
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 02 CONCLUÍDO • SÍNTESE DA MÁQUINA
-              </span>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
-                PARABÉNS!
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/90 border border-emerald-500/50 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                  DOMÍNIO COMPLETO
-                </span>
-                <div className="text-xl font-mono font-black text-white py-1">
-                  A MÁQUINA DE FÓRMULA 1
-                </div>
-                <p className="text-xs text-zinc-300">
-                  Você compreendeu como aerodinâmica, pneus, volante, freios, unidade de potência e acerto formam um só organismo veloz no limite da física.
-                </p>
-                <div className="mt-3">
-                  <button
-                    type="button"
-                    onClick={() => setViewStage("quiz")}
-                    className="pointer-events-auto w-full py-2.5 px-4 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-lg"
-                  >
-                    Fazer o Quiz do Módulo 2 (10 Perguntas)
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. CONEXÃO TOTAL", "A Harmonia dos Sistemas", "A velocidade é a soma equilibrada de todas as áreas de engenharia trabalhando em sincronia.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. PILOTO E MÁQUINA", "No Limite da Física", "Agora que você conhece a máquina, avance para o quiz e teste seu conhecimento!")}
-
-            <div className="h-4" />
-          </div>
-        )
-      }
+    if (currentScene.visualEffectType === "vintage_1950") {
+      const cueIndex = audioCurrentTime < 7.5 ? 1 : audioCurrentTime < 15.5 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("O NASCIMENTO DA F1 • 1950", "SILVERSTONE")}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Origem dos Monopostos", "Carros clássicos sem asas ou eletrônica")}
+          {cueIndex === 2 && renderMarianaSyncBadge("O Primeiro Mundial FIA", "13 de maio de 1950 em Silverstone")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Evolução Global", "75 anos de coragem e velocidade")}
+        </div>
+      )
     }
 
-
     // ------------------------------------------------------------------------
-    // MÓDULO 3: DENTRO DA CORRIDA (APRENDA A ACOMPANHAR UMA TRANSMISSÃO)
+    // MÓDULO 1 • CENA 3: parallax_track
     // ------------------------------------------------------------------------
-    if (activeModuleId === 3) {
-      // CENA 1: O FIM DE SEMANA DE F1 (25.0s)
-      if (currentScene.visualEffectType === "mod3_weekend_format") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 03 • O FORMATO DO FIM DE SEMANA DE GP
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  CRONOGRAMA OFICIAL DA ETAPA
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-cyan-950/60 border-cyan-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-cyan-400 block font-bold">SEXTA-FEIRA</span>
-                    <strong className="text-xs text-white block">TL1 & TL2</strong>
-                    <span className="text-[9px] text-zinc-300">Treinos livres de adaptação e acerto</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-amber-950/60 border-amber-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-amber-400 block font-bold">SÁBADO</span>
-                    <strong className="text-xs text-white block">TL3 & QUALI</strong>
-                    <span className="text-[9px] text-zinc-300">Definição do grid de largada oficial</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-red-950/60 border-red-500 scale-102" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-red-400 block font-bold">DOMINGO</span>
-                    <strong className="text-xs text-white block">GRANDE PRÊMIO</strong>
-                    <span className="text-[9px] text-zinc-300">A corrida principal valendo 25 pontos</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. SEXTA DE TREINOS", "TL1 e TL2 em Pista Aberta", "As equipes rodam centenas de voltas para calibrar alturas, asas e pressão de pneus.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. SÁBADO DECISIVO", "TL3 e a Disputa da Classificação", "A pressão sobe no sábado com a busca pela volta perfeita na disputa da pole position.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. O GRANDE PRÊMIO", "Domingo de Corrida & Formato Sprint", "A prova máxima de 305 km onde estratégia e ritmo de corrida coroam o vencedor.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Alternativa Sprint: TL1 único na sexta, corrida Sprint curta no sábado e GP no domingo.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 2: TREINOS LIVRES: A PREPARAÇÃO (25.0s)
-      if (currentScene.visualEffectType === "mod3_practice_analysis") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                TREINOS LIVRES • SIMULAÇÃO DE CORRIDA VS CLASSIFICAÇÃO
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  COLETA TÉCNICA DE DADOS
-                </span>
-                <div className="grid grid-cols-2 gap-3 py-2 text-left">
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 1 ? "bg-purple-950/50 border-purple-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">RITMO DE CLASSIFICAÇÃO</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">Tanque quase vazio (10 kg), pneus macios novos e potência máxima liberada.</span>
-                  </div>
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 2 || cueIndex === 3 ? "bg-emerald-950/50 border-emerald-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">LONG RUN (RITMO DE PROVA)</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">Tanque pesado (100 kg), pneus usados e monitoramento minucioso do desgaste.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O CRONÔMETRO PURO", "A Ilusão da Volta Mais Rápida", "Liderar o treino livre nem sempre significa ser o mais veloz no domingo.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. TANQUE CHEIO (LONG RUN)", "Simulando as Condições da Corrida", "Equipes rodam com peso elevado para medir a degradação dos pneus volta a volta.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. TESTE DE COMPONENTES", "Asas Novas e Mapas de Injeção", "Tinta aerodinâmica (Flow-Vis) e grades pitot analisam o comportamento do fluxo real.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              💡 Os treinos servem para encontrar o balanço mecânico antes do regime de parque fechado.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 3: CLASSIFICAÇÃO E GRID DE LARGADA (25.0s)
-      if (currentScene.visualEffectType === "mod3_qualifying_grid") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                CLASSIFICAÇÃO • SISTEMA ELIMINATÓRIO Q1, Q2 E Q3
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  ESTRUTURA DA SESSÃO DE SÁBADO
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-red-950/60 border-red-500" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-red-400 block font-bold">Q1 (18 MIN)</span>
-                    <strong className="text-xs text-white block">20 PILOTOS</strong>
-                    <span className="text-[9px] text-zinc-300">Elimina os 5 mais lentos (P16 a P20)</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-amber-950/60 border-amber-400" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-amber-400 block font-bold">Q2 (15 MIN)</span>
-                    <strong className="text-xs text-white block">15 PILOTOS</strong>
-                    <span className="text-[9px] text-zinc-300">Elimina mais 5 carros (P11 a P15)</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-emerald-950/60 border-emerald-400" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-emerald-400 block font-bold">Q3 (12 MIN)</span>
-                    <strong className="text-xs text-white block">TOP 10 FINAL</strong>
-                    <span className="text-[9px] text-zinc-300">Batalha decisiva pela Pole Position</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. CORTE NO Q1", "Eliminação dos 5 Últimos", "Todos os 20 carros na pista; os cinco tempos mais lentos fecham o fundo do grid.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O FILTRO DO Q2", "A Fronteira do Top 10", "Quinze pilotos disputam dez vagas; quem fica entre P11 e P15 larga no meio do pelotão.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. A POLE NO Q3", "A Volta Perfeita", "Dez carros em busca do limite absoluto em busca do primeiro lugar de largada.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Pole Position: Largada na primeira posição da reta com pista limpa à frente.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 4: A LARGADA: CINCO LUZES FIA (25.0s)
-      if (currentScene.visualEffectType === "mod3_start_sequence") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                PROCEDIMENTO OFICIAL DE LARGADA FIA • APAGAMENTO DAS 5 LUZES
-              </span>
-              <span className="text-[10px] font-mono text-red-500 bg-red-950/60 border border-red-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex flex-col items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/90 border border-white/20 backdrop-blur-md max-w-md w-full text-center shadow-2xl">
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  {[1, 2, 3, 4, 5].map((light) => {
-                    const isOn = cueIndex === 2 || (cueIndex === 1 && light <= 3)
-                    return (
-                      <div key={light} className="flex flex-col items-center gap-1 p-2 rounded-lg bg-zinc-900 border border-white/10">
-                        <div className={cn("w-5 h-5 rounded-full border transition-all duration-300", isOn ? "bg-[#E10600] border-red-500 shadow-[0_0_15px_#E10600]" : "bg-zinc-800 border-zinc-700")} />
-                        <div className="w-3 h-3 rounded-full bg-zinc-800 border border-zinc-700" />
-                      </div>
-                    )
-                  })}
-                </div>
-                <div className="text-sm font-mono font-bold text-white uppercase">
-                  {cueIndex === 1 && "Alinhamento nos Colchetes do Grid"}
-                  {cueIndex === 2 && "5 Luzes Vermelhas Acesas — Tensão Máxima!"}
-                  {cueIndex === 3 && "● LUZES APAGADAS! LARGADA AUTORIZADA! ●"}
-                </div>
-                <p className="text-[11px] text-zinc-300 mt-1">
-                  O sinal oficial regulamentar da FIA é a extinção simultânea das 5 luzes. Nunca existe luz verde no pórtico de largada da F1.
-                </p>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. GRID ALINHADO", "Volta de Apresentação Finalizada", "Os vinte monopostos encaixam-se nos colchetes pintados no asfalto com freios e pneus aquecidos.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. AS 5 LUZES ACENDEM", "Sequência de 1 em 1 Segundo", "Motores em rotação máxima, embreagens acionadas e tempo de reação milimétrico prestes a ser testado.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. LIGHTS OUT!", "O Apagamento Simultâneo", "A largada é dada exatamente quando as luzes apagam após um intervalo aleatório de 1 a 3 segundos.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Regulamento Esportivo FIA: Qualquer movimento antes do apagamento é punido por queima de largada (jump start).
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 5: A CORRIDA: TORRE, GAP E INT (25.0s)
-      if (currentScene.visualEffectType === "mod3_race_tower") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                TRANSMISSÃO • TIMING TOWER, COLUNA GAP E COLUNA INT
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/90 border border-white/20 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <div className="flex justify-between pb-1.5 mb-2 border-b border-white/10 text-[10px] text-zinc-400">
-                  <span>POS / PILOTO</span>
-                  <span>GAP (LÍDER)</span>
-                  <span>INT (FRENTE)</span>
-                </div>
-                <div className="space-y-1 text-left">
-                  <div className="flex justify-between items-center p-1.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold">
-                    <span>1. VER (RED BULL)</span>
-                    <span>LÍDER</span>
-                    <span>INTERVALO</span>
-                  </div>
-                  <div className={cn("flex justify-between items-center p-1.5 rounded border transition-all", cueIndex === 2 ? "bg-cyan-950/60 border-cyan-400 text-white font-black scale-102" : "bg-black/40 border-white/5 text-zinc-300")}>
-                    <span>2. NOR (MCLAREN)</span>
-                    <span className="text-cyan-400">+1.842s</span>
-                    <span className="text-cyan-400">+1.842s</span>
-                  </div>
-                  <div className={cn("flex justify-between items-center p-1.5 rounded border transition-all", cueIndex === 3 ? "bg-red-950/60 border-red-500 text-white font-black scale-102" : "bg-black/40 border-white/5 text-zinc-300")}>
-                    <span>3. LEC (FERRARI)</span>
-                    <span>+2.410s</span>
-                    <span className="text-red-400">+0.568s ⚡</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. A TORRE LATERAL", "O Painel de Bordo do Telespectador", "A barra esquerda da transmissão informa posições, trocas de pneus e intervalos em tempo real.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O GAP (DIFERENÇA)", "Distância para o Líder da Prova", "Mostra a distância em segundos acumulada entre qualquer piloto e a primeira colocação.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. O INT (INTERVALO)", "Diferença para o Carro da Frente", "Quando o INT é menor que 1 segundo, o piloto está na zona direta de ataque e perseguição.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              INT &lt; 1.0s abre a oportunidade tática de aproximação aerodinâmica e ultrapassagem.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 6: PIT STOPS E ESTRATÉGIA (25.0s)
-      if (currentScene.visualEffectType === "mod3_pitstop_strategy") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                BOXES • A CIRURGIA DO PIT STOP EM 2 SEGUNDOS
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  PARADA NOS BOXES
-                </span>
-                <div className="py-2 text-3xl font-mono font-black text-white">
-                  {cueIndex === 1 ? "2.0s A 2.5s" : cueIndex === 2 ? "REGRA DE 2 COMPOSTOS" : "TEMPO DE PIT LANE: ~22s"}
-                </div>
-                <p className="text-xs text-zinc-300">
-                  {cueIndex === 1 && "Mais de 20 mecânicos sincronizados trocam os quatro pneus em cerca de dois segundos."}
-                  {cueIndex === 2 && "Em corrida com pista seca, todo piloto é obrigado a utilizar pelo menos dois compostos diferentes."}
-                  {cueIndex === 3 && "O tempo total perdido percorrendo o pit lane com limitador de velocidade é de 20 a 25 segundos."}
-                </p>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. PRECISÃO CIRÚRGICA", "Troca em Poucos Batimentos", "Uma porca única central e pistolas pneumáticas de alta rotação retiram e fixam a roda em instantes.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. REGULAMENTO DE PNEUS", "Obrigatoriedade de Dois Compostos", "Regra desportiva que força pelo menos uma troca de pneus durante o Grande Prêmio.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. CUSTO DO PIT LANE", "Janela de Retorno no Tráfego", "A equipe precisa calcular a volta de saída para evitar tráfego de carros mais lentos.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Pit stops vencem corridas: um ganho de 0.5s nos boxes equivale a três voltas de ataque na pista.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 7: BANDEIRAS E SAFETY CAR (25.0s)
-      if (currentScene.visualEffectType === "mod3_flags_safety_car") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                SEGURANÇA • SINALIZAÇÃO DE BANDEIRAS & SAFETY CAR
-              </span>
-              <span className="text-[10px] font-mono text-amber-400 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-widest block mb-1">
-                  CÓDIGO DE SINALIZAÇÃO DA FIA
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-amber-950/60 border-amber-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-amber-300 block">🟨 AMARELA</strong>
-                    <span className="text-[10px] text-zinc-300">Perigo à frente. Proibido ultrapassar e velocidade reduzida.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-orange-950/60 border-orange-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-orange-300 block">🚨 SAFETY CAR</strong>
-                    <span className="text-[10px] text-zinc-300">Carro físico lidera o pelotão para neutralizar a prova.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-red-950/60 border-red-500" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-red-300 block">🟥 VERMELHA</strong>
-                    <span className="text-[10px] text-zinc-300">Corrida interrompida por graves riscos climáticos ou acidentes.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. BANDEIRAS AMARELA & VERDE", "Comunicação Visual Imediata", "Amarela exige cautela e proíbe ultrapassagens; verde restabelece corrida livre.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. SC & VIRTUAL SAFETY CAR", "Neutralização de Ritmo", "O Safety Car agrupa o pelotão; o VSC impõe uma velocidade delta controlada pelo volante.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. VERMELHA & AZUL", "Interrupção e Retardatários", "Bandeira vermelha recolhe os carros ao pit lane; azul ordena ceder passagem ao líder.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Painéis luminosos LED instalados ao redor da pista reproduzem as bandeiras eletronicamente.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 8: BANDEIRADA, RESULTADO E PONTOS (25.0s)
-      if (currentScene.visualEffectType === "mod3_finish_championship") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 03 CONCLUÍDO • PÓDIO E PONTUAÇÃO OFICIAL FIA
-              </span>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
-                PARABÉNS!
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/90 border border-emerald-500/50 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                  TABELA OFICIAL DE PONTUAÇÃO FIA
-                </span>
-                <div className="grid grid-cols-5 gap-1 py-2 font-mono text-[10px] font-bold text-white">
-                  <div className="p-1 rounded bg-amber-500/20 border border-amber-400 text-amber-300">1º: 25 pts</div>
-                  <div className="p-1 rounded bg-zinc-700/40 border border-zinc-400">2º: 18 pts</div>
-                  <div className="p-1 rounded bg-amber-800/40 border border-amber-700">3º: 15 pts</div>
-                  <div className="p-1 rounded bg-white/5 border border-white/10">4º: 12 pts</div>
-                  <div className="p-1 rounded bg-white/5 border border-white/10">5º: 10 pts</div>
-                  <div className="p-1 rounded bg-white/5 border border-white/10">6º: 8 pts</div>
-                  <div className="p-1 rounded bg-white/5 border border-white/10">7º: 6 pts</div>
-                  <div className="p-1 rounded bg-white/5 border border-white/10">8º: 4 pts</div>
-                  <div className="p-1 rounded bg-white/5 border border-white/10">9º: 2 pts</div>
-                  <div className="p-1 rounded bg-white/5 border border-white/10">10º: 1 pt</div>
-                </div>
-                <div className="mt-3">
-                  <button
-                    type="button"
-                    onClick={() => setViewStage("quiz")}
-                    className="pointer-events-auto w-full py-2.5 px-4 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-lg"
-                  >
-                    Fazer o Quiz do Módulo 3 (10 Perguntas)
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. A BANDEIRA QUADRICULADA", "A Chegada Gloriosa", "Agitada na linha de chegada para saudar o vencedor dos mais de 300 km de disputa.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. PONTOS DO 1º AO 10º", "A Tabela Oficial da FIA", "25 pontos para a vitória descendo progressivamente até 1 ponto para o décimo colocado.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. OS DOIS MUNDIAIS", "Pilotos e Construtores", "Cada ponto alimenta a glória individual do piloto e a premiação milionária da sua equipe.")}
-
-            <div className="h-4" />
-          </div>
-        )
-      }
+    if (currentScene.visualEffectType === "parallax_track") {
+      const cueIndex = audioCurrentTime < 6.0 ? 1 : audioCurrentTime < 12.0 ? 2 : audioCurrentTime < 18.0 ? 3 : 4
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("O SIGNIFICADO DA F1", "REGULAMENTOS FIA")}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A 'Fórmula'", "Regras técnicas e teto orçamentário iguais para todos")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Categoria Rainha", "Monopostos no topo da pirâmide sob forças de até 5G")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Bastidores & Pit Stops", "Paradas de 2 segundos conectadas ao pit wall")}
+          {cueIndex === 4 && renderMarianaSyncBadge("Dois Campeonatos", "Mundial de Pilotos e Construtores disputados em paralelo")}
+        </div>
+      )
     }
 
-
     // ------------------------------------------------------------------------
-    // MÓDULO 4: A MENTE POR TRÁS DA CORRIDA: ESTRATÉGIA, PNEUS E BOXES
+    // MÓDULO 1 • CENA 4: machine_hotspots
     // ------------------------------------------------------------------------
-    if (activeModuleId === 4) {
-      // CENA 1: A ESTRATÉGIA COMEÇA ANTES DA LARGADA (25.0s)
-      if (currentScene.visualEffectType === "mod4_roles_strategy") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 04 • QUEM DECIDE A ESTRATÉGIA NO PIT WALL
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  O TRIÂNGULO DA DECISÃO TÁTICA
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-red-950/60 border-red-500 scale-102" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-red-400 block font-bold">O PILOTO</span>
-                    <strong className="text-xs text-white block">Sente a Pista</strong>
-                    <span className="text-[9px] text-zinc-300">Feedback da aderência da borracha e desgaste curva a curva.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-cyan-950/60 border-cyan-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-cyan-400 block font-bold">O ENGENHEIRO</span>
-                    <strong className="text-xs text-white block">A Voz no Rádio</strong>
-                    <span className="text-[9px] text-zinc-300">Transmite ordens técnicas, deltas de tempo e planos de parada.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-purple-950/60 border-purple-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-purple-400 block font-bold">ESTRATEGISTAS</span>
-                    <strong className="text-xs text-white block">Muro e Fábrica</strong>
-                    <span className="text-[9px] text-zinc-300">Simulam milhões de variáveis e janelas ideais de pit stop.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O FEEDBACK DO PILOTO", "A Sensibilidade ao Volante", "O piloto sente a aderência na ponta dos dedos e alerta a equipe sobre a perda de rendimento.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. A VOZ NO RÁDIO", "O Engenheiro de Corrida", "Traduz as angústias do piloto em parâmetros técnicos e deltas matemáticos de volta.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. OS ESTRATEGISTAS", "Simulações no Pit Wall e Fábrica", "Supercomputadores calculam a probabilidade de vitória para cada plano de corrida.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              O plano mais rápido na teoria pode falhar se o carro cair no tráfego após a parada.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 2: A ESCOLHA DOS PNEUS E DEGRADAÇÃO (25.0s)
-      if (currentScene.visualEffectType === "mod4_tire_choice_sim") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                ESTRATÉGIA DE PNEUS • DESGASTE MECÂNICO VS DEGRADAÇÃO TÉRMICA
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  CICLO DE VIDA DA BORRACHA
-                </span>
-                <div className="grid grid-cols-2 gap-3 py-2 text-left">
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 1 ? "bg-amber-950/50 border-amber-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">DESGASTE FÍSICO</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">A perda milimétrica da camada externa de borracha pelo atrito contínuo no asfalto.</span>
-                  </div>
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 2 || cueIndex === 3 ? "bg-red-950/50 border-red-500" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">DEGRADAÇÃO TÉRMICA</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">O superaquecimento interno da carcaça do pneu causando perda súbita de aderência (The Cliff).</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. A GAMA PIRELLI (C1 A C5)", "A Escolha de Três Compostos", "A fabricante escolhe três compostos seguidos para cada GP: duro, médio e macio.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. DESGASTE VS DEGRADAÇÃO", "A Perda Química de Aderência", "O calor excessivo desestrutura as moléculas da borracha muito antes de o pneu ficar liso.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. A FALÉSIA (THE CLIFF)", "Queda Abrupta de Performance", "O momento em que os tempos de volta despencam 2 a 3 segundos de uma volta para outra.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              💡 Gerenciar pneus significa poupá-los nos apoios laterais sem abrir mão do ritmo de prova.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 3: A JANELA DO PIT STOP (25.0s)
-      if (currentScene.visualEffectType === "mod4_pitstop_timing_calc") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                JANELA DE BOXES • CLEAN AIR (AR LIMPO) VS DIRTY AIR (TRÁFEGO)
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  CÁLCULO DE REINSERÇÃO NA PISTA
-                </span>
-                <div className="py-2 text-2xl font-mono font-black text-white">
-                  {cueIndex === 1 ? "JANELA DE ~22 SEGUNDOS" : cueIndex === 2 ? "AR LIMPO (CLEAN AIR)" : "ORDEM: BOX, BOX, BOX!"}
-                </div>
-                <p className="text-xs text-zinc-300">
-                  {cueIndex === 1 && "Entrar e sair do pit lane consome um tempo fixo de 20 a 25 segundos no cronômetro da corrida."}
-                  {cueIndex === 2 && "Parar e retornar atrás de um carro mais lento destrói a vantagem do pneu novo por superaquecimento no ar sujo."}
-                  {cueIndex === 3 && "O estrategista só chama o piloto aos boxes quando existe um buraco livre de tráfego para a volta de saída."}
-                </p>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O CUSTO DO PIT LANE", "O Delta Temporal da Parada", "Durante o pit stop, os adversários na pista percorrem mais de 1,5 km a velocidade máxima.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O VALOR DO AR LIMPO", "Clean Air para o Pneu Novo", "Em ar limpo, o piloto consegue extrair 100% da aderência sem cozinhar a borracha no vácuo de rivais.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. A CHAMADA DECISIVA", "Box, Box, Box!", "A ordem pelo rádio ocorre no momento exato em que a janela de tráfego está perfeitamente limpa.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Tráfego na volta de saída (out-lap) é o maior inimigo de uma boa estratégia de paradas.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 4: UNDERCUT VS OVERCUT (25.0s)
-      if (currentScene.visualEffectType === "mod4_safety_car_rain") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                DUELO TÁTICO • UNDERCUT (PARAR ANTES) VS OVERCUT (PARAR DEPOIS)
-              </span>
-              <span className="text-[10px] font-mono text-red-500 bg-red-950/60 border border-red-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  MECÂNICA DA ULTRAPASSAGEM NOS BOXES
-                </span>
-                <div className="grid grid-cols-2 gap-3 py-2 text-left">
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 1 ? "bg-red-950/60 border-red-500 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">UNDERCUT (PARAR ANTES)</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">O piloto para 1 ou 2 voltas antes do rival. Com pneus novos, crava a volta mais rápida e assume a frente quando o rival para.</span>
-                  </div>
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 2 || cueIndex === 3 ? "bg-cyan-950/60 border-cyan-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">OVERCUT (PARAR DEPOIS)</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">Fica na pista com pneus velhos em ar limpo enquanto o rival pega tráfego na saída dos boxes ou sofre para aquecer pneus frios.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O UNDERCUT CLÁSSICO", "A Velocidade do Pneu Novo", "Parar antes antecipa o ritmo alto da borracha fresca para ganhar a posição sem briga na pista.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O OVERCUT PACIENTE", "Estender o Stint em Ar Limpo", "Funciona quando o adversário pega carros lentos na saída dos boxes ou em pistas onde o pneu novo demora a aquecer.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. A DECISÃO DO MURO", "Leitura da Pista em Fração de Segundo", "Estrategistas monitoram o cronômetro para antecipar ou atrasar a parada conforme os rivais.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              O undercut é a manobra de ultrapassagem mais poderosa e frequente na era contemporânea da F1.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 5: COMUNICAÇÃO PELO RÁDIO E PIT WALL (25.0s)
-      if (currentScene.visualEffectType === "mod4_telemetry_radio_data") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                COMUNICAÇÃO DE RÁDIO • PLANO A, PLANO B E CÓDIGOS TÁTICOS
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-purple-500/40 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <div className="text-[10px] text-purple-400 uppercase tracking-widest mb-2 border-b border-purple-500/20 pb-1">
-                  MENSAGEM DE ÁUDIO NO COCKPIT
-                </div>
-                <div className="p-3 rounded-xl bg-purple-950/30 border border-purple-500/30 text-white space-y-1.5 text-left">
-                  <div className="text-zinc-400 text-[10px]">ENGENHEIRO (PIT WALL):</div>
-                  <div className="text-emerald-400 font-bold">\"Radio check. Mode Push for 2 laps. Plan B is ready.\"</div>
-                  <div className="text-zinc-400 text-[10px] pt-1">PILOTO (COCKPIT):</div>
-                  <div className="text-amber-300 font-bold">\"Copy that. Front tires feel good. Let\'s extend!\"</div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. CÓDIGOS ESTRATÉGICOS", "Planos A, B e C no Rádio", "As equipes utilizam nomenclaturas codificadas para despistar os rivais que escutam a transmissão.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. MENSAGENS OBJETIVAS", "Gestão Sem Distração a 300 km/h", "O engenheiro fala apenas em trechos de reta para não perturbar a concentração nas frenagens.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. CONFIANÇA MÚTUA", "A Simbiose que Ganha Provas", "A decisão final é um pacto entre os dados do muro e a sensação física de aderência do piloto.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Todas as transmissões de rádio entre equipe e piloto são abertas e monitoradas pela FIA.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 6: TELEMETRIA E DADOS PREDITIVOS (25.0s)
-      if (currentScene.visualEffectType === "mod4_alternate_plans") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                TELEMETRIA DE RITMO • MODELOS PREDITIVOS EM TEMPO REAL
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  CURVA DE DEGRADAÇÃO PREVISTA
-                </span>
-                <div className="p-3 rounded-xl bg-black/60 border border-white/10 text-left space-y-2">
-                  <div className="flex justify-between items-center text-xs text-zinc-300">
-                    <span>VOLTA 1 A 15 (MACIO):</span>
-                    <span className="text-emerald-400 font-bold">1:21.400 (Rápido)</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs text-zinc-300">
-                    <span>VOLTA 16 A 25 (DEGRADAÇÃO):</span>
-                    <span className="text-yellow-400 font-bold">1:22.250 (+0.850s)</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs text-zinc-300">
-                    <span>VOLTA 26+ (THE CLIFF):</span>
-                    <span className="text-red-400 font-bold">1:24.100 (+2.700s) ⚠️</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O RITMO DELTA", "Monitoramento Volta a Volta", "Engenheiros acompanham a curva de tempo em busca dos primeiros sinais de perda de aderência.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. MODELAGEM POR IA", "Simulação de Milhões de Cenários", "Modelos matemáticos prevêem em que posição exata o carro retornará à pista após o pit stop.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. REAÇÃO RÁPIDA", "Mudança de Plano Instantânea", "Se a degradação for menor que o esperado, a equipe estende o stint para fazer menos paradas.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              A matemática moderna permite antecipar o momento exato em que a borracha deixará de ser competitiva.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 7: QUANDO AS CONDIÇÕES MUDAM (25.0s)
-      if (currentScene.visualEffectType === "mod4_strategist_challenge") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                IMPREVISTOS • SAFETY CAR SURPRESA E AMEAÇA DE CHUVA
-              </span>
-              <span className="text-[10px] font-mono text-amber-400 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-amber-500/40 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-widest block mb-1">
-                  GESTÃO DE RISCO EM TEMPO REAL
-                </span>
-                <div className="grid grid-cols-2 gap-3 py-2 text-left">
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 1 ? "bg-amber-950/60 border-amber-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">PARADA SOB SAFETY CAR</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">O pelotão anda lento, cortando o custo temporal do pit stop pela metade (de 22s para ~11s de perda líquida).</span>
-                  </div>
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 2 || cueIndex === 3 ? "bg-blue-950/60 border-blue-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">O DILEMA DA CHUVA</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">Trocar para intermediários antes da chuva desmancha os pneus na pista seca; demorar demais causa aquaplanagem fatal.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O PIT STOP COM DESCONTO", "A Vantagem do Safety Car", "Trocar pneus durante a neutralização economiza tempo precioso em relação aos rivais.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O DILEMA DOS INTERS", "Chuva Iminente no Radar", "O radar acusa chuva em cinco voltas: estender com slick ou arriscar a troca antecipada?")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. AGILIDADE MENTAL", "A Decisão de Milissegundos", "Estrategistas campeões destacam-se pela coragem de reescrever todo o plano no calor do caos.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              💡 Na Fórmula 1, o plano perfeito dura apenas até a primeira surpresa climática ou bandeira amarela.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 8: PENSAMENTO ESTRATÉGICO FINAL (25.0s)
-      if (currentScene.visualEffectType === "mod4_strategic_thinking_summary") {
-        const cueIndex = audioCurrentTime < 10.0 ? 1 : 2
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 04 CONCLUÍDO • O XADREZ A MAIS DE 300 KM/H
-              </span>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
-                PARABÉNS!
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/90 border border-emerald-500/50 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                  VISÃO COMPLETA DE ESTRATÉGIA
-                </span>
-                <div className="text-xl font-mono font-black text-white py-1">
-                  A MENTE POR TRÁS DA CORRIDA
-                </div>
-                <p className="text-xs text-zinc-300">
-                  Você agora compreende como pilotos, engenheiros e estrategistas utilizam compostos, janelas de pit stop e leituras de ar limpo para vencer corridas nos boxes.
-                </p>
-                <div className="mt-3">
-                  <button
-                    type="button"
-                    onClick={() => setViewStage("quiz")}
-                    className="pointer-events-auto w-full py-2.5 px-4 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-lg"
-                  >
-                    Fazer o Quiz do Módulo 4 (10 Perguntas)
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O XADREZ DA F1", "Estratégia Além da Velocidade Bruta", "A corrida não é vencida apenas pelo carro mais rápido, mas por quem toma as decisões certas no momento crítico.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. HORA DO DESAFIO", "Avalie seu Conhecimento Tático", "Avance para o quiz de dez perguntas e teste seu raciocínio como estrategista de equipe!")}
-
-            <div className="h-4" />
-          </div>
-        )
-      }
+    if (currentScene.visualEffectType === "machine_hotspots") {
+      const cueIndex = audioCurrentTime < 6.0 ? 1 : audioCurrentTime < 12.0 ? 2 : audioCurrentTime < 18.0 ? 3 : audioCurrentTime < 24.0 ? 4 : 5
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("ANATOMIA DO CARRO", "REGULAMENTO 2026")}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Asa Dianteira", "Controla o fluxo inicial de ar e downforce frontal")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Assoalho & Difusor", "Efeito solo por sucção aerodinâmica sem arrasto")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Pneus de Corrida", "Aderência mecânica e janelas térmicas operacionais")}
+          {cueIndex === 4 && renderMarianaSyncBadge("Freios de Carbono", "Desaceleração brutal a até 1.000°C sob 5G")}
+          {cueIndex === 5 && renderMarianaSyncBadge("Cockpit & Halo", "Célula monocoque em titânio testada a 120 kN")}
+        </div>
+      )
     }
 
-
     // ------------------------------------------------------------------------
-    // MÓDULO 5: A ARTE DE ULTRAPASSAR (DISPUTAS, TRAJETÓRIAS E REGRAS)
+    // MÓDULO 1 • CENA 5: pitstop_team
     // ------------------------------------------------------------------------
-    if (activeModuleId === 5) {
-      // CENA 1: COMO NASCE UMA ULTRAPASSAGEM (25.0s)
-      if (currentScene.visualEffectType === "mod5_overtaking_anatomy") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 05 • ANATOMIA DE UMA ULTRAPASSAGEM
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  AS TRÊS FASES DO ATAQUE
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-cyan-950/60 border-cyan-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-cyan-400 block font-bold">1. APROXIMAÇÃO</span>
-                    <strong className="text-xs text-white block">Zona de Vácuo</strong>
-                    <span className="text-[9px] text-zinc-300">Medição da distância relativa e aceleração precoce na reta.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-amber-950/60 border-amber-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-amber-400 block font-bold">2. POSICIONAMENTO</span>
-                    <strong className="text-xs text-white block">Linha de Ataque</strong>
-                    <span className="text-[9px] text-zinc-300">Escolha cirúrgica entre a linha interna ou externa na freada.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-red-950/60 border-red-500 scale-102" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-red-400 block font-bold">3. CONTORNO</span>
-                    <strong className="text-xs text-white block">Ápice e Saída</strong>
-                    <span className="text-[9px] text-zinc-300">Manter o carro controlado sem espalhar para fora da pista.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. LEITURA DE RITMO", "A Manobra Começa Muito Antes", "Observar a distância e aproveitar o vácuo na reta prepara o terreno para a investida.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. ESCOLHA DE TRAJETÓRIA", "Linha Interna vs Externa", "A linha interna garante preferência no apex, mas exige frenagem mais agressiva.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. CONTROLE REGULAMENTAR", "Velocidade Não Dá Direito Automático", "A manobra precisa acontecer de maneira limpa, controlada e respeitando os limites da pista.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Estar mais veloz não dá o direito de empurrar o adversário para fora na freada.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 2: O VÁCUO E A PREPARAÇÃO (25.0s)
-      if (currentScene.visualEffectType === "mod5_attack_tech_2026") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                VÁCUO (SLIPSTREAM) • O CONE DE BAIXA PRESSÃO
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  DINÂMICA DE FLUIDOS NA RETA
-                </span>
-                <div className="py-2 text-2xl font-mono font-black text-white">
-                  {cueIndex === 1 ? "MENOR ARRASTO NO VÁCUO" : cueIndex === 2 ? "A QUEBRA DE VÁCUO" : "O BOTE DE SAÍDA"}
-                </div>
-                <p className="text-xs text-zinc-300">
-                  {cueIndex === 1 && "O carro da frente rasga o ar, criando atrás de si um cone de baixa pressão onde o perseguidor atinge maior velocidade final."}
-                  {cueIndex === 2 && "O piloto à frente tenta se descolar da linha central para quebrar o vácuo antes da placa de cem metros."}
-                  {cueIndex === 3 && "O perseguidor sai do vácuo no instante milimétrico anterior à frenagem para refrigerar o motor e ter visão clara."}
-                </p>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O CONE DE VÁCUO", "Aproveitando a Menor Resistência", "Andar na esteira do líder reduz a força contrária do ar e impulsiona o carro perseguidor.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. QUEBRANDO O VÁCUO", "A Defesa Preventiva na Reta", "O líder move-se uma vez para o lado para tirar o adversário da zona de sucção de ar.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. O MERGULHO", "Saindo da Esteira de Turbulência", "No ponto de freada, o piloto sai do vácuo para frear com ar limpo na asa dianteira.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              💡 Ar sujo (dirty air) prejudica em curvas, mas na reta o vácuo é a chave da aproximação.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 3: FRENAGEM E DISPUTA LADO A LADO (25.0s)
-      if (currentScene.visualEffectType === "mod5_defense_limits") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                FRENAGEM & APEX • TRAIL BRAKING E DIVISÃO DE ESPAÇO
-              </span>
-              <span className="text-[10px] font-mono text-orange-400 bg-orange-950/60 border border-orange-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-orange-500/40 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-orange-400 font-bold uppercase tracking-widest block mb-1">
-                  CRITÉRIOS DE DISPUTA CURVA A CURVA
-                </span>
-                <div className="grid grid-cols-2 gap-3 py-2 text-left">
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 1 ? "bg-orange-950/60 border-orange-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">TRAIL BRAKING</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">Aliviar a pressão do freio gradativamente ao apontar o volante, transferindo peso para a frente sem travar as rodas.</span>
-                  </div>
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 2 || cueIndex === 3 ? "bg-cyan-950/60 border-cyan-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">LARGURA DE UM CARRO</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">Se os eixos dianteiros estiverem emparelhados no vértice (apex), ambos os pilotos são obrigados a deixar espaço regulamentar na pista.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O PONTO DE FRENAGEM", "Mais Tarde Sem Travar Rodas", "Frear meio metro depois pode garantir a liderança, mas travar o pneu dianteiro destrói a curva.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. EMPARELHAMENTO NO APEX", "Direito a Espaço na Curva", "Estando lado a lado no ponto de tangência, o piloto de fora tem direito legal à largura de um carro.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. TRAÇÃO NA SAÍDA", "Quem Acelera Primeiro Vence", "Ultrapassagens muitas vezes são decididas na retomada de aceleração após a curva.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Travar as rodas (lock-up) cria facetas planas na borracha que causam vibrações intoleráveis.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 4: DEFESA DE POSIÇÃO (25.0s)
-      if (currentScene.visualEffectType === "mod5_side_by_side_rules") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                DEFESA DE POSIÇÃO • UMA ÚNICA MUDANÇA DE TRAJETÓRIA
-              </span>
-              <span className="text-[10px] font-mono text-red-500 bg-red-950/60 border border-red-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-red-500/40 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-red-400 font-bold uppercase tracking-widest block mb-1">
-                  REGRAS RÍGIDAS DE DEFESA FIA
-                </span>
-                <div className="py-2 text-2xl font-mono font-black text-white">
-                  {cueIndex === 1 ? "APENAS 1 MUDANÇA" : cueIndex === 2 ? "SEM MOVER NA FRENAGEM" : "LINHA INTERNA PROTETORA"}
-                </div>
-                <p className="text-xs text-zinc-300">
-                  {cueIndex === 1 && "O piloto à frente só pode escolher uma trajetória para defender sua posição na reta. Ziguezaguear é severamente punido."}
-                  {cueIndex === 2 && "É terminantemente proibido mudar de direção dentro da zona de frenagem (moving under braking), evitando colisões letais."}
-                  {cueIndex === 3 && "O líder pode ocupar a linha interna da pista, mas deve deixar espaço no contorno se o rival já estiver emparelhado."}
-                </p>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. UMA ÚNICA MANOBRA", "Proibido Ziguezaguear na Reta", "A FIA permite proteger a linha interna apenas uma vez; mudar de lado repetidamente gera bandeira preta e branca.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. FREAR EM LINHA RETA", "Sem Mudar de Direção na Frenagem", "Com as forças de frenagem no ápice, qualquer guinada repentina causa acidentes graves.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. DEFESA PROPORCIONAL", "Firmeza com Respeito", "A melhor defesa é o posicionamento prévio correto do carro antes da zona crítica.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Moving under braking é uma das infrações mais graves fiscalizadas pelos comissários.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 5: AERODINÂMICA ATIVA E OVERTAKE MODE 2026 (25.0s)
-      if (currentScene.visualEffectType === "mod5_track_limits_runoff") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                TECNOLOGIA 2026 • AERODINÂMICA ATIVA & OVERTAKE MODE
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-cyan-500/40 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  NOVA ERA DAS ULTRAPASSAGENS (SEM DRS ANTIGO)
-                </span>
-                <div className="grid grid-cols-2 gap-3 py-2 text-left">
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 1 ? "bg-cyan-950/60 border-cyan-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">STRAIGHT MODE (AERO ATIVA)</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">Flaps móveis dianteiros e traseiros abrem em retas pré-definidas para reduzir o arrasto de ambos os carros.</span>
-                  </div>
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 2 || cueIndex === 3 ? "bg-purple-950/60 border-purple-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">OVERTAKE MODE (ELÉTRICO)</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">Injeção elétrica de até 350 kW concedida ao perseguidor que estiver a menos de 1 segundo do rival na detecção.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O FIM DO DRS ISOLADO", "Aerodinâmica Ativa Integrada", "Em 2026, as asas dianteira e traseira movimentam-se coordenadas para diminuir a resistência de todos nas retas.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. OVERTAKE MODE (MANUAL OVERRIDE)", "Disparo de Energia Elétrica", "O sistema elétrico MGU-K entrega potência suplementar para o carro perseguidor atacar.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. DEFESA POR GESTÃO", "A Bateria do Líder", "O piloto da frente pode contra-atacar usando sua própria energia armazenada nas frenagens.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              A Fórmula 1 de 2026 substitui o DRS puramente aerodinâmico por uma batalha elétrica tática.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 6: LIMITES DE PISTA - TRACK LIMITS (25.0s)
-      if (currentScene.visualEffectType === "mod5_stewards_investigations") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                LIMITES DE PISTA • A LINHA BRANCA COMO BORDA OFICIAL
-              </span>
-              <span className="text-[10px] font-mono text-yellow-400 bg-yellow-950/60 border border-yellow-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-yellow-500/40 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-yellow-400 font-bold uppercase tracking-widest block mb-1">
-                  DELIMITAÇÃO DO ASFALTO
-                </span>
-                <div className="py-2 text-2xl font-mono font-black text-white">
-                  {cueIndex === 1 ? "4 RODAS FORA DA LINHA" : cueIndex === 2 ? "VANTAGEM DURADOURA" : "DEVOLUÇÃO OBRIGATÓRIA"}
-                </div>
-                <p className="text-xs text-zinc-300">
-                  {cueIndex === 1 && "Se as quatro rodas ultrapassarem completamente a linha branca que delimita o circuito, a manobra é julgada fora da pista."}
-                  {cueIndex === 2 && "Completar uma ultrapassagem espalhando pelas áreas de escape de asfalto é ilegal segundo o Código Esportivo Internacional."}
-                  {cueIndex === 3 && "A equipe deve ordenar imediatamente a devolução da posição para evitar aplicação de penalidade de 5 ou 10 segundos."}
-                </p>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. A LINHA BRANCA", "O Limite Físico e Legal", "Pelo menos uma roda precisa manter contato visual ou tangência com a linha branca da borda.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. GANHO ILÍCITO", "Sair da Pista para Ultrapassar", "Utilizar as áreas de escape para contornar o rival configura ganho de vantagem duradoura.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. GIVE THE POSITION BACK", "A Devolução Imediata", "Ceder a posição de volta antes da intervenção dos comissários anula o processo punitivo.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Câmeras de alta velocidade e sensores no solo fiscalizam os limites em todas as curvas.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 7: COMISSÁRIOS E INVESTIGAÇÕES (25.0s)
-      if (currentScene.visualEffectType === "mod5_overtaking_challenges") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                DIREÇÃO DE PROVA • COMISSÁRIOS DESPORTIVOS DA FIA (STEWARDS)
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  PROCEDIMENTO DE JULGAMENTO
-                </span>
-                <div className="p-3 rounded-xl bg-black/60 border border-white/10 text-left space-y-1.5">
-                  <div className="text-amber-400 font-bold">⚠️ INCIDENT UNDER INVESTIGATION</div>
-                  <div className="text-zinc-300 text-[11px]">Análise de ângulo de volante, pedal de freio e telemetria de ambos os carros.</div>
-                  <div className="text-emerald-400 text-[11px] pt-1">DECISÕES POSSÍVEIS:</div>
-                  <div className="text-zinc-400 text-[10px]">• Incidente de corrida (sem punição)</div>
-                  <div className="text-zinc-400 text-[10px]">• Penalidade de 5s ou 10s no tempo de prova</div>
-                  <div className="text-zinc-400 text-[10px]">• Drive-Through pelo pit lane</div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. INCIDENT UNDER INVESTIGATION", "Alerta Oficial na Tela", "A Direção de Prova envia o caso aos quatro comissários desportivos independentes.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. ANÁLISE DE TELEMETRIA", "Dados Técnicos Incontestáveis", "Comissários analisam se o piloto tentou fazer a curva ou deliberadamente tirou o rival da pista.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. APLICAÇÃO DE PENAS", "Punições Proporcionais", "Penalidades adicionam tempo ao resultado final ou exigem paradas forçadas no pit lane.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              O corpo de comissários inclui ex-pilotos de F1 para garantir leitura prática das disputas.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 8: O MESTRE DA ULTRAPASSAGEM (25.0s)
-      if (currentScene.visualEffectType === "mod5_overtaking_summary") {
-        const cueIndex = audioCurrentTime < 10.0 ? 1 : 2
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 05 CONCLUÍDO • A CORRAGEM COM INTELIGÊNCIA
-              </span>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
-                PARABÉNS!
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/90 border border-emerald-500/50 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                  DOMÍNIO DA DISPUTA
-                </span>
-                <div className="text-xl font-mono font-black text-white py-1">
-                  A ARTE DE ULTRAPASSAR
-                </div>
-                <p className="text-xs text-zinc-300">
-                  Você dominou os princípios de vácuo, frenagem no apex, regras rígidas de defesa, tecnologia ativa 2026 e o julgamento dos comissários.
-                </p>
-                <div className="mt-3">
-                  <button
-                    type="button"
-                    onClick={() => setViewStage("quiz")}
-                    className="pointer-events-auto w-full py-2.5 px-4 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-lg"
-                  >
-                    Fazer o Quiz do Módulo 5 (10 Perguntas)
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. CORAGEM E DISCIPLINA", "O Equilíbrio Perfeito", "Ultrapassar na F1 exige a ousadia de mergulhar na freada e a frieza de respeitar o espaço vital do rival.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. PROVE SEU VALOR", "Desafio de Conhecimento", "Avance para as dez perguntas e teste seus reflexos sobre regras e manobras de pista!")}
-
-            <div className="h-4" />
-          </div>
-        )
-      }
+    if (currentScene.visualEffectType === "pitstop_team") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("PILOTOS E EQUIPES", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("DOIS CAMPEONATOS AO MESMO TEMPO", "Campeonato de Pilotos e Campeonato de Construtores d…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("O PAPEL DO PILOTO", "Inteligência de corrida, preservação mecânica e paci…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A FORÇA DA EQUIPE", "Estratégia de boxes no pit wall e trabalho cirúrgico…")}
+        </div>
+      )
     }
 
-
     // ------------------------------------------------------------------------
-    // MÓDULO 6: A HISTÓRIA DA FÓRMULA 1 (75 ANOS DE VELOCIDADE E CORAGEM)
+    // MÓDULO 1 • CENA 6: starting_grid
     // ------------------------------------------------------------------------
-    if (activeModuleId === 6) {
-      // CENA 1: O NASCIMENTO DA FÓRMULA 1 (25.0s)
-      if (currentScene.visualEffectType === "mod6_birth_of_f1") {
-        const cueIndex = audioCurrentTime < 8.5 ? 1 : audioCurrentTime < 17.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 06 • 13 DE MAIO DE 1950: O MARCO INAUGURAL
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-amber-500/40 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-widest block mb-1">
-                  SILVERSTONE 1950 • GP DA GRÃ-BRETANHA
-                </span>
-                <div className="py-2 text-xl font-mono font-black text-white">
-                  GIUSEPPE FARINA • ALFA ROMEO 158
-                </div>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left text-xs">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-amber-950/60 border-amber-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-[11px] text-white block">A FÓRMULA</strong>
-                    <span className="text-[10px] text-zinc-300">Regras unificadas pela FIA para nivelar a disputa.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-red-950/60 border-red-500" : "bg-black/50 border-white/10")}>
-                    <strong className="text-[11px] text-white block">1º CAMPEÃO</strong>
-                    <span className="text-[10px] text-zinc-300">Farina venceu em Silverstone e faturou o título mundial.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-zinc-800 border-white/20" : "bg-black/50 border-white/10")}>
-                    <strong className="text-[11px] text-white block">ERA HEROICA</strong>
-                    <span className="text-[10px] text-zinc-300">Motores dianteiros, sem asas, capacetes de couro.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O SIGNIFICADO DA FÓRMULA", "A Padronização do Regulamento", "A FIA estabeleceu a Fórmula 1 como o topo das regras técnicas para consagrar o melhor piloto do mundo.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O TRIUNFO DE FARINA", "Silverstone, 13 de Maio de 1950", "Giuseppe Farina e a lendária Alfa Romeo 158 'Alfetta' cravaram a primeira vitória oficial da história.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. A ERA DA CORAGEM", "Pioneirismo Sem Concessões", "Carros com motor dianteiro, pneus estreitos e segurança mínima em circuitos desenhados em pistas de pouso.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Silverstone era um antigo campo de aviação militar da Segunda Guerra Mundial.
-            </div>
+    if (currentScene.visualEffectType === "starting_grid") {
+      const cueIndex = audioCurrentTime < 6.0 ? 1 : audioCurrentTime < 12.0 ? 2 : 3
+      const lightsCount = audioCurrentTime < 2.0 ? 0 : audioCurrentTime < 4.0 ? 1 : audioCurrentTime < 6.0 ? 2 : audioCurrentTime < 8.0 ? 3 : audioCurrentTime < 10.0 ? 4 : audioCurrentTime < 12.0 ? 5 : 0
+      const lightsOut = audioCurrentTime >= 12.0 && audioCurrentTime < 14.5
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("PROCEDIMENTO DE LARGADA", "GRID OFICIAL FIA")}
+          <div className="pointer-events-auto mx-auto mt-2 flex items-center gap-2 p-2 rounded-2xl bg-black/80 border border-white/15 backdrop-blur-md shadow-2xl">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <span key={i} className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full transition-all duration-300", i <= lightsCount && !lightsOut ? "bg-[#E10600] shadow-[0_0_15px_#E10600] scale-110" : "bg-zinc-800 border border-zinc-700")} />
+            ))}
           </div>
-        )
-      }
-
-      // CENA 2: EVOLUÇÃO DOS CARROS: DÉCADA POR DÉCADA (25.0s)
-      if (currentScene.visualEffectType === "mod6_cars_evolution") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                EVOLUÇÃO TÉCNICA • 7 DÉCADAS DE TRANSFORMAÇÃO DA MÁQUINA
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  A REVOLUÇÃO MECÂNICA
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-amber-950/60 border-amber-400" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-amber-400 block font-bold">ANOS 60</span>
-                    <strong className="text-xs text-white block">MOTOR TRASEIRO</strong>
-                    <span className="text-[9px] text-zinc-300">Cooper e Lotus revolucionam a distribuição de peso.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-red-950/60 border-red-500" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-red-400 block font-bold">ANOS 70/80</span>
-                    <strong className="text-xs text-white block">ASAS & TURBO</strong>
-                    <span className="text-[9px] text-zinc-300">Efeito solo, downforce massivo e motores de mais de 1.000 cv.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-cyan-950/60 border-cyan-400" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-cyan-400 block font-bold">ANOS 90 A HOJE</span>
-                    <strong className="text-xs text-white block">ELETRÔNICA & HÍBRIDO</strong>
-                    <span className="text-[9px] text-zinc-300">Telemetria em tempo real e eficiência térmica recorde.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O MOTOR ATRÁS DO PILOTO", "A Revolução dos Anos 60", "Colin Chapman e a Lotus provaram que colocar o motor atrás do cockpit tornava o carro muito mais ágil.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. ASAS E A ERA TURBO", "A Chegada da Aerodinâmica e Cavalos", "Nos anos 70 surgiram os aerofólios e o efeito solo; nos anos 80, motores turbo insanos superavam 1.000 cv.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. A REVOLUÇÃO DA EFICIÊNCIA", "Eletrônica Fina e Unidades Híbridas", "Da suspensão ativa aos propulsores híbridos modernos que aproveitam metade de cada gota de energia.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              A F1 é o laboratório de testes mais veloz e impiedoso da indústria automobilística.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 3: PILOTOS LENDÁRIOS (25.0s)
-      if (currentScene.visualEffectType === "mod6_legendary_drivers") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                GIGANTES DO ESPORTE • AS LENDAS QUE MOLDARAM A CATEGORIA
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  IMORTAIS DO AUTOMOBILISMO
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-amber-950/60 border-amber-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">FANGIO (5 TÍTULOS)</strong>
-                    <span className="text-[10px] text-zinc-300">O maestro argentino que venceu com Alfa, Ferrari, Mercedes e Maserati.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-blue-950/60 border-blue-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">CLARK & STEWART</strong>
-                    <span className="text-[10px] text-zinc-300">A precisão escocesa e a luta pioneira pela segurança nos circuitos.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-red-950/60 border-red-500 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">NIKI LAUDA</strong>
-                    <span className="text-[10px] text-zinc-300">Tricampeão, sobrevivente de Nürburgring e mestre da inteligência prática.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O MAESTRO FANGIO", "Cinco Títulos por Quatro Equipes", "Juan Manuel Fangio dominou a década de 1950 com maestria, respeito mútuo e técnica inigualável.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. A ERA ESCOCESA", "Jim Clark e Jackie Stewart", "Clark encantava pela velocidade pura; Stewart liderou a greve por guard-rails e atendimento médico.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. O RETORNO DE LAUDA", "Superação Sob Humano Limite", "Após o terrível acidente de 1976, Lauda retornou em seis semanas para disputar o título até a última volta.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Cada lenda contribuiu não só com troféus, mas com a transformação cultural e técnica da F1.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 4: AS GRANDES RIVALIDADES (25.0s)
-      if (currentScene.visualEffectType === "mod6_rivalries") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                DUELOS HISTÓRICOS • AS RIVALIDADES QUE ELEVARAM O ESPORTE
-              </span>
-              <span className="text-[10px] font-mono text-red-500 bg-red-950/60 border border-red-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-red-500/40 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-red-400 font-bold uppercase tracking-widest block mb-1">
-                  BATALHAS DECIDIDAS NO LIMITE
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-red-950/60 border-red-500" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">LAUDA VS HUNT</strong>
-                    <span className="text-[9px] text-zinc-300 block mt-0.5">1976: O confronto épico entre método espartano e intrepidez natural.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-amber-950/60 border-amber-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">SENNA VS PROST</strong>
-                    <span className="text-[9px] text-zinc-300 block mt-0.5">1988-1990: A maior rivalidade da história, intensidade contra cálculo puro.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-cyan-950/60 border-cyan-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">HAMILTON VS MAX</strong>
-                    <span className="text-[9px] text-zinc-300 block mt-0.5">2021: O duelo moderno épico empatado até a última volta em Abu Dhabi.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. LAUDA VS HUNT (1976)", "Contraste de Personalidades", "A rivalidade cinematográfica que levou o automobilismo às capas de todos os jornais do mundo.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. SENNA VS PROST (1988-90)", "O Ápice do Automobilismo", "Dois gênios no mesmo carro da McLaren, dividindo o planeta entre a emoção e a razão matemática.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. HAMILTON VS VERSTAPPEN", "A Batalha de Gerações (2021)", "Vinte e duas corridas de tirar o fôlego com os dois pilotos empatados em pontos no desfecho final.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Grandes rivais forçam um ao outro a superar os próprios limites humanos.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 5: A REVOLUÇÃO DA SEGURANÇA (25.0s)
-      if (currentScene.visualEffectType === "mod6_safety_evolution") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                SEGURANÇA • DA MORTE CONSTANTE À SOBREVIVÊNCIA MODERNA
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-cyan-500/40 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  OS MARCOS DA ENGENHARIA DE VIDA
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-cyan-950/60 border-cyan-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">CHASSI DE CARBONO</strong>
-                    <span className="text-[9px] text-zinc-300">John Barnard e McLaren (1981): Célula indeformável de sobrevivência.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-amber-950/60 border-amber-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">LEGADO DE 1994</strong>
-                    <span className="text-[9px] text-zinc-300">Prof. Sid Watkins e FIA reescrevem os testes de impacto e o sistema HANS.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-emerald-950/60 border-emerald-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">O HALO (2018)</strong>
-                    <span className="text-[9px] text-zinc-300">Titânio Grau 5 resistindo a 120 kN (~12 toneladas) salvando vidas reais.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. A CÉLULA DE CARBONO", "McLaren MP4/1 (1981)", "A substituição do alumínio pela fibra de carbono protegeu as pernas e o tronco dos pilotos em batidas extremas.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O PROTOCOLO PÓS-1994", "A Cruzada de Sid Watkins", "Sensores biométricos, laterais do cockpit elevadas, zebras redesenhadas e dispositivo HANS no capacete.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. O ESCUDO DO HALO", "Homologação FIA 120 kN", "Inicialmente criticado pela estética, o Halo provou seu valor ao salvar pilotos em múltiplos acidentes graves.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              A Fórmula 1 tornou-se a referência global em segurança automotiva e resgate médico rápido.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 6: SENNA E O BRASIL NA F1 (25.0s)
-      if (currentScene.visualEffectType === "mod6_senna_brazil_legacy") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                TRADIÇÃO BRASILEIRA • 8 TÍTULOS MUNDIAIS E O MITO SENNA
-              </span>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-emerald-500/40 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                  HISTÓRIA VERDE E AMARELA NAS PISTAS
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-amber-950/60 border-amber-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">EMERSON & PIQUET</strong>
-                    <span className="text-[9px] text-zinc-300">Fittipaldi (72/74) abriu as portas; Piquet (81/83/87) uniu técnica e títulos.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 || cueIndex === 3 ? "bg-emerald-950/60 border-emerald-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">AYRTON SENNA</strong>
-                    <span className="text-[9px] text-zinc-300">Tricampeão (88/90/91), mestre absoluto na chuva e sinônimo de orgulho nacional.</span>
-                  </div>
-                  <div className="p-2 rounded-xl border bg-black/50 border-white/10">
-                    <strong className="text-xs text-white block">O LEGADO</strong>
-                    <span className="text-[9px] text-zinc-300">Interlagos, paixão popular e inspiração para pilotos de todas as gerações.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. OS PIONEIROS", "Fittipaldi e Nelson Piquet", "O Brasil conquistou cinco títulos mundiais antes de Senna, consolidando a nação como potência da F1.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O FENÔMENO SENNA", "Mônaco, Donington e Chuva", "A busca intransigente pela perfeição, as voltas mágicas de classificação e a devoção de um país inteiro.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. ETERNA INSPIRAÇÃO", "Mais que um Piloto, um Ícone", "O impacto de Senna transcendeu as pistas, tornando-se símbolo de superação e excelência profissional.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              O GP de São Paulo em Interlagos continua sendo uma das etapas mais apaixonadas do calendário mundial.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 7: A F1 MODERNA E O FUTURO 2026 (25.0s)
-      if (currentScene.visualEffectType === "mod6_modern_f1_2026") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                ERA CONTEMPORÂNEA • SUSTENTABILIDADE E COMPETITIVIDADE EM 2026
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-cyan-500/40 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  A FÓRMULA 1 DO FUTURO HOJE
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-emerald-950/60 border-emerald-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">COMBUSTÍVEL 100% LIMPO</strong>
-                    <span className="text-[9px] text-zinc-300">Combustíveis e-fuels neutros em carbono desenvolvidos para o planeta.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-cyan-950/60 border-cyan-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">AERO ATIVA 2026</strong>
-                    <span className="text-[9px] text-zinc-300">Carros menores, mais leves e com asas móveis dinâmicas para retas e curvas.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-purple-950/60 border-purple-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">TETO DE GASTOS</strong>
-                    <span className="text-[9px] text-zinc-300">Cost Cap nivelando orçamentos para que a criatividade vença os bilhões.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. SUSTENTABILIDADE REAL", "Combustíveis Sintéticos Verdes", "A F1 lidera a tecnologia de combustíveis limpos que abastecerão a frota mundial no futuro.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. REGULAMENTO 2026", "Carros Mais Ágeis e Eficientes", "Monopostos reduzidos em largura e massa, com participação de propulsão elétrica triplicada.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. O GRID EQUILIBRADO", "O Teto Financeiro (Cost Cap)", "Restrição orçamentária impede que uma única montadora compre vitórias ilimitadas.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              A essência da F1 permanece imutável: o triunfo da engenharia e da bravura humana.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 8: 75 ANOS DE PAIXÃO (25.0s)
-      if (currentScene.visualEffectType === "mod6_history_summary") {
-        const cueIndex = audioCurrentTime < 10.0 ? 1 : 2
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 06 CONCLUÍDO • 75 ANOS DE LENDA
-              </span>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
-                PARABÉNS!
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/90 border border-emerald-500/50 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                  HISTÓRIA VIVA
-                </span>
-                <div className="text-xl font-mono font-black text-white py-1">
-                  75 ANOS DE FÓRMULA 1
-                </div>
-                <p className="text-xs text-zinc-300">
-                  De Silverstone 1950 às feras híbridas de 2026, você viajou por rivalidades inesquecíveis, revoluções na segurança e o legado brasileiro de Senna.
-                </p>
-                <div className="mt-3">
-                  <button
-                    type="button"
-                    onClick={() => setViewStage("quiz")}
-                    className="pointer-events-auto w-full py-2.5 px-4 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-lg"
-                  >
-                    Fazer o Quiz do Módulo 6 (10 Perguntas)
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O PASSADO ENCONTRA O FUTURO", "A Memória que Inspira", "Entender a história é essencial para enxergar a alma de cada curva e de cada recorde quebrado hoje.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. DESAFIO HISTÓRICO", "Teste sua Memória", "Avance para as dez questões do quiz e mostre que você domina as eras douradas da F1!")}
-
-            <div className="h-4" />
-          </div>
-        )
-      }
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Alinhamento no Grid", "Pilotos posicionam as máquinas nos colchetes")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Sequência de 5 Luzes", "Acendem uma a uma a cada segundo")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Luzes Apagadas!", "Aceleração imediata e disputa pela primeira curva")}
+        </div>
+      )
     }
 
-
     // ------------------------------------------------------------------------
-    // MÓDULO 7: POR TRÁS DA EQUIPE (BASTIDORES, ENGENHARIA E OPERAÇÃO)
+    // MÓDULO 1 • CENA 7: telemetry_wall
     // ------------------------------------------------------------------------
-    if (activeModuleId === 7) {
-      // CENA 1: UMA EQUIPE É MUITO MAIS DO QUE UM CARRO (25.0s)
-      if (currentScene.visualEffectType === "mod7_team_roles") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 07 • AS CENTENAS DE PESSOAS POR TRÁS DO PILOTO
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  ESTRUTURA HIERÁRQUICA DE UMA ESCUDERIA
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-red-950/60 border-red-500 scale-102" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-red-400 block font-bold">LIDERANÇA</span>
-                    <strong className="text-xs text-white block">TEAM PRINCIPAL</strong>
-                    <span className="text-[9px] text-zinc-300">Comandante esportivo, financeiro e político da escuderia.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-cyan-950/60 border-cyan-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-cyan-400 block font-bold">ENGENHARIA</span>
-                    <strong className="text-xs text-white block">CORRIDA & DADOS</strong>
-                    <span className="text-[9px] text-zinc-300">Ajustam suspensões, asas, telemetria e pressão dos pneus.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-amber-950/60 border-amber-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <span className="text-[10px] font-mono text-amber-400 block font-bold">FÁBRICA</span>
-                    <strong className="text-xs text-white block">+1.000 PESSOAS</strong>
-                    <span className="text-[9px] text-zinc-300">CFD, túnel de vento, montagem mecânica e logística global.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O CHEFE DE EQUIPE", "O Team Principal", "Coordena as decisões estratégicas, lidera negociações com a FIA e responde pelos resultados perante os donos.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. OS ENGENHEIROS DE PISTA", "Performance e Confiabilidade", "Trabalham colados ao piloto para extrair o último décimo de segundo do comportamento mecânico.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. A FÁBRICA INVISÍVEL", "O Exército de Projetistas", "Centenas de engenheiros de compósitos, aerodinamicistas e técnicos operam 24h na sede da equipe.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              O piloto é apenas a ponta do iceberg de uma operação técnica de mais de mil especialistas.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 2: COMUNICAÇÃO PELO RÁDIO (25.0s)
-      if (currentScene.visualEffectType === "mod7_radio_communication") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                CANAL DE RÁDIO • A VOZ QUE GUIA O PILOTO A 300 KM/H
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-purple-500/40 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-purple-400 font-bold uppercase tracking-widest block mb-2 border-b border-purple-500/20 pb-1">
-                  PROTOCOLO DE COMUNICAÇÃO DE RÁDIO
-                </span>
-                <div className="p-3 rounded-xl bg-purple-950/20 border border-purple-500/30 text-left space-y-1.5">
-                  <div className="text-zinc-400 text-[10px]">ENGENHEIRO DE CORRIDA:</div>
-                  <div className="text-emerald-400 font-bold">\"Gap behind is 2.1. Traffic is clearing. Strat Mode 6 on straight.\"</div>
-                  <div className="text-zinc-400 text-[10px] pt-1">PILOTO NO COCKPIT:</div>
-                  <div className="text-white font-bold">\"Copy that. Rear tires starting to slip in turn 4.\"</div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. VOZ ÚNICA NO RÁDIO", "Apenas o Engenheiro Fala", "Para evitar confusão, somente o engenheiro de corrida mantém o canal de áudio com o piloto durante a volta.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. OBJETIVIDADE CRÍTICA", "Palavras Curtas e Códigos", "Informações precisas de deltas, mapas de freio e posições transmitidas sem adjetivos desnecessários.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. CONTROLE EMOCIONAL", "Acalmar os Ânimos sob 5G", "O engenheiro atua como âncora psicológica do piloto nos momentos de frustração ou toque de corrida.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              O engenheiro de corrida conhece as reações e a entonação do piloto como ninguém.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 3: O MURO DOS BOXES - PIT WALL (25.0s)
-      if (currentScene.visualEffectType === "mod7_pitwall_command") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                PIT WALL • O CENTRO NERVOSO E OS MONITORES DE CONTROLE
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  PAINÉIS DE MONITORAMENTO DO MURO
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-cyan-950/60 border-cyan-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">RADAR CLIMÁTICO</strong>
-                    <span className="text-[9px] text-zinc-300">Previsão minuto a minuto de frentes de chuva sobre o circuito.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-purple-950/60 border-purple-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">TELEMETRIA AO VIVO</strong>
-                    <span className="text-[9px] text-zinc-300">+300 sensores transmitindo temperatura, pressão e rotação em tempo real.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-amber-950/60 border-amber-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">GPS TRACKER</strong>
-                    <span className="text-[9px] text-zinc-300">Posicionamento milimétrico de todos os 20 carros para calcular tráfego.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. DADOS EM TEMPO REAL", "Centenas de Monitores no Muro", "O pit wall recebe dados criptografados por telemetria sem fio a cada curva.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. LIGAÇÃO COM A FÁBRICA", "A Sala de Operações Virtual", "Na Inglaterra ou Itália, dezenas de analistas acompanham a corrida em simuladores paralelos.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. DECISÕES DE FRAÇÃO DE SEGUNDO", "A Resposta Rápida", "Chamar o piloto para os boxes no instante de um Safety Car exige reflexo cirúrgico.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              O muro dos boxes é onde a tecnologia se encontra com a velocidade esportiva pura.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 4: A DANÇA DO PIT STOP EM 2 SEGUNDOS (25.0s)
-      if (currentScene.visualEffectType === "mod7_pitstop_anatomy") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                COREOGRAFIA • 20 MECÂNICOS SINCRONIZADOS EM 2 SEGUNDOS
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  FUNÇÕES ESPECÍFICAS DA EQUIPE DE BOXES
-                </span>
-                <div className="py-2 text-2xl font-black text-white">
-                  {cueIndex === 1 ? "MACACOS DIANT. & TRAS." : cueIndex === 2 ? "3 MECÂNICOS POR RODA" : "SISTEMA LOLLIPOP VERDE"}
-                </div>
-                <p className="text-xs text-zinc-300 font-sans">
-                  {cueIndex === 1 && "Dois operadores levantam o carro de 800 kg instantaneamente assim que ele para na marca pintada."}
-                  {cueIndex === 2 && "Para cada pneu: um opera a pistola pneumática, um retira a roda gasta e o terceiro encaixa o pneu novo."}
-                  {cueIndex === 3 && "Sensores automáticos liberam a luz verde no pórtico suspenso assim que as 4 porcas estão travadas com segurança."}
-                </p>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O ENCAIXE NO PONTO", "Precisão no Colchete", "O piloto deve parar exatamente na marca; errar por 10 centímetros atrasa todo o procedimento.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. AS PISTOLAS DE ALTA VELOCIDADE", "Porca Única Central", "Pistolas de ar comprimido a mais de 10.000 RPM desparafusam e prendem a roda em milissegundos.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. LIBERAÇÃO AUTOMÁTICA", "Luz Verde Sem Hesitação", "O semáforo do pit stop analisa o tráfego no pit lane para evitar soltar o carro perigosamente (unsafe release).")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Recorde histórico: 1.80s (McLaren, GP do Catar de 2023).
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 5: TELEMETRIA: OS DADOS QUE DECIDEM (25.0s)
-      if (currentScene.visualEffectType === "mod7_telemetry_analysis") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                ANÁLISE DE DADOS • OS TRAÇOS QUE REVELAM O COMPORTAMENTO
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  SOBREPOSIÇÃO DE VOLTAS (PILOTO A VS PILOTO B)
-                </span>
-                <div className="p-3 rounded-xl bg-black/60 border border-white/10 text-left space-y-2">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-cyan-400 font-bold">VELOCIDADE MÁXIMA:</span>
-                    <span className="text-white">334 km/h vs 331 km/h</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-amber-400 font-bold">PONTO DE FRENAGEM:</span>
-                    <span className="text-white">Piloto B freia 8 metros depois</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-emerald-400 font-bold">RETOMADA DE ACELERADOR:</span>
-                    <span className="text-white">Piloto A acelera 0.2s antes na tração</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. TRAÇOS DE TELEMETRIA", "O Raio-X da Pilotagem", "Gráficos de acelerador, freio, marcha e velocidade mostram exatamente onde cada décimo é ganho.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. COMPARATIVO ENTRE COLEGAS", "O Espelho do Box ao Lado", "Pilotos da mesma equipe analisam a telemetria mútua para aprender onde o parceiro foi mais rápido.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. ENGENHARIA DE PERFORMANCE", "Ajuste de Diferencial e Asas", "Engenheiros refinam a distribuição de torque para melhorar o contorno de curvas críticas.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Na F1 moderna não há segredos: cada movimento do piloto é registrado numericamente.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 6: DOIS PILOTOS, UMA EQUIPE (25.0s)
-      if (currentScene.visualEffectType === "mod7_two_drivers_one_team") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                COMPANHEIROS DE EQUIPE • PRIMEIRO RIVAL VS SOMA DE PONTOS
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  A DINÂMICA INTERNA DE UMA GARAGEM
-                </span>
-                <div className="grid grid-cols-2 gap-3 py-2 text-left">
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 1 ? "bg-red-950/60 border-red-500" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">O MAIOR COMPARATIVO</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">O companheiro de equipe possui o mesmo carro. Derrotá-lo é o único atestado real do seu valor na pista.</span>
-                  </div>
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 2 || cueIndex === 3 ? "bg-amber-950/60 border-amber-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">ORDENS DE EQUIPE</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">Quando estratégias divergem ou o campeonato está em jogo, a equipe pode ordenar a inversão de posições.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O PRIMEIRO ADVERSÁRIO", "O Mesmo Equipamento Mecânico", "Sem desculpas técnicas: o companheiro de equipe é a métrica mais cruel da categoria.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O BEM DA ESCUDERIA", "Mundial de Construtores", "Colisões entre companheiros de equipe são a maior proibição imposta por qualquer Team Principal.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. ORDENS TÁTICAS", "A Decisão do Muro", "Trocar posições na pista visa maximizar a pontuação contra adversários externos.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              O Mundial de Construtores distribui as premiações financeiras de fim de ano.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 7: TETO ORÇAMENTÁRIO E DESENVOLVIMENTO (25.0s)
-      if (currentScene.visualEffectType === "mod7_cost_cap_development") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                FINANÇAS • COST CAP & ESCADA DE TÚNEL DE VENTO (ATR)
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  REGRAS FINANCEIRAS E AERODINÂMICAS
-                </span>
-                <div className="p-3 rounded-xl bg-black/60 border border-white/10 text-left space-y-2">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-white font-bold">COST CAP ANUAL:</span>
-                    <span className="text-emerald-400">~$135M TETO RÍGIDO</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-white font-bold">HORAS DE TÚNEL DE VENTO:</span>
-                    <span className="text-amber-400">Escala Inversa (ATR)</span>
-                  </div>
-                  <p className="text-[11px] text-zinc-300 font-sans pt-1">
-                    Quem vence o campeonato recebe menos horas de túnel de vento para a temporada seguinte, equilibrando o pelotão.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O TETO FINANCEIRO", "Financial Regulations da FIA", "Limita os gastos com desenvolvimento do carro para impedir a disparidade entre ricos e médios.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O ATR AERODINÂMICO", "Mais Testes para Quem Está Atrás", "As equipes com pior classificação recebem mais horas de CFD e túnel de vento para se recuperar.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. EFICIÊNCIA DE RECURSOS", "A Arte de Fazer Mais com Menos", "Cada atualização levada para a pista precisa ser validada para não queimar orçamento atoa.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Gastar com inteligência vale mais do que ter orçamentos infinitos na F1 moderna.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 8: O LÍDER DA EQUIPE (25.0s)
-      if (currentScene.visualEffectType === "mod7_team_principal_challenge") {
-        const cueIndex = audioCurrentTime < 10.0 ? 1 : 2
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 07 CONCLUÍDO • A FORÇA DO COLETIVO
-              </span>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
-                PARABÉNS!
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/90 border border-emerald-500/50 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                  GESTÃO ESTRATÉGICA
-                </span>
-                <div className="text-xl font-mono font-black text-white py-1">
-                  POR TRÁS DA EQUIPE
-                </div>
-                <p className="text-xs text-zinc-300">
-                  Você desvendou como chefes de equipe, engenheiros, mecânicos do pit stop e a fábrica inteira operam como um só exército sincronizado.
-                </p>
-                <div className="mt-3">
-                  <button
-                    type="button"
-                    onClick={() => setViewStage("quiz")}
-                    className="pointer-events-auto w-full py-2.5 px-4 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-lg"
-                  >
-                    Fazer o Quiz do Módulo 7 (10 Perguntas)
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. VITÓRIA COLETIVA", "O Piloto Levanta o Troféu, o Time Vence", "Cada centésimo ganho na pista é fruto do trabalho meticuloso de centenas de mentes dedicadas.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. HORA DO DESAFIO", "Avalie seu Conhecimento", "Avance para as dez perguntas e teste seus conhecimentos sobre a liderança e operação da F1!")}
-
-            <div className="h-4" />
-          </div>
-        )
-      }
+    if (currentScene.visualEffectType === "telemetry_wall") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("O QUE OBSERVAR", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("LEITURA DA TORRE DE TEMPOS", "Observe o GAP para saber quem lidera e o INT para an…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("PNEUS E RITMO DE CORRIDA", "A degradação dos pneus define a hora exata da parada…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("VITÓRIA PELA ESTRATÉGIA", "Muitas posições são ganhas na eficiência do pit stop…")}
+        </div>
+      )
     }
 
-
     // ------------------------------------------------------------------------
-    // MÓDULO 8: DOMINANDO OS CIRCUITOS (TRAÇADOS, FRENAGENS E CURVAS)
+    // MÓDULO 1 • CENA 8: checkered_finish
     // ------------------------------------------------------------------------
-    if (activeModuleId === 8) {
-      // CENA 1: CADA CIRCUITO CONTA UMA HISTÓRIA (25.0s)
-      if (currentScene.visualEffectType === "mod8_circuit_anatomy") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 08 • ANATOMIA DO CIRCUITO E TIPOS DE TRECHO
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  ELEMENTOS TOPOGRÁFICOS DE UMA PISTA
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-cyan-950/60 border-cyan-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">RETAS & VÁCUO</strong>
-                    <span className="text-[9px] text-zinc-300">Zonas de velocidade final, aproximação aerodinâmica e ativação de modos.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-amber-950/60 border-amber-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">CHICANES & ZEBRAS</strong>
-                    <span className="text-[9px] text-zinc-300">Mudanças bruscas de direção que exigem absorção violenta da suspensão.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-red-950/60 border-red-500 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">CURVAS DE ALTA</strong>
-                    <span className="text-[9px] text-zinc-300">Trechos onde a carga aerodinâmica atinge 5G laterais no pescoço do piloto.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. A LEITURA DA PISTA", "Cada Autódromo é um Desafio Único", "Antes de acelerar, o piloto precisa mapear as zonas de ultrapassagem e as áreas de frenagem.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. TRANSIÇÃO EM CHICANES", "Ataque às Zebras", "O piloto usa as zebras para esticar o traçado, mas o fundo do carro não pode decolar.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. PRESSÃO AERODINÂMICA", "Curvas Rápidas no Limite", "Quanto maior a velocidade de entrada, mais o downforce empurra o carro ao chão.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Pilotar na F1 é encadear uma sequência matemática perfeita de decisões geométricas.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 2: A TRAJETÓRIA IDEAL - RACING LINE (25.0s)
-      if (currentScene.visualEffectType === "mod8_racing_line") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                TRAJETÓRIA IDEAL • A GEOMETRIA QUE MAXIMIZA A VELOCIDADE
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  AS TRÊS ETAPAS DE UMA CURVA PERFEITA
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-cyan-950/60 border-cyan-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">1. ENTRADA (OUT)</strong>
-                    <span className="text-[10px] text-zinc-300">Abrir o carro na borda externa para aumentar o raio da curva.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-amber-950/60 border-amber-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">2. ÁPICE (IN/APEX)</strong>
-                    <span className="text-[10px] text-zinc-300">Tangenciar a zebra interna no ponto exato de menor velocidade.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-emerald-950/60 border-emerald-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">3. SAÍDA (OUT)</strong>
-                    <span className="text-[10px] text-zinc-300">Espalhar até a zebra externa destracionando o volante para acelerar cedo.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. ABRIR A ENTRADA", "Maximizando o Raio Geométrico", "Quanto mais aberto o carro entra, menor é a inclinação necessária de volante para contornar.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O PONTO DE TANGÊNCIA", "O Apex da Curva", "O ponto mais interno onde o carro encosta na zebra antes de iniciar a retomada de tração.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. ESPALHAR NA SAÍDA", "Pé no Fundo com Volante Reto", "Acelerar com o volante ainda esterçado provoca derrapagem e superaquecimento da traseira.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              A racing line transforma curvas fechadas em arcos o mais abertos possível.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 3: A CIÊNCIA DA FRENAGEM (25.0s)
-      if (currentScene.visualEffectType === "mod8_braking_physics") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                FRENAGEM • REFERÊNCIAS VISUAIS E TRANSFERÊNCIA DE PESO
-              </span>
-              <span className="text-[10px] font-mono text-orange-400 bg-orange-950/60 border border-orange-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-orange-500/40 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono">
-                <span className="text-[10px] font-mono text-orange-400 font-bold uppercase tracking-widest block mb-1">
-                  MARCOS DE DESACELERAÇÃO
-                </span>
-                <div className="py-2 text-2xl font-black text-white">
-                  {cueIndex === 1 ? "PLACAS DE 150m E 100m" : cueIndex === 2 ? "CARGA TOTAL > 5G" : "TRAIL BRAKING NO VÉRTICE"}
-                </div>
-                <p className="text-xs text-zinc-300 font-sans">
-                  {cueIndex === 1 && "Pilotos usam placas laterais, marcas no asfalto e sombras como pontos exatos de pisar no freio a 340 km/h."}
-                  {cueIndex === 2 && "Na mordida inicial, a carga violenta transfere todo o peso para o eixo dianteiro, colando os pneus no solo."}
-                  {cueIndex === 3 && "Conforme a velocidade cai, o piloto precisa aliviar o pedal progressivamente para não travar a dianteira."}
-                </p>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. PONTOS DE REFERÊNCIA", "Precisão Visual a 340 km/h", "Um erro de cinco metros na freada significa perder o contorno e espalhar pela brita.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. TRANSFERÊNCIA DE MASSA", "O Peso Avançando", "A dianteira afunda e ganha atrito mecânico enquanto a traseira fica leve e arisca.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. ALÍVIO PROGRESSIVO", "Evitando o Travamento de Rodas", "Com menos downforce em baixa velocidade, a pressão do pedal deve diminuir suavemente.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Acelerar é instinto, mas frear na F1 é uma ciência de precisão cirúrgica.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 4: CURVAS LENTAS, MÉDIAS E RÁPIDAS (25.0s)
-      if (currentScene.visualEffectType === "mod8_corner_categories") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                CATEGORIAS DE CURVA • VELOCIDADE VS NATUREZA DA ADERÊNCIA
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  COMPARAÇÃO DAS VELOCIDADES DE CONTORNO
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-amber-950/60 border-amber-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-amber-300 block">LENTA (&lt; 100 KM/H)</strong>
-                    <span className="text-[10px] text-zinc-300">Domínio mecânico: suspensão macia, diferencial e tração dos pneus.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-cyan-950/60 border-cyan-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-cyan-300 block">MÉDIA (120-180 KM/H)</strong>
-                    <span className="text-[10px] text-zinc-300">Equilíbrio misto entre aderência dos pneus e início da carga aerodinâmica.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-red-950/60 border-red-500" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-red-300 block">RÁPIDA (&gt; 250 KM/H)</strong>
-                    <span className="text-[10px] text-zinc-300">Domínio aerodinâmico total: o downforce cola o carro contra o asfalto.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. CURVAS DE BAIXA", "Aderência Mecânica Pura", "Em curvas lentas (ex.: Loews em Mônaco), as asas não geram ar suficiente; os pneus fazem todo o trabalho.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. CURVAS DE MÉDIA", "O Teste de Equilíbrio do Chassi", "Trechos como a curva Luffield em Silverstone exigem precisão do volante sem sobrecarregar a traseira.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. CURVAS DE ALTA", "O Poder do Downforce", "Em curvas como Copse ou Pouhon, a velocidade é inacreditável porque o ar comprime o chassi contra o solo.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Nas curvas de alta velocidade, desacelerar de forma brusca reduz o downforce e faz o carro rodar.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 5: O CÍRCULO DE ATRITO (25.0s)
-      if (currentScene.visualEffectType === "mod8_friction_circle") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                DINÂMICA VEICULAR • O CÍRCULO DE ADERÊNCIA DOS PNEUS
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  ORÇAMENTO DE 100% DE ATRITO
-                </span>
-                <div className="p-3 rounded-xl bg-black/60 border border-white/10 text-left space-y-2">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-red-400 font-bold">FRENAGEM PURA:</span>
-                    <span className="text-white">100% Freio / 0% Curva</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-amber-400 font-bold">CONTORNO (APEX):</span>
-                    <span className="text-white">10% Freio / 90% Curva</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-emerald-400 font-bold">ACELERAÇÃO (SAÍDA):</span>
-                    <span className="text-white">80% Tração / 20% Curva</span>
-                  </div>
-                  <p className="text-[11px] text-zinc-300 font-sans pt-1">
-                    Exigir 100% de freio e 50% de esterço ao mesmo tempo ultrapassa o círculo de atrito e gera travamento imediato.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O LIMITE DO PNEU", "Capacidade Finita de Força", "O pneu tem 100% de atrito para dividir entre frear, virar e tracionar.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. SUBESTERÇO E SOBRESTERÇO", "Sair de Frente vs Sair de Traseira", "Understeer ocorre quando as rodas dianteiras perdem atrito; oversteer quando a traseira escapa.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. SUAVIDADE AO VOLANTE", "Pilotar na Borda do Círculo", "Os campeões mantêm o pneu exatamente no limiar máximo de atrito sem derrapar.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Derrapar em excesso parece agressivo, mas na F1 custa décimos de segundo preciosos.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 6: TRÊS TEMPLOS: MÔNACO, MONZA E SPA (25.0s)
-      if (currentScene.visualEffectType === "mod8_monaco_monza_spa") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                TEMPLOS DO CALENDÁRIO • MÔNACO, MONZA E SPA-FRANCORCHAMPS
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  PERSONALIDADES EXTREMAS DO CALENDÁRIO
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-amber-950/60 border-amber-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-amber-300 block">MÔNACO</strong>
-                    <span className="text-[10px] text-zinc-300">Circuito de rua implacável, sem margem para erro entre os guard-rails.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-red-950/60 border-red-500 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-red-300 block">MONZA</strong>
-                    <span className="text-[10px] text-zinc-300">Templo da Velocidade italiana: asas mínimas e médias acima de 250 km/h.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-emerald-950/60 border-emerald-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-emerald-300 block">SPA (BÉLGICA)</strong>
-                    <span className="text-[10px] text-zinc-300">Montanha-russa pelas florestas das Ardenas e a mística da Eau Rouge.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. MÔNACO: O TESTE DOS MUROS", "Precisão de Cirurgião", "Correr a 280 km/h num túnel de concreto sem áreas de escape: qualquer toque é abandono imediato.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. MONZA: O TEMPLO DA VELOCIDADE", "Arrasto Quase Zero", "Monopostos com asas reduzidas ao mínimo, frenagens brutais de 350 km/h para 70 km/h na Variante del Rettifilo.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. SPA-FRANCORCHAMPS", "A Subida da Eau Rouge", "Sete quilômetros de relevo natural, onde um setor pode estar com sol e outro com tempestade torrencial.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Vencer nos três templos é o selo definitivo de consagração de um piloto de Fórmula 1.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 7: QUANDO A PISTA MUDA (25.0s)
-      if (currentScene.visualEffectType === "mod8_rain_track_limits") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                PISTA MOLHADA • A TRAJETÓRIA DE CHUVA E O PERIGO DO EMBORRACHAMENTO
-              </span>
-              <span className="text-[10px] font-mono text-blue-400 bg-blue-950/60 border border-blue-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-blue-500/40 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono">
-                <span className="text-[10px] font-mono text-blue-400 font-bold uppercase tracking-widest block mb-1">
-                  COMPORTAMENTO DO ASFALTO SOB ÁGUA
-                </span>
-                <div className="py-2 text-2xl font-black text-white">
-                  {cueIndex === 1 ? "O TRILHO VIRA SABÃO" : cueIndex === 2 ? "A LINHA DE CHUVA (WET LINE)" : "AQUAPLANAGEM TOTAL"}
-                </div>
-                <p className="text-xs text-zinc-300 font-sans">
-                  {cueIndex === 1 && "A borracha acumulada no traçado seco vira uma camada viscosa e escorregadia assim que as primeiras gotas caem."}
-                  {cueIndex === 2 && "Pilotos experientes contornam as curvas por fora, buscando o asfalto áspero onde há maior aderência mecânica."}
-                  {cueIndex === 3 && "Em poças profundas, a lâmina de água suspende o carro, eliminando qualquer controle de freio ou esterço."}
-                </p>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O TRILHO TRAIÇOEIRO", "A Borracha Molhada Vira Gelo", "Seguir a linha geométrica normal na chuva provoca rodadas instantâneas por falta de atrito.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. A WET LINE (LINHA DE CHUVA)", "Buscando o Asfalto Poroso", "Curvas contornadas por fora, longe das zebras pintadas que são lisas como manteiga.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. O PESADELO DA AQUAPLANAGEM", "Pneus Flutuando na Água", "Quando o fluxo de água supera os 85 litros/segundo suportados pelos pneus de chuva extrema.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Na chuva, a sensibilidade do piloto vale muito mais do que a potência do motor.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 8: A VOLTA PERFEITA (25.0s)
-      if (currentScene.visualEffectType === "mod8_lap_master_challenge") {
-        const cueIndex = audioCurrentTime < 10.0 ? 1 : 2
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 08 CONCLUÍDO • O ENCADINHAMENTO DA VOLTA PERFEITA
-              </span>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
-                PARABÉNS!
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/90 border border-emerald-500/50 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                  DOMÍNIO DOS CIRCUITOS
-                </span>
-                <div className="text-xl font-mono font-black text-white py-1">
-                  A CIÊNCIA DA PISTA
-                </div>
-                <p className="text-xs text-zinc-300">
-                  Você aprendeu a ler traçados, frenagens por referências, curvas de alta contra curvas de baixa, o círculo de atrito e as armadilhas da chuva.
-                </p>
-                <div className="mt-3">
-                  <button
-                    type="button"
-                    onClick={() => setViewStage("quiz")}
-                    className="pointer-events-auto w-full py-2.5 px-4 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-lg"
-                  >
-                    Fazer o Quiz do Módulo 8 (10 Perguntas)
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O ENCAIXE DOS TRÊS SETORES", "A Perfeição em Cada Metro", "Uma volta mágica não é sorte: é a execução geométrica impecável de cada ápice e ponto de frenagem.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. DESAFIO DE PILOTAGEM", "Teste seus Conhecimentos de Pista", "Avance para as dez perguntas e prove que você domina as curvas e os segredos dos circuitos!")}
-
-            <div className="h-4" />
-          </div>
-        )
-      }
+    if (currentScene.visualEffectType === "checkered_finish") {
+      const cueIndex = audioCurrentTime < 5.0 ? 1 : 2
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("A BANDEIRADA FINAL", "MÓDULO 01 CONCLUÍDO")}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Linha de Chegada", "A consagração de uma corrida perfeita")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Módulo 1 Concluído!", "Você já compreende os fundamentos da F1")}
+        </div>
+      )
     }
 
-
     // ------------------------------------------------------------------------
-    // MÓDULO 9: A MENTE DOS CAMPEÕES (PSICOLOGIA, CONSISTÊNCIA E PRESSÃO)
+    // MÓDULO 2 • CENA 1: mod2_machine_overview
     // ------------------------------------------------------------------------
-    if (activeModuleId === 9) {
-      // CENA 1: VELOCIDADE NÃO É TUDO (25.0s)
-      if (currentScene.visualEffectType === "mod9_qualities_overview") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 09 • OS 5 PILARES DE UM PILOTO CAMPEÃO DO MUNDO
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  ALÉM DO CRONÔMETRO PURO
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-cyan-950/60 border-cyan-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">VELOCIDADE PURA</strong>
-                    <span className="text-[9px] text-zinc-300">Decide a volta de sábado, mas não garante o troféu do domingo.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-amber-950/60 border-amber-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">CONSISTÊNCIA</strong>
-                    <span className="text-[9px] text-zinc-300">Repetir 60 voltas sem errar um único milímetro na trajetória.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-emerald-950/60 border-emerald-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">LUCIDEZ SOB 5G</strong>
-                    <span className="text-[9px] text-zinc-300">Decisões táticas perfeitas com frequência cardíaca a 180 bpm.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. A ILUSÃO DA VELOCIDADE", "Sábado vs Domingo", "Ser o mais veloz em uma volta rápida define a pole, mas a corrida exige ritmo de maratona.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. A REGULARIDADE METRÔNOMA", "A Repetição Perfeita", "Campeões mundiais cravam voltas consecutivas com variações inferiores a um décimo de segundo.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. LUCIDEZ A 300 KM/H", "A Mente Acima do Físico", "Filtrar ruídos e conversar tranquilamente com o engenheiro sob forças violentas de aceleração.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Na Fórmula 1, o talento natural abre portas, mas a disciplina mental constrói os títulos.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 2: A MENTE SOB PRESSÃO (25.0s)
-      if (currentScene.visualEffectType === "mod9_pressure_mindset") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                CONTROLE EMOCIONAL • FREQUÊNCIA CARDÍACA E O CUSTO DO ERRO
-              </span>
-              <span className="text-[10px] font-mono text-red-500 bg-red-950/60 border border-red-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-red-500/40 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono">
-                <span className="text-[10px] font-mono text-red-400 font-bold uppercase tracking-widest block mb-1">
-                  BIOMETRIA DO PILOTO NO COCKPIT
-                </span>
-                <div className="py-2 text-3xl font-black text-white">
-                  {cueIndex === 1 ? "170 - 190 BPM" : cueIndex === 2 ? "O CUSTO DO ERRO" : "RESET EM 2 SEGUNDOS"}
-                </div>
-                <p className="text-xs text-zinc-300 font-sans">
-                  {cueIndex === 1 && "O coração bate no limite aeróbico durante duas horas seguidas, suportando 50°C de temperatura dentro do habitáculo."}
-                  {cueIndex === 2 && "Perder uma freada ou tocar na zebra destrói a confiança de um piloto mediano, mas um campeão não se desespera."}
-                  {cueIndex === 3 && "Pilotos extraordinários apagam o erro da memória instantaneamente para focar com precisão cirúrgica na próxima curva."}
-                </p>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O ESTRESSE BIOMÉTRICO", "Batimentos no Teto Cardíaco", "A exaustão muscular e a respiração pesada tornam qualquer raciocínio lógico um desafio hercúleo.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. NÃO PARALISAR NO ERRO", "A Reação à Falha", "Errar faz parte do automobilismo; o que separa o bom piloto do extraordinário é como ele reage.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. O RESET MENTAL", "Foco no Presente Imediato", "Quem fica remoendo a curva anterior bate o carro na curva seguinte.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Pilotos de topo treinam técnicas de neurofeedback para manter a serenidade sob pressão extrema.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 3: A ARTE DA CONSISTÊNCIA (25.0s)
-      if (currentScene.visualEffectType === "mod9_consistency_pace") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                RITMO DE PROVA • PILOTO INCONSTANTE VS METRÔNOMO
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  HISTÓRICO DE VOLTAS CONSECUTIVAS
-                </span>
-                <div className="grid grid-cols-2 gap-3 py-2 text-left">
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 1 ? "bg-red-950/40 border-red-500" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-red-400 block">PILOTO A (OSCILAÇÃO)</strong>
-                    <div className="text-[10px] text-zinc-300 mt-1 space-y-0.5">
-                      <div>V1: 1:21.100 (Muito rápido)</div>
-                      <div>V2: 1:22.400 (Travou roda)</div>
-                      <div>V3: 1:21.800 (Tráfego)</div>
-                      <div className="text-red-400 font-bold">V4: 1:23.200 (Pneu cozido)</div>
-                    </div>
-                  </div>
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 2 || cueIndex === 3 ? "bg-emerald-950/40 border-emerald-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-emerald-400 block">PILOTO B (O METRÔNOMO)</strong>
-                    <div className="text-[10px] text-zinc-300 mt-1 space-y-0.5">
-                      <div>V1: 1:21.500 (Constante)</div>
-                      <div>V2: 1:21.540 (Precisão)</div>
-                      <div>V3: 1:21.510 (Gestão limpa)</div>
-                      <div className="text-emerald-400 font-bold">V4: 1:21.490 (Pneu intacto)</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O PILOTO DOS PICOS", "Rápido Mas Irregular", "Faz a volta mais rápida da prova, mas destrói os pneus e perde tempo médio na soma da corrida.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O PILOTO METRÔNOMO", "A Força da Repetição Perfeita", "Parece discreto, mas acumula segundos de vantagem sem forçar o motor nem a borracha.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. DESTRUIÇÃO PSICOLÓGICA", "A Pressão do Ritmo Implacável", "Adversários que perseguem um piloto metrônomo entram em desespero e cometem erros forçados.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Prost e Schumacher construíram impérios sendo metrônomos inabaláveis na pista.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 4: ATAQUE, DEFESA E LEITURA (25.0s)
-      if (currentScene.visualEffectType === "mod9_racecraft_duels") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                RACECRAFT • PSICOLOGIA DE DUELO E VISÃO DE LONGO PRAZO
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  ESTRATÉGIA PSICOLÓGICA DE PISTA
-                </span>
-                <div className="py-2 text-2xl font-black text-white">
-                  {cueIndex === 1 ? "PRESSÃO NOS RETROVISORES" : cueIndex === 2 ? "ESTUDAR TRÊS VOLTAS ANTES" : "PENSAR NO CAMPEONATO"}
-                </div>
-                <p className="text-xs text-zinc-300 font-sans">
-                  {cueIndex === 1 && "Colocar o bico do carro nos retrovisores força o piloto da frente a olhar para trás e perder as referências de freada."}
-                  {cueIndex === 2 && "O campeão observa durante três voltas onde o adversário tem pior tração antes de armar o bote fatal."}
-                  {cueIndex === 3 && "Saber quando aceitar o segundo lugar em vez de bater o carro é o segredo de quem levanta o troféu mundial em novembro."}
-                </p>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. JOGO PSICOLÓGICO", "A Presença Intimidadora", "Mostrar o carro nas frenagens desestabiliza emocionalmente o rival sem tocar nele.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. A ARTE DO BOTE", "Paciência e Planejamento", "Ultrapassar não é se atirar no primeiro espaço, mas esperar a curva onde o sucesso é garantido.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. A CONTA DO CAMPEONATO", "Pontos Garantidos Valem Mais", "Evitar o abandono contra um rival inconsequente garante a liderança na tabela de pontos.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Para terminar em primeiro, antes de tudo é preciso terminar a corrida.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 5: OS PNEUS EXIGEM INTELIGÊNCIA (25.0s)
-      if (currentScene.visualEffectType === "mod9_tire_intelligence") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                GESTÃO DE BORRACHA • POUPAR PNEUS ANDANDO RÁPIDO
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  TÉCNICA DE PILOTAGEM LIMPA
-                </span>
-                <div className="py-2 text-2xl font-black text-white">
-                  {cueIndex === 1 ? "SEM TRAVAMENTOS DE RODA" : cueIndex === 2 ? "SUAVIDADE NOS APOIOS" : "PNEUS VIVOS NO FINAL"}
-                </div>
-                <p className="text-xs text-zinc-300 font-sans">
-                  {cueIndex === 1 && "Cada travada de roda arranca camadas de borracha e cria pontos planos que desbalanceiam o carro."}
-                  {cueIndex === 2 && "Virar o volante com suavidade nas curvas rápidas evita que os ombros do pneu sofram com superaquecimento."}
-                  {cueIndex === 3 && "Chegar às últimas dez voltas com pneus saudáveis permite ultrapassar rivais que esgotaram a borracha cedo."}
-                </p>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. ADERÊNCIA NÃO É INFINITA", "O Estoque Finito de Borracha", "O pneu é como uma conta bancária: cada excesso de esterço retira saldo de aderência.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. GESTÃO TÉRMICA", "Evitar o Superaquecimento Interno", "Dirigir rápido sem escorregar a traseira nas reacelerações mantém o pneu vivo por 10 voltas a mais.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. O ATAQUE NO FIM DO STINT", "A Recompensa da Paciência", "Quem poupou pneu no início voa baixo no final do stint enquanto os outros despencam.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Gerenciar pneus não é andar devagar, é guiar com eficiência cirúrgica.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 6: ESTILOS DIFERENTES, CAMPEÕES DIFERENTES (25.0s)
-      if (currentScene.visualEffectType === "mod9_champions_styles") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                ESTILOS DE PILOTAGEM • MÚLTIPLOS CAMINHOS PARA A GRANDEZA
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  AS PERSONALIDADES QUE VENCERAM
-                </span>
-                <div className="grid grid-cols-2 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-amber-950/60 border-amber-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-amber-300 block">AYRTON SENNA</strong>
-                    <span className="text-[10px] text-zinc-300">Intensidade visceral, instinto puro e velocidade transcendental na classificação e chuva.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-red-950/60 border-red-500 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-red-300 block">MICHAEL SCHUMACHER</strong>
-                    <span className="text-[10px] text-zinc-300">Preparação física espartana, método analítico e simetria técnica com a Ferrari.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-cyan-950/60 border-cyan-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-cyan-300 block">LEWIS HAMILTON</strong>
-                    <span className="text-[10px] text-zinc-300">Precisão cirúrgica sob pressão, suavidade com os pneus e longevidade recorde.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-purple-950/60 border-purple-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-purple-300 block">MAX VERSTAPPEN</strong>
-                    <span className="text-[10px] text-zinc-300">Agressividade implacável, controle reflexivo absurdo do carro e consistência demolidora.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O INSTINTO DE SENNA", "A Devoção Total à Velocidade", "Senna pilotava com a alma, buscando limites que outros pilotos julgavam fisicamente impossíveis.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O MÉTODO DE SCHUMACHER", "A Disciplina Inovadora", "Transformou a F1 moderna ao introduzir condicionamento atlético total e liderança dentro da fábrica.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. HAMILTON E VERSTAPPEN", "Precisão Cirúrgica e Fome Voraz", "Dois gigantes contemporâneos provando que maestria técnica e agressividade controlada constroem eras.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Não existe um único estilo correto: a grandeza se adapta à personalidade de cada gênio.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 7: QUANDO O PLANO DÁ ERRADO (25.0s)
-      if (currentScene.visualEffectType === "mod9_adapting_uncertainty") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                ADAPTAÇÃO • CRESCER EXATAMENTE QUANDO O CAOS SE INSTALA
-              </span>
-              <span className="text-[10px] font-mono text-amber-400 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-amber-500/40 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono">
-                <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-widest block mb-1">
-                  IMPREVISTOS NA PISTA
-                </span>
-                <div className="py-2 text-2xl font-black text-white">
-                  {cueIndex === 1 ? "O PLANO QUEBROU" : cueIndex === 2 ? "FILTRAR O RUÍDO" : "CRESCER NO CAOS"}
-                </div>
-                <p className="text-xs text-zinc-300 font-sans">
-                  {cueIndex === 1 && "Uma asa dianteira danificada, chuva repentina ou um Safety Car inesperado jogam fora todo o plano pré-corrida."}
-                  {cueIndex === 2 && "Em vez de lamentar pelo rádio, o piloto campeão ajusta a distribuição de freios e muda seu estilo de guiar."}
-                  {cueIndex === 3 && "É nas corridas caóticas e imprevisíveis que os verdadeiros campeões mundiais constroem suas lendas."}
-                </p>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O PLANO QUE DESMORONA", "A Inevitável Incerteza da F1", "Nenhuma simulação de computador prevê uma quebra de asa ou óleo na pista na volta 30.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. DIÁLOGO CALMO NO CAOS", "A Confiança no Muro", "O piloto campeão relata a perda de aderência sem drama e pede opções táticas imediatamente.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. A OPORTUNIDADE OCULTA", "Vencer na Dificuldade", "Quando todos os rivais entram em pânico, o piloto frio enxerga a rota mais rápida para a vitória.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              O piloto comum precisa que tudo esteja perfeito; o campeão vence mesmo quando tudo dá errado.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 8: A MENTE DO CAMPEÃO (25.0s)
-      if (currentScene.visualEffectType === "mod9_champion_mindset_challenge") {
-        const cueIndex = audioCurrentTime < 10.0 ? 1 : 2
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 09 CONCLUÍDO • O FATOR HUMANO NA FÓRMULA 1
-              </span>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
-                PARABÉNS!
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/90 border border-emerald-500/50 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                  PSICOLOGIA DE ELITE
-                </span>
-                <div className="text-xl font-mono font-black text-white py-1">
-                  A MENTE DOS CAMPEÕES
-                </div>
-                <p className="text-xs text-zinc-300">
-                  Você desvendou os pilares mentais: velocidade, consistência milimétrica, controle emocional sob 180 bpm, respeito aos pneus e a capacidade de brilhar no caos.
-                </p>
-                <div className="mt-3">
-                  <button
-                    type="button"
-                    onClick={() => setViewStage("quiz")}
-                    className="pointer-events-auto w-full py-2.5 px-4 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-lg"
-                  >
-                    Fazer o Quiz do Módulo 9 (10 Perguntas)
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. A SOMA DAS HABILIDADES", "Além do Talento Bruto", "A velocidade é apenas o bilhete de entrada; o que ergue o troféu é o autocontrole e a inteligência.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. MOSTRE SUA MENTE", "O Quiz dos Campeões", "Avance para as dez perguntas e prove que você compreende a psicologia de quem vence na F1!")}
-
-            <div className="h-4" />
-          </div>
-        )
-      }
+    if (currentScene.visualEffectType === "mod2_machine_overview") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("ANATOMIA E HARMONIA DA MÁQUINA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Sistemas em Harmonia Perfeita", "A velocidade nasce da integração conjunta entre aero…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Sensibilidade Extrema de Acerto", "Mudanças mínimas na asa ou na pressão dos pneus tran…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Organismo Único no Limite", "O piloto traduz o comportamento físico do carro para…")}
+        </div>
+      )
     }
 
-
     // ------------------------------------------------------------------------
-    // MÓDULO 10: A TECNOLOGIA POR TRÁS DA VELOCIDADE (ENGENHARIA E DADOS)
+    // MÓDULO 2 • CENA 2: mod2_aerodynamics
     // ------------------------------------------------------------------------
-    if (activeModuleId === 10) {
-      // CENA 1: O CARRO É UM SISTEMA INTEGRADO (25.0s)
-      if (currentScene.visualEffectType === "mod10_integrated_system") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 10 • ENGENHARIA SISTÊMICA DA FÓRMULA 1
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-cyan-500/40 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  TODOS OS SISTEMAS CONECTADOS
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-cyan-950/60 border-cyan-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">AERO & CHASSI</strong>
-                    <span className="text-[9px] text-zinc-300">Assoalho gerando pressão negativa em conjunto com a rigidez torsional.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-emerald-950/60 border-emerald-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">PROPULSÃO HÍBRIDA</strong>
-                    <span className="text-[9px] text-zinc-300">Entrega linear de torque combinando motor térmico e MGU-K elétrico.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-purple-950/60 border-purple-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">DADOS & SENSORES</strong>
-                    <span className="text-[9px] text-zinc-300">+300 sensores registrando pressões e temperaturas para a central eletrônica.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. SEM PEÇA MILAGROSA", "A Vitória é Sistêmica", "A velocidade não vem de uma solução isolada, mas de centenas de parâmetros conversando harmoniosamente.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O EFEITO DOMINÓ", "Alterações Mecânicas Conectadas", "Mudar a rigidez da barra estabilizadora afeta a aerodinâmica e o aquecimento dos pneus.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. EQUILÍBRIO GLOBAL", "O Carro como Organismo Único", "Engenheiros buscam a janela em que todos os componentes operam no pico de eficiência conjunta.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              A Fórmula 1 é o ápice da engenharia mecatrônica contemporânea.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 2: AERODINÂMICA: DOMINANDO O AR (25.0s)
-      if (currentScene.visualEffectType === "mod10_aerodynamics_balance") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                AERODINÂMICA AVANÇADA • PRESSÃO AERODINÂMICA VS ARRASTO
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  A FÍSICA DO FLUXO DE AR
-                </span>
-                <div className="py-2 text-2xl font-black text-white">
-                  {cueIndex === 1 ? "PRESSÃO VERTICAL DESCENDENTE" : cueIndex === 2 ? "A PENALIDADE DO ARRASTO" : "COMPROMISSO EM CFD"}
-                </div>
-                <p className="text-xs text-zinc-300 font-sans">
-                  {cueIndex === 1 && "Diferenças de pressão entre a parte superior e inferior do carro criam sucção potente que o cola no solo."}
-                  {cueIndex === 2 && "Toda asa que gera sustentação negativa também cria resistência frontal ao ar (drag), reduzindo velocidade máxima."}
-                  {cueIndex === 3 && "Modelos matemáticos em supercomputadores de CFD encontram o ponto de maior velocidade na soma da volta inteira."}
-                </p>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O AR COMO ALIADO", "Downforce em Curvas Rápidas", "Permite contornar curvas de 250 km/h sem que a inércia jogue o carro para fora da pista.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O AR COMO INIMIGO", "A Resistência nas Retas", "O arrasto excessivo deixa o monoposto vulnerável a ultrapassagens fáceis dos concorrentes.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. TÚNEL DE VENTO & CFD", "A Busca pelo Formato Ideal", "Milhares de horas virtuais calculando o caminho exato de cada molécula de ar sobre o chassi.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              O design aerodinâmico define mais de 60% do desempenho total de um carro de Fórmula 1.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 3: AERODINÂMICA ATIVA: OS MODOS DE 2026 (25.0s)
-      if (currentScene.visualEffectType === "mod10_active_aero_modes") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                REGULAMENTO 2026 • AERODINÂMICA ATIVA: STRAIGHT & CORNER MODES
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-cyan-500/40 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  CONFIGURAÇÃO DINÂMICA DAS ASAS EM TEMPO REAL
-                </span>
-                <div className="grid grid-cols-2 gap-3 py-2 text-left">
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 1 || cueIndex === 2 ? "bg-cyan-950/60 border-cyan-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-cyan-300 block">STRAIGHT MODE (RETAS)</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">Flaps móveis das asas dianteira e traseira abrem em conjunto nas zonas autorizadas, minimizando o arrasto para máxima velocidade.</span>
-                  </div>
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 3 ? "bg-red-950/60 border-red-500 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-red-300 block">CORNER MODE (CURVAS)</strong>
-                    <span className="text-[11px] text-zinc-300 mt-1 block">Asas fecham instantaneamente na freada, restabelecendo a pressão aerodinâmica máxima para total estabilidade e frenagem segura.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O SALTO DE 2026", "Asas Ativas Coordenadas", "Pela primeira vez na história da F1, a asa dianteira e a traseira movem-se juntas para controlar o fluxo.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. STRAIGHT MODE", "Mínima Resistência nas Retas", "Reduz o arrasto drasticamente, permitindo velocidades extremas com menor consumo de combustível e bateria.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. CORNER MODE", "Retorno Imediato da Carga", "Na primeira pressão no pedal de freio, os flaps fecham para colar os pneus no asfalto.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              A aerodinâmica ativa de 2026 elimina a dependência do DRS tradicional da era anterior.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 4: UNIDADE DE POTÊNCIA 2026 (25.0s)
-      if (currentScene.visualEffectType === "mod10_power_unit_hybrid") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                PROPULSÃO 2026 • 50% TÉRMICA & 50% ELÉTRICA (SEM MGU-H)
-              </span>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-emerald-500/40 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                  ARQUITETURA DA UNIDADE HÍBRIDA 2026
-                </span>
-                <div className="grid grid-cols-2 gap-3 py-2 text-left">
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 1 ? "bg-emerald-950/60 border-emerald-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-emerald-300 block">MOTOR TÉRMICO V6 1.6L</strong>
-                    <div className="text-[10px] text-zinc-300 mt-1 space-y-0.5">
-                      <div>• ~400 kW (~530 cv) de combustão</div>
-                      <div>• 100% biocombustível sustentável</div>
-                      <div>• Redução do fluxo de combustível</div>
-                    </div>
-                  </div>
-                  <div className={cn("p-2.5 rounded-xl border transition-all", cueIndex === 2 || cueIndex === 3 ? "bg-cyan-950/60 border-cyan-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-cyan-300 block">SISTEMA ELÉTRICO MGU-K</strong>
-                    <div className="text-[10px] text-zinc-300 mt-1 space-y-0.5">
-                      <div>• 350 kW (~470 cv elétricos)</div>
-                      <div>• Potência elétrica triplicada</div>
-                      <div>• MGU-H 100% ELIMINADO</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. COMBUSTÍVEL SUSTENTÁVEL", "Zero Carbono Fóssil", "A F1 2026 roda com combustíveis sintéticos derivados de captura de carbono e resíduos biológicos.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. MGU-K DE 350 KW", "Triplicação da Força Elétrica", "O motor elétrico quase empata com o motor a gasolina em potência de pico gerada.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. POTÊNCIA VS ENERGIA", "Gerenciar o Estoque da Bateria", "Potência é a força instantânea; energia é a reserva que deve ser recarregada a cada frenagem.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              O fim do complexo MGU-H atraiu novas montadoras como Audi e Ford para a Fórmula 1.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 5: BOOST, OVERTAKE MODE E RECHARGE (25.0s)
-      if (currentScene.visualEffectType === "mod10_boost_overtake_recharge") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                GESTÃO ENERGÉTICA • BOOST, OVERTAKE MODE E RECARGA TÁTICA
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  ESTADOS DE FLUXO DA BATERIA
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-red-950/60 border-red-500 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-red-300 block">BOOST MODE</strong>
-                    <span className="text-[9px] text-zinc-300">Pico máximo de 350 kW para saídas de curva e defesas agressivas.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-purple-950/60 border-purple-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-purple-300 block">OVERTAKE MODE</strong>
-                    <span className="text-[9px] text-zinc-300">Substituto do DRS: injeção extra de eletricidade quando colado no rival.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-emerald-950/60 border-emerald-400 scale-102" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-emerald-300 block">RECHARGE (RECUPERAÇÃO)</strong>
-                    <span className="text-[9px] text-zinc-300">Freios regenerativos recarregam a bateria em desacelerações intensas.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. DISPARO DE BOOST", "Potência Sob Demanda", "O piloto aperta o botão de boost no volante para queimar eletricidade e defender a posição.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. OVERTAKE MODE (2026)", "A Energia do Caçador", "Sistema regulamentar que concede vantagem elétrica para quem persegue colado no adversário.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. MODO RECHARGE", "Enchendo o Tanque Elétrico", "Nas curvas lentas e frenagens, o MGU-K atua como gerador brutal recompondo a carga da bateria.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Desperdiçar energia no início da reta provoca derating (corte elétrico) antes da frenagem.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 6: TELEMETRIA E DADOS (25.0s)
-      if (currentScene.visualEffectType === "mod10_telemetry_laps") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                TELEMETRIA DE ENGENHARIA • A FÓRMULA 1 TRANSFORMADA EM NÚMEROS
-              </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest block mb-1">
-                  CANAIS DE TELEMETRIA POR MILISSEGUNDO
-                </span>
-                <div className="p-3 rounded-xl bg-black/60 border border-white/10 text-left space-y-1.5">
-                  <div className="text-cyan-400 font-bold">CANAL 1: SPEED (VELOCIDADE)</div>
-                  <div className="text-zinc-300 text-[10px]">Picos de reta, velocidade mínima de contorno e desaceleração.</div>
-                  <div className="text-emerald-400 font-bold pt-1">CANAL 2: THROTTLE & BRAKE</div>
-                  <div className="text-zinc-300 text-[10px]">Porcentagem de acelerador e pressão hidráulica no circuito de freio.</div>
-                  <div className="text-amber-400 font-bold pt-1">CANAL 3: TYRE CARCASS TEMP</div>
-                  <div className="text-zinc-300 text-[10px]">Sensores ópticos medindo a temperatura interna da carcaça do pneu.</div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. TREZENTOS SENSORES", "A Pista Mapeada", "A cada metro percorrido, dados de carga da suspensão e calor são enviados ao box sem fio.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. COMPARATIVO DE VOLTAS", "A Busca pelo Tempo Perdido", "Engenheiros mostram ao piloto onde ele freou cedo demais ou destracionou tarde na curva.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. REFINAMENTO DE CLASSIFICAÇÃO", "Ajustes Milimétricos", "Alterar meio grau de asa dianteira baseado nos traços de telemetria garante a pole position.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              Na F1 moderna, a intuição do piloto é validada pela ciência incontestável dos dados.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 7: MATERIAIS, ESTRUTURA E SEGURANÇA (25.0s)
-      if (currentScene.visualEffectType === "mod10_materials_safety") {
-        const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                CIÊNCIA DOS MATERIAIS • MONOCOQUE DE CARBONO E O HALO DE TITÂNIO
-              </span>
-              <span className="text-[10px] font-mono text-amber-400 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded">
-                FASE {cueIndex} DE 3
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/85 border border-amber-500/40 backdrop-blur-md max-w-lg w-full text-center shadow-2xl animate-fade-in font-mono text-xs">
-                <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-widest block mb-1">
-                  HOMOLOGAÇÃO DE SOBREVIVÊNCIA DA FIA
-                </span>
-                <div className="grid grid-cols-3 gap-2 py-2 text-left">
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 1 ? "bg-amber-950/60 border-amber-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">CÉLULA DE CARBONO</strong>
-                    <span className="text-[9px] text-zinc-300">Fibra de carbono tecida com camadas de Zylon anti-penetração de destroços.</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 2 ? "bg-red-950/60 border-red-500" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">HALO DE TITÂNIO</strong>
-                    <span className="text-[9px] text-zinc-300">Norma FIA 8869-2018: suporta carga estática de 120 kN (~12 toneladas).</span>
-                  </div>
-                  <div className={cn("p-2 rounded-xl border transition-all", cueIndex === 3 ? "bg-cyan-950/60 border-cyan-400" : "bg-black/50 border-white/10")}>
-                    <strong className="text-xs text-white block">CRASH STRUCTURES</strong>
-                    <span className="text-[9px] text-zinc-300">Cones deformáveis de impacto que absorvem energia desacelerando o corpo.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. A CÉLULA INDEFORMÁVEL", "O Casulo de Carbono e Zylon", "O monocoque protege o piloto mantendo o cockpit intacto mesmo em batidas violentas a mais de 250 km/h.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. O HALO DE 120 KN", "Titânio de Grau Aeroespacial", "Testado para suportar o peso de dois ônibus londrinos empilhados sobre a cabeça do piloto.")}
-            {cueIndex === 3 && renderMarianaSyncBadge("03. ABSORÇÃO DE ENERGIA", "Estruturas Deformáveis", "Bicos e laterais esmagam-se progressivamente para que a desaceleração sofrida pelos órgãos seja sobrevivível.")}
-
-            <div className="pointer-events-auto max-w-sm mx-auto w-full bg-black/90 border border-white/20 rounded-xl p-2.5 shadow-2xl backdrop-blur-md text-center text-xs text-zinc-300">
-              A evolução dos materiais garante que os pilotos saiam caminhando dos acidentes mais brutais.
-            </div>
-          </div>
-        )
-      }
-
-      // CENA 8: DESAFIO FINAL: O ENGENHEIRO DE EQUIPE (25.0s)
-      if (currentScene.visualEffectType === "mod10_engineer_challenge") {
-        const cueIndex = audioCurrentTime < 10.0 ? 1 : 2
-        return (
-          <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-6 z-20">
-            <div className="w-full flex items-center justify-between border-b border-white/20 pb-2 backdrop-blur-sm">
-              <span className="text-xs font-mono font-black uppercase text-white tracking-wider">
-                MÓDULO 10 CONCLUÍDO • O ENGENHEIRO DA FÓRMULA 1
-              </span>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">
-                PARABÉNS!
-              </span>
-            </div>
-
-            <div className="flex-1 flex items-center justify-center">
-              <div className="p-4 rounded-2xl bg-black/90 border border-emerald-500/50 backdrop-blur-md max-w-md w-full text-center shadow-2xl animate-fade-in">
-                <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest block mb-1">
-                  FORMAÇÃO COMPLETA
-                </span>
-                <div className="text-xl font-mono font-black text-white py-1">
-                  A TECNOLOGIA DA VELOCIDADE
-                </div>
-                <p className="text-xs text-zinc-300">
-                  Você dominou a aerodinâmica ativa de 2026, as unidades de potência híbridas com combustíveis limpos, a telemetria ao vivo e as estruturas de segurança da FIA.
-                </p>
-                <div className="mt-3">
-                  <button
-                    type="button"
-                    onClick={() => setViewStage("quiz")}
-                    className="pointer-events-auto w-full py-2.5 px-4 rounded-xl bg-[#E10600] hover:bg-[#ff1a14] text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-lg"
-                  >
-                    Fazer o Quiz do Módulo 10 (10 Perguntas)
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {cueIndex === 1 && renderMarianaSyncBadge("01. O PAPEL DO ENGENHEIRO", "Integrar Ciência e Competição", "Agora você é capaz de olhar para um carro de Fórmula 1 e enxergar a física e a engenharia por trás de cada curva.")}
-            {cueIndex === 2 && renderMarianaSyncBadge("02. DESAFIO TÉCNICO FINAL", "O Grande Teste", "Avance para as dez perguntas e conquiste o certificado final de tecnologia da Fórmula 1!")}
-
-            <div className="h-4" />
-          </div>
-        )
-      }
+    if (currentScene.visualEffectType === "mod2_aerodynamics") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("AERODINÂMICA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Aderência em Alta Velocidade", "O ar empurra o carro para baixo, aumentando o atrito…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Barreira Invisível nas Retas", "A resistência do ar freia o monoposto, exigindo comp…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Eficiência Aerodinâmica L/D", "Engenheiros equilibram sustentação negativa e arrast…")}
+        </div>
+      )
     }
 
+    // ------------------------------------------------------------------------
+    // MÓDULO 2 • CENA 3: mod2_tires
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod2_tires") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("PNEUS PIRELLI 18\"", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("O Ponto de Contato com a Pista", "Pneus frios não geram atrito químico com o asfalto")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Aderência vs Durabilidade", "O pneu mais macio oferece velocidade imediata, mas o…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Drenagem Extrema Contra Aquaplanagem", "Intermediários e pneus de chuva pesada canalizam a á…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 2 • CENA 4: mod2_steering_wheel
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod2_steering_wheel") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("VOLANTE MULTIFUNCIONAL", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Mais que um Volante de Direção", "Reúne dezenas de controles de telemetria, regulagens…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Paddles de Marcha e Balanço", "Trocas sequenciais sem tirar as mãos do volante e aj…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Comunicação e Tempos de Volta", "O piloto monitora tempos delta, marcha e rotação enq…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 2 • CENA 5: mod2_brakes
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod2_brakes") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("FREIOS DE CARBONO-CARBONO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Desaceleração a Mais de 1.000°C", "A energia cinética é convertida em calor brutal em p…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Dutos de Resfriamento", "O ar frio é conduzido diretamente aos tambores de ro…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Equilíbrio entre Eixos Dianteiro e Traseiro", "Evita o travamento das rodas traseiras antes do pilo…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 2 • CENA 6: mod2_power_unit
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod2_power_unit") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("UNIDADE DE POTÊNCIA HÍBRIDA 2026", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Motor V6 Turbo 1.6L Eficiente", "Alimentado integralmente por combustíveis 100% suste…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("MGU-K Elétrico de 350 kW", "Recupera energia cinética nas frenagens, armazenando…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Potência Instantânea Extra", "Liberação tática de energia para ultrapassagens e re…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 2 • CENA 7: mod2_setup_strategy
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod2_setup_strategy") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("ACERTO MECÂNICO VS ESTRATÉGIA DE CORRIDA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Pistas de Velocidade Pura", "As equipes reduzem as asas para cortar o arrasto e v…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Circuitos Urbanos e Sinuosos", "Aumentam os flaps para garantir aderência em curvas…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A Diferença Conceitual", "O acerto prepara a máquina na garagem antes da largada")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 2 • CENA 8: mod2_full_integration
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod2_full_integration") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("MÓDULO 02 CONCLUÍDO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Harmonia dos Sistemas", "A velocidade é a soma equilibrada de todas as áreas…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("No Limite da Física", "Agora que você conhece a máquina, avance para o quiz…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 3 • CENA 1: mod3_weekend_format
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod3_weekend_format") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("O FORMATO DO FIM DE SEMANA DE GP", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("TL1 e TL2 em Pista Aberta", "As equipes rodam centenas de voltas para calibrar al…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("TL3 e a Disputa da Classificação", "A pressão sobe no sábado com a busca pela volta perf…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Domingo de Corrida & Formato Sprint", "A prova máxima de 305 km onde estratégia e ritmo de…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 3 • CENA 2: mod3_practice_analysis
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod3_practice_analysis") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("TREINOS LIVRES", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Ilusão da Volta Mais Rápida", "Liderar o treino livre nem sempre significa ser o ma…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Simulando as Condições da Corrida", "Equipes rodam com peso elevado para medir a degradaç…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Asas Novas e Mapas de Injeção", "Tinta aerodinâmica (Flow-Vis) e grades pitot analisa…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 3 • CENA 3: mod3_qualifying_grid
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod3_qualifying_grid") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("CLASSIFICAÇÃO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Eliminação dos 5 Últimos", "Todos os 20 carros na pista")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Fronteira do Top 10", "Quinze pilotos disputam dez vagas")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A Volta Perfeita", "Dez carros em busca do limite absoluto em busca do p…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 3 • CENA 4: mod3_start_sequence
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod3_start_sequence") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("PROCEDIMENTO OFICIAL DE LARGADA FIA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Volta de Apresentação Finalizada", "Os vinte monopostos encaixam-se nos colchetes pintad…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Sequência de 1 em 1 Segundo", "Motores em rotação máxima, embreagens acionadas e te…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("O Apagamento Simultâneo", "A largada é dada exatamente quando as luzes apagam a…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 3 • CENA 5: mod3_race_tower
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod3_race_tower") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("TRANSMISSÃO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("O Painel de Bordo do Telespectador", "A barra esquerda da transmissão informa posições, tr…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Distância para o Líder da Prova", "Mostra a distância em segundos acumulada entre qualq…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Diferença para o Carro da Frente", "Quando o INT é menor que 1 segundo, o piloto está na…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 3 • CENA 6: mod3_pitstop_strategy
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod3_pitstop_strategy") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("BOXES", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Troca em Poucos Batimentos", "Uma porca única central e pistolas pneumáticas de al…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Obrigatoriedade de Dois Compostos", "Regra desportiva que força pelo menos uma troca de p…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Janela de Retorno no Tráfego", "A equipe precisa calcular a volta de saída para evit…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 3 • CENA 7: mod3_flags_safety_car
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod3_flags_safety_car") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("SEGURANÇA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Comunicação Visual Imediata", "Amarela exige cautela e proíbe ultrapassagens")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Neutralização de Ritmo", "O Safety Car agrupa o pelotão")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Interrupção e Retardatários", "Bandeira vermelha recolhe os carros ao pit lane")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 3 • CENA 8: mod3_finish_championship
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod3_finish_championship") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("MÓDULO 03 CONCLUÍDO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Chegada Gloriosa", "Agitada na linha de chegada para saudar o vencedor d…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Tabela Oficial da FIA", "25 pontos para a vitória descendo progressivamente a…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Pilotos e Construtores", "Cada ponto alimenta a glória individual do piloto e…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 4 • CENA 1: mod4_roles_strategy
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod4_roles_strategy") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("QUEM DECIDE A ESTRATÉGIA NO PIT WALL", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Sensibilidade ao Volante", "O piloto sente a aderência na ponta dos dedos e aler…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("O Engenheiro de Corrida", "Traduz as angústias do piloto em parâmetros técnicos…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Simulações no Pit Wall e Fábrica", "Supercomputadores calculam a probabilidade de vitóri…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 4 • CENA 2: mod4_tire_choice_sim
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod4_tire_choice_sim") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("ESTRATÉGIA DE PNEUS", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Escolha de Três Compostos", "A fabricante escolhe três compostos seguidos para ca…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Perda Química de Aderência", "O calor excessivo desestrutura as moléculas da borra…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Queda Abrupta de Performance", "O momento em que os tempos de volta despencam 2 a 3…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 4 • CENA 3: mod4_pitstop_timing_calc
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod4_pitstop_timing_calc") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("JANELA DE BOXES", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("O Delta Temporal da Parada", "Durante o pit stop, os adversários na pista percorre…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Clean Air para o Pneu Novo", "Em ar limpo, o piloto consegue extrair 100% da aderê…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Box, Box, Box!", "A ordem pelo rádio ocorre no momento exato em que a…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 4 • CENA 4: mod4_safety_car_rain
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod4_safety_car_rain") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("DUELO TÁTICO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Velocidade do Pneu Novo", "Parar antes antecipa o ritmo alto da borracha fresca…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Estender o Stint em Ar Limpo", "Funciona quando o adversário pega carros lentos na s…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Leitura da Pista em Fração de Segundo", "Estrategistas monitoram o cronômetro para antecipar…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 4 • CENA 5: mod4_telemetry_radio_data
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod4_telemetry_radio_data") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("COMUNICAÇÃO DE RÁDIO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Planos A, B e C no Rádio", "As equipes utilizam nomenclaturas codificadas para d…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Gestão Sem Distração a 300 km/h", "O engenheiro fala apenas em trechos de reta para não…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A Simbiose que Ganha Provas", "A decisão final é um pacto entre os dados do muro e…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 4 • CENA 6: mod4_alternate_plans
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod4_alternate_plans") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("TELEMETRIA DE RITMO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Monitoramento Volta a Volta", "Engenheiros acompanham a curva de tempo em busca dos…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Simulação de Milhões de Cenários", "Modelos matemáticos prevêem em que posição exata o c…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Mudança de Plano Instantânea", "Se a degradação for menor que o esperado, a equipe e…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 4 • CENA 7: mod4_strategist_challenge
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod4_strategist_challenge") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("IMPREVISTOS", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Vantagem do Safety Car", "Trocar pneus durante a neutralização economiza tempo…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Chuva Iminente no Radar", "O radar acusa chuva em cinco voltas")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A Decisão de Milissegundos", "Estrategistas campeões destacam-se pela coragem de r…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 4 • CENA 8: mod4_strategic_thinking_summary
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod4_strategic_thinking_summary") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("MÓDULO 04 CONCLUÍDO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Estratégia Além da Velocidade Bruta", "A corrida não é vencida apenas pelo carro mais rápid…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Avalie seu Conhecimento Tático", "Avance para o quiz de dez perguntas e teste seu raci…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 5 • CENA 1: mod5_overtaking_anatomy
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod5_overtaking_anatomy") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("ANATOMIA DE UMA ULTRAPASSAGEM", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Manobra Começa Muito Antes", "Observar a distância e aproveitar o vácuo na reta pr…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Linha Interna vs Externa", "A linha interna garante preferência no apex, mas exi…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Velocidade Não Dá Direito Automático", "A manobra precisa acontecer de maneira limpa, contro…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 5 • CENA 2: mod5_attack_tech_2026
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod5_attack_tech_2026") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("VÁCUO (SLIPSTREAM)", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Aproveitando a Menor Resistência", "Andar na esteira do líder reduz a força contrária do…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Defesa Preventiva na Reta", "O líder move-se uma vez para o lado para tirar o adv…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Saindo da Esteira de Turbulência", "No ponto de freada, o piloto sai do vácuo para frear…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 5 • CENA 3: mod5_defense_limits
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod5_defense_limits") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("FRENAGEM & APEX", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Mais Tarde Sem Travar Rodas", "Frear meio metro depois pode garantir a liderança, m…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Direito a Espaço na Curva", "Estando lado a lado no ponto de tangência, o piloto…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Quem Acelera Primeiro Vence", "Ultrapassagens muitas vezes são decididas na retomad…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 5 • CENA 4: mod5_side_by_side_rules
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod5_side_by_side_rules") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("DEFESA DE POSIÇÃO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Proibido Ziguezaguear na Reta", "A FIA permite proteger a linha interna apenas uma vez")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Sem Mudar de Direção na Frenagem", "Com as forças de frenagem no ápice, qualquer guinada…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Firmeza com Respeito", "A melhor defesa é o posicionamento prévio correto do…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 5 • CENA 5: mod5_track_limits_runoff
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod5_track_limits_runoff") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("TECNOLOGIA 2026", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Aerodinâmica Ativa Integrada", "Em 2026, as asas dianteira e traseira movimentam-se…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Disparo de Energia Elétrica", "O sistema elétrico MGU-K entrega potência suplementa…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A Bateria do Líder", "O piloto da frente pode contra-atacar usando sua pró…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 5 • CENA 6: mod5_stewards_investigations
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod5_stewards_investigations") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("LIMITES DE PISTA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("O Limite Físico e Legal", "Pelo menos uma roda precisa manter contato visual ou…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Sair da Pista para Ultrapassar", "Utilizar as áreas de escape para contornar o rival c…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A Devolução Imediata", "Ceder a posição de volta antes da intervenção dos co…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 5 • CENA 7: mod5_overtaking_challenges
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod5_overtaking_challenges") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("DIREÇÃO DE PROVA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Alerta Oficial na Tela", "A Direção de Prova envia o caso aos quatro comissári…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Dados Técnicos Incontestáveis", "Comissários analisam se o piloto tentou fazer a curv…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Punições Proporcionais", "Penalidades adicionam tempo ao resultado final ou ex…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 5 • CENA 8: mod5_overtaking_summary
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod5_overtaking_summary") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("MÓDULO 05 CONCLUÍDO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("O Equilíbrio Perfeito", "Ultrapassar na F1 exige a ousadia de mergulhar na fr…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Desafio de Conhecimento", "Avance para as dez perguntas e teste seus reflexos s…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 6 • CENA 1: mod6_birth_of_f1
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod6_birth_of_f1") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("13 DE MAIO DE 1950: O MARCO INAUGURAL", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Padronização do Regulamento", "A FIA estabeleceu a Fórmula 1 como o topo das regras…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Silverstone, 13 de Maio de 1950", "Giuseppe Farina e a lendária Alfa Romeo 158 'Alfetta…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Pioneirismo Sem Concessões", "Carros com motor dianteiro, pneus estreitos e segura…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 6 • CENA 2: mod6_cars_evolution
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod6_cars_evolution") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("EVOLUÇÃO TÉCNICA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Revolução dos Anos 60", "Colin Chapman e a Lotus provaram que colocar o motor…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Chegada da Aerodinâmica e Cavalos", "Nos anos 70 surgiram os aerofólios e o efeito solo")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Eletrônica Fina e Unidades Híbridas", "Da suspensão ativa aos propulsores híbridos modernos…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 6 • CENA 3: mod6_legendary_drivers
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod6_legendary_drivers") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("GIGANTES DO ESPORTE", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Cinco Títulos por Quatro Equipes", "Juan Manuel Fangio dominou a década de 1950 com maes…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Jim Clark e Jackie Stewart", "Clark encantava pela velocidade pura")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Superação Sob Humano Limite", "Após o terrível acidente de 1976, Lauda retornou em…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 6 • CENA 4: mod6_rivalries
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod6_rivalries") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("DUELOS HISTÓRICOS", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Contraste de Personalidades", "A rivalidade cinematográfica que levou o automobilis…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("O Ápice do Automobilismo", "Dois gênios no mesmo carro da McLaren, dividindo o p…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A Batalha de Gerações (2021)", "Vinte e duas corridas de tirar o fôlego com os dois…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 6 • CENA 5: mod6_safety_evolution
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod6_safety_evolution") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("SEGURANÇA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("McLaren MP4/1 (1981)", "A substituição do alumínio pela fibra de carbono pro…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Cruzada de Sid Watkins", "Sensores biométricos, laterais do cockpit elevadas,…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Homologação FIA 120 kN", "Inicialmente criticado pela estética, o Halo provou…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 6 • CENA 6: mod6_senna_brazil_legacy
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod6_senna_brazil_legacy") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("TRADIÇÃO BRASILEIRA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Fittipaldi e Nelson Piquet", "O Brasil conquistou cinco títulos mundiais antes de…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Mônaco, Donington e Chuva", "A busca intransigente pela perfeição, as voltas mági…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Mais que um Piloto, um Ícone", "O impacto de Senna transcendeu as pistas, tornando-s…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 6 • CENA 7: mod6_modern_f1_2026
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod6_modern_f1_2026") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("ERA CONTEMPORÂNEA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Combustíveis Sintéticos Verdes", "A F1 lidera a tecnologia de combustíveis limpos que…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Carros Mais Ágeis e Eficientes", "Monopostos reduzidos em largura e massa, com partici…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("O Teto Financeiro (Cost Cap)", "Restrição orçamentária impede que uma única montador…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 6 • CENA 8: mod6_history_summary
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod6_history_summary") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("MÓDULO 06 CONCLUÍDO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Memória que Inspira", "Entender a história é essencial para enxergar a alma…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Teste sua Memória", "Avance para as dez questões do quiz e mostre que voc…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 7 • CENA 1: mod7_team_roles
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod7_team_roles") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("AS CENTENAS DE PESSOAS POR TRÁS DO PILOTO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("O Team Principal", "Coordena as decisões estratégicas, lidera negociaçõe…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Performance e Confiabilidade", "Trabalham colados ao piloto para extrair o último dé…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("O Exército de Projetistas", "Centenas de engenheiros de compósitos, aerodinamicis…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 7 • CENA 2: mod7_radio_communication
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod7_radio_communication") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("CANAL DE RÁDIO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Apenas o Engenheiro Fala", "Para evitar confusão, somente o engenheiro de corrid…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Palavras Curtas e Códigos", "Informações precisas de deltas, mapas de freio e pos…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Acalmar os Ânimos sob 5G", "O engenheiro atua como âncora psicológica do piloto…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 7 • CENA 3: mod7_pitwall_command
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod7_pitwall_command") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("PIT WALL", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Centenas de Monitores no Muro", "O pit wall recebe dados criptografados por telemetri…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Sala de Operações Virtual", "Na Inglaterra ou Itália, dezenas de analistas acompa…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A Resposta Rápida", "Chamar o piloto para os boxes no instante de um Safe…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 7 • CENA 4: mod7_pitstop_anatomy
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod7_pitstop_anatomy") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("COREOGRAFIA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Precisão no Colchete", "O piloto deve parar exatamente na marca")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Porca Única Central", "Pistolas de ar comprimido a mais de 10")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Luz Verde Sem Hesitação", "O semáforo do pit stop analisa o tráfego no pit lane…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 7 • CENA 5: mod7_telemetry_analysis
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod7_telemetry_analysis") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("ANÁLISE DE DADOS", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("O Raio-X da Pilotagem", "Gráficos de acelerador, freio, marcha e velocidade m…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("O Espelho do Box ao Lado", "Pilotos da mesma equipe analisam a telemetria mútua…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Ajuste de Diferencial e Asas", "Engenheiros refinam a distribuição de torque para me…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 7 • CENA 6: mod7_two_drivers_one_team
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod7_two_drivers_one_team") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("COMPANHEIROS DE EQUIPE", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("O Mesmo Equipamento Mecânico", "Sem desculpas técnicas")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Mundial de Construtores", "Colisões entre companheiros de equipe são a maior pr…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A Decisão do Muro", "Trocar posições na pista visa maximizar a pontuação…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 7 • CENA 7: mod7_cost_cap_development
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod7_cost_cap_development") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("FINANÇAS", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Financial Regulations da FIA", "Limita os gastos com desenvolvimento do carro para i…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Mais Testes para Quem Está Atrás", "As equipes com pior classificação recebem mais horas…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A Arte de Fazer Mais com Menos", "Cada atualização levada para a pista precisa ser val…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 7 • CENA 8: mod7_team_principal_challenge
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod7_team_principal_challenge") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("MÓDULO 07 CONCLUÍDO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("O Piloto Levanta o Troféu, o Time Vence", "Cada centésimo ganho na pista é fruto do trabalho me…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Avalie seu Conhecimento", "Avance para as dez perguntas e teste seus conhecimen…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 8 • CENA 1: mod8_circuit_anatomy
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod8_circuit_anatomy") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("ANATOMIA DO CIRCUITO E TIPOS DE TRECHO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Cada Autódromo é um Desafio Único", "Antes de acelerar, o piloto precisa mapear as zonas…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Ataque às Zebras", "O piloto usa as zebras para esticar o traçado, mas o…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Curvas Rápidas no Limite", "Quanto maior a velocidade de entrada, mais o downfor…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 8 • CENA 2: mod8_racing_line
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod8_racing_line") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("TRAJETÓRIA IDEAL", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Maximizando o Raio Geométrico", "Quanto mais aberto o carro entra, menor é a inclinaç…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("O Apex da Curva", "O ponto mais interno onde o carro encosta na zebra a…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Pé no Fundo com Volante Reto", "Acelerar com o volante ainda esterçado provoca derra…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 8 • CENA 3: mod8_braking_physics
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod8_braking_physics") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("FRENAGEM", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Precisão Visual a 340 km/h", "Um erro de cinco metros na freada significa perder o…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("O Peso Avançando", "A dianteira afunda e ganha atrito mecânico enquanto…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Evitando o Travamento de Rodas", "Com menos downforce em baixa velocidade, a pressão d…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 8 • CENA 4: mod8_corner_categories
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod8_corner_categories") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("CATEGORIAS DE CURVA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Aderência Mecânica Pura", "Em curvas lentas (ex")}
+          {cueIndex === 2 && renderMarianaSyncBadge("O Teste de Equilíbrio do Chassi", "Trechos como a curva Luffield em Silverstone exigem…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("O Poder do Downforce", "Em curvas como Copse ou Pouhon, a velocidade é inacr…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 8 • CENA 5: mod8_friction_circle
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod8_friction_circle") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("DINÂMICA VEICULAR", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Capacidade Finita de Força", "O pneu tem 100% de atrito para dividir entre frear,…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Sair de Frente vs Sair de Traseira", "Understeer ocorre quando as rodas dianteiras perdem…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Pilotar na Borda do Círculo", "Os campeões mantêm o pneu exatamente no limiar máxim…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 8 • CENA 6: mod8_monaco_monza_spa
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod8_monaco_monza_spa") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("TEMPLOS DO CALENDÁRIO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Precisão de Cirurgião", "Correr a 280 km/h num túnel de concreto sem áreas de…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Arrasto Quase Zero", "Monopostos com asas reduzidas ao mínimo, frenagens b…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A Subida da Eau Rouge", "Sete quilômetros de relevo natural, onde um setor po…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 8 • CENA 7: mod8_rain_track_limits
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod8_rain_track_limits") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("PISTA MOLHADA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Borracha Molhada Vira Gelo", "Seguir a linha geométrica normal na chuva provoca ro…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Buscando o Asfalto Poroso", "Curvas contornadas por fora, longe das zebras pintad…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Pneus Flutuando na Água", "Quando o fluxo de água supera os 85 litros/segundo s…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 8 • CENA 8: mod8_lap_master_challenge
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod8_lap_master_challenge") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("MÓDULO 08 CONCLUÍDO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Perfeição em Cada Metro", "Uma volta mágica não é sorte")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Teste seus Conhecimentos de Pista", "Avance para as dez perguntas e prove que você domina…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 9 • CENA 1: mod9_qualities_overview
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod9_qualities_overview") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("OS 5 PILARES DE UM PILOTO CAMPEÃO DO MUNDO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Sábado vs Domingo", "Ser o mais veloz em uma volta rápida define a pole,…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Repetição Perfeita", "Campeões mundiais cravam voltas consecutivas com var…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A Mente Acima do Físico", "Filtrar ruídos e conversar tranquilamente com o enge…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 9 • CENA 2: mod9_pressure_mindset
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod9_pressure_mindset") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("CONTROLE EMOCIONAL", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Batimentos no Teto Cardíaco", "A exaustão muscular e a respiração pesada tornam qua…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Reação à Falha", "Errar faz parte do automobilismo")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Foco no Presente Imediato", "Quem fica remoendo a curva anterior bate o carro na…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 9 • CENA 3: mod9_consistency_pace
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod9_consistency_pace") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("RITMO DE PROVA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Rápido Mas Irregular", "Faz a volta mais rápida da prova, mas destrói os pne…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Força da Repetição Perfeita", "Parece discreto, mas acumula segundos de vantagem se…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A Pressão do Ritmo Implacável", "Adversários que perseguem um piloto metrônomo entram…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 9 • CENA 4: mod9_racecraft_duels
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod9_racecraft_duels") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("RACECRAFT", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Presença Intimidadora", "Mostrar o carro nas frenagens desestabiliza emociona…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Paciência e Planejamento", "Ultrapassar não é se atirar no primeiro espaço, mas…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Pontos Garantidos Valem Mais", "Evitar o abandono contra um rival inconsequente gara…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 9 • CENA 5: mod9_tire_intelligence
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod9_tire_intelligence") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("GESTÃO DE BORRACHA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("O Estoque Finito de Borracha", "O pneu é como uma conta bancária")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Evitar o Superaquecimento Interno", "Dirigir rápido sem escorregar a traseira nas reacele…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A Recompensa da Paciência", "Quem poupou pneu no início voa baixo no final do sti…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 9 • CENA 6: mod9_champions_styles
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod9_champions_styles") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("ESTILOS DE PILOTAGEM", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Devoção Total à Velocidade", "Senna pilotava com a alma, buscando limites que outr…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Disciplina Inovadora", "Transformou a F1 moderna ao introduzir condicionamen…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Precisão Cirúrgica e Fome Voraz", "Dois gigantes contemporâneos provando que maestria t…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 9 • CENA 7: mod9_adapting_uncertainty
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod9_adapting_uncertainty") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("ADAPTAÇÃO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Inevitável Incerteza da F1", "Nenhuma simulação de computador prevê uma quebra de…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Confiança no Muro", "O piloto campeão relata a perda de aderência sem dra…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Vencer na Dificuldade", "Quando todos os rivais entram em pânico, o piloto fr…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 9 • CENA 8: mod9_champion_mindset_challenge
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod9_champion_mindset_challenge") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("MÓDULO 09 CONCLUÍDO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Além do Talento Bruto", "A velocidade é apenas o bilhete de entrada")}
+          {cueIndex === 2 && renderMarianaSyncBadge("O Quiz dos Campeões", "Avance para as dez perguntas e prove que você compre…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 10 • CENA 1: mod10_integrated_system
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod10_integrated_system") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("ENGENHARIA SISTÊMICA DA FÓRMULA 1", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Vitória é Sistêmica", "A velocidade não vem de uma solução isolada, mas de…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Alterações Mecânicas Conectadas", "Mudar a rigidez da barra estabilizadora afeta a aero…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("O Carro como Organismo Único", "Engenheiros buscam a janela em que todos os componen…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 10 • CENA 2: mod10_aerodynamics_balance
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod10_aerodynamics_balance") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("AERODINÂMICA AVANÇADA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Downforce em Curvas Rápidas", "Permite contornar curvas de 250 km/h sem que a inérc…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Resistência nas Retas", "O arrasto excessivo deixa o monoposto vulnerável a u…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("A Busca pelo Formato Ideal", "Milhares de horas virtuais calculando o caminho exat…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 10 • CENA 3: mod10_active_aero_modes
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod10_active_aero_modes") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("REGULAMENTO 2026", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Asas Ativas Coordenadas", "Pela primeira vez na história da F1, a asa dianteira…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Mínima Resistência nas Retas", "Reduz o arrasto drasticamente, permitindo velocidade…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Retorno Imediato da Carga", "Na primeira pressão no pedal de freio, os flaps fech…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 10 • CENA 4: mod10_power_unit_hybrid
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod10_power_unit_hybrid") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("PROPULSÃO 2026", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Zero Carbono Fóssil", "A F1 2026 roda com combustíveis sintéticos derivados…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Triplicação da Força Elétrica", "O motor elétrico quase empata com o motor a gasolina…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Gerenciar o Estoque da Bateria", "Potência é a força instantânea")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 10 • CENA 5: mod10_boost_overtake_recharge
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod10_boost_overtake_recharge") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("GESTÃO ENERGÉTICA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Potência Sob Demanda", "O piloto aperta o botão de boost no volante para que…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Energia do Caçador", "Sistema regulamentar que concede vantagem elétrica p…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Enchendo o Tanque Elétrico", "Nas curvas lentas e frenagens, o MGU-K atua como ger…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 10 • CENA 6: mod10_telemetry_laps
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod10_telemetry_laps") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("TELEMETRIA DE ENGENHARIA", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("A Pista Mapeada", "A cada metro percorrido, dados de carga da suspensão…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("A Busca pelo Tempo Perdido", "Engenheiros mostram ao piloto onde ele freou cedo de…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Ajustes Milimétricos", "Alterar meio grau de asa dianteira baseado nos traço…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 10 • CENA 7: mod10_materials_safety
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod10_materials_safety") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("CIÊNCIA DOS MATERIAIS", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("O Casulo de Carbono e Zylon", "O monocoque protege o piloto mantendo o cockpit inta…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Titânio de Grau Aeroespacial", "Testado para suportar o peso de dois ônibus londrino…")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Estruturas Deformáveis", "Bicos e laterais esmagam-se progressivamente para qu…")}
+        </div>
+      )
+    }
+
+    // ------------------------------------------------------------------------
+    // MÓDULO 10 • CENA 8: mod10_engineer_challenge
+    // ------------------------------------------------------------------------
+    if (currentScene.visualEffectType === "mod10_engineer_challenge") {
+      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      return (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
+          {renderTopHUD("MÓDULO 10 CONCLUÍDO", `FASE ${cueIndex} DE 3`)}
+          <div className="flex-1 pointer-events-none" />
+          {cueIndex === 1 && renderMarianaSyncBadge("Integrar Ciência e Competição", "Agora você é capaz de olhar para um carro de Fórmula…")}
+          {cueIndex === 2 && renderMarianaSyncBadge("O Grande Teste", "Avance para as dez perguntas e conquiste o certifica…")}
+        </div>
+      )
+    }
 
     return null
   }
@@ -8566,8 +5217,8 @@ if (activeModuleId === 1) {
               )}
             />
 
-            {/* Gradientes de Contraste */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/30" />
+            {/* Gradientes Sutis de Contraste Cinematográfico (sem escurecer excessivamente a imagem) */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/25" />
 
             {/* Overlays Interativos por Cena */}
             {renderVisualOverlay()}
