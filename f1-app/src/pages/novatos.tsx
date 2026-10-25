@@ -24,6 +24,7 @@ import {
 import { cn } from "@/lib/utils"
 import { StartingGridAnimation } from "@/components/starting-grid-animation"
 import { CarMechanicsAnimation } from "@/components/car-mechanics-animation"
+import { PitstopAnimation } from "@/components/pitstop-animation"
 
 // ============================================================================
 // GLOSSÁRIO INICIAL — 12 TERMOS OFICIAIS
@@ -3669,14 +3670,18 @@ export function NovatosPage() {
     // MÓDULO 1 • CENA 5: pitstop_team
     // ------------------------------------------------------------------------
     if (currentScene.visualEffectType === "pitstop_team") {
-      const cueIndex = audioCurrentTime < 8.0 ? 1 : audioCurrentTime < 16.0 ? 2 : 3
+      const cueIndex =
+        audioCurrentTime < 4.2 ? 1 :
+        audioCurrentTime < 11.0 ? 2 :
+        audioCurrentTime < 16.5 ? 3 : 4
       return (
         <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
-          {renderTopHUD("PILOTOS E EQUIPES", `FASE ${cueIndex} DE 3`)}
+          {renderTopHUD("PILOTOS E EQUIPES", audioCurrentTime >= 16.3 ? "SAÍDA LIBERADA" : "PIT STOP EM ANDAMENTO")}
           <div className="flex-1 pointer-events-none" />
-          {cueIndex === 1 && renderMarianaSyncBadge("DOIS CAMPEONATOS AO MESMO TEMPO", "Campeonato de Pilotos e Campeonato de Construtores d…")}
-          {cueIndex === 2 && renderMarianaSyncBadge("O PAPEL DO PILOTO", "Inteligência de corrida, preservação mecânica e paci…")}
-          {cueIndex === 3 && renderMarianaSyncBadge("A FORÇA DA EQUIPE", "Estratégia de boxes no pit wall e trabalho cirúrgico…")}
+          {cueIndex === 1 && renderMarianaSyncBadge("Duas Disputas Simultâneas", "Mundial de Pilotos e Construtores em paralelo")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Posicionamento no Box", "Piloto freia no colchete demarcado")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Pit Stop de 2 Segundos", "Mecânicos erguem o carro e trocam os 4 pneus")}
+          {cueIndex === 4 && renderMarianaSyncBadge("Trabalho de Equipe & Saída", "Luz verde ativada e aceleração imediata")}
         </div>
       )
     }
@@ -5214,6 +5219,17 @@ export function NovatosPage() {
               />
             ) : currentScene.visualEffectType === "machine_hotspots" ? (
               <CarMechanicsAnimation
+                currentTime={audioCurrentTime}
+                isPlaying={isPlaying}
+                reduceMotion={reduceMotion}
+              />
+            ) : currentScene.visualEffectType === "pitstop_team" ? (
+              <PitstopAnimation
+                currentTime={audioCurrentTime}
+                isPlaying={isPlaying}
+                reduceMotion={reduceMotion}
+              />
+            ) : (
                 currentTime={audioCurrentTime}
                 isPlaying={isPlaying}
                 reduceMotion={reduceMotion}
