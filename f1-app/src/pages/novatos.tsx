@@ -22,6 +22,7 @@ import {
   Clock,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { StartingGridAnimation } from "@/components/starting-grid-animation"
 
 // ============================================================================
 // GLOSSÁRIO INICIAL — 12 TERMOS OFICIAIS
@@ -3679,21 +3680,14 @@ export function NovatosPage() {
     // MÓDULO 1 • CENA 6: starting_grid
     // ------------------------------------------------------------------------
     if (currentScene.visualEffectType === "starting_grid") {
-      const cueIndex = audioCurrentTime < 6.0 ? 1 : audioCurrentTime < 12.0 ? 2 : 3
-      const lightsCount = audioCurrentTime < 2.0 ? 0 : audioCurrentTime < 4.0 ? 1 : audioCurrentTime < 6.0 ? 2 : audioCurrentTime < 8.0 ? 3 : audioCurrentTime < 10.0 ? 4 : audioCurrentTime < 12.0 ? 5 : 0
-      const lightsOut = audioCurrentTime >= 12.0 && audioCurrentTime < 14.5
+      const cueIndex = audioCurrentTime < 11.5 ? 1 : audioCurrentTime < 17.5 ? 2 : 3
       return (
         <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5 z-20">
-          {renderTopHUD("PROCEDIMENTO DE LARGADA", "GRID OFICIAL FIA")}
-          <div className="pointer-events-auto mx-auto mt-2 flex items-center gap-2 p-2 rounded-2xl bg-black/80 border border-white/15 backdrop-blur-md shadow-2xl">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <span key={i} className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full transition-all duration-300", i <= lightsCount && !lightsOut ? "bg-[#E10600] shadow-[0_0_15px_#E10600] scale-110" : "bg-zinc-800 border border-zinc-700")} />
-            ))}
-          </div>
+          {renderTopHUD("PROCEDIMENTO DE LARGADA", audioCurrentTime >= 17.5 ? "LARGADA AUTORIZADA" : "GRID OFICIAL FIA")}
           <div className="flex-1 pointer-events-none" />
-          {cueIndex === 1 && renderMarianaSyncBadge("Alinhamento no Grid", "Pilotos posicionam as máquinas nos colchetes")}
-          {cueIndex === 2 && renderMarianaSyncBadge("Sequência de 5 Luzes", "Acendem uma a uma a cada segundo")}
-          {cueIndex === 3 && renderMarianaSyncBadge("Luzes Apagadas!", "Aceleração imediata e disputa pela primeira curva")}
+          {cueIndex === 1 && renderMarianaSyncBadge("Formação do Grid", "Pilotos alinham os carros nos colchetes")}
+          {cueIndex === 2 && renderMarianaSyncBadge("Sequência de 5 Luzes", "Acendimento progressivo e expectativa máxima")}
+          {cueIndex === 3 && renderMarianaSyncBadge("Luzes Apagadas!", "Arrancada imediata rumo à primeira curva")}
         </div>
       )
     }
@@ -5207,18 +5201,27 @@ export function NovatosPage() {
 
           {/* Palco Principal da Imagem + Efeitos Visuais */}
           <div className="relative flex-1 min-h-[380px] sm:min-h-[460px] rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-black flex items-center justify-center">
-            <img
-              src={currentScene.imageUrl}
-              alt={currentScene.title}
-              className={cn(
-                "w-full h-full object-cover object-center select-none",
-                !reduceMotion && (activeModuleId === 1 ? `f1-scene-motion-${currentScene.number}` : "f1-scene-motion-1"),
-                currentScene.visualEffectType === "vintage_1950" && "sepia-[0.25] contrast-125 brightness-90"
-              )}
-            />
-
-            {/* Gradientes Sutis de Contraste Cinematográfico (sem escurecer excessivamente a imagem) */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/25" />
+            {currentScene.visualEffectType === "starting_grid" ? (
+              <StartingGridAnimation
+                currentTime={audioCurrentTime}
+                isPlaying={isPlaying}
+                reduceMotion={reduceMotion}
+              />
+            ) : (
+              <>
+                <img
+                  src={currentScene.imageUrl}
+                  alt={currentScene.title}
+                  className={cn(
+                    "w-full h-full object-cover object-center select-none",
+                    !reduceMotion && (activeModuleId === 1 ? `f1-scene-motion-${currentScene.number}` : "f1-scene-motion-1"),
+                    currentScene.visualEffectType === "vintage_1950" && "sepia-[0.25] contrast-125 brightness-90"
+                  )}
+                />
+                {/* Gradientes Sutis de Contraste Cinematográfico (sem escurecer excessivamente a imagem) */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/25" />
+              </>
+            )}
 
             {/* Overlays Interativos por Cena */}
             {renderVisualOverlay()}
