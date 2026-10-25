@@ -5230,11 +5230,6 @@ export function NovatosPage() {
                 reduceMotion={reduceMotion}
               />
             ) : (
-                currentTime={audioCurrentTime}
-                isPlaying={isPlaying}
-                reduceMotion={reduceMotion}
-              />
-            ) : (
               <>
                 <img
                   src={currentScene.imageUrl}
