@@ -5348,10 +5348,6 @@ export function NovatosPage() {
                   onChange={(e) => setNarrationVolume(parseFloat(e.target.value))}
                   className="w-16 sm:w-20 accent-[#E10600] cursor-pointer"
                   aria-label="Volume da narradora Mariana"
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuenow={Math.round((isMuted ? 0 : narrationVolume) * 100)}
-                  aria-valuetext={`${Math.round((isMuted ? 0 : narrationVolume) * 100)}%`}
                 />
               </div>
 
@@ -5377,10 +5373,6 @@ export function NovatosPage() {
                   onChange={(e) => setMusicVolume(parseFloat(e.target.value))}
                   className="w-16 sm:w-20 accent-cyan-400 cursor-pointer"
                   aria-label="Volume da trilha sonora"
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuenow={Math.round((isMuted || !isMusicActive ? 0 : musicVolume) * 100)}
-                  aria-valuetext={`${Math.round((isMuted || !isMusicActive ? 0 : musicVolume) * 100)}%`}
                 />
               </div>
 
