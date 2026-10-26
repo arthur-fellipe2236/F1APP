@@ -228,3 +228,55 @@ html.theme-active [data-theme-accent] {
   color: var(--primary);
 }
 
+/* ==========================================================================
+   OTIMIZAÇÃO RESPONSIVA: NOVATOS NA F1 EM MODO PAISAGEM (MOBILE LANDSCAPE)
+   Target: Dispositivos móveis em orientação horizontal (altura <= 500px)
+   ========================================================================== */
+@media (orientation: landscape) and (max-height: 500px) {
+  /* Otimiza espaçamento externo fornecido pelo layout principal */
+  body:has(.novatos-root) main {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  /* Em celulares na horizontal, substitui cabeçalho desktop pesado por barra compacta */
+  body:has(.novatos-root) header > div:nth-child(1),
+  body:has(.novatos-root) header > div:nth-child(3),
+  body:has(.novatos-root) header > div:nth-child(4) {
+    display: none !important;
+  }
+
+  body:has(.novatos-root) header > div:nth-child(2) {
+    display: flex !important;
+    height: 2.25rem !important;
+    padding-top: 0.15rem !important;
+    padding-bottom: 0.15rem !important;
+  }
+
+  body:has(.novatos-root) footer {
+    display: none !important;
+  }
+
+  .novatos-root {
+    min-height: 0 !important;
+  }
+
+  /* Altura proporcional do palco para visualização unificada sem rolagem */
+  .novatos-stage {
+    min-height: 180px !important;
+    height: 54vh !important;
+    max-height: 235px !important;
+  }
+
+  /* Garante barra inferior horizontal sem quebra de linha em telas compactas */
+  .novatos-bottom-bar {
+    flex-wrap: nowrap !important;
+    gap: 0.5rem !important;
+    margin-top: 0.35rem !important;
+    padding: 0.35rem 0.65rem !important;
+  }
+}
+
+
