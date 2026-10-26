@@ -233,12 +233,12 @@ html.theme-active [data-theme-accent] {
    Target: Dispositivos móveis em orientação horizontal (altura <= 500px)
    ========================================================================== */
 @media (orientation: landscape) and (max-height: 500px) {
-  /* Otimiza espaçamento externo fornecido pelo layout principal */
+  /* Otimiza espaçamento externo e áreas seguras (safe areas / notch) */
   body:has(.novatos-root) main {
     padding-top: 0.25rem !important;
     padding-bottom: 0.25rem !important;
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
+    padding-left: max(0.5rem, env(safe-area-inset-left)) !important;
+    padding-right: max(0.5rem, env(safe-area-inset-right)) !important;
   }
 
   /* Em celulares na horizontal, substitui cabeçalho desktop pesado por barra compacta */
@@ -253,6 +253,8 @@ html.theme-active [data-theme-accent] {
     height: 2.25rem !important;
     padding-top: 0.15rem !important;
     padding-bottom: 0.15rem !important;
+    padding-left: max(0.75rem, env(safe-area-inset-left)) !important;
+    padding-right: max(0.75rem, env(safe-area-inset-right)) !important;
   }
 
   body:has(.novatos-root) footer {
@@ -263,19 +265,24 @@ html.theme-active [data-theme-accent] {
     min-height: 0 !important;
   }
 
+  /* Remove o padding de 24px do sm:p-6 em telas horizontais compactas */
+  .novatos-lesson-container {
+    padding: 0.25rem 0.5rem !important;
+  }
+
   /* Altura proporcional do palco para visualização unificada sem rolagem */
   .novatos-stage {
-    min-height: 180px !important;
-    height: 54vh !important;
-    max-height: 235px !important;
+    min-height: 175px !important;
+    height: 50vh !important;
+    max-height: 220px !important;
   }
 
   /* Garante barra inferior horizontal sem quebra de linha em telas compactas */
   .novatos-bottom-bar {
     flex-wrap: nowrap !important;
     gap: 0.5rem !important;
-    margin-top: 0.35rem !important;
-    padding: 0.35rem 0.65rem !important;
+    margin-top: 0.25rem !important;
+    padding: 0.25rem 0.65rem !important;
   }
 }
 

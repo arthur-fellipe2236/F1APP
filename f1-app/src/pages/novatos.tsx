@@ -5140,7 +5140,7 @@ export function NovatosPage() {
       {/* TELA DE AULA (SCENES 1 A 8)                                         */}
       {/* ==================================================================== */}
       {viewStage === "lesson" && (
-        <div className="flex-1 flex flex-col p-1.5 sm:p-6 max-w-6xl w-full mx-auto justify-between">
+        <div className="novatos-lesson-container flex-1 flex flex-col p-1.5 sm:p-6 max-w-6xl w-full mx-auto justify-between">
           {/* Top Bar da Lição com Seletor Direto de Módulos */}
           <div className="flex items-center justify-between gap-1.5 sm:gap-2 pb-1.5 sm:pb-2 mb-1.5 sm:mb-2 border-b border-white/10 shrink-0">
             <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
