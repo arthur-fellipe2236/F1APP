@@ -5322,6 +5322,7 @@ export function NovatosPage() {
                 onClick={() => setIsMuted(!isMuted)}
                 className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/10 hover:bg-white/20 text-zinc-300 flex items-center justify-center transition-all cursor-pointer shrink-0"
                 title={isMuted ? "Desmutar" : "Silenciar"}
+                aria-label={isMuted ? "Desmutar áudio" : "Silenciar áudio"}
               >
                 {isMuted ? <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E10600]" /> : <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
               </button>
@@ -5331,8 +5332,14 @@ export function NovatosPage() {
             <div className="flex items-center gap-2.5 sm:gap-4 text-xs font-bold text-zinc-400 shrink-0">
               {/* Volume Mariana */}
               <div className="flex items-center gap-1 sm:gap-1.5">
-                <span className="text-[9px] sm:text-[10px] font-mono uppercase text-zinc-300">Mariana:</span>
+                <label
+                  htmlFor="volume-mariana"
+                  className="text-[9px] sm:text-[10px] font-mono uppercase text-zinc-300 cursor-pointer"
+                >
+                  Mariana:
+                </label>
                 <input
+                  id="volume-mariana"
                   type="range"
                   min="0"
                   max="1"
@@ -5340,6 +5347,7 @@ export function NovatosPage() {
                   value={isMuted ? 0 : narrationVolume}
                   onChange={(e) => setNarrationVolume(parseFloat(e.target.value))}
                   className="w-14 sm:w-20 accent-[#E10600] cursor-pointer"
+                  aria-label="Volume da narradora Mariana"
                 />
               </div>
 
@@ -5349,11 +5357,14 @@ export function NovatosPage() {
                   type="button"
                   onClick={() => setIsMusicActive(!isMusicActive)}
                   className="text-[9px] sm:text-[10px] font-mono uppercase text-zinc-300 hover:text-white cursor-pointer underline"
-                  title="Ativar/Desativar Música"
+                  title={isMusicActive ? "Desativar música de fundo" : "Ativar música de fundo"}
+                  aria-label={isMusicActive ? "Desativar música de fundo" : "Ativar música de fundo"}
+                  aria-pressed={isMusicActive}
                 >
                   Música:
                 </button>
                 <input
+                  id="volume-musica"
                   type="range"
                   min="0"
                   max="1"
@@ -5361,6 +5372,7 @@ export function NovatosPage() {
                   value={isMuted || !isMusicActive ? 0 : musicVolume}
                   onChange={(e) => setMusicVolume(parseFloat(e.target.value))}
                   className="w-14 sm:w-20 accent-cyan-400 cursor-pointer"
+                  aria-label="Volume da trilha sonora"
                 />
               </div>
             </div>
