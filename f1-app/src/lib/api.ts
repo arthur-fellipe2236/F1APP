@@ -152,7 +152,9 @@ export interface NewsArticleSummary {
 
 export interface LiveSession {
   key: number
+  session_key?: number
   name: string | null
+  session_name?: string | null
   type: string | null
   year: number
   circuit: string | null
@@ -167,11 +169,59 @@ export interface LiveSession {
 
 export interface LiveSessionEntry {
   key: number
+  session_key?: number
   name: string | null
+  session_name?: string | null
   type: string | null
   date_start: string
   date_end: string
   state: "scheduled" | "live" | "finished"
+}
+
+export interface SessionLike {
+  key?: number
+  session_key?: number
+  name?: string | null
+  session_name?: string | null
+  type?: string | null
+  [key: string]: any
+}
+
+/**
+ * Identifica se uma sessão corresponde à Corrida Principal (Race),
+ * verificando o identificador canônico (session_name / type) ou nomes localizados legados.
+ */
+export function isRaceSession(session?: SessionLike | null): boolean {
+  if (!session) return false
+  const canonName = (session.session_name ?? "").toLowerCase().trim()
+  const name = (session.name ?? "").toLowerCase().trim()
+  const type = (session.type ?? "").toLowerCase().trim()
+
+  // 1. Identificador canônico exato da OpenF1
+  if (canonName === "race") return true
+
+  // 2. Rótulos localizados legados em português ou inglês
+  const raceNames = ["race", "corrida", "corrida principal"]
+  if (raceNames.includes(name) || raceNames.includes(canonName)) {
+    return true
+  }
+
+  // 3. session_type exato "Race" (garantindo que não seja Sprint)
+  if (type === "race" && !canonName.includes("sprint") && !name.includes("sprint")) {
+    return true
+  }
+
+  return false
+}
+
+/**
+ * Encontra a sessão de Corrida Principal dentro de uma lista de sessões de um evento.
+ */
+export function findRaceSession<T extends SessionLike = SessionLike>(
+  sessions?: T[] | null
+): T | undefined {
+  if (!sessions || !Array.isArray(sessions)) return undefined
+  return sessions.find(isRaceSession) as T | undefined
 }
 
 export interface LiveMeetingEntry {
@@ -249,8 +299,8 @@ export class ApiError extends Error {
 
 const BASE_URL = `${import.meta.env.VITE_API_URL ?? ""}/api/v1`
 
-async function request<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE_URL}${path}`)
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(`${BASE_URL}${path}`, init)
   const body = (await res.json().catch(() => null)) as
     (T & { error?: string; details?: any }) | null
   if (!res.ok || body === null) {
@@ -327,9 +377,10 @@ export const api = {
       `/news/article?url=${encodeURIComponent(url)}&lang=pt-BR`,
     ),
 
-  liveTower: (sessionKey?: number | null) =>
+  liveTower: (sessionKey?: number | null, init?: RequestInit) =>
     request<LiveTower>(
       `/live/tower${sessionKey ? `?session_key=${sessionKey}` : ""}`,
+      init
     ),
 
   liveSessions: (year?: number) =>

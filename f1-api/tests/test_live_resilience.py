@@ -649,3 +649,265 @@ def test_requirement_e_cache_isolation_between_sessions(client, monkeypatch):
 # Teste F: Os testes anteriores de expiração do TTL continuam aprovados
 def test_requirement_f_cache_ttl_expiration_with_controlled_clock(client, monkeypatch):
     test_cache_ttl_expiration_with_controlled_clock(client, monkeypatch)
+
+
+# ==============================================================================
+# FASE 2 / ETAPA 1: TESTES DE CONTRATO CANÔNICO E LOCALIZADO DE SESSÕES
+# ==============================================================================
+
+def test_live_sessions_endpoint_returns_canonical_and_localized_names(client, monkeypatch):
+    now = datetime(2026, 11, 1, 12, 0, 0, tzinfo=timezone.utc)
+    monkeypatch.setattr(live, "_now_utc", lambda: now)
+
+    fake_meetings = [
+        {
+            "meeting_key": 601,
+            "meeting_name": "São Paulo Grand Prix",
+            "circuit_short_name": "Interlagos",
+            "country_name": "Brasil",
+            "location": "São Paulo",
+            "date_start": "2026-11-01T10:00:00+00:00",
+            "date_end": "2026-11-01T20:00:00+00:00",
+            "year": 2026,
+        }
+    ]
+    fake_sessions = [
+        {
+            "session_key": 9911,
+            "meeting_key": 601,
+            "session_name": "Practice 1",
+            "session_type": "Practice",
+            "date_start": "2026-11-01T10:00:00+00:00",
+            "date_end": "2026-11-01T11:00:00+00:00",
+            "year": 2026,
+        },
+        {
+            "session_key": 9912,
+            "meeting_key": 601,
+            "session_name": "Qualifying",
+            "session_type": "Qualifying",
+            "date_start": "2026-11-01T13:00:00+00:00",
+            "date_end": "2026-11-01T14:00:00+00:00",
+            "year": 2026,
+        },
+        {
+            "session_key": 9913,
+            "meeting_key": 601,
+            "session_name": "Race",
+            "session_type": "Race",
+            "date_start": "2026-11-01T17:00:00+00:00",
+            "date_end": "2026-11-01T19:00:00+00:00",
+            "year": 2026,
+        },
+    ]
+
+    def fake_openf1_get(path, **params):
+        if path == "meetings":
+            return fake_meetings
+        if path == "sessions":
+            return fake_sessions
+        return []
+
+    monkeypatch.setattr(openf1, "get", fake_openf1_get)
+
+    resp = client.get("/api/v1/live/sessions?year=2026")
+    assert resp.status_code == 200
+    body = resp.get_json()
+    assert body["year"] == 2026
+    assert len(body["data"]) == 1
+
+    meeting = body["data"][0]
+    sessions = meeting["sessions"]
+    assert len(sessions) == 3
+
+    # Validação da sessão de Treino Livre 1
+    p1 = sessions[0]
+    assert p1["session_key"] == 9911
+    assert p1["key"] == 9911
+    assert p1["session_name"] == "Practice 1"  # Canônico em inglês
+    assert p1["name"] == "Treino Livre 1"       # Localizado em português
+    assert p1["type"] == "Practice"
+
+    # Validação da sessão de Classificação
+    qualy = sessions[1]
+    assert qualy["session_key"] == 9912
+    assert qualy["key"] == 9912
+    assert qualy["session_name"] == "Qualifying"
+    assert qualy["name"] == "Classificação"
+    assert qualy["type"] == "Qualifying"
+
+    # Validação da Corrida Principal (Race)
+    race = sessions[2]
+    assert race["session_key"] == 9913
+    assert race["key"] == 9913
+    assert race["session_name"] == "Race"           # Canônico essencial para busca
+    assert race["name"] == "Corrida Principal"      # Localizado preservando retrocompatibilidade
+    assert race["type"] == "Race"
+
+
+def test_live_tower_session_metadata_includes_canonical_fields(client, monkeypatch):
+    now = datetime(2026, 11, 1, 10, 0, 0, tzinfo=timezone.utc)
+    monkeypatch.setattr(live, "_now_utc", lambda: now)
+
+    session = {
+        "session_key": 9920,
+        "meeting_key": 602,
+        "session_name": "Race",
+        "session_type": "Race",
+        "circuit_short_name": "Interlagos",
+        "country_name": "Brasil",
+        "location": "São Paulo",
+        "date_start": "2026-11-01T17:00:00+00:00",
+        "date_end": "2026-11-01T19:00:00+00:00",
+        "year": 2026,
+    }
+    monkeypatch.setattr(live, "detect_session", lambda n=None: (session, "scheduled"))
+    monkeypatch.setattr(live, "_meetings_for_year", lambda y: {602: "GP do Brasil"})
+    monkeypatch.setattr(openf1, "get", lambda path, **params: [])
+
+    resp = client.get("/api/v1/live/tower")
+    assert resp.status_code == 200
+    sess = resp.get_json()["session"]
+    assert sess["session_key"] == 9920
+    assert sess["key"] == 9920
+    assert sess["name"] == "Corrida Principal"
+    assert sess["session_name"] == "Race"
+    assert sess["type"] == "Race"
+
+
+# ==============================================================================
+# FASE 2 / ETAPA 2: TESTES DE MENSAGENS DINÂMICAS E REMOÇÃO DE DADOS ESTÁTICOS
+# ==============================================================================
+
+def test_scheduled_tower_message_dynamic_with_date_and_circuit(client, monkeypatch):
+    """Garante que a mensagem de sessão agendada é dinâmica e não contém dados estáticos (Race Week, 23/10, Austin)."""
+    now = datetime(2026, 11, 1, 10, 0, 0, tzinfo=timezone.utc)
+    monkeypatch.setattr(live, "_now_utc", lambda: now)
+
+    session = {
+        "session_key": 9930,
+        "meeting_key": 603,
+        "session_name": "Race",
+        "session_type": "Race",
+        "circuit_short_name": "Interlagos",
+        "country_name": "Brasil",
+        "location": "São Paulo",
+        "date_start": "2026-11-01T17:00:00+00:00",
+        "date_end": "2026-11-01T19:00:00+00:00",
+        "year": 2026,
+    }
+    monkeypatch.setattr(live, "detect_session", lambda n=None: (session, "scheduled"))
+    monkeypatch.setattr(live, "_meetings_for_year", lambda y: {603: "São Paulo Grand Prix"})
+    monkeypatch.setattr(openf1, "get", lambda path, **params: [])
+
+    resp = client.get("/api/v1/live/tower")
+    assert resp.status_code == 200
+    body = resp.get_json()
+    assert body["session"]["state"] == "scheduled"
+    assert body["data_status"] == "scheduled"
+
+    messages = body.get("messages", [])
+    assert len(messages) >= 1
+    msg_text = messages[0]["message"]
+
+    # Validação dinâmica
+    assert "Sessão agendada: Corrida Principal" in msg_text
+    assert "01/11 às 17:00 UTC" in msg_text
+    assert "em Interlagos" in msg_text
+
+    # Validação de ausência de dados fictícios / hardcoded
+    assert "Race Week" not in msg_text
+    assert "23/10" not in msg_text
+    assert "Austin" not in msg_text
+    assert "Circuit of The Americas" not in msg_text
+
+
+def test_scheduled_tower_message_neutral_without_date_or_circuit(client, monkeypatch):
+    """Garante mensagem neutra e limpa quando a sessão agendada não possui data ou circuito."""
+    now = datetime(2026, 11, 1, 10, 0, 0, tzinfo=timezone.utc)
+    monkeypatch.setattr(live, "_now_utc", lambda: now)
+
+    session = {
+        "session_key": 9931,
+        "meeting_key": 604,
+        "session_name": "Practice 1",
+        "session_type": "Practice",
+        "year": 2026,
+    }
+    monkeypatch.setattr(live, "detect_session", lambda n=None: (session, "scheduled"))
+    monkeypatch.setattr(live, "_meetings_for_year", lambda y: {})
+    monkeypatch.setattr(openf1, "get", lambda path, **params: [])
+
+    resp = client.get("/api/v1/live/tower")
+    assert resp.status_code == 200
+    body = resp.get_json()
+
+    messages = body.get("messages", [])
+    assert len(messages) >= 1
+    msg_text = messages[0]["message"]
+
+    # Mensagem deve ser limpa e sem referências estáticas fictícias
+    assert msg_text == "Sessão agendada: Treino Livre 1."
+    assert "Race Week" not in msg_text
+    assert "Austin" not in msg_text
+    assert "Circuit of The Americas" not in msg_text
+
+
+def test_scheduled_tower_does_not_inject_static_austin_fallback(client, monkeypatch):
+    """Confirma que circuitos/país/localização ausentes não são preenchidos com Austin/COTA/EUA fictícios."""
+    now = datetime(2026, 11, 1, 10, 0, 0, tzinfo=timezone.utc)
+    monkeypatch.setattr(live, "_now_utc", lambda: now)
+
+    session = {
+        "session_key": 9932,
+        "session_name": "Qualifying",
+        "session_type": "Qualifying",
+        "year": 2026,
+    }
+    monkeypatch.setattr(live, "detect_session", lambda n=None: (session, "scheduled"))
+    monkeypatch.setattr(live, "_meetings_for_year", lambda y: {})
+    monkeypatch.setattr(openf1, "get", lambda path, **params: [])
+
+    resp = client.get("/api/v1/live/tower")
+    assert resp.status_code == 200
+    sess = resp.get_json()["session"]
+
+    assert sess["circuit"] is None
+    assert sess["country"] is None
+    assert sess["location"] is None
+    assert sess["date_start"] is None
+    assert sess["date_end"] is None
+
+
+def test_live_session_without_drivers_retains_live_status_and_avoids_static_fallbacks(client, monkeypatch):
+    """Garante que sessão ao vivo sem tempos de pilotos mantém data_status 'live' e source_status 'live_empty'."""
+    now = datetime(2026, 11, 1, 14, 0, 0, tzinfo=timezone.utc)
+    monkeypatch.setattr(live, "_now_utc", lambda: now)
+
+    session = {
+        "session_key": 9933,
+        "meeting_key": 605,
+        "session_name": "Race",
+        "session_type": "Race",
+        "circuit_short_name": "Monaco",
+        "country_name": "Monaco",
+        "location": "Monte Carlo",
+        "date_start": "2026-11-01T13:50:00+00:00",
+        "date_end": "2026-11-01T16:00:00+00:00",
+        "year": 2026,
+    }
+    monkeypatch.setattr(live, "detect_session", lambda n=None: (session, "live"))
+    monkeypatch.setattr(live, "_meetings_for_year", lambda y: {605: "Monaco Grand Prix"})
+    monkeypatch.setattr(openf1, "get", lambda path, **params: [])
+
+    resp = client.get("/api/v1/live/tower")
+    assert resp.status_code == 200
+    body = resp.get_json()
+
+    assert body["session"]["state"] == "live"
+    assert body["session"]["live"] is True
+    assert body["data_status"] == "live"
+    assert body["source_status"]["available"] is True
+    assert body["source_status"]["reason"] == "ok"
+    assert body["drivers"] == []
+    assert body["session"]["circuit"] == "Monaco"

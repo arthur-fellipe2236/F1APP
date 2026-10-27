@@ -21,7 +21,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useApi } from "@/hooks/use-api"
-import { api, type RaceResult } from "@/lib/api"
+import { api, type RaceResult, findRaceSession } from "@/lib/api"
 import { formatDate, formatPoints, formatStatus } from "@/lib/format"
 import { QualyResults } from "@/components/qualy-results"
 import { PracticeResults } from "@/components/practice-results"
@@ -40,7 +40,7 @@ function TyreStrategy({ season, country, results }: { season: number, country: s
       .then(res => {
         const meeting = res?.data?.find((m: any) => m.country === country)
         if (!meeting) throw new Error("Corrida não encontrada na OpenF1")
-        const raceSession = meeting.sessions?.find((s: any) => s.name === "Race")
+        const raceSession = findRaceSession(meeting.sessions)
         if (!raceSession) throw new Error("Sessão Race não encontrada")
         
         // 2. Buscar stints e drivers do nosso proxy

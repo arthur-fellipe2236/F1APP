@@ -31,7 +31,7 @@ const navItems = [
   { to: "/equipes", label: "Equipes", icon: Trophy },
   { to: "/circuitos", label: "Resultados", icon: Flag },
   { to: "/calendario", label: "Calendário", icon: Calendar },
-  { to: "/live", label: "Ao Vivo", icon: Radio, isLive: true },
+  { to: "/live", label: "Ao Vivo", icon: Radio },
   { to: "/bolao", label: "Bolão", icon: Sparkles },
   { to: "/comparar", label: "Comparar", icon: GitCompare },
   { to: "/novatos", label: "Novatos na F1", icon: BookOpen, isHighlight: true },
@@ -362,12 +362,6 @@ export function Layout() {
                         {Icon && <Icon className="h-5 w-5 opacity-80" />}
                         <span className="font-f1 uppercase tracking-wider text-sm">{item.label}</span>
                       </div>
-                      {item.isLive && (
-                        <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-600/30 text-red-400 border border-red-500/40 text-[10px] font-bold uppercase tracking-widest animate-pulse">
-                          <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-                          Live
-                        </span>
-                      )}
                     </NavLink>
                   )
                 })}

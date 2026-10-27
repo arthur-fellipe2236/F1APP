@@ -10,6 +10,7 @@ import { mediaUrl } from "@/lib/media"
 import { cn } from "@/lib/utils"
 
 const SESSION_SHORT: Record<string, string> = {
+  // Canônicos em inglês (OpenF1)
   "Practice 1": "P1",
   "Practice 2": "P2",
   "Practice 3": "P3",
@@ -25,6 +26,18 @@ const SESSION_SHORT: Record<string, string> = {
   "Feature Race 1": "FR1",
   "Feature Race 2": "FR2",
   Race: "R",
+
+  // Localizados em português
+  "Treino Livre 1": "P1",
+  "Treino Livre 2": "P2",
+  "Treino Livre 3": "P3",
+  "Treino Livre": "FP",
+  "Classificação": "Q",
+  "Classificação Principal": "Q",
+  "Classificação Sprint": "SQ",
+  "Corrida Sprint": "SP",
+  "Corrida Principal": "R",
+  "Corrida": "R",
 }
 
 const dateTimeFmt = new Intl.DateTimeFormat("pt-BR", {
@@ -108,7 +121,22 @@ function Countdown({
 }
 
 function sessionLabel(session: LiveSessionEntry): string {
-  return SESSION_SHORT[session.name ?? ""] ?? session.name ?? "Sessão"
+  // 1. Tenta pelo session_name canônico
+  if (session.session_name && SESSION_SHORT[session.session_name]) {
+    return SESSION_SHORT[session.session_name]
+  }
+  // 2. Tenta pelo name (localizado ou original)
+  if (session.name && SESSION_SHORT[session.name]) {
+    return SESSION_SHORT[session.name]
+  }
+  // 3. Fallback inteligente baseado em type
+  if (session.type === "Race") return "R"
+  if (session.type === "Qualifying") return "Q"
+  if (session.type === "Practice") return "FP"
+
+  // 4. Fallback compacto e legível para valores desconhecidos
+  const raw = session.name ?? session.session_name ?? "Sessão"
+  return raw.length > 6 ? raw.slice(0, 4) + "…" : raw
 }
 
 function SessionPill({

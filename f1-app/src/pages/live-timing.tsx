@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef, useCallback } from "react"
 import { CalendarClock, CloudRain, Wind, Thermometer, Flag, MonitorPlay, AlertTriangle, WifiOff, RefreshCw } from "lucide-react"
 
 import { PageHeader } from "@/components/page-header"
@@ -64,6 +64,32 @@ const COMPOUND_COLORS: Record<string, string> = {
   WET: "bg-blue-500 text-white"
 }
 
+function formatSessionDate(dateStr?: string | null): string {
+  if (!dateStr) return "Horário a confirmar"
+  const d = new Date(dateStr)
+  if (isNaN(d.getTime())) return "Horário a confirmar"
+  return `${d.toLocaleDateString("pt-BR", {
+    weekday: "long",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  })} (horário local)`
+}
+
+function formatLocalTime(dateStr?: string | null): string {
+  if (!dateStr) return "--:--"
+  const d = new Date(dateStr)
+  if (isNaN(d.getTime())) return "--:--"
+  return `${d.toLocaleTimeString("pt-BR")} (horário local)`
+}
+
+const LIVE_POLL_INTERVAL_MS = 15_000
+const SCHEDULED_POLL_INTERVAL_MS = 60_000
+const FINISHED_POLL_INTERVAL_MS = 120_000
+const BACKOFF_INTERVALS_MS = [15_000, 30_000, 60_000, 120_000]
+
 export function LiveTimingPage() {
   const [liveData, setLiveData] = useState<LiveData | null>(null)
   const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null)
@@ -71,18 +97,83 @@ export function LiveTimingPage() {
   const [lastCheckTime, setLastCheckTime] = useState<Date | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [pollIntervalMs, setPollIntervalMs] = useState<number>(LIVE_POLL_INTERVAL_MS)
 
-  const fetchLiveData = async (isManual = false) => {
-    if (isManual) setIsRefreshing(true)
+  const inFlightRef = useRef(false)
+  const isMountedRef = useRef(true)
+  const abortControllerRef = useRef<AbortController | null>(null)
+  const pollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const failuresRef = useRef(0)
+
+  const scheduleNextPoll = useCallback((delayMs: number) => {
+    if (!isMountedRef.current) return
+    if (pollTimerRef.current !== null) {
+      clearTimeout(pollTimerRef.current)
+      pollTimerRef.current = null
+    }
+    pollTimerRef.current = setTimeout(() => {
+      fetchLiveData(false)
+    }, delayMs)
+  }, [])
+
+  const fetchLiveData = useCallback(async (isManual = false) => {
+    if (inFlightRef.current) {
+      return
+    }
+
+    if (pollTimerRef.current !== null) {
+      clearTimeout(pollTimerRef.current)
+      pollTimerRef.current = null
+    }
+
+    if (isManual) {
+      setIsRefreshing(true)
+    }
+
+    inFlightRef.current = true
+    const controller = new AbortController()
+    abortControllerRef.current = controller
+
+    let nextInterval = LIVE_POLL_INTERVAL_MS
+
     try {
-      const data = await api.liveTower()
+      const data = await api.liveTower(null, { signal: controller.signal })
+      if (!isMountedRef.current) return
+
       setLastCheckTime(new Date())
+
       if (data && data.session) {
         setLiveData(data as any)
         setFetchStatus("success")
         setErrorMessage(null)
+
+        const isStaleData = Boolean(
+          data.is_stale || (data.source_status && !data.source_status.available)
+        )
+
+        if (isStaleData) {
+          failuresRef.current += 1
+          const backoffIdx = Math.min(failuresRef.current - 1, BACKOFF_INTERVALS_MS.length - 1)
+          nextInterval = BACKOFF_INTERVALS_MS[backoffIdx]
+        } else {
+          failuresRef.current = 0
+          const sessionState = data.session.state
+          const dataStatus = data.data_status
+          if (sessionState === "live" && dataStatus === "live") {
+            nextInterval = LIVE_POLL_INTERVAL_MS
+          } else if (sessionState === "finished" || dataStatus === "finished") {
+            nextInterval = FINISHED_POLL_INTERVAL_MS
+          } else {
+            nextInterval = SCHEDULED_POLL_INTERVAL_MS
+          }
+        }
       }
     } catch (error: any) {
+      if (error?.name === "AbortError") {
+        return
+      }
+      if (!isMountedRef.current) return
+
       setLastCheckTime(new Date())
       console.warn("Live telemetry check:", error)
       setFetchStatus("error")
@@ -91,25 +182,48 @@ export function LiveTimingPage() {
         error?.message ||
         "Não foi possível conectar aos servidores de telemetria da F1."
       setErrorMessage(msg)
+
+      failuresRef.current += 1
+      const backoffIdx = Math.min(failuresRef.current - 1, BACKOFF_INTERVALS_MS.length - 1)
+      nextInterval = BACKOFF_INTERVALS_MS[backoffIdx]
     } finally {
-      if (isManual) setIsRefreshing(false)
+      inFlightRef.current = false
+      abortControllerRef.current = null
+
+      if (isMountedRef.current) {
+        if (isManual) setIsRefreshing(false)
+        setPollIntervalMs(nextInterval)
+        scheduleNextPoll(nextInterval)
+      }
     }
-  }
+  }, [scheduleNextPoll])
 
   useEffect(() => {
-    fetchLiveData()
-    const interval = setInterval(() => fetchLiveData(false), 15000)
-    return () => clearInterval(interval)
-  }, [])
+    isMountedRef.current = true
+    fetchLiveData(false)
+
+    return () => {
+      isMountedRef.current = false
+      if (pollTimerRef.current !== null) {
+        clearTimeout(pollTimerRef.current)
+        pollTimerRef.current = null
+      }
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+        abortControllerRef.current = null
+      }
+    }
+  }, [fetchLiveData])
 
   useEffect(() => {
-    if (!liveData?.session) return
+    const session = liveData?.session
+    if (!session) return
 
     const targetDate =
-      liveData.session.state === "scheduled"
-        ? liveData.session.date_start
-        : liveData.session.state === "live"
-        ? liveData.session.date_end
+      session.state === "scheduled"
+        ? session.date_start
+        : session.state === "live"
+        ? session.date_end
         : null
 
     if (targetDate) {
@@ -134,7 +248,7 @@ export function LiveTimingPage() {
     } else {
       setTimeLeft(null)
     }
-  }, [liveData])
+  }, [liveData?.session?.state, liveData?.session?.date_start, liveData?.session?.date_end])
 
   const getFlagColor = (flag?: string | null) => {
     if (!flag) return "bg-gray-500/20 text-gray-400 border-gray-500/50"
@@ -146,8 +260,16 @@ export function LiveTimingPage() {
     return "bg-blue-500/20 text-blue-400 border-blue-500/50"
   }
 
-  const isLive = liveData?.session?.state === "live"
-  const isStale = liveData?.is_stale || (fetchStatus === "error" && liveData !== null)
+  const isStale = Boolean(liveData?.is_stale || (fetchStatus === "error" && liveData !== null))
+  const isFinished = liveData?.session?.state === "finished" || liveData?.data_status === "finished"
+  const isLiveConfirmed = Boolean(
+    !isStale &&
+    fetchStatus === "success" &&
+    liveData?.session?.state === "live" &&
+    liveData?.data_status === "live" &&
+    (liveData?.source_status ? liveData.source_status.available : true)
+  )
+  const isLive = isLiveConfirmed
 
   return (
     <div className="flex flex-col gap-4 sm:gap-6">
@@ -169,7 +291,7 @@ export function LiveTimingPage() {
                 </span>
                 {liveData?.last_valid_update && (
                   <span className="text-zinc-400 hidden sm:inline">
-                    (Última medição válida: {new Date(liveData.last_valid_update).toLocaleTimeString("pt-BR")})
+                    (Última medição válida: {formatLocalTime(liveData.last_valid_update)})
                   </span>
                 )}
               </div>
@@ -192,16 +314,34 @@ export function LiveTimingPage() {
         <div className="mx-auto w-full max-w-6xl -mt-2 mb-2 flex items-center justify-between text-xs text-muted-foreground px-1">
           <div className="flex items-center gap-2">
             <span className="relative flex h-2 w-2">
-              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isLive ? "bg-emerald-400" : "bg-blue-400"}`} />
-              <span className={`relative inline-flex rounded-full h-2 w-2 ${isLive ? "bg-emerald-500" : "bg-blue-500"}`} />
+              {isLiveConfirmed && (
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-emerald-400" />
+              )}
+              <span
+                className={`relative inline-flex rounded-full h-2 w-2 ${
+                  isLiveConfirmed
+                    ? "bg-emerald-500"
+                    : isFinished
+                    ? "bg-zinc-500"
+                    : "bg-blue-500"
+                }`}
+              />
             </span>
             <span>
-              {isLive ? "Telemetria ao vivo conectada" : "Sessão agendada"} • Última verificação:{" "}
+              {isLiveConfirmed
+                ? "Telemetria ao vivo conectada"
+                : isFinished
+                ? "Sessão encerrada"
+                : "Sessão agendada"} • Última verificação:{" "}
               {lastCheckTime ? lastCheckTime.toLocaleTimeString("pt-BR") : "--:--:--"}
             </span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="hidden sm:inline text-zinc-500">Atualização a cada 15s</span>
+            <span className="hidden sm:inline text-zinc-500">
+              {pollIntervalMs >= 60_000
+                ? `Atualização a cada ${Math.round(pollIntervalMs / 60_000)} min`
+                : `Atualização a cada ${Math.round(pollIntervalMs / 1000)}s`}
+            </span>
             <button
               type="button"
               onClick={() => fetchLiveData(true)}
@@ -290,32 +430,28 @@ export function LiveTimingPage() {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs uppercase font-extrabold tracking-wider px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                    Próxima Race Week • {liveData.session.meeting_name || "United States Grand Prix"}
+                    {liveData.session.meeting_name
+                      ? `Próxima Race Week • ${liveData.session.meeting_name}`
+                      : "Próxima Sessão Agendada"}
                   </span>
                 </div>
                 <h3 className="text-xl md:text-2xl font-black text-white mt-1">
-                  {liveData.session.name} — {liveData.session.circuit || "Circuit of The Americas"}
+                  {liveData.session.name}
+                  {liveData.session.circuit ? ` — ${liveData.session.circuit}` : ""}
                 </h3>
                 <p className="text-sm text-zinc-400 mt-0.5">
-                  {liveData.session.date_start
-                    ? new Date(liveData.session.date_start).toLocaleDateString("pt-BR", {
-                        weekday: "long",
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })
-                    : "23/10/2026 às 14:30 BRT"}
+                  {formatSessionDate(liveData.session.date_start)}
                 </p>
               </div>
             </div>
-            <div className="text-right hidden md:block">
-              <div className="text-xs text-zinc-400 font-medium">Circuito</div>
-              <div className="text-base font-bold text-zinc-200">
-                {liveData.session.location || "Austin"}, {liveData.session.country || "Estados Unidos"}
+            {(liveData.session.location || liveData.session.country) && (
+              <div className="text-right hidden md:block">
+                <div className="text-xs text-zinc-400 font-medium">Circuito</div>
+                <div className="text-base font-bold text-zinc-200">
+                  {[liveData.session.location, liveData.session.country].filter(Boolean).join(", ")}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       )}
@@ -336,10 +472,12 @@ export function LiveTimingPage() {
                   isLive ? "text-red-400" : "text-blue-400"
                 }`}
               >
-                <CalendarClock className="size-6 animate-pulse" />
+                <CalendarClock className={`size-6 ${isLive ? "animate-pulse" : ""}`} />
                 {isLive
                   ? "Sessão Termina Em:"
-                  : `Próxima Sessão (${liveData?.session?.name || "Treino Livre 1"}) Começa Em:`}
+                  : liveData?.session?.name
+                  ? `Próxima Sessão (${liveData.session.name}) Começa Em:`
+                  : "Próxima Sessão Começa Em:"}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -646,13 +784,65 @@ export function LiveTimingPage() {
         <div className="mx-auto w-full max-w-6xl mt-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
           <Card className="border-border/50 bg-card/40 backdrop-blur-md p-8 text-center shadow-xl">
             <div className="flex flex-col items-center justify-center gap-2">
-              <CalendarClock className="size-8 text-blue-400 opacity-80 mb-1" />
-              <div className="text-base font-semibold text-zinc-200">
-                Pista fechada — Próxima sessão programada para 23 de Outubro
-              </div>
-              <p className="text-sm text-muted-foreground max-w-lg">
-                As corridas de Sepang e Singapura já foram concluídas. Acompanhe a contagem regressiva para os treinos livres do Grande Prêmio dos Estados Unidos no Circuito das Américas (Austin).
-              </p>
+              {isStale ? (
+                <>
+                  <AlertTriangle className="size-8 text-amber-400 opacity-90 mb-1 animate-pulse" />
+                  <div className="text-base font-semibold text-amber-200">
+                    Modo de contingência — dados em cache
+                  </div>
+                  <p className="text-sm text-zinc-400 max-w-lg">
+                    {liveData?.source_status?.message || "A fonte de telemetria externa está temporariamente indisponível. Exibindo última leitura válida em cache."}
+                  </p>
+                </>
+              ) : liveData?.source_status && !liveData.source_status.available ? (
+                <>
+                  <AlertTriangle className="size-8 text-amber-400 opacity-90 mb-1" />
+                  <div className="text-base font-semibold text-amber-200">
+                    Telemetria externa temporariamente indisponível
+                  </div>
+                  <p className="text-sm text-zinc-400 max-w-lg">
+                    {liveData?.source_status?.message || "Acesso à telemetria externa restrito durante a sessão oficial. Aguardando restabelecimento da conexão."}
+                  </p>
+                </>
+              ) : isLive ? (
+                <>
+                  <MonitorPlay className="size-8 text-emerald-400 opacity-90 mb-1 animate-pulse" />
+                  <div className="text-base font-semibold text-zinc-100">
+                    Sessão no período oficial — aguardando voltas registradas na telemetria
+                  </div>
+                  <p className="text-sm text-zinc-400 max-w-lg">
+                    A sessão encontra-se no período oficial programado. A torre de tempos será atualizada assim que os tempos de volta forem registrados na telemetria.
+                  </p>
+                </>
+              ) : isFinished ? (
+                <>
+                  <Flag className="size-8 text-zinc-400 opacity-80 mb-1" />
+                  <div className="text-base font-semibold text-zinc-200">
+                    Sessão encerrada
+                  </div>
+                  <p className="text-sm text-muted-foreground max-w-lg">
+                    As atividades de pista desta sessão foram finalizadas.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <CalendarClock className="size-8 text-blue-400 opacity-80 mb-1" />
+                  <div className="text-base font-semibold text-zinc-200">
+                    {liveData?.session?.name
+                      ? `Sessão agendada: ${liveData.session.name}`
+                      : "Sessão agendada"}
+                  </div>
+                  <p className="text-sm text-muted-foreground max-w-lg">
+                    {(() => {
+                      const formattedDate = formatSessionDate(liveData?.session?.date_start)
+                      if (formattedDate === "Horário a confirmar") {
+                        return "Aguardando confirmação do horário de início das atividades oficiais da sessão."
+                      }
+                      return `As atividades de pista para o ${liveData?.session?.meeting_name || "evento"}${liveData?.session?.circuit ? ` no circuito ${liveData.session.circuit}` : ""} estão programadas para iniciar em ${formattedDate}.`
+                    })()}
+                  </p>
+                </>
+              )}
             </div>
           </Card>
         </div>

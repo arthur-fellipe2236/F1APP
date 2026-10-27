@@ -177,22 +177,28 @@ def _scheduled_tower(session):
     messages = [r for r in race_rows if r.get("category") == "SessionStatus"]
         
     meeting_name = session.get("meeting_name")
-    if not meeting_name:
+    if not meeting_name and session.get("year") and session.get("meeting_key"):
         try:
-            meeting_name = _meetings_for_year(session.get("year", 2026)).get(session.get("meeting_key"))
+            meeting_name = _meetings_for_year(session["year"]).get(session["meeting_key"])
         except Exception:
             pass
-    if not meeting_name:
-        meeting_name = "United States Grand Prix"
 
-    circuit = session.get("circuit_short_name") or session.get("circuit") or "Circuit of The Americas"
-    if circuit == "Austin":
-        circuit = "Circuit of The Americas"
+    circuit = session.get("circuit_short_name") or session.get("circuit")
+    country = session.get("country_name") or session.get("country")
+    location = session.get("location")
+    date_start = session.get("date_start")
+    date_end = session.get("date_end")
 
-    country = session.get("country_name") or session.get("country") or "Estados Unidos"
-    location = session.get("location") or "Austin"
-    date_start = session.get("date_start") or "2026-10-23T17:30:00+00:00"
-    date_end = session.get("date_end") or "2026-10-23T18:30:00+00:00"
+    schedule_parts = [f"Sessão agendada: {pt_name}"]
+    if date_start:
+        try:
+            dt = _parse_dt(date_start)
+            schedule_parts.append(f"programada para {dt.strftime('%d/%m às %H:%M UTC')}")
+        except Exception:
+            schedule_parts.append(f"programada para {date_start}")
+    if circuit:
+        schedule_parts.append(f"em {circuit}")
+    dynamic_schedule_msg = " ".join(schedule_parts) + "."
 
     msg_list = [
         {
@@ -204,8 +210,8 @@ def _scheduled_tower(session):
     ] if messages else [
         {
             "date": date_start,
-            "message": f"Race Week: {pt_name} em 23/10 às 14:30 (BRT) no {circuit}",
-            "flag": "GREEN",
+            "message": dynamic_schedule_msg,
+            "flag": flag_value or "GREEN",
         }
     ]
 
@@ -214,6 +220,7 @@ def _scheduled_tower(session):
             "key": sk,
             "session_key": sk,
             "name": pt_name,
+            "session_name": session.get("session_name") or session.get("name") or "Practice 1",
             "type": session.get("session_type") or session.get("type") or "Practice",
             "year": session.get("year", 2026),
             "circuit": circuit,
@@ -391,7 +398,9 @@ def _build_tower(session, state):
     return {
         "session": {
             "key": sk,
+            "session_key": sk,
             "name": session.get("session_name"),
+            "session_name": session.get("session_name"),
             "type": session.get("session_type"),
             "year": session.get("year"),
             "circuit": session.get("circuit_short_name"),
@@ -719,7 +728,9 @@ def live_sessions():
                 "sessions": [
                     {
                         "key": s["session_key"],
+                        "session_key": s["session_key"],
                         "name": SESSION_NAME_PT.get(s.get("session_name"), s.get("session_name")),
+                        "session_name": s.get("session_name"),
                         "type": s.get("session_type"),
                         "date_start": s["date_start"],
                         "date_end": s["date_end"],

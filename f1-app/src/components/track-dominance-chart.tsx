@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import type { RaceResult } from '@/lib/api'
+import { type RaceResult, findRaceSession } from '@/lib/api'
 
 interface TrackDominanceChartProps {
   season: number
@@ -22,7 +22,7 @@ export function TrackDominanceChart({ season, country, results }: TrackDominance
       .then(res => {
         const meeting = res.data.find((m: any) => m.country === country)
         if (!meeting) throw new Error("Corrida não encontrada")
-        const raceSession = meeting.sessions.find((s: any) => s.name === "Race")
+        const raceSession = findRaceSession(meeting.sessions)
         if (!raceSession) throw new Error("Sessão Race não encontrada")
         
         return fetch(`/api/v1/live/practice/${raceSession.key}`)
