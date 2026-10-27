@@ -165,6 +165,8 @@ export interface LiveSession {
   date_end: string
   state: "scheduled" | "live" | "finished"
   live: boolean
+  is_testing?: boolean
+  period?: string | null
 }
 
 export interface LiveSessionEntry {
@@ -176,6 +178,8 @@ export interface LiveSessionEntry {
   date_start: string
   date_end: string
   state: "scheduled" | "live" | "finished"
+  is_testing?: boolean
+  period?: string | null
 }
 
 export interface SessionLike {
@@ -227,6 +231,7 @@ export function findRaceSession<T extends SessionLike = SessionLike>(
 export interface LiveMeetingEntry {
   meeting_key: number
   round: number
+  is_testing?: boolean
   meeting_name: string
   circuit: string | null
   country: string | null
@@ -273,17 +278,18 @@ export interface SourceStatus {
 }
 
 export interface LiveTower {
-  session: LiveSession
+  session: LiveSession | null
   flag: string | null
   current_lap: number | null
   drivers: LiveDriverRow[]
   weather: LiveWeather
   messages: LiveMessage[]
-  updated_at: string
+  updated_at?: string
   data_status?: "live" | "cached" | "scheduled" | "finished" | "unavailable"
   source_status?: SourceStatus
   is_stale?: boolean
   last_valid_update?: string | null
+  series?: string
 }
 
 export class ApiError extends Error {
@@ -377,16 +383,41 @@ export const api = {
       `/news/article?url=${encodeURIComponent(url)}&lang=pt-BR`,
     ),
 
-  liveTower: (sessionKey?: number | null, init?: RequestInit) =>
-    request<LiveTower>(
-      `/live/tower${sessionKey ? `?session_key=${sessionKey}` : ""}`,
-      init
+  liveTower: (
+    sessionKey?: number | null,
+    options?: { series?: string; init?: RequestInit } | RequestInit
+  ) => {
+    const isOptions =
+      options &&
+      typeof options === "object" &&
+      ("series" in options || "init" in options)
+    const series = isOptions ? (options as { series?: string }).series : undefined
+    const init = isOptions
+      ? (options as { init?: RequestInit }).init
+      : (options as RequestInit | undefined)
+    const params: Record<string, any> = {}
+    if (sessionKey) params.session_key = sessionKey
+    if (series) params.series = series
+    return request<LiveTower>(`/live/tower${qs(params)}`, init)
+  },
+
+  liveSessions: (year?: number, series?: string) =>
+    request<{ year: number; series?: string; data: LiveMeetingEntry[] }>(
+      `/live/sessions${qs({ year, series })}`,
     ),
 
-  liveSessions: (year?: number) =>
-    request<{ year: number; data: LiveMeetingEntry[] }>(
-      `/live/sessions${qs({ year })}`,
-    ),
+  liveState: (sessionKey?: number | null, series?: string) =>
+    request<{
+      active: boolean
+      state: string
+      session_key?: number
+      session_name?: string
+      meeting_name?: string
+      date_start?: string
+      date_end?: string
+      series?: string
+      is_testing?: boolean
+    }>(`/live/state${qs({ session_key: sessionKey ?? undefined, series })}`),
 
   raceResults: (raceId: number, params: ListParams = {}) =>
     request<Paginated<RaceResult>>(`/races/${raceId}/results${qs(params)}`),
