@@ -918,7 +918,7 @@ export const MODULE_10_SCENES: ModuleScene[] = [
     imageUrl: "/backgrounds/bg-mclaren.webp",
     audioUrl: "/audio/novatos/modulo10/cena03.mp3",
     narrationTranscript:
-      "Em 2026, a aerodinâmica dá um salto histórico com os modos ativos. No Straight Mode, os elementos móveis das asas reduzem o arrasto nas retas autorizadas para maximizar a velocidade. Já no Corner Mode, a pressão aerodinâmica é restabelecida para garantir máxima estabilidade e segurança nas curvas.",
+      "A partir do regulamento de 2026, a aerodinâmica dá um salto histórico com os modos ativos. No Straight Mode, os elementos móveis das asas reduzem o arrasto nas retas autorizadas para maximizar a velocidade. Já no Corner Mode, a pressão aerodinâmica é restabelecida para garantir máxima estabilidade e segurança nas curvas.",
     visualEffectType: "mod10_active_aero_modes",
   },
   {
@@ -940,7 +940,7 @@ export const MODULE_10_SCENES: ModuleScene[] = [
     imageUrl: "/backgrounds/bg-aston.webp",
     audioUrl: "/audio/novatos/modulo10/cena05.mp3",
     narrationTranscript:
-      "Administrar energia na pista exige inteligência tática. Com o Boost Mode, o piloto solicita potência extra quando as regras e a carga permitem. O Overtake Mode substitui o antigo papel do DRS, oferecendo energia extra em disputas diretas quando colado no rival. E no Recharge, os sistemas recuperam preciosa eletricidade a cada frenagem.",
+      "Administrar energia na pista exige inteligência tática. Com o Boost Mode, o piloto solicita potência extra quando as regras e a carga permitem. Na geração de 2026, o Overtake Mode assume o papel estratégico que o DRS exercia até 2025, oferecendo energia elétrica extra em disputas diretas quando colado no rival. E no Recharge, os sistemas recuperam preciosa eletricidade a cada frenagem.",
     visualEffectType: "mod10_boost_overtake_recharge",
   },
   {
@@ -1358,11 +1358,11 @@ export const MODULE_5_SCENES: ModuleScene[] = [
     id: "m5_c2",
     number: 2,
     title: "O Ataque em 2026",
-    subtitle: "Aerodinâmica ativa e Overtake Mode vs antigo DRS",
+    subtitle: "Aerodinâmica ativa e Overtake Mode na nova era da F1",
     imageUrl: "/backgrounds/bg-mclaren.webp",
     audioUrl: "/audio/novatos/modulo5/cena02.mp3",
     narrationTranscript:
-      "Agora vem uma mudança importante para quem acompanha a Fórmula 1 em 2026. O antigo DRS, que abria uma parte da asa traseira em determinadas condições, foi substituído por uma nova combinação de recursos. A aerodinâmica ativa permite ajustar os elementos das asas entre modos voltados para curvas e para retas, de acordo com as zonas e condições previstas. Já o Overtake Mode oferece ao piloto uma oportunidade adicional de utilizar energia elétrica para atacar quando os requisitos regulamentares são atendidos. Esses sistemas ajudam a criar oportunidades, mas não garantem uma ultrapassagem.",
+      "Para entender as disputas na Fórmula 1, é preciso situar a transição de regulamento. Nas temporadas até 2025, o recurso clássico de ultrapassagem é o DRS, que abre a asa traseira em zonas com menos de um segundo para o rival. A partir de 2026, a FIA introduz uma nova combinação: a aerodinâmica ativa ajusta os elementos das asas entre modos de curvas e retas, enquanto o Overtake Mode fornece potência elétrica extra quando os requisitos regulamentares são atendidos. Esses sistemas criam oportunidades, mas a manobra ainda exige talento e precisão.",
     visualEffectType: "mod5_attack_tech_2026",
   },
   {
@@ -1577,7 +1577,7 @@ export const MODULE_3_SCENES: ModuleScene[] = [
     imageUrl: "/backgrounds/bg-redbull.webp",
     audioUrl: "/audio/novatos/modulo3/cena05.mp3",
     narrationTranscript:
-      "Durante a corrida, a torre de transmissão na lateral da tela é o seu mapa de bordo. Ali você vê a posição de cada piloto, mas preste atenção em duas siglas fundamentais: GAP e INT. GAP é a distância em segundos até o líder da prova. Já INT é o intervalo em relação ao carro imediatamente à frente. Se o INT estiver caindo abaixo de um segundo, prepare-se: uma tentativa de ultrapassagem com asa móvel aberta está prestes a acontecer.",
+      "Durante a corrida, a torre de transmissão na lateral da tela é o seu mapa de bordo. Ali você vê a posição de cada piloto, mas preste atenção em duas siglas fundamentais: GAP e INT. GAP é a distância em segundos até o líder da prova. Já INT é o intervalo em relação ao carro imediatamente à frente. Se o INT estiver caindo abaixo de um segundo, fique atento: o carro de trás pode tentar atacar, mas a ultrapassagem depende das condições da disputa e das regras da temporada.",
     visualEffectType: "mod3_race_tower",
   },
   {
