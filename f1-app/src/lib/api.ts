@@ -215,6 +215,13 @@ export interface LiveMessage {
   flag: string | null
 }
 
+export interface SourceStatus {
+  available: boolean
+  status_code?: number | null
+  reason?: string | null
+  message?: string | null
+}
+
 export interface LiveTower {
   session: LiveSession
   flag: string | null
@@ -223,14 +230,20 @@ export interface LiveTower {
   weather: LiveWeather
   messages: LiveMessage[]
   updated_at: string
+  data_status?: "live" | "cached" | "scheduled" | "finished" | "unavailable"
+  source_status?: SourceStatus
+  is_stale?: boolean
+  last_valid_update?: string | null
 }
 
 export class ApiError extends Error {
   status: number
+  details?: any
 
-  constructor(message: string, status: number) {
+  constructor(message: string, status: number, details?: any) {
     super(message)
     this.status = status
+    this.details = details
   }
 }
 
@@ -239,11 +252,12 @@ const BASE_URL = `${import.meta.env.VITE_API_URL ?? ""}/api/v1`
 async function request<T>(path: string): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`)
   const body = (await res.json().catch(() => null)) as
-    (T & { error?: string }) | null
+    (T & { error?: string; details?: any }) | null
   if (!res.ok || body === null) {
     throw new ApiError(
       body?.error ?? `Erro na resposta da API (${res.status})`,
-      res.status
+      res.status,
+      body?.details
     )
   }
   return body as T

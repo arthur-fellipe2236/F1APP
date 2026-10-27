@@ -125,21 +125,7 @@ def detect_session(now=None):
         if ended:
             return max(ended, key=lambda s: _parse_dt(s["date_end"])), "finished"
 
-    # Fallback default: United States Grand Prix Practice 1 (2026-10-23)
-    fallback_session = {
-        "session_key": 11389,
-        "meeting_key": 1297,
-        "session_name": "Treino Livre 1",
-        "session_type": "Practice",
-        "circuit_short_name": "Circuit of The Americas",
-        "country_name": "Estados Unidos",
-        "location": "Austin",
-        "meeting_name": "United States Grand Prix",
-        "date_start": "2026-10-23T17:30:00+00:00",
-        "date_end": "2026-10-23T18:30:00+00:00",
-        "year": 2026,
-    }
-    return fallback_session, "scheduled"
+    return None, None
 
 
 def _latest_by_driver(rows):
@@ -173,7 +159,6 @@ def _scheduled_tower(session):
     
     # Try to fetch weather and race control messages (e.g. 15-30 mins before session)
     try:
-        from app.api.openf1 import openf1
         weather_data = openf1.get("weather", session_key=sk) or []
         race_rows = openf1.get("race_control", session_key=sk) or []
     except Exception:
@@ -244,13 +229,23 @@ def _scheduled_tower(session):
         "current_lap": None,
         "drivers": [],
         "weather": {
-            "air_temperature": weather_last.get("air_temperature") or 26.5,
-            "track_temperature": weather_last.get("track_temperature") or 34.0,
-            "wind_speed": weather_last.get("wind_speed") or 7.5,
-            "humidity": weather_last.get("relative_humidity") or 44,
-            "rainfall": weather_last.get("rainfall") or 0,
+            "air_temperature": weather_last.get("air_temperature") if weather_last else None,
+            "track_temperature": weather_last.get("track_temperature") if weather_last else None,
+            "wind_speed": weather_last.get("wind_speed") if weather_last else None,
+            "humidity": weather_last.get("relative_humidity") if weather_last else None,
+            "rainfall": weather_last.get("rainfall") if weather_last else None,
         },
         "messages": msg_list,
+        "updated_at": _now_utc().isoformat(),
+        "data_status": "scheduled",
+        "source_status": {
+            "available": True,
+            "status_code": 200,
+            "reason": "scheduled",
+            "message": "Sessão agendada — aguardando início das atividades de pista",
+        },
+        "is_stale": False,
+        "last_valid_update": None,
     }
 def _windowed(path, session_key, date_start, date_end, minutes=(45,)):
     rows = []
@@ -431,6 +426,15 @@ def _build_tower(session, state):
             )[-6:]
         ],
         "updated_at": now.isoformat(),
+        "data_status": "live" if live else "finished",
+        "source_status": {
+            "available": True,
+            "status_code": 200,
+            "reason": "ok",
+            "message": "Telemetria conectada e atualizada" if live else "Sessão encerrada",
+        },
+        "is_stale": False,
+        "last_valid_update": now.isoformat(),
     }
 
 
@@ -498,35 +502,81 @@ def live_tower():
             detected, state = None, None
 
     if detected is None:
-        detected = {
-            "session_key": 11389,
-            "meeting_key": 1297,
-            "session_name": "Treino Livre 1",
-            "session_type": "Practice",
-            "circuit_short_name": "Circuit of The Americas",
-            "country_name": "Estados Unidos",
-            "location": "Austin",
-            "meeting_name": "United States Grand Prix",
-            "date_start": "2026-10-23T17:30:00+00:00",
-            "date_end": "2026-10-23T18:30:00+00:00",
-            "year": 2026,
-        }
-        state = "scheduled"
+        raise ApiError("Nenhuma sessao disponivel", 404)
 
     sk = detected["session_key"]
     tower_key = f"live:tower:{sk}"
+    last_valid_key = f"live:tower:{sk}:last_valid"
+
     if state in {"finished", "scheduled"}:
         cached = app_cache.get(tower_key)
         if cached is not None:
             return jsonify(cached)
+
     try:
         if state == "scheduled":
             tower = _scheduled_tower(detected)
             app_cache.set(tower_key, tower, TOWER_SCHEDULED_TTL)
             return jsonify(tower)
+
         tower = _build_tower(detected, state)
+        if state == "live" and not tower.get("drivers"):
+            cached_valid = app_cache.get(last_valid_key)
+            if cached_valid and cached_valid.get("drivers"):
+                stale_response = dict(cached_valid)
+                stale_response["data_status"] = "cached"
+                stale_response["is_stale"] = True
+                stale_response["source_status"] = {
+                    "available": False,
+                    "status_code": 200,
+                    "reason": "empty_live_data",
+                    "message": "Fonte de telemetria externa retornou dados de pista vazios durante a sessão ao vivo; exibindo última leitura válida.",
+                }
+                return jsonify(stale_response)
+            return jsonify(tower)
+
+        app_cache.set(last_valid_key, tower, TOWER_FINISHED_TTL if state == "finished" else 7200)
     except openf1.OpenF1Error as exc:
-        raise ApiError(f"OpenF1 indisponivel: {exc}", 503)
+        cached_valid = app_cache.get(last_valid_key)
+        if cached_valid is not None:
+            stale_valid = dict(cached_valid)
+            stale_valid["data_status"] = "cached"
+            stale_valid["is_stale"] = True
+            stale_valid["source_status"] = {
+                "available": False,
+                "status_code": exc.status_code,
+                "reason": exc.reason,
+                "message": (
+                    "Acesso à telemetria ao vivo da OpenF1 temporariamente restrito durante a sessão oficial."
+                    if exc.reason == "unauthorized"
+                    else "Fonte de telemetria externa temporariamente indisponível."
+                ),
+            }
+            return jsonify(stale_valid)
+
+        status_code = 504 if exc.reason == "timeout" else (429 if exc.reason == "rate_limited" else 503)
+        raise ApiError(
+            f"OpenF1 indisponivel: {exc.args[0] if exc.args else 'Erro de conexao'}",
+            status_code,
+            details={
+                "reason": exc.reason,
+                "status_code": exc.status_code,
+                "source_available": False,
+                "session": {
+                    "key": detected.get("session_key"),
+                    "name": detected.get("session_name"),
+                    "type": detected.get("session_type"),
+                    "circuit": detected.get("circuit_short_name"),
+                    "country": detected.get("country_name"),
+                    "location": detected.get("location"),
+                    "date_start": detected.get("date_start"),
+                    "date_end": detected.get("date_end"),
+                    "state": state,
+                    "live": state == "live",
+                },
+            },
+        )
+
     if state == "finished":
         app_cache.set(tower_key, tower, TOWER_FINISHED_TTL)
     return jsonify(tower)

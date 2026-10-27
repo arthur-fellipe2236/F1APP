@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { CalendarClock, CloudRain, Wind, Thermometer, Flag, MonitorPlay } from "lucide-react"
+import { CalendarClock, CloudRain, Wind, Thermometer, Flag, MonitorPlay, AlertTriangle, WifiOff, RefreshCw } from "lucide-react"
 
 import { PageHeader } from "@/components/page-header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -44,6 +44,16 @@ export interface LiveData {
     compound: string | null
     in_pit?: boolean
   }>
+  data_status?: "live" | "cached" | "scheduled" | "finished" | "unavailable"
+  source_status?: {
+    available: boolean
+    status_code?: number | null
+    reason?: string | null
+    message?: string | null
+  }
+  is_stale?: boolean
+  last_valid_update?: string | null
+  updated_at?: string
 }
 
 const COMPOUND_COLORS: Record<string, string> = {
@@ -57,21 +67,38 @@ const COMPOUND_COLORS: Record<string, string> = {
 export function LiveTimingPage() {
   const [liveData, setLiveData] = useState<LiveData | null>(null)
   const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null)
+  const [fetchStatus, setFetchStatus] = useState<"loading" | "success" | "error">("loading")
+  const [lastCheckTime, setLastCheckTime] = useState<Date | null>(null)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  const fetchLiveData = async (isManual = false) => {
+    if (isManual) setIsRefreshing(true)
+    try {
+      const data = await api.liveTower()
+      setLastCheckTime(new Date())
+      if (data && data.session) {
+        setLiveData(data as any)
+        setFetchStatus("success")
+        setErrorMessage(null)
+      }
+    } catch (error: any) {
+      setLastCheckTime(new Date())
+      console.warn("Live telemetry check:", error)
+      setFetchStatus("error")
+      const msg =
+        error?.details?.message ||
+        error?.message ||
+        "Não foi possível conectar aos servidores de telemetria da F1."
+      setErrorMessage(msg)
+    } finally {
+      if (isManual) setIsRefreshing(false)
+    }
+  }
 
   useEffect(() => {
-    const fetchLiveData = async () => {
-      try {
-        const data = await api.liveTower()
-        if (data && data.session) {
-          setLiveData(data as any)
-        }
-      } catch (error) {
-        console.error("Failed to fetch live data:", error)
-      }
-    }
-
     fetchLiveData()
-    const interval = setInterval(fetchLiveData, 15000)
+    const interval = setInterval(() => fetchLiveData(false), 15000)
     return () => clearInterval(interval)
   }, [])
 
@@ -120,6 +147,7 @@ export function LiveTimingPage() {
   }
 
   const isLive = liveData?.session?.state === "live"
+  const isStale = liveData?.is_stale || (fetchStatus === "error" && liveData !== null)
 
   return (
     <div className="flex flex-col gap-4 sm:gap-6">
@@ -127,6 +155,129 @@ export function LiveTimingPage() {
         title="Ao Vivo"
         description="Central de telemetria integrada e dados do circuito em tempo real."
       />
+
+      {/* STATUS DA CONEXÃO / AVISO DE DADOS DESATUALIZADOS */}
+      {isStale && (
+        <div className="mx-auto w-full max-w-6xl mb-2 animate-in fade-in duration-300">
+          <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs sm:text-sm backdrop-blur-md">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <AlertTriangle className="size-4 shrink-0 text-amber-400 animate-pulse" />
+              <div className="truncate">
+                <strong className="font-bold">Dados desatualizados:</strong>{" "}
+                <span>
+                  {liveData?.source_status?.message || errorMessage || "Fonte de telemetria externa temporariamente restrita ou indisponível."}{" "}
+                </span>
+                {liveData?.last_valid_update && (
+                  <span className="text-zinc-400 hidden sm:inline">
+                    (Última medição válida: {new Date(liveData.last_valid_update).toLocaleTimeString("pt-BR")})
+                  </span>
+                )}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => fetchLiveData(true)}
+              disabled={isRefreshing}
+              className="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-500/40 text-xs font-semibold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer"
+            >
+              <RefreshCw className={`size-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
+              <span className="hidden sm:inline">Reconectar</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* BARRA DE STATUS NORMAL */}
+      {liveData && !isStale && fetchStatus === "success" && (
+        <div className="mx-auto w-full max-w-6xl -mt-2 mb-2 flex items-center justify-between text-xs text-muted-foreground px-1">
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isLive ? "bg-emerald-400" : "bg-blue-400"}`} />
+              <span className={`relative inline-flex rounded-full h-2 w-2 ${isLive ? "bg-emerald-500" : "bg-blue-500"}`} />
+            </span>
+            <span>
+              {isLive ? "Telemetria ao vivo conectada" : "Sessão agendada"} • Última verificação:{" "}
+              {lastCheckTime ? lastCheckTime.toLocaleTimeString("pt-BR") : "--:--:--"}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="hidden sm:inline text-zinc-500">Atualização a cada 15s</span>
+            <button
+              type="button"
+              onClick={() => fetchLiveData(true)}
+              disabled={isRefreshing}
+              className="text-zinc-400 hover:text-white flex items-center gap-1 transition-colors cursor-pointer"
+              title="Atualizar agora"
+            >
+              <RefreshCw className={`size-3 ${isRefreshing ? "animate-spin" : ""}`} />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ESTADO VAZIO INFORMATIVO: FONTE INDISPONÍVEL E SEM DADOS EM MEMÓRIA */}
+      {fetchStatus === "error" && !liveData && (
+        <div className="mx-auto w-full max-w-6xl mt-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <Card className="border-amber-500/40 bg-card/60 backdrop-blur-md p-8 sm:p-12 text-center shadow-2xl">
+            <div className="flex flex-col items-center justify-center max-w-xl mx-auto gap-4">
+              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400">
+                <WifiOff className="size-10 sm:size-12" />
+              </div>
+              <div className="space-y-2">
+                <h2 className="text-xl sm:text-2xl font-black text-white">
+                  Telemetria Ao Vivo Temporariamente Indisponível
+                </h2>
+                <p className="text-sm text-zinc-300 leading-relaxed">
+                  {errorMessage || "Não foi possível estabelecer conexão com os servidores externos de telemetria da F1."}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  A fonte comunitária (OpenF1) restringe chamadas durante certas sessões oficiais ou pode estar temporariamente inoperante. O aplicativo continuará tentando a conexão automaticamente a cada 15 segundos.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
+                <button
+                  type="button"
+                  onClick={() => fetchLiveData(true)}
+                  disabled={isRefreshing}
+                  className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-sm flex items-center gap-2 transition-all shadow-lg active:scale-95 cursor-pointer"
+                >
+                  <RefreshCw className={`size-4 ${isRefreshing ? "animate-spin" : ""}`} />
+                  {isRefreshing ? "Tentando reconectar..." : "Tentar novamente agora"}
+                </button>
+                <a
+                  href="/calendario"
+                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-sm transition-all border border-white/10"
+                >
+                  Ver Calendário
+                </a>
+                <a
+                  href="/circuitos"
+                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-sm transition-all border border-white/10"
+                >
+                  Resultados Históricos
+                </a>
+              </div>
+
+              {lastCheckTime && (
+                <div className="text-[11px] text-zinc-500 mt-2">
+                  Última tentativa realizada às {lastCheckTime.toLocaleTimeString("pt-BR")}
+                </div>
+              )}
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* CARREGAMENTO INICIAL */}
+      {fetchStatus === "loading" && !liveData && (
+        <div className="mx-auto w-full max-w-6xl py-16 text-center text-muted-foreground animate-pulse">
+          <div className="flex flex-col items-center gap-3">
+            <RefreshCw className="size-8 animate-spin text-blue-400 opacity-75" />
+            <span className="text-sm font-medium">Carregando telemetria da Fórmula 1...</span>
+          </div>
+        </div>
+      )}
 
       {/* RACE WEEK / PROXIMA SESSAO BANNER */}
       {!isLive && liveData?.session && (
@@ -273,117 +424,137 @@ export function LiveTimingPage() {
       )}
 
       {/* NATIVE WIDGETS SECTION */}
-      <div className="mx-auto mt-4 grid w-full max-w-6xl grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
-        <Card className="border-border/50 bg-card/40 backdrop-blur-sm shadow-xl flex flex-col h-full">
-          <CardHeader className="pb-3 border-b border-border/50 bg-muted/20">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Flag className="size-5 text-muted-foreground" />
-              Status da Pista
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 flex flex-col justify-center items-center py-8">
-            <div
-              className={`px-8 py-3 rounded-xl border-2 font-black text-2xl tracking-widest shadow-lg ${getFlagColor(
-                liveData?.flag
-              )}`}
-            >
-              {liveData?.flag || "AGENDADA"}
-            </div>
-          </CardContent>
-        </Card>
+      {liveData && (
+        <div className="mx-auto mt-4 grid w-full max-w-6xl grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
+          <Card className="border-border/50 bg-card/40 backdrop-blur-sm shadow-xl flex flex-col h-full">
+            <CardHeader className="pb-3 border-b border-border/50 bg-muted/20">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Flag className="size-5 text-muted-foreground" />
+                Status da Pista
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex-1 flex flex-col justify-center items-center py-8">
+              <div
+                className={`px-8 py-3 rounded-xl border-2 font-black text-2xl tracking-widest shadow-lg ${getFlagColor(
+                  liveData?.flag
+                )}`}
+              >
+                {liveData?.flag || "AGENDADA"}
+              </div>
+            </CardContent>
+          </Card>
 
-        <Card className="border-border/50 bg-card/40 backdrop-blur-sm shadow-xl flex flex-col h-full">
-          <CardHeader className="pb-3 border-b border-border/50 bg-muted/20">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <CloudRain className="size-5 text-muted-foreground" />
-              Condições Climáticas
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 py-6">
-            <div className="grid grid-cols-2 gap-y-6 gap-x-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-500/10 rounded-lg">
-                  <Thermometer className="size-5 text-blue-400" />
+          <Card className="border-border/50 bg-card/40 backdrop-blur-sm shadow-xl flex flex-col h-full">
+            <CardHeader className="pb-3 border-b border-border/50 bg-muted/20">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <CloudRain className="size-5 text-muted-foreground" />
+                Condições Climáticas
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex-1 py-6">
+              <div className="grid grid-cols-2 gap-y-6 gap-x-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-500/10 rounded-lg">
+                    <Thermometer className="size-5 text-blue-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground font-medium">Ar</div>
+                    <div className="text-lg font-bold tabular-nums">
+                      {liveData?.weather?.air_temperature !== null && liveData?.weather?.air_temperature !== undefined
+                        ? `${liveData.weather.air_temperature}°C`
+                        : "-- °C"}
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-sm text-muted-foreground font-medium">Ar</div>
-                  <div className="text-lg font-bold tabular-nums">
-                    {liveData?.weather?.air_temperature ?? "--"}°C
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-orange-500/10 rounded-lg">
+                    <Thermometer className="size-5 text-orange-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground font-medium">Pista</div>
+                    <div className="text-lg font-bold tabular-nums">
+                      {liveData?.weather?.track_temperature !== null && liveData?.weather?.track_temperature !== undefined
+                        ? `${liveData.weather.track_temperature}°C`
+                        : "-- °C"}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-slate-500/10 rounded-lg">
+                    <Wind className="size-5 text-slate-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground font-medium">Vento</div>
+                    <div className="text-lg font-bold tabular-nums">
+                      {liveData?.weather?.wind_speed !== null && liveData?.weather?.wind_speed !== undefined
+                        ? `${liveData.weather.wind_speed} km/h`
+                        : "-- km/h"}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-cyan-500/10 rounded-lg">
+                    <CloudRain className="size-5 text-cyan-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground font-medium">Umidade</div>
+                    <div className="text-lg font-bold tabular-nums">
+                      {liveData?.weather?.humidity !== null && liveData?.weather?.humidity !== undefined
+                        ? `${liveData.weather.humidity}%`
+                        : "-- %"}
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-orange-500/10 rounded-lg">
-                  <Thermometer className="size-5 text-orange-400" />
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground font-medium">Pista</div>
-                  <div className="text-lg font-bold tabular-nums">
-                    {liveData?.weather?.track_temperature ?? "--"}°C
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-slate-500/10 rounded-lg">
-                  <Wind className="size-5 text-slate-400" />
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground font-medium">Vento</div>
-                  <div className="text-lg font-bold tabular-nums">
-                    {liveData?.weather?.wind_speed ?? "--"} km/h
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-cyan-500/10 rounded-lg">
-                  <CloudRain className="size-5 text-cyan-400" />
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground font-medium">Umidade</div>
-                  <div className="text-lg font-bold tabular-nums">
-                    {liveData?.weather?.humidity ?? "--"}%
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        <Card className="border-border/50 bg-card/40 backdrop-blur-sm shadow-xl flex flex-col h-full">
-          <CardHeader className="pb-3 border-b border-border/50 bg-muted/20">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <MonitorPlay className="size-5 text-muted-foreground" />
-              Race Control
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 overflow-y-auto max-h-[220px] py-4 pr-2 custom-scrollbar">
-            <div className="flex flex-col gap-3">
-              {(!liveData?.messages || liveData.messages.length === 0) && (
-                <div className="text-center text-muted-foreground text-sm italic mt-8">
-                  Nenhuma mensagem oficial da Direção de Prova ainda.
+              {(!liveData?.weather ||
+                (liveData.weather.air_temperature === null &&
+                  liveData.weather.track_temperature === null &&
+                  liveData.weather.wind_speed === null &&
+                  liveData.weather.humidity === null)) && (
+                <div className="text-center text-xs text-muted-foreground italic mt-5 pt-3 border-t border-border/40">
+                  Aguardando dados meteorológicos da sessão
                 </div>
               )}
-              {liveData?.messages?.map((msg, idx) => (
-                <div
-                  key={idx}
-                  className={`p-3 rounded-lg text-sm font-medium border-l-4 ${
-                    msg.flag === "RED"
-                      ? "bg-red-500/10 border-red-500 text-red-200"
-                      : msg.flag === "YELLOW"
-                      ? "bg-yellow-500/10 border-yellow-500 text-yellow-200"
-                      : "bg-muted/50 border-blue-500 text-zinc-300"
-                  }`}
-                >
-                  {msg.message}
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/50 bg-card/40 backdrop-blur-sm shadow-xl flex flex-col h-full">
+            <CardHeader className="pb-3 border-b border-border/50 bg-muted/20">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <MonitorPlay className="size-5 text-muted-foreground" />
+                Race Control
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex-1 overflow-y-auto max-h-[220px] py-4 pr-2 custom-scrollbar">
+              <div className="flex flex-col gap-3">
+                {(!liveData?.messages || liveData.messages.length === 0) && (
+                  <div className="text-center text-muted-foreground text-sm italic mt-8">
+                    Nenhuma mensagem oficial da Direção de Prova ainda.
+                  </div>
+                )}
+                {liveData?.messages?.map((msg, idx) => (
+                  <div
+                    key={idx}
+                    className={`p-3 rounded-lg text-sm font-medium border-l-4 ${
+                      msg.flag === "RED"
+                        ? "bg-red-500/10 border-red-500 text-red-200"
+                        : msg.flag === "YELLOW"
+                        ? "bg-yellow-500/10 border-yellow-500 text-yellow-200"
+                        : "bg-muted/50 border-blue-500 text-zinc-300"
+                    }`}
+                  >
+                    {msg.message}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* TIMING TOWER / STANDBY BANNER */}
-      {liveData && liveData.drivers && liveData.drivers.length > 0 ? (
+      {liveData && (liveData.drivers && liveData.drivers.length > 0 ? (
         <div className="mx-auto w-full max-w-6xl mt-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
           <Card className="border-border/50 bg-card/40 backdrop-blur-md shadow-2xl overflow-hidden">
             <div className="bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900 p-3 text-center text-sm font-bold border-b border-border/50 tracking-widest text-zinc-300">
@@ -485,7 +656,7 @@ export function LiveTimingPage() {
             </div>
           </Card>
         </div>
-      )}
+      ))}
     </div>
   )
 }
