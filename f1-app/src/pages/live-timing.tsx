@@ -134,13 +134,29 @@ export function LiveTimingPage() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [pollIntervalMs, setPollIntervalMs] = useState<number>(LIVE_POLL_INTERVAL_MS)
 
-  const inFlightRef = useRef(false)
   const isMountedRef = useRef(true)
+  const requestIdRef = useRef(0)
   const abortControllerRef = useRef<AbortController | null>(null)
   const pollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const failuresRef = useRef(0)
   const activeSeriesRef = useRef<SeriesCategory>(currentSeries)
-  activeSeriesRef.current = currentSeries
+  const activeSessionKeyRef = useRef<number | null>(selectedSessionKey)
+
+  // Dedicated mount / unmount lifecycle effect
+  useEffect(() => {
+    isMountedRef.current = true
+    return () => {
+      isMountedRef.current = false
+      if (pollTimerRef.current !== null) {
+        clearTimeout(pollTimerRef.current)
+        pollTimerRef.current = null
+      }
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+        abortControllerRef.current = null
+      }
+    }
+  }, [])
 
   // Fetch meetings and calendar sessions for the active series
   useEffect(() => {
@@ -173,6 +189,10 @@ export function LiveTimingPage() {
     return list
   }, [meetings])
 
+  const fetchLiveDataRef = useRef<
+    (isManual?: boolean, sessionKeyOverride?: number | null, targetSeries?: string) => Promise<void>
+  >(() => Promise.resolve())
+
   const scheduleNextPoll = useCallback((delayMs: number, targetSeries: string, sessionKey: number | null) => {
     if (!isMountedRef.current) return
     if (pollTimerRef.current !== null) {
@@ -180,7 +200,7 @@ export function LiveTimingPage() {
       pollTimerRef.current = null
     }
     pollTimerRef.current = setTimeout(() => {
-      fetchLiveData(false, sessionKey, targetSeries)
+      fetchLiveDataRef.current(false, sessionKey, targetSeries)
     }, delayMs)
   }, [])
 
@@ -190,8 +210,10 @@ export function LiveTimingPage() {
       sessionKeyOverride: number | null = selectedSessionKey,
       targetSeries: string = currentSeries
     ) => {
-      if (inFlightRef.current) {
-        return
+      // Abort any pending controller before dispatching a newer request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+        abortControllerRef.current = null
       }
 
       if (pollTimerRef.current !== null) {
@@ -199,13 +221,13 @@ export function LiveTimingPage() {
         pollTimerRef.current = null
       }
 
+      const reqId = ++requestIdRef.current
+      const controller = new AbortController()
+      abortControllerRef.current = controller
+
       if (isManual) {
         setIsRefreshing(true)
       }
-
-      inFlightRef.current = true
-      const controller = new AbortController()
-      abortControllerRef.current = controller
 
       let nextInterval = LIVE_POLL_INTERVAL_MS
 
@@ -215,10 +237,13 @@ export function LiveTimingPage() {
           init: { signal: controller.signal },
         })
 
+        // Discard stale responses if request was superseded, aborted, or component unmounted
         if (
           !isMountedRef.current ||
           controller.signal.aborted ||
-          targetSeries !== activeSeriesRef.current
+          reqId !== requestIdRef.current ||
+          targetSeries !== activeSeriesRef.current ||
+          sessionKeyOverride !== activeSessionKeyRef.current
         ) {
           return
         }
@@ -261,14 +286,16 @@ export function LiveTimingPage() {
         if (
           error?.name === "AbortError" ||
           controller.signal.aborted ||
-          targetSeries !== activeSeriesRef.current
+          reqId !== requestIdRef.current ||
+          targetSeries !== activeSeriesRef.current ||
+          sessionKeyOverride !== activeSessionKeyRef.current
         ) {
           return
         }
         if (!isMountedRef.current) return
 
         setLastCheckTime(new Date())
-        console.warn(`[LiveTower] Error fetching series ${targetSeries}:`, error)
+        console.warn(`[LiveTower] Error fetching series ${targetSeries} (session: ${sessionKeyOverride}):`, error)
         setFetchStatus("error")
         const sName = SERIES_NAMES[targetSeries] || "Fórmula 1"
         const msg =
@@ -281,24 +308,30 @@ export function LiveTimingPage() {
         const backoffIdx = Math.min(failuresRef.current - 1, BACKOFF_INTERVALS_MS.length - 1)
         nextInterval = BACKOFF_INTERVALS_MS[backoffIdx]
       } finally {
-        inFlightRef.current = false
-        if (abortControllerRef.current === controller) {
-          abortControllerRef.current = null
-        }
-
-        if (
-          isMountedRef.current &&
-          !controller.signal.aborted &&
-          targetSeries === activeSeriesRef.current
-        ) {
+        if (reqId === requestIdRef.current) {
+          if (abortControllerRef.current === controller) {
+            abortControllerRef.current = null
+          }
           if (isManual) setIsRefreshing(false)
-          setPollIntervalMs(nextInterval)
-          scheduleNextPoll(nextInterval, targetSeries, sessionKeyOverride)
+
+          if (
+            isMountedRef.current &&
+            !controller.signal.aborted &&
+            targetSeries === activeSeriesRef.current &&
+            sessionKeyOverride === activeSessionKeyRef.current
+          ) {
+            setPollIntervalMs(nextInterval)
+            scheduleNextPoll(nextInterval, targetSeries, sessionKeyOverride)
+          }
         }
       }
     },
     [currentSeries, selectedSessionKey, scheduleNextPoll]
   )
+
+  useEffect(() => {
+    fetchLiveDataRef.current = fetchLiveData
+  }, [fetchLiveData])
 
   // Switching category: reset data immediately to avoid data leakage across categories
   const handleSeriesChange = useCallback(
@@ -306,6 +339,7 @@ export function LiveTimingPage() {
       if (newSeries === currentSeries) return
 
       activeSeriesRef.current = newSeries
+      activeSessionKeyRef.current = null
       if (abortControllerRef.current) {
         abortControllerRef.current.abort()
         abortControllerRef.current = null
@@ -315,7 +349,6 @@ export function LiveTimingPage() {
         pollTimerRef.current = null
       }
 
-      inFlightRef.current = false
       failuresRef.current = 0
       setSelectedSessionKey(null)
       setLiveData(null)
@@ -330,7 +363,7 @@ export function LiveTimingPage() {
   const handleSessionChange = useCallback(
     (newKeyStr: string) => {
       const key = newKeyStr === "auto" ? null : Number(newKeyStr)
-      setSelectedSessionKey(key)
+      activeSessionKeyRef.current = key
 
       if (abortControllerRef.current) {
         abortControllerRef.current.abort()
@@ -341,18 +374,20 @@ export function LiveTimingPage() {
         pollTimerRef.current = null
       }
 
-      inFlightRef.current = false
       failuresRef.current = 0
       setLiveData(null)
       setFetchStatus("loading")
-      fetchLiveData(false, key, currentSeries)
+      setErrorMessage(null)
+      setSelectedSessionKey(key)
     },
-    [currentSeries, fetchLiveData]
+    []
   )
 
-  // Re-fetch on series change
+  // Re-fetch on series or session change
   useEffect(() => {
     isMountedRef.current = true
+    activeSeriesRef.current = currentSeries
+    activeSessionKeyRef.current = selectedSessionKey
     fetchLiveData(false, selectedSessionKey, currentSeries)
 
     return () => {
@@ -698,20 +733,25 @@ export function LiveTimingPage() {
         </div>
       )}
 
-      {/* SCHEDULED SESSION BANNER */}
+      {/* SESSION BANNER (SCHEDULED OR FINISHED) */}
       {!isLive && liveData?.session && (
         <div className="mx-auto w-full max-w-6xl mb-2 animate-in fade-in slide-in-from-bottom-2 duration-500">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-blue-950/40 via-zinc-900/60 to-blue-950/40 border border-blue-500/30 backdrop-blur-md shadow-lg">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-blue-500/20 rounded-xl text-blue-400">
-                <CalendarClock className="size-7" />
+                {isFinished ? <Flag className="size-7" /> : <CalendarClock className="size-7" />}
               </div>
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs uppercase font-extrabold tracking-wider px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                    {liveData.session.meeting_name
-                      ? `Próxima Race Week • ${liveData.session.meeting_name}`
-                      : "Próxima Sessão Agendada"}
+                  <span className={`text-xs uppercase font-extrabold tracking-wider px-2.5 py-0.5 rounded-full ${
+                    isFinished
+                      ? "bg-zinc-700/50 text-zinc-300 border border-zinc-600/50"
+                      : "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                  }`}>
+                    {isFinished
+                      ? (liveData.session.meeting_name ? `Sessão Concluída • ${liveData.session.meeting_name}` : "Sessão Concluída")
+                      : (liveData.session.meeting_name ? `Próxima Race Week • ${liveData.session.meeting_name}` : "Próxima Sessão Agendada")
+                    }
                   </span>
 
                   {/* Estimated vs Confirmed Time Badge */}
@@ -732,8 +772,9 @@ export function LiveTimingPage() {
                   {liveData.session.circuit ? ` — ${liveData.session.circuit}` : ""}
                 </h3>
                 <p className="text-sm text-zinc-400 mt-0.5">
+                  {isFinished ? "Realizada em: " : ""}
                   {formatSessionDate(liveData.session.date_start)}
-                  {isEstimatedTime && (
+                  {isEstimatedTime && !isFinished && (
                     <span className="ml-1 text-amber-300/80 text-xs font-medium">
                       (horário estimado sujeito a confirmação pela FIA)
                     </span>
@@ -1118,6 +1159,11 @@ export function LiveTimingPage() {
                         {liveData?.source_status?.message ||
                           `O feed de telemetria em tempo real não está habilitado para ${currentSeriesLabel}. Posições e voltas não são inventadas.`}
                       </p>
+                      {isFinished && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Sessão oficial finalizada conforme o calendário esportivo da FIA.
+                        </p>
+                      )}
                     </>
                   ) : isLive ? (
                     <>

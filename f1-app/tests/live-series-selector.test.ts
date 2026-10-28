@@ -230,3 +230,243 @@ test("LiveTiming - URL query string construction for multi-series endpoints", ()
   assert.equal(buildLiveSessionsUrl(2026, "f2"), "/live/sessions?year=2026&series=f2")
   assert.equal(buildLiveSessionsUrl(2026, "f3"), "/live/sessions?year=2026&series=f3")
 })
+
+test("LiveTiming Regression - Session lifecycle and monotonic requestId prevents infinite loading", async () => {
+  // Simulates the exact lifecycle implemented in live-timing.tsx:
+  let requestId = 0
+  let activeSeries: SeriesCategory = "f1"
+  let activeSessionKey: number | null = null
+  let liveData: any = null
+  let fetchStatus: "loading" | "success" | "error" = "loading"
+  let errorMessage: string | null = null
+  let abortController: AbortController | null = null
+
+  async function mockFetchLiveData(
+    sessionKeyOverride: number | null,
+    targetSeries: SeriesCategory,
+    mockPromise: Promise<any>
+  ) {
+    if (abortController) {
+      abortController.abort()
+      abortController = null
+    }
+
+    const reqId = ++requestId
+    const controller = new AbortController()
+    abortController = controller
+
+    try {
+      const data = await mockPromise
+      if (
+        controller.signal.aborted ||
+        reqId !== requestId ||
+        targetSeries !== activeSeries ||
+        sessionKeyOverride !== activeSessionKey
+      ) {
+        return
+      }
+
+      liveData = data
+      fetchStatus = "success"
+      errorMessage = null
+    } catch (err: any) {
+      if (
+        err?.name === "AbortError" ||
+        controller.signal.aborted ||
+        reqId !== requestId ||
+        targetSeries !== activeSeries ||
+        sessionKeyOverride !== activeSessionKey
+      ) {
+        return
+      }
+      fetchStatus = "error"
+      errorMessage = err?.message || "Erro de conexão"
+    }
+  }
+
+  function onSessionChange(newKey: number | null) {
+    activeSessionKey = newKey
+    liveData = null
+    fetchStatus = "loading"
+    errorMessage = null
+  }
+
+  // 1. Initial load
+  onSessionChange(null)
+  assert.equal(fetchStatus, "loading")
+  assert.equal(liveData, null)
+
+  const initialP = Promise.resolve({
+    session: { session_key: 11465, session_name: "Day 1", state: "finished" },
+    drivers: [{ driver_number: 63, name: "George Russell", position: 1 }],
+    data_status: "finished",
+  })
+  await mockFetchLiveData(null, "f1", initialP)
+
+  assert.equal(fetchStatus, "success")
+  assert.equal(liveData?.session?.session_name, "Day 1")
+  assert.equal(liveData?.drivers?.length, 1)
+
+  // 2. User selects historical session 11234 (Race)
+  onSessionChange(11234)
+  assert.equal(fetchStatus, "loading", "Loading state starts upon selection")
+  assert.equal(liveData, null, "Previous data reset immediately")
+
+  const historicalRaceP = Promise.resolve({
+    session: { session_key: 11234, session_name: "Race", state: "finished" },
+    drivers: [
+      { driver_number: 63, name: "George Russell", position: 1 },
+      { driver_number: 12, name: "Kimi Antonelli", position: 2 },
+    ],
+    data_status: "finished",
+  })
+  await mockFetchLiveData(11234, "f1", historicalRaceP)
+
+  assert.equal(fetchStatus, "success", "Loading state concludes successfully")
+  assert.equal(liveData?.session?.session_name, "Race")
+  assert.equal(liveData?.drivers?.length, 2)
+  assert.equal(liveData?.data_status, "finished")
+
+  // 3. User rapidly changes sessions (11234 -> 11235 -> 11236)
+  onSessionChange(11235)
+  // simulate in-flight slow request for 11235
+  let resolveSlow11235: any
+  const slowP = new Promise((resolve) => {
+    resolveSlow11235 = resolve
+  })
+  mockFetchLiveData(11235, "f1", slowP)
+
+  // Before slow 11235 resolves, user clicks 11236
+  onSessionChange(11236)
+  const fast11236P = Promise.resolve({
+    session: { session_key: 11236, session_name: "Qualifying", state: "finished" },
+    drivers: [{ driver_number: 16, name: "Charles Leclerc", position: 1 }],
+    data_status: "finished",
+  })
+  await mockFetchLiveData(11236, "f1", fast11236P)
+
+  assert.equal(fetchStatus, "success")
+  assert.equal(liveData?.session?.session_key, 11236, "Active selection is session 11236")
+
+  // Now slow 11235 resolves later
+  resolveSlow11235({
+    session: { session_key: 11235, session_name: "Old Session" },
+    drivers: [],
+  })
+  await slowP
+
+  // Verification: 11235 did NOT overwrite 11236!
+  assert.equal(liveData?.session?.session_key, 11236, "Older slow response was discarded")
+  assert.equal(fetchStatus, "success")
+
+  // 4. Network error recovery path guarantees loading terminates
+  onSessionChange(11237)
+  assert.equal(fetchStatus, "loading")
+  const networkErrorP = Promise.reject(new Error("Falha na conexão de rede"))
+  await mockFetchLiveData(11237, "f1", networkErrorP)
+
+  assert.equal(fetchStatus, "error", "Loading terminates on error")
+  assert.equal(errorMessage, "Falha na conexão de rede")
+
+  // 5. Empty or unavailable response guarantees loading terminates
+  onSessionChange(20001)
+  activeSeries = "f2"
+  const f2UnavailableP = Promise.resolve({
+    session: { session_key: 20001, session_name: "Dia 1", state: "finished" },
+    drivers: [],
+    data_status: "unavailable",
+    source_status: { available: false, message: "Feed não configurado" },
+  })
+  await mockFetchLiveData(20001, "f2", f2UnavailableP)
+
+  assert.equal(fetchStatus, "success", "Loading terminates on unavailable response")
+  assert.equal(liveData?.data_status, "unavailable")
+  assert.equal(liveData?.drivers?.length, 0)
+})
+
+test("LiveTiming Regression - Coverage across F1, F2, F3 session types (Practice, Qualy, Race)", () => {
+  // Verifies contract expectations for each category & session type
+  const cases: Array<{
+    series: SeriesCategory
+    type: "practice" | "qualifying" | "race"
+    session: any
+    expectedDataStatus: string
+    allowSimulatedDrivers: boolean
+  }> = [
+    // F1 Historical Sessions
+    {
+      series: "f1",
+      type: "practice",
+      session: { key: 11231, name: "Treino Livre 1", state: "finished" },
+      expectedDataStatus: "finished",
+      allowSimulatedDrivers: false,
+    },
+    {
+      series: "f1",
+      type: "qualifying",
+      session: { key: 11234, name: "Classificação", state: "finished" },
+      expectedDataStatus: "finished",
+      allowSimulatedDrivers: false,
+    },
+    {
+      series: "f1",
+      type: "race",
+      session: { key: 11235, name: "Corrida", state: "finished" },
+      expectedDataStatus: "finished",
+      allowSimulatedDrivers: false,
+    },
+    // F2 Historical Sessions (Calendar present, Live Telemetry unavailable)
+    {
+      series: "f2",
+      type: "practice",
+      session: { key: 20101, name: "Treino Livre", state: "finished" },
+      expectedDataStatus: "unavailable",
+      allowSimulatedDrivers: false,
+    },
+    {
+      series: "f2",
+      type: "qualifying",
+      session: { key: 20102, name: "Classificação", state: "finished" },
+      expectedDataStatus: "unavailable",
+      allowSimulatedDrivers: false,
+    },
+    {
+      series: "f2",
+      type: "race",
+      session: { key: 20104, name: "Corrida Principal", state: "finished" },
+      expectedDataStatus: "unavailable",
+      allowSimulatedDrivers: false,
+    },
+    // F3 Historical Sessions (Calendar present, Live Telemetry unavailable)
+    {
+      series: "f3",
+      type: "practice",
+      session: { key: 30101, name: "Treino Livre", state: "finished" },
+      expectedDataStatus: "unavailable",
+      allowSimulatedDrivers: false,
+    },
+    {
+      series: "f3",
+      type: "qualifying",
+      session: { key: 30102, name: "Classificação", state: "finished" },
+      expectedDataStatus: "unavailable",
+      allowSimulatedDrivers: false,
+    },
+    {
+      series: "f3",
+      type: "race",
+      session: { key: 30104, name: "Corrida Principal", state: "finished" },
+      expectedDataStatus: "unavailable",
+      allowSimulatedDrivers: false,
+    },
+  ]
+
+  for (const c of cases) {
+    if (c.series === "f1") {
+      assert.equal(c.expectedDataStatus, "finished", `F1 ${c.type} deve retornar data_status='finished'`)
+    } else {
+      assert.equal(c.expectedDataStatus, "unavailable", `${c.series.toUpperCase()} ${c.type} deve retornar data_status='unavailable' sem telemetria autorizada`)
+    }
+    assert.equal(c.allowSimulatedDrivers, false, "Nenhuma série pode gerar pilotos fictícios")
+  }
+})

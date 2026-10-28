@@ -158,6 +158,16 @@ def _session_by_key(session_key, series="f1"):
         if found:
             app_cache.set(cache_key, found, META_TTL)
             return found
+
+    try:
+        direct = openf1.get("sessions", session_key=session_key)
+        if direct and len(direct) > 0:
+            found = direct[0]
+            app_cache.set(cache_key, found, META_TTL)
+            return found
+    except Exception as exc:
+        logger.warning("Falha ao buscar sessao direta %s na OpenF1: %s", session_key, exc)
+
     return None
 
 
