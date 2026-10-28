@@ -1,9 +1,22 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useSeasons } from "@/hooks/use-seasons"
+import { useAppStore } from "@/store"
 import { useMemo } from "react"
 
-export function SeasonSelector({ value, onValueChange, className = "w-[140px]" }: { value: string, onValueChange: (v: string) => void, className?: string }) {
-  const seasons = useSeasons()
+export function SeasonSelector({
+  value,
+  onValueChange,
+  className = "w-[140px]",
+  series: seriesProp,
+}: {
+  value: string
+  onValueChange: (v: string) => void
+  className?: string
+  series?: string
+}) {
+  const storeSeries = useAppStore((state) => state.series)
+  const series = seriesProp ?? storeSeries
+  const seasons = useSeasons(series)
 
   const groupedSeasons = useMemo(() => {
     const groups: Record<string, number[]> = {}

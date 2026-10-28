@@ -1,8 +1,8 @@
 import { api } from "@/lib/api"
 import { useApi } from "@/hooks/use-api"
 
-export function useSeasons(): number[] {
-  const query = useApi(() => api.seasons(), [])
+export function useSeasons(series?: string): number[] {
+  const query = useApi(() => api.seasons(series), [series])
   if (query.data && query.data.data.length > 0) {
     return query.data.data
   }

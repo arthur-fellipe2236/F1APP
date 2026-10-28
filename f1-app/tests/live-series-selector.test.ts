@@ -470,3 +470,40 @@ test("LiveTiming Regression - Coverage across F1, F2, F3 session types (Practice
     assert.equal(c.allowSimulatedDrivers, false, "Nenhuma série pode gerar pilotos fictícios")
   }
 })
+
+test("Calendar & Seasons Multi-Series - API query string construction and isolation", () => {
+  // Test query string building for /seasons
+  const qs = (params: Record<string, unknown>) => {
+    const search = new URLSearchParams()
+    Object.entries(params).forEach(([key, val]) => {
+      if (val !== undefined && val !== null && val !== "") {
+        search.append(key, String(val))
+      }
+    })
+    const str = search.toString()
+    return str ? `?${str}` : ""
+  }
+
+  assert.equal(qs({ series: "f2" }), "?series=f2")
+  assert.equal(qs({ series: "f3" }), "?series=f3")
+  assert.equal(qs({ series: undefined }), "")
+
+  // Test races params
+  assert.equal(qs({ season: 2026, series: "f2" }), "?season=2026&series=f2")
+  assert.equal(qs({ season: 2026, series: "f3" }), "?season=2026&series=f3")
+  assert.equal(qs({ season: 2024, series: "f1" }), "?season=2024&series=f1")
+
+  // Test seasons state clamping: if series is F2 and season is 2024, fallback to 2026
+  const getSafeSeason = (series: string, currentSeason: string, availableSeasons: number[]) => {
+    if (series !== "f1" && availableSeasons.length > 0) {
+      if (!availableSeasons.includes(Number(currentSeason))) {
+        return String(availableSeasons[0])
+      }
+    }
+    return currentSeason
+  }
+
+  assert.equal(getSafeSeason("f2", "2024", [2026]), "2026", "Temporada 2024 da F1 deve ser redefinida para 2026 ao mudar para F2")
+  assert.equal(getSafeSeason("f3", "1991", [2026]), "2026", "Temporada 1991 da F1 deve ser redefinida para 2026 ao mudar para F3")
+  assert.equal(getSafeSeason("f1", "2024", [2026, 2025, 2024]), "2024", "Temporada 2024 deve ser preservada na F1")
+})

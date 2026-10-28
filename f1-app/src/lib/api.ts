@@ -58,6 +58,7 @@ export interface Circuit {
 export interface Race {
   id: number
   season: number
+  series?: string
   round: number
   name: string
   date: string | null
@@ -354,7 +355,7 @@ export type ListParams = {
 export const api = {
   health: () => request<{ status: string; service: string }>("/health"),
 
-  seasons: () => request<{ data: number[] }>("/seasons"),
+  seasons: (series?: string) => request<{ data: number[] }>(`/seasons${qs({ series })}`),
 
   drivers: (params: ListParams & { team_id?: number; season?: number; series?: string } = {}) =>
     request<Paginated<Driver>>(`/drivers${qs(params)}`),

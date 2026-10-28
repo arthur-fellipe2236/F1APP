@@ -1,5 +1,6 @@
 import { useAppStore } from "@/store"
 import { SeasonSelector } from "@/components/season-selector"
+import { SeriesSelector } from "@/components/series-selector"
 import { useState, useMemo, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import type { TableColumn } from "react-data-table-component"
@@ -28,19 +29,30 @@ function NextRaceHero({ season, series }: { season: number | undefined, series: 
   const [countdown, setCountdown] = useState<string>("")
 
   useEffect(() => {
-    if (!season || series !== "f1") return
-    api.liveSessions(season)
+    if (!season) return
+    api.liveSessions(season, series)
       .then(res => {
-         if (!res?.data) return
+         if (!res?.data || res.data.length === 0) {
+           setNextMeeting(null)
+           setNextSession(null)
+           return
+         }
          const now = new Date()
          const upcoming = res.data.find((m: any) => new Date(m.date_end) > now)
          if (upcoming) {
            setNextMeeting(upcoming)
            const nextS = upcoming.sessions?.find((s: any) => new Date(s.date_start) > now)
            setNextSession(nextS || upcoming.sessions?.[upcoming.sessions.length - 1] || null)
+         } else {
+           setNextMeeting(null)
+           setNextSession(null)
          }
       })
-      .catch(err => console.error("Failed to fetch next race:", err))
+      .catch(err => {
+        console.error("Failed to fetch next race:", err)
+        setNextMeeting(null)
+        setNextSession(null)
+      })
   }, [season, series])
 
   useEffect(() => {
@@ -69,7 +81,7 @@ function NextRaceHero({ season, series }: { season: number | undefined, series: 
     return () => clearInterval(timer)
   }, [nextSession])
 
-  if (!nextMeeting || series !== "f1") return null
+  if (!nextMeeting) return null
 
   const flag = flagFromCountry(nextMeeting.country)
 
@@ -80,7 +92,7 @@ function NextRaceHero({ season, series }: { season: number | undefined, series: 
       </div>
       <CardHeader className="pb-2">
         <CardDescription className="text-red-400 font-bold tracking-widest uppercase text-xs">
-          Próxima Etapa
+          Próxima Etapa {series !== "f1" ? `(${series.toUpperCase()})` : ""}
         </CardDescription>
         <CardTitle className="text-3xl font-black flex items-center gap-3">
           {flag && <img src={flag} alt="" className="h-6 w-9 rounded-sm object-cover shadow-sm" />}
@@ -99,23 +111,26 @@ function NextRaceHero({ season, series }: { season: number | undefined, series: 
               Horários (Seu Fuso Local)
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-              {nextMeeting.sessions.map((s: any) => (
-                <div key={s.key} className={`text-xs p-2 rounded border ${s.key === nextSession?.key ? 'bg-red-500/20 border-red-500/50 text-white' : 'bg-white/5 border-white/10 text-muted-foreground'}`}>
-                  <div className="font-bold mb-1">{s.name}</div>
-                  <div>
-                    {new Date(s.date_start).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' })}
+              {nextMeeting.sessions?.map((s: any) => {
+                const sKey = s.key || s.session_key
+                return (
+                  <div key={sKey} className={`text-xs p-2 rounded border ${sKey === (nextSession?.key || nextSession?.session_key) ? 'bg-red-500/20 border-red-500/50 text-white' : 'bg-white/5 border-white/10 text-muted-foreground'}`}>
+                    <div className="font-bold mb-1">{s.name || s.session_name}</div>
+                    <div>
+                      {new Date(s.date_start).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' })}
+                    </div>
+                    <div>
+                      {new Date(s.date_start).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+                    </div>
                   </div>
-                  <div>
-                    {new Date(s.date_start).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
           
           <div className="bg-black/60 border border-white/10 rounded-lg p-4 min-w-[220px] text-center flex flex-col justify-center items-center backdrop-blur-md">
             <span className="text-xs text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1">
-              <Clock className="size-3" /> Faltam para {nextSession?.name}
+              <Clock className="size-3" /> Faltam para {nextSession?.name || nextSession?.session_name}
             </span>
             <span className="text-3xl font-mono font-bold text-red-500">
               {countdown || "..."}
@@ -130,10 +145,19 @@ function NextRaceHero({ season, series }: { season: number | undefined, series: 
 export function RacesPage() {
   const navigate = useNavigate()
   
-  const { series, season, setSeason } = useAppStore()
+  const { series, setSeries, season, setSeason } = useAppStore()
   
-  const seasons = useSeasons()
+  const seasons = useSeasons(series)
   const defaultSeason = String(seasons[0] ?? "")
+
+  useEffect(() => {
+    if (series !== "f1" && seasons.length > 0) {
+      if (!seasons.includes(Number(season))) {
+        setSeason(String(seasons[0]))
+      }
+    }
+  }, [series, seasons, season, setSeason])
+
   const seasonParam =
     (season === "all" ? undefined : Number(season || defaultSeason)) ||
     undefined
@@ -214,11 +238,23 @@ export function RacesPage() {
       <PageHeader
         title="Calendário"
       >
-        <div className="flex items-center gap-2">
-          <Label htmlFor="season-filter" className="text-muted-foreground">
-            Temporada
-          </Label>
-          <SeasonSelector value={String(season || defaultSeason)} onValueChange={setSeason} className="w-[180px]" />
+        <div className="flex flex-wrap items-center gap-3">
+          <SeriesSelector
+            value={series}
+            onChange={(s) => setSeries(s)}
+            size="sm"
+          />
+          <div className="flex items-center gap-2">
+            <Label htmlFor="season-filter" className="text-muted-foreground">
+              Temporada
+            </Label>
+            <SeasonSelector
+              value={String(season || defaultSeason)}
+              onValueChange={setSeason}
+              series={series}
+              className="w-[180px]"
+            />
+          </div>
         </div>
       </PageHeader>
 

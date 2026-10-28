@@ -273,13 +273,15 @@ function RaceDetailPageInner() {
   }, [id])
 
   const [meetingSessions, setMeetingSessions] = useState<any[] | null>(null)
+  const raceSeries = race.data?.series || "f1"
 
   useEffect(() => {
     if (!race.data?.season) return
-    api.liveSessions(race.data.season)
+    api.liveSessions(race.data.season, raceSeries)
       .then(res => {
         if (!res?.data) return
         const m = res.data.find((item: any) => 
+          (item.meeting_key && item.meeting_key === race.data?.id) ||
           (race.data?.circuit_country && item.country?.toLowerCase() === race.data.circuit_country.toLowerCase()) ||
           (race.data?.name && item.meeting_name?.toLowerCase().includes(race.data.name.toLowerCase())) ||
           (race.data?.name && race.data.name.toLowerCase().includes(item.meeting_name?.toLowerCase()))
@@ -289,7 +291,7 @@ function RaceDetailPageInner() {
         }
       })
       .catch(() => {})
-  }, [race.data?.season, race.data?.circuit_country, race.data?.name])
+  }, [race.data?.season, race.data?.circuit_country, race.data?.name, raceSeries, race.data?.id])
 
   const columns = useMemo(() => getResultColumns(race.data?.season), [race.data?.season])
 
@@ -319,6 +321,11 @@ function RaceDetailPageInner() {
           </div>
           <CardHeader>
             <div className="flex flex-wrap items-center gap-2">
+              {raceSeries !== "f1" && (
+                <Badge variant="default" className="font-bold uppercase tracking-wider bg-red-600">
+                  {raceSeries.toUpperCase()}
+                </Badge>
+              )}
               <Badge variant="secondary">Temporada {race.data.season}</Badge>
               <Badge variant="outline">Rodada {race.data.round}</Badge>
             </div>
@@ -396,10 +403,14 @@ function RaceDetailPageInner() {
 
       <Tabs defaultValue="race" className="w-full">
         <TabsList className="mb-4">
-          <TabsTrigger value="fp">Treinos Livres</TabsTrigger>
-          <TabsTrigger value="qualy">Qualificação</TabsTrigger>
+          {raceSeries === "f1" && (
+            <>
+              <TabsTrigger value="fp">Treinos Livres</TabsTrigger>
+              <TabsTrigger value="qualy">Qualificação</TabsTrigger>
+            </>
+          )}
           <TabsTrigger value="race">Resultado Final</TabsTrigger>
-          {race.data && race.data.season >= 2023 && (
+          {raceSeries === "f1" && race.data && race.data.season >= 2023 && (
             <TabsTrigger value="telemetry" className="flex items-center gap-2">
               <Zap className="size-4" /> Telemetria
             </TabsTrigger>
