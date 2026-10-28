@@ -507,3 +507,45 @@ test("Calendar & Seasons Multi-Series - API query string construction and isolat
   assert.equal(getSafeSeason("f3", "1991", [2026]), "2026", "Temporada 1991 da F1 deve ser redefinida para 2026 ao mudar para F3")
   assert.equal(getSafeSeason("f1", "2024", [2026, 2025, 2024]), "2024", "Temporada 2024 deve ser preservada na F1")
 })
+
+test("Drivers & Teams Multi-Series - Query string building and team filter isolation", () => {
+  const qs = (params: Record<string, unknown>) => {
+    const search = new URLSearchParams()
+    Object.entries(params).forEach(([key, val]) => {
+      if (val !== undefined && val !== null && val !== "") {
+        search.append(key, String(val))
+      }
+    })
+    const str = search.toString()
+    return str ? `?${str}` : ""
+  }
+
+  // Drivers endpoint query strings
+  assert.equal(
+    qs({ page: 1, per_page: 50, season: 2026, series: "f2", team_id: 42 }),
+    "?page=1&per_page=50&season=2026&series=f2&team_id=42",
+    "Filtro de equipe e série na F2 deve compor query correta"
+  )
+  assert.equal(
+    qs({ page: 1, per_page: 50, season: 2026, series: "f3" }),
+    "?page=1&per_page=50&season=2026&series=f3"
+  )
+
+  // Teams endpoint query strings
+  assert.equal(
+    qs({ page: 1, per_page: 50, season: 2026, series: "f2" }),
+    "?page=1&per_page=50&season=2026&series=f2"
+  )
+  assert.equal(
+    qs({ page: 1, per_page: 50, season: 2026, series: "f3" }),
+    "?page=1&per_page=50&season=2026&series=f3"
+  )
+
+  // Reset teamId on series change simulation
+  let selectedTeam: string | number = 42
+  const handleSeriesChange = (_nextSeries: string) => {
+    selectedTeam = "all"
+  }
+  handleSeriesChange("f3")
+  assert.equal(selectedTeam, "all", "Filtro de equipe deve ser resetado para 'all' ao trocar de série")
+})

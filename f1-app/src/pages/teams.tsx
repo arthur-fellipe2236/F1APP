@@ -1,6 +1,7 @@
-import { useMemo } from "react"
+import { useMemo, useEffect } from "react"
 import { useAppStore } from "@/store"
 import { SeasonSelector } from "@/components/season-selector"
+import { SeriesSelector } from "@/components/series-selector"
 import { TeamInline } from "@/components/team-name"
 
 import { VirtualDataTable } from "@/components/virtual-table"
@@ -102,11 +103,20 @@ const getColumns = (seasonParam?: number): TableColumn<Team>[] => [
 ]
 
 export function TeamsPage() {
-  const { series, season, setSeason } = useAppStore()
-  
+  const { series, setSeries, season, setSeason } = useAppStore()
 
-  const seasons = useSeasons()
+  const seasons = useSeasons(series)
   const defaultSeason = String(seasons[0] ?? "")
+
+  // Clamp season when series changes to F2/F3
+  useEffect(() => {
+    if (series !== "f1" && seasons.length > 0) {
+      if (!seasons.includes(Number(season))) {
+        setSeason(String(seasons[0]))
+      }
+    }
+  }, [series, seasons, season, setSeason])
+
   const seasonParam =
     (season === "all" ? undefined : Number(season || defaultSeason)) ||
     undefined
@@ -118,13 +128,16 @@ export function TeamsPage() {
 
   const sortedTeams = useMemo(() => {
     const list = teams.data ?? []
-    return [...list].sort((a, b) => {
-      const orderA = getTeamStandingsOrder(a.name, seasonParam)
-      const orderB = getTeamStandingsOrder(b.name, seasonParam)
-      if (orderA !== orderB) return orderA - orderB
-      return a.name.localeCompare(b.name)
-    })
-  }, [teams.data, seasonParam])
+    if (series === "f1") {
+      return [...list].sort((a, b) => {
+        const orderA = getTeamStandingsOrder(a.name, seasonParam)
+        const orderB = getTeamStandingsOrder(b.name, seasonParam)
+        if (orderA !== orderB) return orderA - orderB
+        return a.name.localeCompare(b.name)
+      })
+    }
+    return [...list].sort((a, b) => a.name.localeCompare(b.name))
+  }, [teams.data, seasonParam, series])
 
   return (
     <div className="space-y-6">
@@ -132,11 +145,23 @@ export function TeamsPage() {
       <PageHeader
         title="Equipes"
       >
-        <div className="flex items-center gap-2">
-          <Label htmlFor="season-filter" className="text-muted-foreground">
-            Temporada
-          </Label>
-          <SeasonSelector value={String(season || defaultSeason)} onValueChange={(value) => setSeason(value)} className="w-[180px]" />
+        <div className="flex flex-wrap items-center gap-3">
+          <SeriesSelector
+            value={series}
+            onChange={(s) => setSeries(s)}
+            size="sm"
+          />
+          <div className="flex items-center gap-2">
+            <Label htmlFor="season-filter" className="text-muted-foreground">
+              Temporada
+            </Label>
+            <SeasonSelector
+              value={String(season || defaultSeason)}
+              onValueChange={(value) => setSeason(value)}
+              series={series}
+              className="w-[180px]"
+            />
+          </div>
         </div>
       </PageHeader>
 

@@ -9,6 +9,7 @@ from .helpers import (
     commit_unique,
     get_or_404,
     paginate,
+    pagination_args,
     parse_int,
     parse_json_body,
     validate_fields,
@@ -24,6 +25,33 @@ ALLOWED_FIELDS = {
     "nationality",
     "team_id",
 }
+
+
+def _get_f2_f3_drivers(series, team_id=None):
+    if series == "f2":
+        from app.mock_data import F2_2026_DRIVERS, F2_2026_TEAMS
+        team_map = {t["name"]: t["id"] for t in F2_2026_TEAMS}
+        raw_drivers = F2_2026_DRIVERS
+    elif series == "f3":
+        from app.mock_data import F3_2026_DRIVERS, F3_2026_TEAMS
+        team_map = {t["name"]: t["id"] for t in F3_2026_TEAMS}
+        raw_drivers = F3_2026_DRIVERS
+    else:
+        return []
+
+    drivers = []
+    for d in raw_drivers:
+        tid = team_map.get(d.get("team_name"))
+        if team_id is not None and tid != team_id:
+            continue
+        item = dict(d)
+        item["name"] = f"{d['first_name']} {d['last_name']}"
+        item["series"] = series
+        item["team_id"] = tid
+        item.setdefault("permanent_number", None)
+        item.setdefault("season_number", None)
+        drivers.append(item)
+    return drivers
 
 
 def _check_team(team_id):
@@ -90,20 +118,39 @@ def list_drivers():
                   $ref: '#/components/schemas/Meta'
     """
 
-    series = request.args.get("series")
+    series_param = request.args.get("series")
+    series = series_param.lower() if series_param else None
     season = parse_int(request.args.get("season"), "season")
+    team_id = parse_int(request.args.get("team_id"), "team_id")
 
-    if series == 'f2' and season == 2026:
-        from app.mock_data import F2_2026_DRIVERS
-        data = [dict(d, name=f"{d['first_name']} {d['last_name']}") for d in F2_2026_DRIVERS]
-        return jsonify({"data": data, "meta": {"pages": 1, "total": len(F2_2026_DRIVERS)}})
-    if series == 'f3' and season == 2026:
-        from app.mock_data import F3_2026_DRIVERS
-        data = [dict(d, name=f"{d['first_name']} {d['last_name']}") for d in F3_2026_DRIVERS]
-        return jsonify({"data": data, "meta": {"pages": 1, "total": len(F3_2026_DRIVERS)}})
+    if series in ("f2", "f3"):
+        page, per_page = pagination_args()
+        if season is not None and season != 2026:
+            return jsonify({
+                "data": [],
+                "meta": {
+                    "page": page,
+                    "per_page": per_page,
+                    "total": 0,
+                    "pages": 0,
+                }
+            })
+        items = _get_f2_f3_drivers(series, team_id=team_id)
+        total = len(items)
+        pages = (total + per_page - 1) // per_page if total > 0 else 0
+        start = (page - 1) * per_page
+        end = start + per_page
+        return jsonify({
+            "data": items[start:end],
+            "meta": {
+                "page": page,
+                "per_page": per_page,
+                "total": total,
+                "pages": pages,
+            }
+        })
 
     query = Driver.query
-    series = request.args.get("series")
     if series:
         query = query.filter_by(series=series)
     team_id = parse_int(request.args.get("team_id"), "team_id")
@@ -164,7 +211,7 @@ def list_drivers():
         team_by_driver = {driver_id: (t_id, name) for driver_id, t_id, name in team_rows}
         for row in result["data"]:
             if season == 2026 and series == "f1":
-                d = Driver.query.get(row["id"])
+                d = db.session.get(Driver, row["id"])
                 row["team_id"] = d.team_id if d else None
                 row["team_name"] = d.team.name if (d and d.team) else None
                 row["team"] = d.team.to_dict() if (d and d.team) else None
@@ -260,8 +307,36 @@ def get_driver(driver_id):
             schema:
               $ref: '#/components/schemas/Error'
     """
-    driver = get_or_404(Driver, driver_id, "Piloto nao encontrado")
-    return jsonify(driver.to_dict_detail())
+    series_param = request.args.get("series")
+    series = series_param.lower() if series_param else None
+
+    if series in ("f2", "f3"):
+        for d in _get_f2_f3_drivers(series):
+            if d["id"] == driver_id:
+                from app.mock_data import F2_2026_TEAMS, F3_2026_TEAMS
+                teams_list = F2_2026_TEAMS if series == "f2" else F3_2026_TEAMS
+                team_obj = next((t for t in teams_list if t["id"] == d.get("team_id")), None)
+                detail = dict(d)
+                detail["team"] = team_obj
+                return jsonify(detail)
+        raise ApiError("Piloto nao encontrado", 404)
+
+    driver = db.session.get(Driver, driver_id)
+    if driver and (series is None or driver.series == series):
+        return jsonify(driver.to_dict_detail())
+
+    if series != "f1":
+        for s in ("f2", "f3"):
+            for d in _get_f2_f3_drivers(s):
+                if d["id"] == driver_id:
+                    from app.mock_data import F2_2026_TEAMS, F3_2026_TEAMS
+                    teams_list = F2_2026_TEAMS if s == "f2" else F3_2026_TEAMS
+                    team_obj = next((t for t in teams_list if t["id"] == d.get("team_id")), None)
+                    detail = dict(d)
+                    detail["team"] = team_obj
+                    return jsonify(detail)
+
+    raise ApiError("Piloto nao encontrado", 404)
 
 
 @bp.put("/drivers/<int:driver_id>")

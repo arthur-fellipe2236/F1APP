@@ -1,6 +1,7 @@
 import { useAppStore } from "@/store"
 import { SeasonSelector } from "@/components/season-selector"
-import { useMemo, useState } from "react"
+import { SeriesSelector } from "@/components/series-selector"
+import { useMemo, useState, useEffect } from "react"
 import type { TableColumn } from "react-data-table-component"
 
 import { VirtualDataTable } from "@/components/virtual-table"
@@ -60,12 +61,26 @@ const F1_2026_TEAM_ORDER: Record<string, number> = {
 }
 
 export function DriversPage() {
-  const { series, season, setSeason } = useAppStore()
+  const { series, setSeries, season, setSeason } = useAppStore()
   const [teamId, setTeamId] = useState("all")
-  
 
-  const seasons = useSeasons()
+  // Reset team filter when series changes
+  useEffect(() => {
+    setTeamId("all")
+  }, [series])
+
+  const seasons = useSeasons(series)
   const defaultSeason = String(seasons[0] ?? "")
+
+  // Clamp season when series changes to F2/F3
+  useEffect(() => {
+    if (series !== "f1" && seasons.length > 0) {
+      if (!seasons.includes(Number(season))) {
+        setSeason(String(seasons[0]))
+      }
+    }
+  }, [series, seasons, season, setSeason])
+
   const seasonParam =
     (season === "all" ? undefined : Number(season || defaultSeason)) ||
     undefined
@@ -125,8 +140,13 @@ export function DriversPage() {
         }
         return (a.permanent_number ?? a.season_number ?? 0) - (b.permanent_number ?? b.season_number ?? 0)
       })
-    } else if ((series === "f2" || series === "f3") && seasonParam === 2026) {
-      d = [...d].sort((a, b) => (a.permanent_number ?? 0) - (b.permanent_number ?? 0))
+    } else if (series === "f2" || series === "f3") {
+      d = [...d].sort((a, b) => {
+        const teamA = a.team_name ?? (a.team_id ? (teamNames.get(a.team_id) ?? "") : "")
+        const teamB = b.team_name ?? (b.team_id ? (teamNames.get(b.team_id) ?? "") : "")
+        if (teamA !== teamB) return teamA.localeCompare(teamB)
+        return (a.name || "").localeCompare(b.name || "")
+      })
     }
     return d
   }, [drivers.data, series, seasonParam, teamNames])
@@ -185,37 +205,49 @@ export function DriversPage() {
     <div className="space-y-6">
       
       <PageHeader title="Tabelas de Pilotos">
-        <div className="flex items-center gap-2">
-          <Label htmlFor="season-filter" className="text-muted-foreground">
-            Temporada
-          </Label>
-          <SeasonSelector value={String(season || defaultSeason)} onValueChange={(value) => {
-              setSeason(value)
-              setTeamId("all")
-            }} className="w-[180px]" />
-        </div>
-        <div className="flex items-center gap-2">
-          <Label htmlFor="team-filter" className="text-muted-foreground">
-            Equipe
-          </Label>
-          <Select
-            value={teamId}
-            onValueChange={(value) => {
-              setTeamId(value)
-            }}
-          >
-            <SelectTrigger id="team-filter">
-              <SelectValue placeholder="Filtrar por equipe" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas as equipes</SelectItem>
-              {(teams.data?.data ?? []).map((team) => (
-                <SelectItem key={team.id} value={String(team.id)}>
-                  {team.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="flex flex-wrap items-center gap-3">
+          <SeriesSelector
+            value={series}
+            onChange={(s) => setSeries(s)}
+            size="sm"
+          />
+          <div className="flex items-center gap-2">
+            <Label htmlFor="season-filter" className="text-muted-foreground">
+              Temporada
+            </Label>
+            <SeasonSelector
+              value={String(season || defaultSeason)}
+              onValueChange={(value) => {
+                setSeason(value)
+                setTeamId("all")
+              }}
+              series={series}
+              className="w-[180px]"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <Label htmlFor="team-filter" className="text-muted-foreground">
+              Equipe
+            </Label>
+            <Select
+              value={teamId}
+              onValueChange={(value) => {
+                setTeamId(value)
+              }}
+            >
+              <SelectTrigger id="team-filter" className="w-[180px] sm:w-[200px]">
+                <SelectValue placeholder="Filtrar por equipe" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas as equipes</SelectItem>
+                {(teams.data?.data ?? []).map((team) => (
+                  <SelectItem key={team.id} value={String(team.id)}>
+                    {team.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </PageHeader>
 
