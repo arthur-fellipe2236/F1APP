@@ -107,8 +107,8 @@ def test_f2_and_f3_series_handling(client):
         assert body_state["active"] is False
         assert body_state["state"] == "offseason"
 
-        # Sessions
-        resp_sessions = client.get(f"/api/v1/live/sessions?series={s}&year=2026")
+        # Sessions (anos anteriores ou sem catálogo retornam lista vazia)
+        resp_sessions = client.get(f"/api/v1/live/sessions?series={s}&year=2025")
         assert resp_sessions.status_code == 200
         body_sessions = resp_sessions.get_json()
         assert body_sessions["series"] == s

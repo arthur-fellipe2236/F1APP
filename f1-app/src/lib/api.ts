@@ -167,6 +167,8 @@ export interface LiveSession {
   live: boolean
   is_testing?: boolean
   period?: string | null
+  time_status?: "confirmed" | "estimated"
+  is_time_confirmed?: boolean
 }
 
 export interface LiveSessionEntry {
@@ -180,6 +182,8 @@ export interface LiveSessionEntry {
   state: "scheduled" | "live" | "finished"
   is_testing?: boolean
   period?: string | null
+  time_status?: "confirmed" | "estimated"
+  is_time_confirmed?: boolean
 }
 
 export interface SessionLike {
@@ -204,8 +208,8 @@ export function isRaceSession(session?: SessionLike | null): boolean {
   // 1. Identificador canônico exato da OpenF1
   if (canonName === "race") return true
 
-  // 2. Rótulos localizados legados em português ou inglês
-  const raceNames = ["race", "corrida", "corrida principal"]
+  // 2. Rótulos localizados legados em português ou inglês (incluindo Feature Race da F2/F3)
+  const raceNames = ["race", "corrida", "corrida principal", "feature race"]
   if (raceNames.includes(name) || raceNames.includes(canonName)) {
     return true
   }
