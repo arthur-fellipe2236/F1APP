@@ -277,12 +277,75 @@ html.theme-active [data-theme-accent] {
     max-height: 220px !important;
   }
 
+  .novatos-stage:has(.novatos-animation-split) {
+    height: auto !important;
+    max-height: none !important;
+  }
+
   /* Garante barra inferior horizontal sem quebra de linha em telas compactas */
   .novatos-bottom-bar {
     flex-wrap: nowrap !important;
     gap: 0.5rem !important;
     margin-top: 0.25rem !important;
     padding: 0.25rem 0.65rem !important;
+  }
+}
+
+/* ==========================================================================
+   OTIMIZAÇÃO RESPONSIVA: NOVATOS NA F1 EM MODO RETRATO MOBILE (PORTRAIT)
+   Target: Dispositivos móveis em orientação vertical (largura <= 768px e retrato)
+   ========================================================================== */
+@media (max-width: 768px) and (orientation: portrait) {
+  /* Otimiza espaçamento externo e remove o padding excessivo de 96px do main */
+  body:has(.novatos-root) main {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.5rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  /* Oculta o seletor de categorias F1/F2/F3 na página de novatos no mobile portrait para liberar espaço útil */
+  body:has(.novatos-root) header > div:nth-child(4) {
+    display: none !important;
+  }
+
+  /* Oculta o rodapé durante as lições interativas para manter foco na aula */
+  body:has(.novatos-root) footer {
+    display: none !important;
+  }
+
+  .novatos-root {
+    min-height: calc(100dvh - 5.5rem) !important;
+    background-color: #04060a !important;
+  }
+
+  .novatos-lesson-container {
+    padding: 0.25rem 0.25rem !important;
+    gap: 0.5rem !important;
+    min-height: calc(100dvh - 6rem) !important;
+    justify-content: space-between !important;
+  }
+
+  /* Garante palco 16:9 widescreen perfeito sem distorção, sem corte lateral e sem faixa vertical vazia */
+  .novatos-stage {
+    width: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    min-height: 0 !important;
+    max-height: 42vh !important;
+    flex: none !important;
+    margin: auto 0 !important;
+  }
+
+  .novatos-stage:has(.novatos-animation-split) {
+    aspect-ratio: auto !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+
+  /* Ajusta a barra inferior para layout compacto em celulares verticais */
+  .novatos-bottom-bar {
+    margin-top: 0.35rem !important;
+    padding: 0.4rem 0.5rem !important;
   }
 }
 

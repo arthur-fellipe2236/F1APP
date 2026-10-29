@@ -20,48 +20,46 @@ import {
 import { useApi } from "@/hooks/use-api"
 import { useSeasons } from "@/hooks/use-seasons"
 import { api, fetchAll, type Race } from "@/lib/api"
-import { flagFromCountry } from "@/lib/assets"
+import { CountryFlag } from "@/components/flag"
 import { formatDate } from "@/lib/format"
+import { NEXT_RACE_POLL_MS } from "@/lib/request-gate"
 
 function NextRaceHero({ season, series }: { season: number | undefined, series: string }) {
-  const [nextMeeting, setNextMeeting] = useState<any>(null)
-  const [nextSession, setNextSession] = useState<any>(null)
   const [countdown, setCountdown] = useState<string>("")
+  const [nowMs, setNowMs] = useState<number>(() => Date.now())
+
+  const sessionsQuery = useApi(
+    () => (season ? api.liveSessions(season, series) : Promise.resolve({ year: 0, data: [] })),
+    [season, series],
+    season ? NEXT_RACE_POLL_MS : false,
+  )
+
+  const { nextMeeting, nextSession } = useMemo(() => {
+    const meetings = sessionsQuery.data?.data ?? []
+    if (meetings.length === 0) return { nextMeeting: null, nextSession: null }
+    const upcoming = meetings.find((m: any) => new Date(m.date_end).getTime() > nowMs)
+    if (!upcoming) return { nextMeeting: null, nextSession: null }
+    const nextS = upcoming.sessions?.find(
+      (s: any) => new Date(s.date_end || s.date_start).getTime() > nowMs,
+    )
+    return {
+      nextMeeting: upcoming,
+      nextSession: nextS || upcoming.sessions?.[upcoming.sessions.length - 1] || null,
+    }
+  }, [sessionsQuery.data, nowMs])
 
   useEffect(() => {
-    if (!season) return
-    api.liveSessions(season, series)
-      .then(res => {
-         if (!res?.data || res.data.length === 0) {
-           setNextMeeting(null)
-           setNextSession(null)
-           return
-         }
-         const now = new Date()
-         const upcoming = res.data.find((m: any) => new Date(m.date_end) > now)
-         if (upcoming) {
-           setNextMeeting(upcoming)
-           const nextS = upcoming.sessions?.find((s: any) => new Date(s.date_start) > now)
-           setNextSession(nextS || upcoming.sessions?.[upcoming.sessions.length - 1] || null)
-         } else {
-           setNextMeeting(null)
-           setNextSession(null)
-         }
-      })
-      .catch(err => {
-        console.error("Failed to fetch next race:", err)
-        setNextMeeting(null)
-        setNextSession(null)
-      })
-  }, [season, series])
-
-  useEffect(() => {
-    if (!nextSession) return;
-    
+    if (!nextSession) return
     const target = new Date(nextSession.date_start).getTime()
-    
-    const timer = setInterval(() => {
-      const distance = target - new Date().getTime()
+    const endTarget = new Date(nextSession.date_end || nextSession.date_start).getTime()
+
+    const tick = () => {
+      const current = Date.now()
+      if (current >= endTarget) {
+        setNowMs(current)
+        return
+      }
+      const distance = target - current
       if (distance < 0) {
         setCountdown("Sessão em andamento!")
         return
@@ -70,20 +68,20 @@ function NextRaceHero({ season, series }: { season: number | undefined, series: 
       const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
       const seconds = Math.floor((distance % (1000 * 60)) / 1000)
-      
+
       const d = days > 0 ? `${days}d ` : ""
       const h = hours.toString().padStart(2, "0")
       const m = minutes.toString().padStart(2, "0")
       const s = seconds.toString().padStart(2, "0")
       setCountdown(`${d}${h}:${m}:${s}`)
-    }, 1000)
-    
+    }
+
+    tick()
+    const timer = setInterval(tick, 1000)
     return () => clearInterval(timer)
   }, [nextSession])
 
   if (!nextMeeting) return null
-
-  const flag = flagFromCountry(nextMeeting.country)
 
   return (
     <Card className="mb-6 border-red-500/20 bg-gradient-to-br from-red-950/40 to-black/40 overflow-hidden relative">
@@ -95,7 +93,7 @@ function NextRaceHero({ season, series }: { season: number | undefined, series: 
           Próxima Etapa {series !== "f1" ? `(${series.toUpperCase()})` : ""}
         </CardDescription>
         <CardTitle className="text-3xl font-black flex items-center gap-3">
-          {flag && <img src={flag} alt="" className="h-6 w-9 rounded-sm object-cover shadow-sm" />}
+          <CountryFlag country={nextMeeting.country} className="h-6 w-9 rounded-sm" />
           {nextMeeting.meeting_name}
         </CardTitle>
         <div className="flex items-center gap-2 text-muted-foreground mt-1 text-sm">
@@ -195,24 +193,12 @@ export function RacesPage() {
       sortable: true,
       minWidth: "240px",
       selector: (row) => row.name,
-      cell: (row) => {
-        const flag = flagFromCountry(row.circuit_country)
-        return (
-          <span className="flex items-center gap-2">
-            {flag ? (
-              <img
-                src={flag}
-                alt=""
-                aria-hidden
-                title={row.circuit_country ?? undefined}
-                loading="lazy"
-                className="h-4 w-6 shrink-0 rounded-[2px] object-cover shadow-sm"
-              />
-            ) : null}
-            <span className="font-medium">{row.name}</span>
-          </span>
-        )
-      },
+      cell: (row) => (
+        <span className="flex items-center gap-2">
+          <CountryFlag country={row.circuit_country} className="h-4 w-6" />
+          <span className="font-medium">{row.name}</span>
+        </span>
+      ),
     },
     {
       name: "Data",
@@ -279,15 +265,7 @@ export function RacesPage() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-lg font-bold">{row.name}</span>
-                {row.circuit_country && (
-                  <img
-                    src={flagFromCountry(row.circuit_country) || ""}
-                    alt=""
-                    aria-hidden
-                    title={row.circuit_country}
-                    className="h-5 w-7 shrink-0 rounded-[2px] object-cover shadow-sm"
-                  />
-                )}
+                <CountryFlag country={row.circuit_country} className="h-5 w-7" />
               </div>
               <div className="text-sm text-muted-foreground mt-1">
                 {row.circuit_name ?? "—"}

@@ -178,13 +178,14 @@ export function PitstopAnimation({
   }, [t])
 
   return (
-    <div className="relative size-full select-none overflow-hidden bg-[#05070D] flex items-center justify-center">
-      {/* CENÁRIO VETORIAL: PIT LANE & BAIA DE BOXES DE F1 */}
-      <svg
-        viewBox="0 0 1920 1080"
-        preserveAspectRatio="xMidYMid slice"
-        className="size-full"
-      >
+    <div className="novatos-animation-split relative w-full h-full select-none overflow-hidden bg-[#05070D] flex flex-col lg:block">
+      {/* PALCO VETORIAL 16:9: PIT LANE & BAIA DE BOXES DE F1 (100% DESOBSTRUÍDO NO MOBILE) */}
+      <div className="relative w-full aspect-video lg:size-full lg:aspect-auto overflow-hidden bg-[#05070D] flex items-center justify-center shrink-0">
+        <svg
+          viewBox="0 0 1920 1080"
+          preserveAspectRatio="xMidYMid meet"
+          className="size-full"
+        >
         <defs>
           <linearGradient id="pit-asphalt" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#0B0E14" />
@@ -429,48 +430,61 @@ export function PitstopAnimation({
         </g>
       </svg>
 
-      {/* Camada Dinâmica em Canvas 2D para Faíscas das Pistolas */}
-      <canvas
-        ref={canvasRef}
-        width={1920}
-        height={1080}
-        className="pointer-events-none absolute inset-0 size-full"
-      />
+        {/* Camada Dinâmica em Canvas 2D para Faíscas das Pistolas */}
+        <canvas
+          ref={canvasRef}
+          width={1920}
+          height={1080}
+          className="pointer-events-none absolute inset-0 size-full"
+        />
+      </div>
 
       {/* ==================================================================== */}
-      {/* TELEMETRIA DE PIT WALL: CRONÔMETRO DE PARADA & STATUS DA EQUIPE      */}
+      {/* TELEMETRIA DE PIT WALL (ABAIXO DA ILUSTRAÇÃO NO MOBILE, HUD NO DESKTOP) */}
       {/* ==================================================================== */}
-      <div className="pointer-events-none absolute bottom-4 left-4 z-20 flex flex-col gap-1.5 sm:bottom-6 sm:left-6">
-        <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/80 px-4 py-2.5 backdrop-blur-md shadow-2xl">
-          <div className="flex flex-col">
-            <span className="text-[10px] sm:text-xs font-mono uppercase tracking-wider text-amber-400 font-bold">
-              SIMULAÇÃO DIDÁTICA • TEMPO ILUSTRATIVO: 2,14 s
+      <div
+        data-testid="pitstop-telemetry-panel"
+        className="pointer-events-none relative z-20 w-full min-w-0 max-w-full shrink-0 border-t border-white/10 bg-[#070A12]/95 px-3 pt-2.5 pb-11 sm:px-4 sm:pt-3 sm:pb-12 lg:absolute lg:top-14 lg:left-5 lg:w-auto lg:max-w-md lg:border-0 lg:bg-transparent lg:p-0 flex flex-col gap-2"
+      >
+        <div className="min-w-0 max-w-full rounded-xl border border-white/10 bg-black/85 px-3 py-2 backdrop-blur-md shadow-2xl flex flex-col gap-1">
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-amber-400 font-bold leading-snug">
+            <span>SIMULAÇÃO DIDÁTICA</span>
+            <span aria-hidden className="opacity-60">•</span>
+            <span className="whitespace-nowrap">TEMPO ILUSTRATIVO: 2,14 S</span>
+          </div>
+          <div className="flex flex-wrap items-baseline justify-between sm:justify-start gap-x-3 gap-y-1 min-w-0">
+            <span className="text-lg sm:text-2xl font-black font-mono tracking-tight text-white tabular-nums">
+              {pitTimerLabel.replace(".", ",")}
             </span>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-white">
-                {pitTimerLabel.replace(".", ",")}
-              </span>
-              <span className={`text-xs font-mono font-bold uppercase ${isGreenLight ? "text-green-400" : "text-amber-400"}`}>
-                {phase === "entry" && "APROXIMAÇÃO"}
-                {phase === "standby" && "POSICIONAMENTO"}
-                {phase === "pitstop" && "4 PNEUS EM TROCA"}
-                {phase === "release" && "LIBERADO • GO!"}
-              </span>
-            </div>
+            <span className={`text-xs sm:text-sm font-mono font-bold uppercase tracking-wide ${isGreenLight ? "text-green-400" : "text-amber-400"}`}>
+              {phase === "entry" && "APROXIMAÇÃO"}
+              {phase === "standby" && "POSICIONAMENTO"}
+              {phase === "pitstop" && "4 PNEUS EM TROCA"}
+              {phase === "release" && "LIBERADO • GO!"}
+            </span>
           </div>
         </div>
 
         {/* Indicadores dos Mecânicos por Roda */}
-        <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-400">
-          <span className="rounded bg-white/5 border border-white/10 px-2 py-0.5">
-            DIANT: <strong className={pitProgress >= 0.7 ? "text-red-400" : "text-amber-400"}>{pitProgress >= 0.7 ? "NOVO (MACIO)" : "TROCA"}</strong>
-          </span>
-          <span className="rounded bg-white/5 border border-white/10 px-2 py-0.5">
-            TRAS: <strong className={pitProgress >= 0.7 ? "text-red-400" : "text-amber-400"}>{pitProgress >= 0.7 ? "NOVO (MACIO)" : "TROCA"}</strong>
-          </span>
-          <span className="rounded bg-white/5 border border-white/10 px-2 py-0.5">
-            STATUS: <strong className={isGreenLight ? "text-green-400" : "text-amber-400"}>{isGreenLight ? "SAÍDA LIVRE" : "SUSPENSO"}</strong>
-          </span>
+        <div className="grid grid-cols-3 gap-1.5 sm:flex sm:flex-wrap sm:items-center sm:gap-2 text-[10px] sm:text-[11px] font-mono text-zinc-300 min-w-0 max-w-full">
+          <div className="min-w-0 rounded-lg bg-black/85 border border-white/10 px-2 py-1.5 flex flex-col sm:flex-row sm:items-center sm:gap-1.5">
+            <span className="text-[9px] sm:text-[10px] text-zinc-400 uppercase tracking-wider">DIANT</span>
+            <strong className={`truncate ${pitProgress >= 0.7 ? "text-red-400" : "text-amber-400"}`}>
+              {pitProgress >= 0.7 ? "NOVO (MACIO)" : "TROCA"}
+            </strong>
+          </div>
+          <div className="min-w-0 rounded-lg bg-black/85 border border-white/10 px-2 py-1.5 flex flex-col sm:flex-row sm:items-center sm:gap-1.5">
+            <span className="text-[9px] sm:text-[10px] text-zinc-400 uppercase tracking-wider">TRAS</span>
+            <strong className={`truncate ${pitProgress >= 0.7 ? "text-red-400" : "text-amber-400"}`}>
+              {pitProgress >= 0.7 ? "NOVO (MACIO)" : "TROCA"}
+            </strong>
+          </div>
+          <div className="min-w-0 rounded-lg bg-black/85 border border-white/10 px-2 py-1.5 flex flex-col sm:flex-row sm:items-center sm:gap-1.5">
+            <span className="text-[9px] sm:text-[10px] text-zinc-400 uppercase tracking-wider">STATUS</span>
+            <strong className={`truncate ${isGreenLight ? "text-green-400" : "text-amber-400"}`}>
+              {isGreenLight ? "SAÍDA LIVRE" : "SUSPENSO"}
+            </strong>
+          </div>
         </div>
       </div>
     </div>

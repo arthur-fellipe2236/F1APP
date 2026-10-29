@@ -1,5 +1,6 @@
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
+import requests
 from flask import Blueprint, current_app, jsonify, request
 from app.models import SeriesState
 
@@ -9,6 +10,11 @@ from .. import f1site, openf1
 from ..extensions import db
 from ..models import Race, RaceResult
 from .. import cache as app_cache
+from ..results_refresh import (
+    ensure_race_results,
+    maybe_refresh_pending_results,
+    race_results_state,
+)
 from .helpers import ApiError, get_or_404, paginate, parse_int, pagination_args
 from .live import session_state
 from ..f2_f3_data import get_series_meetings, get_series_sessions, get_series_session_by_key
@@ -643,16 +649,48 @@ def race_results(race_id):
     """
     race = db.session.get(Race, race_id)
     if race:
+        ensure_race_results(race, current_app)
+        # Ordem oficial de chegada. Ordenar por pontos distorcia corridas com
+        # pontos de volta rapida, penalidades pos-corrida e eras com carros
+        # compartilhados; quem nao tem posicao (DNS/sprint) vai ao final.
         query = (
             RaceResult.query.filter_by(race_id=race.id)
-            .order_by(RaceResult.position.is_(None), desc(RaceResult.points), RaceResult.position)
+            .order_by(
+                RaceResult.position.is_(None),
+                RaceResult.position,
+                desc(RaceResult.points),
+                RaceResult.id,
+            )
         )
-        return jsonify(paginate(query, RaceResult.to_dict))
+        payload = paginate(query, RaceResult.to_dict)
+        payload["results_state"] = race_results_state(
+            race.date, payload["meta"]["total"] > 0
+        )
+        if not payload["results_state"]["final"]:
+            maybe_refresh_pending_results(
+                current_app, season=race.season, series=race.series or "f1"
+            )
+        return jsonify(payload)
 
     for s_name in ("f2", "f3"):
         for m in get_series_meetings(s_name, 2026):
             if m.get("meeting_key") == race_id:
                 page, per_page = pagination_args()
+                meeting_date = (m.get("date_end") or m.get("date_start") or "")[:10]
+                state = race_results_state(
+                    date.fromisoformat(meeting_date) if meeting_date else None,
+                    False,
+                )
+                if state["state"] in {"pending", "in_progress"}:
+                    # Nao ha fonte de resultados homologada para F2/F3.
+                    state = {
+                        "state": "unavailable",
+                        "final": False,
+                        "message": (
+                            "Resultados da F2/F3 ainda não estão disponíveis "
+                            "em uma fonte homologada pelo aplicativo."
+                        ),
+                    }
                 return jsonify({
                     "data": [],
                     "meta": {
@@ -660,10 +698,174 @@ def race_results(race_id):
                         "per_page": per_page,
                         "total": 0,
                         "pages": 0,
-                    }
+                    },
+                    "results_state": state,
                 })
 
     raise ApiError("Corrida nao encontrada", 404)
+
+
+JOLPICA_QUALIFYING_URL = "https://api.jolpi.ca/ergast/f1/{season}/{round}/qualifying.json"
+QUALIFYING_TTL_FOUND = 6 * 3600
+QUALIFYING_TTL_EMPTY = 600
+
+
+def _fetch_jolpica_qualifying(season, round_):
+    """Linhas de classificacao da Jolpica; [] quando a fonte nao tem a sessao."""
+    try:
+        response = requests.get(
+            JOLPICA_QUALIFYING_URL.format(season=season, round=round_),
+            timeout=15,
+            headers={"User-Agent": "f1app/1.0"},
+        )
+    except requests.RequestException as exc:
+        raise ApiError("Falha ao consultar a fonte de classificação", 502) from exc
+    if response.status_code == 404:
+        return []
+    if response.status_code != 200:
+        raise ApiError(
+            f"Fonte de classificação respondeu {response.status_code}", 502
+        )
+    try:
+        races = response.json()["MRData"]["RaceTable"]["Races"]
+    except (ValueError, KeyError) as exc:
+        raise ApiError("Resposta inesperada da fonte de classificação", 502) from exc
+    return races[0].get("QualifyingResults", []) if races else []
+
+
+def _normalize_qualifying(rows):
+    """Converte linhas Ergast em um formato unico, preservando a ordem da fonte.
+
+    Formatos historicos nao tem todas as sessoes: entre 1994 e 2005 so ha Q1
+    (e Q2 em 2005), portanto apenas colunas com algum tempo sao informadas.
+    """
+    data = []
+    for row in rows:
+        driver = row.get("Driver") or {}
+        constructor = row.get("Constructor") or {}
+        name = " ".join(
+            part for part in (driver.get("givenName"), driver.get("familyName")) if part
+        )
+        times = {key: (row.get(key.upper()) or None) for key in ("q1", "q2", "q3")}
+        best = times["q3"] or times["q2"] or times["q1"]
+        try:
+            position = int(row.get("position"))
+        except (TypeError, ValueError):
+            position = None
+        data.append(
+            {
+                "position": position,
+                "driver_name": name or None,
+                "driver_code": driver.get("code"),
+                "driver_number": row.get("number"),
+                "team_name": constructor.get("name"),
+                **times,
+                "best_time": best,
+            }
+        )
+    columns = [key for key in ("q1", "q2", "q3") if any(item[key] for item in data)]
+    return data, columns
+
+
+def _grid_rows(race):
+    results = (
+        RaceResult.query.filter(RaceResult.race_id == race.id, RaceResult.grid > 0)
+        .order_by(RaceResult.grid, RaceResult.id)
+        .all()
+    )
+    return [
+        {
+            "position": item.grid,
+            "driver_name": item.driver.full_name if item.driver else None,
+            "driver_code": item.driver.code if item.driver else None,
+            "driver_number": None,
+            "team_name": item.team.name if item.team else None,
+            "q1": None,
+            "q2": None,
+            "q3": None,
+            "best_time": None,
+        }
+        for item in results
+    ]
+
+
+@bp.get("/races/<int:race_id>/qualifying")
+def race_qualifying(race_id):
+    """
+    Classificacao (qualifying) de uma corrida
+    ---
+    tags:
+      - Races
+    parameters:
+      - in: path
+        name: race_id
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: >
+          Tempos de classificacao (kind=qualifying), grid de largada quando a
+          fonte nao tem tempos (kind=starting_grid) ou lista vazia (kind=none).
+      404:
+        description: Corrida nao encontrada
+      502:
+        description: Fonte externa indisponivel
+    """
+    race = db.session.get(Race, race_id)
+    if race is None:
+        raise ApiError("Corrida nao encontrada", 404)
+
+    info = {"season": race.season, "round": race.round, "series": race.series or "f1"}
+    if info["series"] != "f1":
+        return jsonify({
+            "data": [],
+            "info": {
+                **info,
+                "kind": "none",
+                "columns": [],
+                "message": "Não há fonte homologada de classificação para esta categoria.",
+            },
+        })
+
+    cache_key = f"qualifying:{race.season}:{race.round}"
+    rows = app_cache.get(cache_key)
+    if rows is None:
+        rows = _fetch_jolpica_qualifying(race.season, race.round)
+        app_cache.set(
+            cache_key, rows, QUALIFYING_TTL_FOUND if rows else QUALIFYING_TTL_EMPTY
+        )
+
+    data, columns = _normalize_qualifying(rows)
+    if data:
+        return jsonify({
+            "data": data,
+            "info": {**info, "kind": "qualifying", "columns": columns, "message": None},
+        })
+
+    grid = _grid_rows(race)
+    if grid:
+        return jsonify({
+            "data": grid,
+            "info": {
+                **info,
+                "kind": "starting_grid",
+                "columns": [],
+                "message": (
+                    "A fonte não registra os tempos de classificação desta corrida. "
+                    "Exibindo o grid de largada oficial, sem tempos."
+                ),
+            },
+        })
+    return jsonify({
+        "data": [],
+        "info": {
+            **info,
+            "kind": "none",
+            "columns": [],
+            "message": "A fonte não disponibiliza dados de classificação para esta corrida.",
+        },
+    })
 
 
 @bp.get('/f2/next-race')

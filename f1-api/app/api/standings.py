@@ -6,6 +6,7 @@ from ..extensions import db
 from ..models import Driver, Race, RaceResult, Team
 from .helpers import parse_int
 from ..scraper import get_standings
+from ..results_refresh import maybe_refresh_pending_results, season_progress
 from .historical_rules import (
     DRIVER_DROP_RULES,
     FIRST_CONSTRUCTORS_SEASON,
@@ -15,6 +16,22 @@ from .historical_rules import (
 )
 
 bp = Blueprint("standings", __name__)
+
+
+def _attach_progress(payload, season, series):
+    """Acrescenta o progresso da temporada (campos aditivos, contrato preservado).
+
+    ``completed_races``: corridas com resultados no banco.
+    ``pending_results``: ha corrida encerrada ainda sem resultados; o cliente
+    deve voltar a consultar e a importacao em background e acionada.
+    """
+    if not season or (series or "f1") != "f1":
+        return
+    progress = season_progress(season, "f1")
+    payload["completed_races"] = progress["completed_races"]
+    payload["pending_results"] = progress["pending_results"]
+    if progress["pending_results"]:
+        maybe_refresh_pending_results(current_app, season=season, series="f1")
 
 
 def _driver_aggregates_sq(season, series=None):
@@ -177,7 +194,9 @@ def driver_standings():
 
     for position, row in enumerate(standing, start=1):
         row["position"] = position
-    return jsonify({"season": season, "data": standing})
+    payload = {"season": season, "data": standing}
+    _attach_progress(payload, season, series)
+    return jsonify(payload)
 
 
 @bp.get("/standings/teams")
@@ -320,6 +339,7 @@ def team_standings():
     for position, row in enumerate(standing, start=1):
         row["position"] = position
     payload = {"season": season, "data": standing}
+    _attach_progress(payload, season, series)
     if not official:
         payload["official"] = False
         payload["note"] = (

@@ -114,6 +114,53 @@ export interface Standings<T> {
   data: T[]
   official?: boolean
   note?: string
+  /** Corridas da temporada que já têm resultados (apenas F1 por temporada). */
+  completed_races?: number
+  /** Existe corrida encerrada ainda sem resultados na fonte: voltar a consultar. */
+  pending_results?: boolean
+}
+
+export type ResultsStateName =
+  | "available"
+  | "upcoming"
+  | "in_progress"
+  | "pending"
+  | "unavailable"
+
+export interface ResultsState {
+  state: ResultsStateName
+  /** Verdadeiro somente quando há resultados publicados. */
+  final: boolean
+  message: string | null
+}
+
+export interface RaceResultsResponse extends Paginated<RaceResult> {
+  results_state?: ResultsState
+}
+
+export interface QualifyingRow {
+  position: number | null
+  driver_name: string | null
+  driver_code: string | null
+  driver_number: string | null
+  team_name: string | null
+  q1: string | null
+  q2: string | null
+  q3: string | null
+  best_time: string | null
+}
+
+export interface QualifyingResponse {
+  data: QualifyingRow[]
+  info: {
+    season: number
+    round: number
+    series: string
+    /** `qualifying`: tempos; `starting_grid`: apenas grid; `none`: sem dados. */
+    kind: "qualifying" | "starting_grid" | "none"
+    columns: Array<"q1" | "q2" | "q3">
+    message: string | null
+  }
 }
 
 export interface NextRace {
@@ -425,7 +472,10 @@ export const api = {
     }>(`/live/state${qs({ session_key: sessionKey ?? undefined, series })}`),
 
   raceResults: (raceId: number, params: ListParams = {}) =>
-    request<Paginated<RaceResult>>(`/races/${raceId}/results${qs(params)}`),
+    request<RaceResultsResponse>(`/races/${raceId}/results${qs(params)}`),
+
+  raceQualifying: (raceId: number) =>
+    request<QualifyingResponse>(`/races/${raceId}/qualifying`),
 
   driverStandings: (season?: number, series?: string) =>
     request<Standings<DriverStanding>>(`/standings/drivers${qs({ season, series })}`),

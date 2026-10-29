@@ -3562,9 +3562,9 @@ export function NovatosPage() {
       const cleanD = shortDesc ? shortDesc.split(/[.;:]/)[0].trim() : ""
 
       return (
-        <div className="pointer-events-auto w-fit max-w-[92%] sm:max-w-2xl mx-auto mb-2 rounded-full bg-black/75 border border-white/15 px-4 py-1.5 backdrop-blur-md shadow-2xl animate-fade-in flex items-center justify-center gap-2.5 text-center transition-all duration-300">
-          <span className="w-2 h-2 rounded-full bg-[#E10600] animate-pulse shrink-0" />
-          <span className="text-[11px] sm:text-xs font-mono font-black uppercase text-white tracking-wider shrink-0">
+        <div className="pointer-events-auto w-fit max-w-[94%] sm:max-w-2xl mx-auto mb-1.5 sm:mb-2 rounded-full bg-black/85 border border-white/15 px-2.5 py-1 sm:px-4 sm:py-1.5 backdrop-blur-md shadow-2xl animate-fade-in flex items-center justify-center gap-1.5 sm:gap-2.5 text-center transition-all duration-300">
+          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#E10600] animate-pulse shrink-0" />
+          <span className="text-[8px] sm:text-xs font-mono font-black uppercase text-white tracking-wider shrink-0">
             {cleanT}
           </span>
           {cleanD && (
@@ -3581,12 +3581,12 @@ export function NovatosPage() {
 
     // Extremidade superior: Título à esquerda, dado essencial à direita (sem linhas divisórias invasivas)
     const renderTopHUD = (title: string, tag?: string) => (
-      <div className="w-full flex items-center justify-between pointer-events-none mb-auto">
-        <span className="pointer-events-auto text-[10px] sm:text-[11px] font-mono font-black uppercase text-zinc-200 bg-black/60 px-3 py-1 rounded-full border border-white/10 backdrop-blur-md shadow-md">
+      <div className="w-full flex items-center justify-between pointer-events-none mb-auto gap-1">
+        <span className="pointer-events-auto text-[8px] sm:text-[11px] font-mono font-black uppercase text-zinc-200 bg-black/60 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border border-white/10 backdrop-blur-md shadow-md truncate max-w-[170px] sm:max-w-none">
           {title}
         </span>
         {tag && (
-          <span className="pointer-events-auto text-[9px] sm:text-[10px] font-mono font-bold uppercase text-cyan-400 bg-black/60 border border-cyan-500/20 px-2.5 py-0.5 rounded-full backdrop-blur-md shadow-md">
+          <span className="pointer-events-auto text-[8px] sm:text-[10px] font-mono font-bold uppercase text-cyan-400 bg-black/60 border border-cyan-500/20 px-2 py-0.5 sm:px-2.5 sm:py-0.5 rounded-full backdrop-blur-md shadow-md shrink-0">
             {tag}
           </span>
         )}

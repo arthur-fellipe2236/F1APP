@@ -164,7 +164,7 @@ export function StartingGridAnimation({
       {/* ==================================================================== */}
       <svg
         viewBox="0 0 1920 1080"
-        preserveAspectRatio="xMidYMid slice"
+        preserveAspectRatio="xMidYMid meet"
         className="w-full h-full object-cover pointer-events-none"
       >
         <defs>

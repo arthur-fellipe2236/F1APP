@@ -13,6 +13,7 @@ import { useApi } from "@/hooks/use-api"
 import { useSeasons } from "@/hooks/use-seasons"
 import { api, fetchAll, type Circuit } from "@/lib/api"
 import { flagFromCountry } from "@/lib/assets"
+import { RESULTS_POLL_MS } from "@/lib/request-gate"
 
 const FALLBACK_AVATAR = "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/A/ANDANT01_Andrea%20Kimi_Antonelli/andant01.png.transform/1col/image.png"
 
@@ -93,10 +94,15 @@ export function CircuitsPage() {
     (season === "all" ? undefined : Number(season || defaultSeason)) ||
     undefined
 
+  const currentYear = new Date().getFullYear()
   const circuits = useApi(
     () =>
       fetchAll((params) => api.circuits({ ...params, season: seasonParam, series, race_type: raceType })),
     [seasonParam, series, raceType],
+    (data) =>
+      seasonParam && seasonParam >= currentYear && (!data || data.some((c) => !c.winner))
+        ? RESULTS_POLL_MS
+        : false,
   )
 
   const mappedCircuits = useMemo(() => {

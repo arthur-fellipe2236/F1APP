@@ -156,6 +156,39 @@ const COUNTRY_TO_ISO = {
   "república tcheca": "cz",
   "czech republic": "cz",
 
+  // Países-sede históricos presentes no calendário desde 1950 (nomes da fonte
+  // Ergast/Jolpica em inglês e variantes em português). Sem estas entradas as
+  // corridas da Argentina, Índia, Coreia, Marrocos, Portugal, Rússia, África do
+  // Sul, Suécia e Turquia apareciam sem bandeira.
+  argentina: "ar",
+  india: "in",
+  índia: "in",
+  korea: "kr",
+  "south korea": "kr",
+  "coreia do sul": "kr",
+  coreia: "kr",
+  morocco: "ma",
+  marrocos: "ma",
+  portugal: "pt",
+  russia: "ru",
+  rússia: "ru",
+  "south africa": "za",
+  "áfrica do sul": "za",
+  sweden: "se",
+  suécia: "se",
+  turkey: "tr",
+  türkiye: "tr",
+  turquia: "tr",
+  vietnam: "vn",
+  vietnã: "vn",
+  // Variantes de nomenclatura dos países já cobertos.
+  "great britain": "gb",
+  england: "gb",
+  inglaterra: "gb",
+  "united states of america": "us",
+  eua: "us",
+  "the netherlands": "nl",
+
   dutch: "nl",
   british: "gb",
   monegasque: "mc",
@@ -226,11 +259,46 @@ export function flagFromNationality(
   return iso ? `https://flagcdn.com/w${width}/${iso}.png` : null
 }
 
+function stripAccents(text: string) {
+  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+}
+
+let countryAccentless: Record<string, string> | null = null
+
+/**
+ * Resolve o código ISO 3166-1 alfa-2 de um país de corrida/circuito.
+ *
+ * Ordem: (1) nome exato (inglês/português/histórico) em COUNTRY_TO_ISO;
+ * (2) mesmo nome ignorando acentos e espaços extras ("Mexico"/"México",
+ * "Suica"/"Suíça"); (3) código ISO de 2 letras já informado pela fonte.
+ * Retorna null quando não há correspondência confiável — nunca adivinha.
+ * Este é o único mapeamento de países do app: componentes devem usar
+ * `flagFromCountry`/`resolveCountryIso` em vez de manter tabelas próprias.
+ */
+export function resolveCountryIso(
+  country: string | null | undefined,
+): string | null {
+  if (!country) return null
+  const key = country.trim().replace(/\s+/g, " ").toLowerCase()
+  if (!key) return null
+  const exact = COUNTRY_TO_ISO[key]
+  if (exact) return exact
+  if (!countryAccentless) {
+    countryAccentless = {}
+    for (const [name, iso] of Object.entries(COUNTRY_TO_ISO)) {
+      countryAccentless[stripAccents(name)] ??= iso
+    }
+  }
+  const loose = countryAccentless[stripAccents(key)]
+  if (loose) return loose
+  return /^[a-z]{2}$/.test(key) ? key : null
+}
+
 export function flagFromCountry(
   country: string | null | undefined,
   width = 40,
 ): string | null {
-  const iso = lookup(COUNTRY_TO_ISO, country ?? null)
+  const iso = resolveCountryIso(country)
   return iso ? `https://flagcdn.com/w${width}/${iso}.png` : null
 }
 

@@ -21,6 +21,7 @@ import { api, type DriverStanding, type TeamStanding } from "@/lib/api"
 import { teamLogo, displayTeamName, driverPhoto } from "@/lib/assets"
 import { formatPoints } from "@/lib/format"
 import { mediaUrl } from "@/lib/media"
+import { NEXT_RACE_POLL_MS, RESULTS_POLL_MS } from "@/lib/request-gate"
 import { cn } from "@/lib/utils"
 
 const getDriverColumns = (seasonParam?: number): TableColumn<DriverStanding>[] => [
@@ -376,21 +377,41 @@ export function DashboardPage() {
   
   const seasonParam = Number(season)
 
+  // Enquanto houver corrida encerrada sem resultados na fonte (pending_results),
+  // reconsulta a cada 60s; na temporada corrente em andamento mantém verificação
+  // periódica leve (120s, apenas com a aba visível) para nunca depender de um
+  // único evento que possa ser perdido com a página aberta.
+  const currentYear = new Date().getFullYear()
+  const pendingPoll = (data?: { pending_results?: boolean; completed_races?: number }) => {
+    if (data?.pending_results) return RESULTS_POLL_MS
+    if (seasonParam >= currentYear) return NEXT_RACE_POLL_MS
+    return false
+  }
+
   const driverStandings = useApi(
     () => api.driverStandings(seasonParam, series),
     [seasonParam, series],
+    pendingPoll,
   )
-  const teamStandings = useApi(() => api.teamStandings(seasonParam, series), [seasonParam, series])
+  const teamStandings = useApi(
+    () => api.teamStandings(seasonParam, series),
+    [seasonParam, series],
+    pendingPoll,
+  )
   const races = useApi(
     () => api.races({ page: 1, per_page: 1, season: seasonParam, series }),
     [seasonParam, series],
+  )
+  const resultsPending = Boolean(
+    driverStandings.data?.pending_results || teamStandings.data?.pending_results,
   )
 
   const isF22026 = series === "f2" && seasonParam === 2026
   const isF32026 = series === "f3" && seasonParam === 2026
   const isF12021 = series === "f1" && seasonParam === 2021
   
-  let driverStandingsData = isF12021 ? (F1_2021_DRIVERS as any[]) : (driverStandings.data?.data ?? [])
+  // Cópias: a lista de favoritos é reordenada abaixo e não pode mutar os dados em cache.
+  let driverStandingsData = isF12021 ? ([...F1_2021_DRIVERS] as any[]) : [...(driverStandings.data?.data ?? [])]
   const { user } = useAppStore()
   
   if (user?.favorite_driver_id && driverStandingsData.length > 0) {
@@ -400,7 +421,7 @@ export function DashboardPage() {
       driverStandingsData = [fav, ...driverStandingsData]
     }
   }
-  let teamStandingsData = isF12021 ? (F1_2021_TEAMS as any[]) : (teamStandings.data?.data ?? [])
+  let teamStandingsData = isF12021 ? ([...F1_2021_TEAMS] as any[]) : [...(teamStandings.data?.data ?? [])]
   if (user?.favorite_team_id && teamStandingsData.length > 0) {
     const favIndex = teamStandingsData.findIndex(t => t.team_id === user.favorite_team_id)
     if (favIndex > -1) {
@@ -420,6 +441,9 @@ export function DashboardPage() {
   )
 
   const completedRaces = useMemo(() => {
+    // O backend informa quantas corridas da temporada já têm resultados.
+    const reported = driverStandings.data?.completed_races ?? teamStandings.data?.completed_races
+    if (!isF12021 && typeof reported === "number") return Math.min(reported, totalRaces || reported)
     const maxDriverRaces = Math.max(...driverStandingsData.map((d: any) => Number(d.races) || 0), 0)
     const maxTeamRaces = Math.max(...teamStandingsData.map((t: any) => Number(t.races) || 0), 0)
     const maxStandings = Math.max(maxDriverRaces, maxTeamRaces)
@@ -427,7 +451,7 @@ export function DashboardPage() {
     const currentYear = new Date().getFullYear()
     if (seasonParam < currentYear && totalRaces > 0) return totalRaces
     return 0
-  }, [driverStandingsData, teamStandingsData, seasonParam, totalRaces])
+  }, [driverStandings.data?.completed_races, teamStandings.data?.completed_races, isF12021, driverStandingsData, teamStandingsData, seasonParam, totalRaces])
 
   const progressPercentage = totalRaces > 0 ? Math.min(100, Math.round((completedRaces / totalRaces) * 100)) : 0
   const remainingRaces = Math.max(0, totalRaces - completedRaces)
@@ -550,6 +574,18 @@ export function DashboardPage() {
                   />
                 </div>
 
+                {resultsPending ? (
+                  <p
+                    role="status"
+                    className="flex items-center gap-1.5 text-[11px] md:text-xs text-amber-400"
+                  >
+                    <Clock className="size-3 shrink-0 animate-pulse" aria-hidden />
+                    <span className="min-w-0">
+                      Atualizando: resultados da última corrida ainda não publicados.
+                    </span>
+                  </p>
+                ) : null}
+
                 <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground pt-0.5">
                   {completedRaces >= totalRaces && totalRaces > 0 ? (
                     <span className="inline-flex items-center gap-1 text-[11px] md:text-xs font-semibold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded-md font-mono">
@@ -579,10 +615,21 @@ export function DashboardPage() {
       </div>
 
       <Tabs defaultValue="drivers">
-        <TabsList>
-          <TabsTrigger value="drivers">Classificação de pilotos</TabsTrigger>
-          <TabsTrigger value="teams">Classificação de equipes</TabsTrigger>
-        </TabsList>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <TabsList>
+            <TabsTrigger value="drivers">Classificação de pilotos</TabsTrigger>
+            <TabsTrigger value="teams">Classificação de equipes</TabsTrigger>
+          </TabsList>
+          {resultsPending ? (
+            <span
+              role="status"
+              className="inline-flex items-center gap-1.5 rounded-md border border-amber-500/30 bg-amber-500/10 px-2.5 py-1 text-xs text-amber-300"
+            >
+              <Clock className="size-3.5 shrink-0 animate-pulse" aria-hidden />
+              Classificação provisória — aguardando publicação oficial da última corrida
+            </span>
+          ) : null}
+        </div>
         <TabsContent value="drivers">
           {driverStandings.error ? (
             <ErrorState

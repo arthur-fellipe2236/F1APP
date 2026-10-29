@@ -8,6 +8,7 @@ import { api, type LiveSessionEntry } from "@/lib/api"
 import { flagFromCountry } from "@/lib/assets"
 import { mediaUrl } from "@/lib/media"
 import { cn } from "@/lib/utils"
+import { NEXT_RACE_POLL_MS } from "@/lib/request-gate"
 
 const SESSION_SHORT: Record<string, string> = {
   // Canônicos em inglês (OpenF1)
@@ -179,12 +180,18 @@ export function NextRaceCard({
 }: {
   series?: "f1" | "f2" | "f3"
 }) {
+  // Reconsulta periodicamente (apenas com a aba visível) para que, ao término
+  // do fim de semana, o card avance para a próxima etapa sem recarregar a página.
   const query = useApi(() => {
     if (series === "f2") return api.nextF2Race()
     if (series === "f3") return api.nextF3Race()
     return api.nextRace()
-  }, [series])
-  const [now] = useState(() => Date.now())
+  }, [series], NEXT_RACE_POLL_MS)
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 30_000)
+    return () => clearInterval(timer)
+  }, [])
   const data: any = query.data
   if (query.error || !data) return null
 

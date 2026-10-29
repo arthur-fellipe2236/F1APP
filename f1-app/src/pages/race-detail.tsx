@@ -2,7 +2,7 @@ import { ErrorBoundary } from "@/components/error-boundary"
 import { useState, useEffect, useMemo } from "react"
 import { Link, useParams } from "react-router-dom"
 import type { TableColumn } from "react-data-table-component"
-import { ArrowLeft, MapPin, Zap, CircleDashed, CalendarDays, Clock } from "lucide-react"
+import { ArrowLeft, MapPin, Zap, CircleDashed, CalendarDays, Clock, Info } from "lucide-react"
 
 import { CodeBadge } from "@/components/driver-code"
 import { F1DataTable } from "@/components/data-table"
@@ -21,15 +21,18 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useApi } from "@/hooks/use-api"
-import { api, type RaceResult, findRaceSession } from "@/lib/api"
+import { api, type RaceResult, type ResultsState, findRaceSession } from "@/lib/api"
 import { formatDate, formatPoints, formatStatus } from "@/lib/format"
 import { QualyResults } from "@/components/qualy-results"
+import { CountryFlag } from "@/components/flag"
+import { findMeetingForRace } from "@/lib/meeting-match"
+import { resultsPollInterval } from "@/lib/request-gate"
 import { PracticeResults } from "@/components/practice-results"
 import { RacePaceChart } from "@/components/race-pace-chart"
 import { TrackDominanceChart } from "@/components/track-dominance-chart"
 
 // --- COMPONENTE DE ESTRATÉGIA DE PNEUS (DATAVIZ) ---
-function TyreStrategy({ season, country, results }: { season: number, country: string, results: RaceResult[] }) {
+function TyreStrategy({ season, country, raceName, raceDate, results }: { season: number, country: string, raceName?: string | null, raceDate?: string | null, results: RaceResult[] }) {
   const [stints, setStints] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -38,7 +41,7 @@ function TyreStrategy({ season, country, results }: { season: number, country: s
     fetch(`/api/v1/live/sessions?year=${season}`)
       .then(r => r.json())
       .then(res => {
-        const meeting = res?.data?.find((m: any) => m.country === country)
+        const meeting = findMeetingForRace<any>(res?.data, { name: raceName, circuit_country: country, date: raceDate })
         if (!meeting) throw new Error("Corrida não encontrada na OpenF1")
         const raceSession = findRaceSession(meeting.sessions)
         if (!raceSession) throw new Error("Sessão Race não encontrada")
@@ -96,7 +99,7 @@ function TyreStrategy({ season, country, results }: { season: number, country: s
         console.error(err)
         setLoading(false)
       })
-  }, [season, country])
+  }, [season, country, raceName, raceDate])
 
   const sortedStints = [...stints].map(driver => {
     // Cruzar a sigla da OpenF1 com o nosso banco de resultados
@@ -249,6 +252,38 @@ const getResultColumns = (season?: number): TableColumn<RaceResult>[] => [
   },
 ]
 
+function ResultsNotice({ state }: { state?: ResultsState }) {
+  const pending = state?.state === "pending" || state?.state === "in_progress"
+  const message =
+    state?.message ?? "Nenhum resultado disponível para esta corrida."
+  return (
+    <div
+      role="status"
+      className={`flex items-start gap-3 rounded-xl border p-4 text-sm ${
+        pending
+          ? "border-amber-500/30 bg-amber-500/10 text-amber-100"
+          : "border-dashed border-border/70 bg-card/60 text-muted-foreground"
+      }`}
+    >
+      {pending ? (
+        <Clock className="mt-0.5 size-4 shrink-0 animate-pulse" aria-hidden />
+      ) : (
+        <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
+      )}
+      <div className="min-w-0 break-words">
+        <p className="font-semibold text-foreground">
+          {pending
+            ? "Resultado ainda não publicado"
+            : state?.state === "upcoming"
+              ? "Corrida ainda não realizada"
+              : "Resultado indisponível"}
+        </p>
+        <p className="mt-1">{message}</p>
+      </div>
+    </div>
+  )
+}
+
 export function RaceDetailPage() {
   return (
     <ErrorBoundary>
@@ -267,31 +302,47 @@ function RaceDetailPageInner() {
     return api.race(id)
   }, [id])
 
-  const results = useApi(() => {
-    if (!valid) return Promise.reject(new Error("Corrida inválida"))
-    return api.raceResults(id, { page: 1, per_page: 50 })
-  }, [id])
+  // Enquanto a fonte ainda não publicou o resultado final (corrida encerrada ou
+  // em andamento), reconsulta a cada minuto — só com a aba visível e sem
+  // requisições duplicadas — e para assim que o resultado estiver disponível.
+  const results = useApi(
+    () => {
+      if (!valid) return Promise.reject(new Error("Corrida inválida"))
+      return api.raceResults(id, { page: 1, per_page: 50 })
+    },
+    [id],
+    (data) => resultsPollInterval(data?.results_state?.state),
+  )
+  const resultsState = results.data?.results_state
+  const hasResults = (results.data?.data.length ?? 0) > 0
 
   const [meetingSessions, setMeetingSessions] = useState<any[] | null>(null)
   const raceSeries = race.data?.series || "f1"
 
   useEffect(() => {
+    setMeetingSessions(null)
     if (!race.data?.season) return
+    let active = true
     api.liveSessions(race.data.season, raceSeries)
       .then(res => {
-        if (!res?.data) return
-        const m = res.data.find((item: any) => 
-          (item.meeting_key && item.meeting_key === race.data?.id) ||
-          (race.data?.circuit_country && item.country?.toLowerCase() === race.data.circuit_country.toLowerCase()) ||
-          (race.data?.name && item.meeting_name?.toLowerCase().includes(race.data.name.toLowerCase())) ||
-          (race.data?.name && race.data.name.toLowerCase().includes(item.meeting_name?.toLowerCase()))
-        )
+        if (!active || !res?.data) return
+        const m = findMeetingForRace(res.data, {
+          // Em F1 o id da corrida é do banco local e pode colidir com um
+          // meeting_key da OpenF1; só F2/F3 usam o meeting_key como id.
+          id: raceSeries === "f1" ? null : race.data?.id,
+          name: race.data?.name,
+          circuit_country: race.data?.circuit_country,
+          date: race.data?.date,
+        })
         if (m?.sessions && m.sessions.length > 0) {
           setMeetingSessions(m.sessions)
         }
       })
       .catch(() => {})
-  }, [race.data?.season, race.data?.circuit_country, race.data?.name, raceSeries, race.data?.id])
+    return () => {
+      active = false
+    }
+  }, [race.data?.season, race.data?.circuit_country, race.data?.name, race.data?.date, raceSeries, race.data?.id])
 
   const columns = useMemo(() => getResultColumns(race.data?.season), [race.data?.season])
 
@@ -339,6 +390,7 @@ function RaceDetailPageInner() {
                   {race.data.circuit_country
                     ? ` · ${race.data.circuit_country}`
                     : ""}
+                  <CountryFlag country={race.data.circuit_country} className="ml-1 h-4 w-6" />
                 </span>
               ) : null}
             </CardDescription>
@@ -425,7 +477,7 @@ function RaceDetailPageInner() {
 
         <TabsContent value="qualy">
           {race.data && (
-            <QualyResults season={race.data.season} round={race.data.round} />
+            <QualyResults raceId={race.data.id} season={race.data.season} />
           )}
         </TabsContent>
 
@@ -464,6 +516,8 @@ function RaceDetailPageInner() {
                 <TyreStrategy 
                   season={race.data.season} 
                   country={race.data.circuit_country} 
+                  raceName={race.data.name}
+                  raceDate={race.data.date}
                   results={results.data?.data ?? []}
                 />
                 <RacePaceChart 
@@ -486,9 +540,13 @@ function RaceDetailPageInner() {
             <ErrorState message={results.error} onRetry={results.reload} />
           ) : (
             <div className="space-y-6">
-              
+              {!results.loading && results.data && !hasResults ? (
+                <ResultsNotice state={resultsState} />
+              ) : null}
+
+              {results.loading || hasResults ? (
               <F1DataTable
-                title="Resultado Final"
+                title={resultsState && !resultsState.final ? "Resultado" : "Resultado Final"}
                 columns={columns}
                 data={results.data?.data ?? []}
                 keyField="id"
@@ -523,6 +581,7 @@ function RaceDetailPageInner() {
                   </div>
                 )}
               />
+              ) : null}
             </div>
           )}
         </TabsContent>

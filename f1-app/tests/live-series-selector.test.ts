@@ -549,3 +549,213 @@ test("Drivers & Teams Multi-Series - Query string building and team filter isola
   handleSeriesChange("f3")
   assert.equal(selectedTeam, "all", "Filtro de equipe deve ser resetado para 'all' ao trocar de série")
 })
+
+import {
+  createRequestGate,
+  depsKey,
+  isStale,
+  NEXT_RACE_POLL_MS,
+  RESULTS_POLL_MS,
+  resultsPollInterval,
+  shouldPollNow,
+} from "../src/lib/request-gate"
+import { findMeetingForRace } from "../src/lib/meeting-match"
+import {
+  bestTime,
+  emptyQualifyingMessage,
+  qualifyingRowKey,
+  qualifyingTitle,
+  timeColumns,
+} from "../src/lib/qualifying"
+import { flagFromCountry, resolveCountryIso } from "../src/lib/assets"
+
+test("RequestGate & Auto-Refresh - stale response discard and polling control", () => {
+  const gate = createRequestGate()
+
+  // First request starts
+  const ticket1 = gate.begin()
+  assert.equal(gate.isCurrent(ticket1), true)
+
+  // While a request is in flight or tab is hidden, shouldPollNow prevents duplicate requests
+  assert.equal(shouldPollNow({ inFlight: true, visible: true }), false, "Não deve disparar polling duplicado com requisição em voo")
+  assert.equal(shouldPollNow({ inFlight: false, visible: false }), false, "Não deve disparar polling com aba oculta")
+  assert.equal(shouldPollNow({ inFlight: false, visible: true }), true)
+
+  // Second request starts before first finishes (e.g. user changed filter/season)
+  const ticket2 = gate.begin()
+  assert.equal(gate.isCurrent(ticket1), false, "Ticket antigo deve ser marcado como obsoleto")
+  assert.equal(gate.isCurrent(ticket2), true, "Ticket mais recente deve ser válido")
+
+  // invalidate() cancels any active request
+  const ticket3 = gate.begin()
+  gate.invalidate()
+  assert.equal(gate.isCurrent(ticket3), false)
+
+  // resultsPollInterval only polls when pending or in_progress
+  assert.equal(resultsPollInterval("pending"), RESULTS_POLL_MS)
+  assert.equal(resultsPollInterval("in_progress"), RESULTS_POLL_MS)
+  assert.equal(resultsPollInterval("available"), false, "Polling deve parar quando resultados finais chegam")
+  assert.equal(resultsPollInterval("upcoming"), false, "Polling não deve rodar antes da corrida")
+  assert.equal(resultsPollInterval("unavailable"), false, "Polling não deve rodar quando indisponível")
+  assert.equal(resultsPollInterval(null), false)
+  assert.ok(NEXT_RACE_POLL_MS >= 60_000)
+
+  // depsKey and isStale
+  assert.notEqual(depsKey(["f1", 2026]), depsKey(["f2", 2026]))
+  assert.equal(isStale(undefined, 60_000, 100_000), true)
+  assert.equal(isStale(90_000, 60_000, 100_000), false)
+  assert.equal(isStale(10_000, 60_000, 100_000), true)
+})
+
+test("MeetingMatch - disambiguates multi-race countries (USA, Italy, Spain) by closest date", () => {
+  const meetings2026 = [
+    { meeting_key: 1284, meeting_name: "Miami Grand Prix", country: "United States", date_start: "2026-05-01T16:30:00Z" },
+    { meeting_key: 1297, meeting_name: "United States Grand Prix", country: "United States", date_start: "2026-10-23T17:30:00Z" },
+    { meeting_key: 1300, meeting_name: "Las Vegas Grand Prix", country: "United States", date_start: "2026-11-20T02:30:00Z" },
+    { meeting_key: 1285, meeting_name: "Emilia Romagna Grand Prix", country: "Italy", date_start: "2026-05-15T11:30:00Z" },
+    { meeting_key: 1293, meeting_name: "Italian Grand Prix", country: "Italy", date_start: "2026-09-04T11:30:00Z" },
+  ]
+
+  // Austin (Round 18, 2026-10-25, circuit_country="USA") must match meeting 1297, NOT Miami (1284)
+  const austin = findMeetingForRace(meetings2026, {
+    id: 939,
+    name: "United States Grand Prix",
+    circuit_country: "USA",
+    date: "2026-10-25",
+  })
+  assert.equal(austin?.meeting_key, 1297, "Austin deve corresponder ao meeting 1297 (outubro), não Miami")
+
+  // Las Vegas must match meeting 1300
+  const vegas = findMeetingForRace(meetings2026, {
+    id: 942,
+    name: "Las Vegas Grand Prix",
+    circuit_country: "USA",
+    date: "2026-11-22",
+  })
+  assert.equal(vegas?.meeting_key, 1300)
+
+  // Monza must match meeting 1293, not Imola
+  const monza = findMeetingForRace(meetings2026, {
+    id: 934,
+    name: "Italian Grand Prix",
+    circuit_country: "Italy",
+    date: "2026-09-06",
+  })
+  assert.equal(monza?.meeting_key, 1293)
+
+  // Direct meeting_key match for F2/F3
+  const f2Meeting = findMeetingForRace(
+    [{ meeting_key: 202601, meeting_name: "F2 Sakhir", country: "Bahrain", date_start: "2026-03-01" }],
+    { id: 202601, name: "Sakhir", circuit_country: "Bahrain", date: "2026-03-01" }
+  )
+  assert.equal(f2Meeting?.meeting_key, 202601)
+})
+
+test("Historical & Modern Qualifying - columns, starting grid fallback and no fabricated times", () => {
+  // Modern Q1/Q2/Q3
+  const modernCols = timeColumns({
+    kind: "qualifying",
+    columns: ["q1", "q2", "q3"],
+    message: null,
+  })
+  assert.deepEqual(modernCols, [
+    { key: "q1", label: "Q1" },
+    { key: "q2", label: "Q2" },
+    { key: "q3", label: "Q3" },
+  ])
+  assert.equal(qualifyingTitle("qualifying"), "Classificação")
+
+  // Historical single-session (e.g. 1994)
+  const singleCols = timeColumns({
+    kind: "qualifying",
+    columns: ["q1"],
+    message: "Classificação histórica em sessão única.",
+  })
+  assert.deepEqual(singleCols, [{ key: "q1", label: "Tempo" }])
+
+  // Historical starting grid fallback (1950–1993): no time columns, never invents Q1/Q2/Q3
+  const gridCols = timeColumns({
+    kind: "starting_grid",
+    columns: [],
+    message: "A fonte histórica não possui tempos de classificação para esta etapa; exibindo o grid de largada oficial.",
+  })
+  assert.deepEqual(gridCols, [])
+  assert.equal(qualifyingTitle("starting_grid"), "Grid de largada")
+
+  const gridRow = {
+    position: 1,
+    driver_id: 10,
+    driver_code: "FAR",
+    driver_name: "Nino Farina",
+    driver_number: null,
+    team: "Alfa Romeo",
+    team_color: null,
+    q1: null,
+    q2: null,
+    q3: null,
+    best_time: null,
+    laps: null,
+  }
+  assert.equal(bestTime(gridRow), null, "Não deve inventar tempos quando Q1/Q2/Q3 são nulos")
+  assert.equal(qualifyingRowKey(gridRow, 0), "1-FAR-0")
+  assert.ok(emptyQualifyingMessage(undefined).includes("classificação"))
+})
+
+test("Country Flags - covers all modern and historical F1/F2/F3 countries with fallback", () => {
+  const historicalAndModernCountries = [
+    ["Argentina", "ar"],
+    ["Australia", "au"],
+    ["Austria", "at"],
+    ["Azerbaijan", "az"],
+    ["Bahrain", "bh"],
+    ["Belgium", "be"],
+    ["Brazil", "br"],
+    ["Canada", "ca"],
+    ["China", "cn"],
+    ["France", "fr"],
+    ["Germany", "de"],
+    ["Hungary", "hu"],
+    ["India", "in"],
+    ["Italy", "it"],
+    ["Japan", "jp"],
+    ["Korea", "kr"],
+    ["Malaysia", "my"],
+    ["Mexico", "mx"],
+    ["Monaco", "mc"],
+    ["Morocco", "ma"],
+    ["Netherlands", "nl"],
+    ["Portugal", "pt"],
+    ["Qatar", "qa"],
+    ["Russia", "ru"],
+    ["Saudi Arabia", "sa"],
+    ["Singapore", "sg"],
+    ["South Africa", "za"],
+    ["Spain", "es"],
+    ["Sweden", "se"],
+    ["Switzerland", "ch"],
+    ["Turkey", "tr"],
+    ["UAE", "ae"],
+    ["UK", "gb"],
+    ["USA", "us"],
+    ["United States", "us"],
+    ["Estados Unidos", "us"],
+    ["Áustria", "at"],
+    ["Índia", "in"],
+    [" África do Sul ", "za"],
+  ] as const
+
+  for (const [country, expectedIso] of historicalAndModernCountries) {
+    assert.equal(
+      resolveCountryIso(country),
+      expectedIso,
+      `País '${country}' deve resolver para ISO '${expectedIso}'`
+    )
+    assert.equal(flagFromCountry(country), `https://flagcdn.com/w40/${expectedIso}.png`)
+  }
+
+  // Unmapped or empty countries return null so FlagImage/CountryFlag renders visual fallback
+  assert.equal(resolveCountryIso("Atlantis"), null)
+  assert.equal(flagFromCountry("Atlantis"), null)
+  assert.equal(flagFromCountry(null), null)
+  assert.equal(flagFromCountry(""), null)
+})

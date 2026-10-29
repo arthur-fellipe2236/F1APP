@@ -227,11 +227,12 @@ export function CarMechanicsAnimation({
   }, [brakeHeat])
 
   return (
-    <div className="relative size-full select-none overflow-hidden bg-[#04060A] flex items-center justify-center">
+    <div className="novatos-animation-split relative w-full h-full select-none overflow-hidden bg-[#04060A] flex flex-col lg:block">
+      <div className="relative w-full aspect-video lg:size-full lg:aspect-auto overflow-hidden bg-[#04060A] flex items-center justify-center shrink-0">
       {/* CENÁRIO TÉCNICO: TÚNEL DE VENTO & ILUMINAÇÃO DE ESTÚDIO */}
       <svg
         viewBox="0 0 1920 1080"
-        preserveAspectRatio="xMidYMid slice"
+        preserveAspectRatio="xMidYMid meet"
         className="size-full transition-transform duration-700 ease-out"
         style={{
           transform: `scale(${zoomScale}) translate(${panX}px, ${panY}px)`,
@@ -466,42 +467,49 @@ export function CarMechanicsAnimation({
         </g>
       </svg>
 
-      {/* Camada Dinâmica em Canvas 2D para Partículas de Ar e Energia */}
-      <canvas
-        ref={canvasRef}
-        width={1920}
-        height={1080}
-        className="pointer-events-none absolute inset-0 size-full"
-      />
+        {/* Camada Dinâmica em Canvas 2D para Partículas de Ar e Energia */}
+        <canvas
+          ref={canvasRef}
+          width={1920}
+          height={1080}
+          className="pointer-events-none absolute inset-0 size-full"
+        />
+      </div>
 
       {/* ==================================================================== */}
-      {/* TELEMETRIA TÉCNICA DINÂMICA (NÃO OBSTRUTIVA NOS CANTOS)              */}
+      {/* TELEMETRIA TÉCNICA DINÂMICA (ABAIXO DA ILUSTRAÇÃO NO MOBILE, HUD NO DESKTOP) */}
       {/* ==================================================================== */}
-      <div className="pointer-events-none absolute bottom-4 left-4 z-20 flex flex-col gap-1.5 sm:bottom-6 sm:left-6">
-        <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/75 px-3 py-2 backdrop-blur-md shadow-xl">
-          <div className="flex flex-col">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">FASE ATIVA</span>
-            <span className="text-xs sm:text-sm font-black uppercase text-white">
-              {phase === "intro" && "01 • VISÃO GERAL DA MÁQUINA"}
-              {phase === "aero" && "02 • FLUXO AERODINÂMICO & DOWNFORCE"}
-              {phase === "brakes" && "03 • ADERÊNCIA DOS PNEUS & FREIOS"}
-              {phase === "hybrid" && "04 • GRUPO MOTOPROPULSOR HÍBRIDO"}
-              {phase === "integration" && "05 • INTEGRAÇÃO MECÂNICA TOTAL"}
-            </span>
-          </div>
+      <div
+        data-testid="car-mechanics-telemetry-panel"
+        className="pointer-events-none relative z-20 w-full min-w-0 max-w-full shrink-0 border-t border-white/10 bg-[#070A12]/95 px-3 pt-2.5 pb-11 sm:px-4 sm:pt-3 sm:pb-12 lg:absolute lg:top-14 lg:left-5 lg:w-auto lg:max-w-md lg:border-0 lg:bg-transparent lg:p-0 flex flex-col gap-2"
+      >
+        <div className="min-w-0 max-w-full rounded-xl border border-white/10 bg-black/85 px-3 py-2 backdrop-blur-md shadow-xl flex flex-col gap-0.5">
+          <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-widest text-red-400 font-bold">
+            FASE ATIVA
+          </span>
+          <span className="text-xs sm:text-sm font-black uppercase text-white leading-snug break-words">
+            {phase === "intro" && "01 • VISÃO GERAL DA MÁQUINA"}
+            {phase === "aero" && "02 • FLUXO AERODINÂMICO & DOWNFORCE"}
+            {phase === "brakes" && "03 • ADERÊNCIA DOS PNEUS & FREIOS"}
+            {phase === "hybrid" && "04 • GRUPO MOTOPROPULSOR HÍBRIDO"}
+            {phase === "integration" && "05 • INTEGRAÇÃO MECÂNICA TOTAL"}
+          </span>
         </div>
 
         {/* Indicadores Dinâmicos Sutis */}
-        <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-400">
-          <span className="rounded bg-white/5 border border-white/10 px-2 py-0.5">
-            AERO: <strong className="text-cyan-400">{Math.round(aeroIntensity * 100)}%</strong>
-          </span>
-          <span className="rounded bg-white/5 border border-white/10 px-2 py-0.5">
-            FREIOS: <strong style={{ color: brakeColor }}>{brakeHeat > 0.4 ? "AQUECIDO" : "NOMINAL"}</strong>
-          </span>
-          <span className="rounded bg-white/5 border border-white/10 px-2 py-0.5">
-            HÍBRIDO: <strong className="text-cyan-400">{hybridEnergy > 0.3 ? "REGEN/BOOST" : "STANDBY"}</strong>
-          </span>
+        <div className="grid grid-cols-3 gap-1.5 sm:flex sm:flex-wrap sm:items-center sm:gap-2 text-[10px] sm:text-[11px] font-mono text-zinc-300 min-w-0 max-w-full">
+          <div className="min-w-0 rounded-lg bg-black/85 border border-white/10 px-2 py-1.5 flex flex-col sm:flex-row sm:items-center sm:gap-1.5">
+            <span className="text-[9px] sm:text-[10px] text-zinc-400 uppercase tracking-wider">AERO</span>
+            <strong className="text-cyan-400 truncate">{Math.round(aeroIntensity * 100)}%</strong>
+          </div>
+          <div className="min-w-0 rounded-lg bg-black/85 border border-white/10 px-2 py-1.5 flex flex-col sm:flex-row sm:items-center sm:gap-1.5">
+            <span className="text-[9px] sm:text-[10px] text-zinc-400 uppercase tracking-wider">FREIOS</span>
+            <strong className="truncate" style={{ color: brakeColor }}>{brakeHeat > 0.4 ? "AQUECIDO" : "NOMINAL"}</strong>
+          </div>
+          <div className="min-w-0 rounded-lg bg-black/85 border border-white/10 px-2 py-1.5 flex flex-col sm:flex-row sm:items-center sm:gap-1.5">
+            <span className="text-[9px] sm:text-[10px] text-zinc-400 uppercase tracking-wider">HÍBRIDO</span>
+            <strong className="text-cyan-400 truncate">{hybridEnergy > 0.3 ? "REGEN/BOOST" : "STANDBY"}</strong>
+          </div>
         </div>
       </div>
     </div>
