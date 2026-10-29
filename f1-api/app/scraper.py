@@ -103,82 +103,126 @@ TEAM_DATA = {
     "AIX Racing": {"wins": 0, "podiums": 0},
 }
 
+def _count_completed_rounds_from_points(points_list):
+    """Conta quantas etapas (rounds) têm resultados publicados na matriz `points`.
+
+    Cada elemento de `points` corresponde a uma etapa do campeonato (contendo
+    os pontos de Sprint/Feature, ou até 3 corridas quando há etapa reagendada,
+    ex.: `[0, 12, 25]`). Etapas futuras vêm como `[None, None]`.
+    """
+    if not isinstance(points_list, list):
+        return 0
+    completed = 0
+    for pt_entry in points_list:
+        if isinstance(pt_entry, list) and any(x is not None for x in pt_entry):
+            completed += 1
+    return completed
+
+
 def _scrape_series(series, category):
+    import json
+
     if series == 'f2':
         url = f"https://www.fiaformula2.com/Standings/{category.capitalize()}"
     else:
         url = f"https://www.fiaformula3.com/Standings/{category.capitalize()}"
-        
+
     try:
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         html = urllib.request.urlopen(req, timeout=10).read().decode('utf-8')
         html = html.replace('\\"', '"')
         html = html.replace('\\u00e2', 'â')
         html = html.replace('\\u00E2', 'â')
-        
+
         data = []
         if category == 'driver':
-            # We must use regex to capture the full driver blocks to count the races array
-            blocks = re.findall(r'(\{[^{}]*"driverFirstName":"[^"]+"[^{}]*\})', html)
-            
-            for i, block in enumerate(blocks):
+            standings_match = re.search(r'"standings":(\[.*?\]),"category":"Driver"', html)
+            if standings_match:
                 try:
-                    pts_match = re.search(r'"championshipPoints":([0-9.]+)', block)
-                    fn_match = re.search(r'"driverFirstName":"([^"]+)"', block)
-                    ln_match = re.search(r'"driverLastName":"([^"]+)"', block)
-                    
-                    if not (pts_match and fn_match and ln_match):
-                        continue
-                        
-                    points = float(pts_match.group(1))
-                    first = fn_match.group(1)
-                    last = ln_match.group(1)
-                    name = f"{first} {last}"
-                    
-                    # Calculate races by counting non-null pairs in the points array
-                    # "points":[[0,18],[0,16],...,[null,null]]
-                    pts_array_match = re.search(r'"points":\[(.*?)\]\}', block)
-                    races = 0
-                    if pts_array_match:
-                        # count pairs that contain numbers, ignoring [null,null]
-                        pairs = re.findall(r'\[([0-9]+,[0-9]+|[0-9]+,[0-9]+,null)\]', pts_array_match.group(1))
-                        races = len(pairs)
-                        
-                    meta = DRIVER_DATA.get(name, {})
-                    
-                    data.append({
-                        "driver_id": f"scraped_{series}_{i}",
-                        "driver_name": name,
-                        "driver_code": last[:3].upper(),
-                        "nationality": meta.get("nationality", ""),
-                        "headshot_url": meta.get("headshot", None),
-                        "team_name": meta.get("team", "TBC"),
-                        "points": points,
-                        "wins": meta.get("wins", 0),
-                        "podiums": meta.get("podiums", 0),
-                        "races": races,
-                        "position": i + 1
-                    })
+                    standings = json.loads(standings_match.group(1))
+                    for i, d in enumerate(standings):
+                        first = d.get("driverFirstName") or ""
+                        last = d.get("driverLastName") or ""
+                        if not (first and last):
+                            continue
+                        name = f"{first} {last}"
+                        points = float(d.get("championshipPoints", 0))
+                        races = _count_completed_rounds_from_points(d.get("points", []))
+                        meta = DRIVER_DATA.get(name, {})
+                        data.append({
+                            "driver_id": f"scraped_{series}_{i}",
+                            "driver_name": name,
+                            "driver_code": last[:3].upper(),
+                            "nationality": meta.get("nationality", ""),
+                            "headshot_url": meta.get("headshot", None),
+                            "team_name": meta.get("team", "TBC"),
+                            "points": points,
+                            "wins": meta.get("wins", 0),
+                            "podiums": meta.get("podiums", 0),
+                            "races": races,
+                            "position": i + 1
+                        })
                 except Exception:
-                    pass
-                    
+                    data = []
+
+            if not data:
+                # Fallback por blocos individuais caso o HTML não contenha o array "standings"
+                blocks = re.findall(r'(\{[^{}]*"driverFirstName":"[^"]+"[^{}]*\})', html)
+                for i, block in enumerate(blocks):
+                    try:
+                        pts_match = re.search(r'"championshipPoints":([0-9.]+)', block)
+                        fn_match = re.search(r'"driverFirstName":"([^"]+)"', block)
+                        ln_match = re.search(r'"driverLastName":"([^"]+)"', block)
+
+                        if not (pts_match and fn_match and ln_match):
+                            continue
+
+                        points = float(pts_match.group(1))
+                        first = fn_match.group(1)
+                        last = ln_match.group(1)
+                        name = f"{first} {last}"
+
+                        pts_array_match = re.search(r'"points":(\[.*?\])\}', block)
+                        races = 0
+                        if pts_array_match:
+                            try:
+                                parsed_pts = json.loads(pts_array_match.group(1))
+                                races = _count_completed_rounds_from_points(parsed_pts)
+                            except Exception:
+                                pairs = re.findall(
+                                    r'\[(?:[0-9.]+|null)(?:,(?:[0-9.]+|null))*\]',
+                                    pts_array_match.group(1),
+                                )
+                                races = sum(1 for p in pairs if re.search(r'[0-9]', p))
+
+                        meta = DRIVER_DATA.get(name, {})
+
+                        data.append({
+                            "driver_id": f"scraped_{series}_{i}",
+                            "driver_name": name,
+                            "driver_code": last[:3].upper(),
+                            "nationality": meta.get("nationality", ""),
+                            "headshot_url": meta.get("headshot", None),
+                            "team_name": meta.get("team", "TBC"),
+                            "points": points,
+                            "wins": meta.get("wins", 0),
+                            "podiums": meta.get("podiums", 0),
+                            "races": races,
+                            "position": i + 1
+                        })
+                    except Exception:
+                        pass
+
         elif category == 'team':
             # Extract the standings array for Team
             standings_match = re.search(r'"standings":(\[.*?\]),"category":"Team"', html)
             if standings_match:
-                import json
                 try:
                     standings = json.loads(standings_match.group(1))
                     for i, t in enumerate(standings):
                         name = t.get("teamName")
                         points = float(t.get("championshipPoints", 0))
-                        
-                        races = 0
-                        for pt_pair in t.get("points", []):
-                            if isinstance(pt_pair, list) and len(pt_pair) >= 2:
-                                if pt_pair[0] is not None or pt_pair[1] is not None:
-                                    races += 1
-                                    
+                        races = _count_completed_rounds_from_points(t.get("points", []))
                         meta = TEAM_DATA.get(name, {})
                         data.append({
                             "team_id": f"scraped_{series}_{i}",
@@ -191,23 +235,32 @@ def _scrape_series(series, category):
                         })
                 except Exception as e:
                     print("JSON Parse error:", e)
-                    
+
         return data
     except Exception as e:
         print(f"Scrape error {series} {category}: {e}")
         return []
 
+def invalidate_standings_cache(series=None):
+    with _lock:
+        if series is None:
+            _cache.clear()
+        else:
+            for k in list(_cache.keys()):
+                if k.startswith(f"{series}_"):
+                    _cache.pop(k, None)
+
 def get_standings(series, category):
     key = f"{series}_{category}"
     now = time.time()
-    
+
     with _lock:
         if key in _cache and now - _cache[key]['time'] < TTL:
             return _cache[key]['data']
-            
+
     data = _scrape_series(series, category)
-    
+
     with _lock:
         _cache[key] = {'time': now, 'data': data}
-        
+
     return data

@@ -1,6 +1,6 @@
 import { useAppStore } from "@/store"
 import { SeasonSelector } from "@/components/season-selector"
-import { useMemo, useState, type ReactNode } from "react"
+import { useEffect, useMemo, useState, type ReactNode } from "react"
 import type { TableColumn } from "react-data-table-component"
 import { Flag, Shield, Trophy, CheckCircle2, Clock, Gauge } from "lucide-react"
 
@@ -17,11 +17,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useApi } from "@/hooks/use-api"
+import { useSeasons } from "@/hooks/use-seasons"
 import { api, type DriverStanding, type TeamStanding } from "@/lib/api"
 import { teamLogo, displayTeamName, driverPhoto } from "@/lib/assets"
 import { formatPoints } from "@/lib/format"
 import { mediaUrl } from "@/lib/media"
-import { NEXT_RACE_POLL_MS, RESULTS_POLL_MS } from "@/lib/request-gate"
+import { onSeasonDataUpdated } from "@/lib/request-gate"
+import {
+  computeSeasonProgress,
+  resolveEffectiveSeason,
+  seasonProgressPollInterval,
+} from "@/lib/season-progress"
 import { cn } from "@/lib/utils"
 
 const getDriverColumns = (seasonParam?: number): TableColumn<DriverStanding>[] => [
@@ -372,21 +378,38 @@ const F1_2021_TEAMS = [
 
 
 export function DashboardPage() {
-  
   const { series, season, setSeason } = useAppStore()
-  
-  const seasonParam = Number(season)
+  const seasons = useSeasons(series)
+
+  const effectiveSeason = useMemo(
+    () => resolveEffectiveSeason(season, series, seasons),
+    [season, series, seasons],
+  )
+  const seasonParam = Number(effectiveSeason) || 2026
+
+  useEffect(() => {
+    if (season !== effectiveSeason) {
+      setSeason(effectiveSeason)
+    }
+  }, [season, effectiveSeason, setSeason])
 
   // Enquanto houver corrida encerrada sem resultados na fonte (pending_results),
   // reconsulta a cada 60s; na temporada corrente em andamento mantém verificação
-  // periódica leve (120s, apenas com a aba visível) para nunca depender de um
-  // único evento que possa ser perdido com a página aberta.
+  // periódica leve (120s, apenas com a aba visível) e encerra o polling assim
+  // que todas as etapas da temporada tiverem resultados confirmados.
   const currentYear = new Date().getFullYear()
-  const pendingPoll = (data?: { pending_results?: boolean; completed_races?: number }) => {
-    if (data?.pending_results) return RESULTS_POLL_MS
-    if (seasonParam >= currentYear) return NEXT_RACE_POLL_MS
-    return false
-  }
+  const pendingPoll = (data?: {
+    pending_results?: boolean
+    completed_races?: number
+    total_races?: number
+  }) =>
+    seasonProgressPollInterval({
+      pendingResults: data?.pending_results,
+      completedRaces: data?.completed_races,
+      totalRaces: data?.total_races,
+      season: seasonParam,
+      currentYear,
+    })
 
   const driverStandings = useApi(
     () => api.driverStandings(seasonParam, series),
@@ -401,15 +424,63 @@ export function DashboardPage() {
   const races = useApi(
     () => api.races({ page: 1, per_page: 1, season: seasonParam, series }),
     [seasonParam, series],
+    (data) =>
+      seasonProgressPollInterval({
+        pendingResults:
+          data?.meta?.pending_results ??
+          driverStandings.data?.pending_results ??
+          teamStandings.data?.pending_results,
+        completedRaces:
+          data?.meta?.completed_races ??
+          driverStandings.data?.completed_races ??
+          teamStandings.data?.completed_races,
+        totalRaces:
+          data?.meta?.championship_total ??
+          driverStandings.data?.total_races ??
+          teamStandings.data?.total_races,
+        season: seasonParam,
+        currentYear,
+      }),
   )
-  const resultsPending = Boolean(
-    driverStandings.data?.pending_results || teamStandings.data?.pending_results,
-  )
+
+  // Revalida imediatamente o progresso da temporada e a classificação quando
+  // uma importação de resultados terminar (ex.: em detalhes da corrida).
+  useEffect(() => {
+    return onSeasonDataUpdated((evt) => {
+      if (evt.series && evt.series !== series) return
+      if (evt.season && evt.season !== seasonParam) return
+      driverStandings.reload()
+      teamStandings.reload()
+      races.reload()
+    })
+  }, [series, seasonParam, driverStandings, teamStandings, races])
+
+  // Mantém os 3 endpoints de progresso em sincronia caso um deles receba
+  // primeiro a confirmação de uma nova corrida concluída.
+  const dCompleted = driverStandings.data?.completed_races
+  const tCompleted = teamStandings.data?.completed_races
+  const rCompleted = races.data?.meta?.completed_races
+  useEffect(() => {
+    const counts = [dCompleted, tCompleted, rCompleted].filter(
+      (v): v is number => typeof v === "number" && Number.isFinite(v),
+    )
+    if (counts.length < 2) return
+    const maxCount = Math.max(...counts)
+    if (typeof dCompleted === "number" && dCompleted < maxCount && !driverStandings.loading) {
+      driverStandings.reload()
+    }
+    if (typeof tCompleted === "number" && tCompleted < maxCount && !teamStandings.loading) {
+      teamStandings.reload()
+    }
+    if (typeof rCompleted === "number" && rCompleted < maxCount && !races.loading) {
+      races.reload()
+    }
+  }, [dCompleted, tCompleted, rCompleted, driverStandings, teamStandings, races])
 
   const isF22026 = series === "f2" && seasonParam === 2026
   const isF32026 = series === "f3" && seasonParam === 2026
   const isF12021 = series === "f1" && seasonParam === 2021
-  
+
   // Cópias: a lista de favoritos é reordenada abaixo e não pode mutar os dados em cache.
   let driverStandingsData = isF12021 ? ([...F1_2021_DRIVERS] as any[]) : [...(driverStandings.data?.data ?? [])]
   const { user } = useAppStore()
@@ -429,7 +500,6 @@ export function DashboardPage() {
       teamStandingsData = [fav, ...teamStandingsData]
     }
   }
-  const totalRaces = (seasonParam === 2026 && series === 'f1') ? (races.data?.meta.total || 23) : isF12021 ? 22 : isF22026 ? 22 : isF32026 ? 19 : (races.data?.meta.total ?? 0)
 
   const topDriver = useMemo(
     () => driverStandingsData[0],
@@ -440,21 +510,36 @@ export function DashboardPage() {
     [teamStandingsData],
   )
 
-  const completedRaces = useMemo(() => {
-    // O backend informa quantas corridas da temporada já têm resultados.
-    const reported = driverStandings.data?.completed_races ?? teamStandings.data?.completed_races
-    if (!isF12021 && typeof reported === "number") return Math.min(reported, totalRaces || reported)
-    const maxDriverRaces = Math.max(...driverStandingsData.map((d: any) => Number(d.races) || 0), 0)
-    const maxTeamRaces = Math.max(...teamStandingsData.map((t: any) => Number(t.races) || 0), 0)
-    const maxStandings = Math.max(maxDriverRaces, maxTeamRaces)
-    if (maxStandings > 0) return Math.min(maxStandings, totalRaces)
-    const currentYear = new Date().getFullYear()
-    if (seasonParam < currentYear && totalRaces > 0) return totalRaces
-    return 0
-  }, [driverStandings.data?.completed_races, teamStandings.data?.completed_races, isF12021, driverStandingsData, teamStandingsData, seasonParam, totalRaces])
-
-  const progressPercentage = totalRaces > 0 ? Math.min(100, Math.round((completedRaces / totalRaces) * 100)) : 0
-  const remainingRaces = Math.max(0, totalRaces - completedRaces)
+  const seasonProgress = useMemo(
+    () =>
+      computeSeasonProgress({
+        series,
+        season: seasonParam,
+        driverStandings: driverStandings.data
+          ? { ...driverStandings.data, data: driverStandingsData }
+          : undefined,
+        teamStandings: teamStandings.data
+          ? { ...teamStandings.data, data: teamStandingsData }
+          : undefined,
+        racesMeta: races.data?.meta,
+      }),
+    [
+      series,
+      seasonParam,
+      driverStandings.data,
+      driverStandingsData,
+      teamStandings.data,
+      teamStandingsData,
+      races.data?.meta,
+    ],
+  )
+  const {
+    completedRaces,
+    totalRaces,
+    remainingRaces,
+    progressPercentage,
+    resultsPending,
+  } = seasonProgress
 
   return (
     <div className="space-y-6">
@@ -474,7 +559,7 @@ export function DashboardPage() {
         <span className="text-sm text-muted-foreground">Temporada</span>
           <div className="flex items-center gap-4">
             
-            <SeasonSelector value={season} onValueChange={setSeason} />
+            <SeasonSelector value={effectiveSeason} onValueChange={setSeason} />
           </div>
       </div>
 
@@ -541,9 +626,12 @@ export function DashboardPage() {
         <SummaryCard
           title="Corridas disputadas"
           icon={<Flag className="size-4 text-emerald-500" />}
-          loading={races.loading}
+          loading={
+            (races.loading && !driverStandings.data && !teamStandings.data) ||
+            (driverStandings.loading && teamStandings.loading && !races.data?.meta?.completed_races)
+          }
         >
-          {races.error ? (
+          {races.error && driverStandings.error && teamStandings.error ? (
             <p className="text-muted-foreground">Indisponível</p>
           ) : (
             <div className="flex items-center gap-4 py-2">

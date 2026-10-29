@@ -26,6 +26,8 @@ MIN_JOLPICA_SEASON = 1985
 TEAM_ALIASES = {
     "Red Bull": "Red Bull Racing",
     "Red Bull Racing Honda": "Red Bull Racing",
+    "RB F1 Team": "Racing Bulls",
+    "Cadillac F1 Team": "Cadillac",
     "Williams Racing": "Williams",
     "Haas F1 Team": "Haas",
     "Alpine F1 Team": "Alpine",

@@ -221,6 +221,7 @@ def list_circuits():
             },
         )
         payload["completed_races"] = progress["completed_races"]
+        payload["total_races"] = progress["total_races"]
         payload["pending_results"] = progress["pending_results"]
         return jsonify(payload)
     

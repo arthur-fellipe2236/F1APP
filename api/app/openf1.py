@@ -23,6 +23,11 @@ _session = requests.Session()
 class OpenF1Error(Exception):
     """Falha de comunicacao com a OpenF1 (rede, 5xx, 429 persistente, JSON invalido)."""
 
+    def __init__(self, message, status_code=None, reason=None):
+        super().__init__(message)
+        self.status_code = status_code
+        self.reason = reason
+
 
 def get(path, **params):
     """GET em /v1/<path> com filtros como kwargs. Retorna None se 404.
@@ -45,13 +50,31 @@ def get(path, **params):
     for attempt in range(MAX_RETRIES + 1):
         try:
             response = _session.get(url, timeout=TIMEOUT_SECONDS)
+        except requests.exceptions.Timeout as exc:
+            raise OpenF1Error(
+                f"Tempo limite ({TIMEOUT_SECONDS}s) esgotado ao consultar OpenF1 em /{path}",
+                status_code=504,
+                reason="timeout",
+            ) from exc
+        except requests.exceptions.ConnectionError as exc:
+            raise OpenF1Error(
+                f"Falha de conexão com os servidores da OpenF1 em /{path}: {exc}",
+                status_code=502,
+                reason="connection_error",
+            ) from exc
         except requests.RequestException as exc:
-            raise OpenF1Error(f"Falha ao consultar OpenF1 em /{path}: {exc}") from exc
+            raise OpenF1Error(
+                f"Falha ao consultar OpenF1 em /{path}: {exc}",
+                status_code=502,
+                reason="connection_error",
+            ) from exc
 
         if response.status_code == 429:
             if attempt >= MAX_RETRIES:
                 raise OpenF1Error(
-                    f"OpenF1 limitou as requisicoes (429) em /{path}"
+                    f"OpenF1 limitou as requisições (429) em /{path}",
+                    status_code=429,
+                    reason="rate_limited",
                 )
             retry_after = response.headers.get("Retry-After")
             try:
@@ -65,15 +88,37 @@ def get(path, **params):
         if response.status_code == 404:
             return None
         if response.status_code == 401:
-            raise OpenF1Error("Uma sessão da F1 está acontecendo agora! A OpenF1 (nossa fonte de dados comunitária) bloqueia o acesso gratuito durante sessões ao vivo para evitar sobrecarga nos servidores deles. Tente novamente mais tarde, quando os carros saírem da pista!")
+            raise OpenF1Error(
+                "Acesso à telemetria ao vivo da OpenF1 restrito ou não autorizado (401).",
+                status_code=401,
+                reason="unauthorized",
+            )
+        if response.status_code in (500, 502, 503, 504):
+            raise OpenF1Error(
+                f"Serviço da OpenF1 temporariamente indisponível ({response.status_code}) em /{path}",
+                status_code=response.status_code,
+                reason="service_unavailable",
+            )
         if response.status_code != 200:
-            raise OpenF1Error(f"OpenF1 respondeu {response.status_code} em /{path}")
+            raise OpenF1Error(
+                f"OpenF1 respondeu status inesperado {response.status_code} em /{path}",
+                status_code=response.status_code,
+                reason="unexpected_status",
+            )
         try:
             payload = response.json()
         except ValueError as exc:
-            raise OpenF1Error(f"Resposta nao-JSON da OpenF1 em /{path}") from exc
+            raise OpenF1Error(
+                f"Resposta não-JSON da OpenF1 em /{path}",
+                status_code=502,
+                reason="invalid_response",
+            ) from exc
 
         time.sleep(REQUEST_INTERVAL_SECONDS)
         return payload
 
-    raise OpenF1Error(f"OpenF1 indisponivel para /{path}")
+    raise OpenF1Error(
+        f"OpenF1 indisponível para /{path}",
+        status_code=503,
+        reason="service_unavailable",
+    )

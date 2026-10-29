@@ -18,20 +18,24 @@ from .historical_rules import (
 bp = Blueprint("standings", __name__)
 
 
-def _attach_progress(payload, season, series):
+def _attach_progress(payload, season, series, scraped_rows=None):
     """Acrescenta o progresso da temporada (campos aditivos, contrato preservado).
 
-    ``completed_races``: corridas com resultados no banco.
+    ``completed_races``: corridas/etapas com resultados oficiais disponíveis.
+    ``total_races``: total de etapas do campeonato na temporada (exclui pré-temporada).
     ``pending_results``: ha corrida encerrada ainda sem resultados; o cliente
     deve voltar a consultar e a importacao em background e acionada.
     """
-    if not season or (series or "f1") != "f1":
+    norm_series = (series or "f1").lower()
+    target_season = season or (2026 if norm_series in ("f2", "f3") else None)
+    if not target_season:
         return
-    progress = season_progress(season, "f1")
+    progress = season_progress(target_season, norm_series, scraped_rows=scraped_rows)
     payload["completed_races"] = progress["completed_races"]
+    payload["total_races"] = progress["total_races"]
     payload["pending_results"] = progress["pending_results"]
-    if progress["pending_results"]:
-        maybe_refresh_pending_results(current_app, season=season, series="f1")
+    if progress["pending_results"] and norm_series == "f1":
+        maybe_refresh_pending_results(current_app, season=target_season, series="f1")
 
 
 def _driver_aggregates_sq(season, series=None):
@@ -42,9 +46,12 @@ def _driver_aggregates_sq(season, series=None):
         ).label("points"),
         func.sum(case((RaceResult.position == 1, 1), else_=0)).label("wins"),
         func.sum(case((RaceResult.position <= 3, 1), else_=0)).label("podiums"),
-        func.count(RaceResult.id).label("races"),
+        func.count(func.distinct(RaceResult.race_id)).label("races"),
     ).join(Race, RaceResult.race_id == Race.id)
-    query = query.filter(RaceResult.status != 'Dummy')
+    query = query.filter(
+        RaceResult.status != 'Dummy',
+        (Race.round.is_(None)) | (Race.round > 0),
+    )
     if season:
         query = query.filter(Race.season == season)
     if series:
@@ -68,7 +75,10 @@ def _latest_results_sq(season, series=None):
         RaceResult.driver_id.label("driver_id"),
         func.max(RaceResult.id).label("result_id"),
     ).join(Race, RaceResult.race_id == Race.id)
-    query = query.filter(RaceResult.status != 'Dummy')
+    query = query.filter(
+        RaceResult.status != 'Dummy',
+        (Race.round.is_(None)) | (Race.round > 0),
+    )
     if season:
         query = query.filter(Race.season == season)
     if series:
@@ -116,9 +126,15 @@ def driver_standings():
     series = request.args.get("series")
     
     if series in ['f2', 'f3']:
+        if season is not None and season != 2026 and Race.query.filter_by(series=series, season=season).count() == 0:
+            payload = {"season": season, "data": []}
+            _attach_progress(payload, season, series, scraped_rows=[])
+            return jsonify(payload)
         scraped_data = get_standings(series, 'driver')
         if scraped_data:
-            return jsonify({"season": season, "data": scraped_data})
+            payload = {"season": season, "data": scraped_data}
+            _attach_progress(payload, season or 2026, series, scraped_rows=scraped_data)
+            return jsonify(payload)
 
     aggregates = _driver_aggregates_sq(season, series)
     latest = _latest_results_sq(season, series)
@@ -195,7 +211,7 @@ def driver_standings():
     for position, row in enumerate(standing, start=1):
         row["position"] = position
     payload = {"season": season, "data": standing}
-    _attach_progress(payload, season, series)
+    _attach_progress(payload, season, series, scraped_rows=standing if series in ("f2", "f3") else None)
     return jsonify(payload)
 
 
@@ -240,9 +256,15 @@ def team_standings():
     series = request.args.get("series")
     
     if series in ['f2', 'f3']:
+        if season is not None and season != 2026 and Race.query.filter_by(series=series, season=season).count() == 0:
+            payload = {"season": season, "data": []}
+            _attach_progress(payload, season, series, scraped_rows=[])
+            return jsonify(payload)
         scraped_data = get_standings(series, 'team')
         if scraped_data:
-            return jsonify({"season": season, "data": scraped_data})
+            payload = {"season": season, "data": scraped_data}
+            _attach_progress(payload, season or 2026, series, scraped_rows=scraped_data)
+            return jsonify(payload)
 
     team_id_expr = func.coalesce(RaceResult.team_id, Driver.team_id).label(
         "team_id"
@@ -260,7 +282,10 @@ def team_standings():
         )
         .join(Driver, RaceResult.driver_id == Driver.id)
         .join(Race, RaceResult.race_id == Race.id)
-        .filter(RaceResult.status != 'Dummy')
+        .filter(
+            RaceResult.status != 'Dummy',
+            (Race.round.is_(None)) | (Race.round > 0),
+        )
         .group_by(team_id_expr)
     )
     if season:
@@ -339,7 +364,7 @@ def team_standings():
     for position, row in enumerate(standing, start=1):
         row["position"] = position
     payload = {"season": season, "data": standing}
-    _attach_progress(payload, season, series)
+    _attach_progress(payload, season, series, scraped_rows=standing if series in ("f2", "f3") else None)
     if not official:
         payload["official"] = False
         payload["note"] = (

@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
+import { DEFAULT_PROJECT_SEASON } from "./lib/season-progress"
 
 export interface User {
   id: number
@@ -24,12 +25,24 @@ interface AppState {
   setToken: (token: string | null) => void
 }
 
+export function normalizePersistedSeason(savedSeason: unknown): string {
+  if (typeof savedSeason !== "string") return DEFAULT_PROJECT_SEASON
+  const trimmed = savedSeason.trim()
+  if (!trimmed) return DEFAULT_PROJECT_SEASON
+  if (trimmed === "all") return "all"
+  const yr = Number(trimmed)
+  if (Number.isFinite(yr) && yr >= 1950 && yr <= 2100) {
+    return String(yr)
+  }
+  return DEFAULT_PROJECT_SEASON
+}
+
 export const useAppStore = create<AppState>()(
   persist(
     (set) => ({
       series: "f1",
       setSeries: (series) => set({ series }),
-      season: "",
+      season: DEFAULT_PROJECT_SEASON,
       setSeason: (season) => set({ season }),
       teamTheme: "default",
       setTeamTheme: (teamTheme) => set({ teamTheme }),
@@ -40,6 +53,14 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: "f1-app-storage",
+      merge: (persistedState, currentState) => {
+        const persisted = (persistedState ?? {}) as Partial<AppState>
+        return {
+          ...currentState,
+          ...persisted,
+          season: normalizePersistedSeason(persisted.season),
+        }
+      },
     }
   )
 )

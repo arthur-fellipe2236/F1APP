@@ -177,10 +177,66 @@ def test_standings_expose_progress_and_update_when_results_arrive(client, season
     assert {"season", "data"} <= set(teams)
 
 
-def test_standings_f2_f3_contract_unchanged(client):
-    for series in ("f2", "f3"):
-        body = client.get(f"/api/v1/standings/drivers?season=2026&series={series}").get_json()
-        assert "completed_races" not in body
+def test_standings_f2_f3_independent_progress_and_no_fabricated_counts(client, monkeypatch):
+    from app.api import standings as standings_api
+    from app.results_refresh import season_progress
+
+    # Simula retorno oficial da FIA para F2 (12 etapas concluídas de 14) e F3 (9 de 9)
+    fake_f2_drivers = [
+        {"driver_id": "scraped_f2_0", "driver_name": "Rafael Câmara", "points": 207.0, "races": 12, "position": 1},
+    ]
+    fake_f2_teams = [
+        {"team_id": "scraped_f2_0", "team_name": "Campos Racing", "points": 333.0, "races": 12, "position": 1},
+    ]
+    fake_f3_drivers = [
+        {"driver_id": "scraped_f3_0", "driver_name": "Ugo Ugochukwu", "points": 159.0, "races": 9, "position": 1},
+    ]
+    fake_f3_teams = [
+        {"team_id": "scraped_f3_0", "team_name": "Campos Racing", "points": 334.0, "races": 9, "position": 1},
+    ]
+
+    def fake_get_standings(series, category):
+        if series == "f2":
+            return fake_f2_drivers if category == "driver" else fake_f2_teams
+        if series == "f3":
+            return fake_f3_drivers if category == "driver" else fake_f3_teams
+        return []
+
+    monkeypatch.setattr(standings_api, "get_standings", fake_get_standings)
+
+    f2_d = client.get("/api/v1/standings/drivers?season=2026&series=f2").get_json()
+    f2_t = client.get("/api/v1/standings/teams?season=2026&series=f2").get_json()
+    assert f2_d["completed_races"] == 12
+    assert f2_d["total_races"] == 14  # Exclui teste de pré-temporada (round 0)
+    assert f2_d["pending_results"] is False
+    assert f2_t["completed_races"] == 12
+    assert f2_t["total_races"] == 14
+
+    f3_d = client.get("/api/v1/standings/drivers?season=2026&series=f3").get_json()
+    f3_t = client.get("/api/v1/standings/teams?season=2026&series=f3").get_json()
+    assert f3_d["completed_races"] == 9
+    assert f3_d["total_races"] == 9
+    assert f3_d["pending_results"] is False
+    assert f3_t["completed_races"] == 9
+    assert f3_t["total_races"] == 9
+
+    # Se a data da etapa 13 da F2 (2026-11-29) já passou mas a fonte ainda tem 12 etapas:
+    # não inventa que a 13ª foi concluída e sinaliza pending_results=True.
+    prog_pending = season_progress(
+        2026,
+        series="f2",
+        today=date(2026, 11, 30),
+        scraped_rows=fake_f2_drivers,
+    )
+    assert prog_pending["completed_races"] == 12
+    assert prog_pending["total_races"] == 14
+    assert prog_pending["pending_results"] is True
+
+    # Se a fonte externa falhar (retorna lista vazia), não inventa corridas concluídas:
+    monkeypatch.setattr(standings_api, "get_standings", lambda s, c: [])
+    f2_empty = client.get("/api/v1/standings/drivers?season=2026&series=f2").get_json()
+    assert f2_empty["completed_races"] == 0
+    assert f2_empty["total_races"] == 14
 
 
 def test_refresh_is_disabled_under_testing(app, season_data):
@@ -421,3 +477,82 @@ def test_normalize_qualifying_preserves_source_order_and_participants():
     data, columns = races_api._normalize_qualifying(rows)
     assert [d["driver_code"] for d in data] == ["CCC", "AAA"]
     assert columns == ["q1"]
+
+
+def test_preseason_testing_and_sprint_excluded_from_main_race_counts(client, app):
+    with app.app_context():
+        team = Team.query.first()
+        driver = Driver.query.first()
+        # Cria sessão de pré-temporada (round 0) mesmo com resultado associado
+        testing = _make_race(2032, 0, "Formula 1 Pre-Season Testing", date(2032, 2, 20))
+        _add_result(testing, driver, team, 1, 0)
+        # Etapa 1 oficial com Sprint (sprint_points no resultado da corrida + linha extra de sprint)
+        r1 = _make_race(2032, 1, "GP de Abertura", date(2032, 3, 5))
+        _add_result(r1, driver, team, 1, 25)
+        res1 = RaceResult.query.filter_by(race_id=r1.id, driver_id=driver.id).first()
+        res1.sprint_points = 8.0
+        db.session.commit()
+        # Etapa 2 futura
+        _make_race(2032, 2, "GP Futuro", date(2032, 11, 10))
+
+    standings = client.get("/api/v1/standings/drivers?season=2032&series=f1").get_json()
+    assert standings["total_races"] == 2
+    assert standings["completed_races"] == 1
+    assert standings["pending_results"] is False
+    assert standings["data"][0]["races"] == 1
+    assert standings["data"][0]["points"] == 33.0
+
+
+def test_scraper_counts_three_race_rounds_and_partial_points():
+    from app.scraper import _count_completed_rounds_from_points
+
+    f2_points = [
+        [0, 18], [0, 16], [2, 0], [1, 2], [3, 27], [1, 12],
+        [0, 12], [3, 28], [5, 15], [0, 21], [3, 1], [0, 12, 25],
+        [None, None], [None, None],
+    ]
+    f3_points = [
+        [0, 25], [6, 12], [0, 15], [2, 18], [11, 15],
+        [0, 0], [0, 18], [0, 4], [3, 12, 18],
+    ]
+    assert _count_completed_rounds_from_points(f2_points) == 12
+    assert _count_completed_rounds_from_points(f3_points) == 9
+    assert _count_completed_rounds_from_points([[None, 10], [5, None], [None, None]]) == 2
+
+
+def test_serverless_readonly_sqlite_falls_back_to_writable_tmp(tmp_path, monkeypatch):
+    import sqlite3
+    from app.serverless_db import ensure_writable_sqlite_uri, resolve_writable_sqlite_path
+
+    ro_dir = tmp_path / "readonly_bundle"
+    ro_dir.mkdir()
+    src_db = ro_dir / "f1.db"
+
+    conn = sqlite3.connect(str(src_db))
+    conn.execute("CREATE TABLE races (id INTEGER PRIMARY KEY, name TEXT)")
+    conn.execute("INSERT INTO races (id, name) VALUES (939, 'United States Grand Prix')")
+    conn.commit()
+    conn.close()
+
+    runtime_dir = tmp_path / "tmp_runtime"
+    # Simula ambiente serverless read-only
+    monkeypatch.setattr(
+        "app.serverless_db._is_sqlite_location_writable",
+        lambda path: False,
+    )
+
+    writable_path = resolve_writable_sqlite_path(str(src_db), runtime_dir=str(runtime_dir))
+    assert writable_path == str(runtime_dir / "f1.db")
+    assert writable_path != str(src_db)
+
+    uri = ensure_writable_sqlite_uri(f"sqlite:///{src_db}", runtime_dir=str(runtime_dir))
+    assert uri == f"sqlite:///{writable_path}"
+
+    # Confirma que os dados iniciais foram preservados e que novas escritas funcionam
+    w_conn = sqlite3.connect(writable_path)
+    rows = w_conn.execute("SELECT id, name FROM races").fetchall()
+    assert rows == [(939, "United States Grand Prix")]
+    w_conn.execute("INSERT INTO races (id, name) VALUES (940, 'Mexico City Grand Prix')")
+    w_conn.commit()
+    assert w_conn.execute("SELECT count(*) FROM races").fetchone()[0] == 2
+    w_conn.close()

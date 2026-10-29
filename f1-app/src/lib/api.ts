@@ -3,6 +3,9 @@ export interface Meta {
   per_page: number
   total: number
   pages: number
+  championship_total?: number
+  completed_races?: number
+  pending_results?: boolean
 }
 
 export interface Paginated<T> {
@@ -65,6 +68,7 @@ export interface Race {
   circuit_id: number | null
   circuit_name: string | null
   circuit_country: string | null
+  is_testing?: boolean
 }
 
 export interface RaceResult {
@@ -114,8 +118,10 @@ export interface Standings<T> {
   data: T[]
   official?: boolean
   note?: string
-  /** Corridas da temporada que já têm resultados (apenas F1 por temporada). */
+  /** Corridas/etapas da temporada que já têm resultados oficiais. */
   completed_races?: number
+  /** Total de etapas oficiais do campeonato na temporada (exclui pré-temporada). */
+  total_races?: number
   /** Existe corrida encerrada ainda sem resultados na fonte: voltar a consultar. */
   pending_results?: boolean
 }

@@ -5,13 +5,17 @@ tempos com intervalo, posicao, pneus, bandeira, clima e mensagens de
 race control. Janelas de data mantem as respostas pequenas durante live.
 """
 
+import logging
 from datetime import datetime, timedelta, timezone
 
 from flask import Blueprint, jsonify, request
 
 from .. import cache as app_cache
+from .. import f2_f3_data
 from .. import openf1
 from .helpers import ApiError, parse_int
+
+logger = logging.getLogger(__name__)
 
 bp = Blueprint("live", __name__)
 
@@ -24,10 +28,60 @@ TOWER_FINISHED_TTL = 7 * 24 * 3600
 TOWER_SCHEDULED_TTL = 120
 META_TTL = 300
 
+SUPPORTED_SERIES = {"f1", "f2", "f3"}
 
-def _cached(key, loader):
+
+def _get_series_arg():
+    val = request.args.get("series")
+    if not val:
+        return "f1"
+    clean = val.strip().lower()
+    if clean not in SUPPORTED_SERIES:
+        raise ApiError("Categoria invalida. Categorias permitidas: f1, f2, f3", 400)
+    return clean
+
+
+def _is_testing_meeting(meeting):
+    if not meeting or not isinstance(meeting, dict):
+        return False
+    name = str(meeting.get("meeting_name") or "").lower().strip()
+    official = str(meeting.get("meeting_official_name") or "").lower().strip()
+    return (
+        "pre-season testing" in name
+        or "pre-season testing" in official
+        or "post-season testing" in name
+        or "post-season testing" in official
+    )
+
+
+def _is_testing_session(session, meeting_name=None):
+    if not session or not isinstance(session, dict):
+        return False
+    if meeting_name and _is_testing_meeting({"meeting_name": meeting_name}):
+        return True
+    m_name = str(session.get("meeting_name") or "")
+    if m_name and _is_testing_meeting({"meeting_name": m_name}):
+        return True
+    return False
+
+
+def _detect_session_period(session_name):
+    if not session_name:
+        return None
+    s = str(session_name).lower().strip()
+    if "morning" in s or "manhã" in s:
+        return "Morning"
+    if "afternoon" in s or "tarde" in s:
+        return "Afternoon"
+    if "day" in s or "dia" in s:
+        return "Full Day"
+    return None
+
+
+def _cached(key, loader, series="f1"):
+    key_part = ':'.join(map(str, key)) if isinstance(key, tuple) else key
     return app_cache.cache_get_or_set(
-        f"live:{':'.join(map(str, key)) if isinstance(key, tuple) else key}",
+        f"live:{series}:{key_part}",
         META_TTL,
         loader,
     )
@@ -41,40 +95,79 @@ def _now_utc():
     return datetime.now(timezone.utc)
 
 
-def _sessions_for_year(year):
+def _sessions_for_year(year, series="f1"):
+    if series in {"f2", "f3"}:
+        return _cached(
+            ("sessions", year),
+            lambda: f2_f3_data.get_series_sessions(series, year=year),
+            series=series,
+        )
     return _cached(
         ("sessions", year),
         lambda: openf1.get("sessions", year=year) or [],
+        series=series,
     )
 
 
-def _meetings_for_year(year):
+def _meetings_for_year(year, series="f1"):
+    if series in {"f2", "f3"}:
+        return _cached(
+            ("meetings", year),
+            lambda: {
+                m["meeting_key"]: m.get("meeting_name")
+                for m in f2_f3_data.get_series_meetings(series, year=year)
+            },
+            series=series,
+        )
     return _cached(
         ("meetings", year),
         lambda: {
             m["meeting_key"]: m.get("meeting_name")
             for m in (openf1.get("meetings", year=year) or [])
         },
+        series=series,
     )
 
 
-def _session_by_key(session_key):
-    key = ("session", session_key)
-    hit = app_cache.get(f"live:{key[0]}:{key[1]}")
+def _session_by_key(session_key, series="f1"):
+    cache_key = f"live:{series}:session:{session_key}"
+    hit = app_cache.get(cache_key)
     if hit is not None:
         return hit
+
+    if series in {"f2", "f3"}:
+        found = f2_f3_data.get_series_session_by_key(series, session_key)
+        if found:
+            app_cache.set(cache_key, found, META_TTL)
+            return found
+        return None
+
     for year in (_now_utc().year, _now_utc().year - 1):
+        try:
+            year_sessions = _sessions_for_year(year, series=series)
+        except TypeError:
+            year_sessions = _sessions_for_year(year)
         found = next(
             (
                 s
-                for s in _sessions_for_year(year)
+                for s in year_sessions
                 if s["session_key"] == session_key
             ),
             None,
         )
         if found:
-            app_cache.set(f"live:{key[0]}:{key[1]}", found, META_TTL)
+            app_cache.set(cache_key, found, META_TTL)
             return found
+
+    try:
+        direct = openf1.get("sessions", session_key=session_key)
+        if direct and len(direct) > 0:
+            found = direct[0]
+            app_cache.set(cache_key, found, META_TTL)
+            return found
+    except Exception as exc:
+        logger.warning("Falha ao buscar sessao direta %s na OpenF1: %s", session_key, exc)
+
     return None
 
 
@@ -82,20 +175,32 @@ SESSION_NAME_PT = {
     "Practice 1": "Treino Livre 1",
     "Practice 2": "Treino Livre 2",
     "Practice 3": "Treino Livre 3",
+    "Practice": "Treino Livre",
     "Qualifying": "Classificação",
     "Sprint Qualifying": "Classificação Sprint",
     "Sprint": "Corrida Sprint",
+    "Sprint Race": "Corrida Sprint",
     "Race": "Corrida Principal",
+    "Feature Race": "Corrida Principal",
+    "Day 1": "Dia 1",
+    "Day 2": "Dia 2",
+    "Day 3": "Dia 3",
 }
 
 
-def detect_session(now=None):
+def detect_session(now=None, series="f1", *args, **kwargs):
     """Sessao ao vivo, a proxima agendada, ou a mais recente ja encerrada."""
     now = now or _now_utc()
     try:
-        sessions = _sessions_for_year(now.year)
+        try:
+            sessions = _sessions_for_year(now.year, series=series)
+        except TypeError:
+            sessions = _sessions_for_year(now.year)
         if not sessions:
-            sessions = _sessions_for_year(now.year - 1) or []
+            try:
+                sessions = _sessions_for_year(now.year - 1, series=series) or []
+            except TypeError:
+                sessions = _sessions_for_year(now.year - 1) or []
     except Exception:
         sessions = []
 
@@ -125,21 +230,7 @@ def detect_session(now=None):
         if ended:
             return max(ended, key=lambda s: _parse_dt(s["date_end"])), "finished"
 
-    # Fallback default: United States Grand Prix Practice 1 (2026-10-23)
-    fallback_session = {
-        "session_key": 11389,
-        "meeting_key": 1297,
-        "session_name": "Treino Livre 1",
-        "session_type": "Practice",
-        "circuit_short_name": "Circuit of The Americas",
-        "country_name": "Estados Unidos",
-        "location": "Austin",
-        "meeting_name": "United States Grand Prix",
-        "date_start": "2026-10-23T17:30:00+00:00",
-        "date_end": "2026-10-23T18:30:00+00:00",
-        "year": 2026,
-    }
-    return fallback_session, "scheduled"
+    return None, None
 
 
 def _latest_by_driver(rows):
@@ -165,21 +256,23 @@ def session_state(session, now=None):
     return "finished"
 
 
-def _scheduled_tower(session):
+def _scheduled_tower(session, series="f1"):
     """Sessao futura: busca dados de clima e race control (pre-sessao) se disponiveis."""
     sk = session.get("session_key") or session.get("key") or 11389
     raw_name = session.get("session_name") or session.get("name") or "Practice 1"
     pt_name = SESSION_NAME_PT.get(raw_name, raw_name)
     
     # Try to fetch weather and race control messages (e.g. 15-30 mins before session)
-    try:
-        from app.api.openf1 import openf1
-        weather_data = openf1.get("weather", session_key=sk) or []
-        race_rows = openf1.get("race_control", session_key=sk) or []
-    except Exception:
-        weather_data = []
-        race_rows = []
-        
+    weather_data = []
+    race_rows = []
+    if series == "f1":
+        try:
+            weather_data = openf1.get("weather", session_key=sk) or []
+            race_rows = openf1.get("race_control", session_key=sk) or []
+        except Exception:
+            weather_data = []
+            race_rows = []
+
     weather_last = {}
     if weather_data:
         weather_last = sorted(weather_data, key=lambda w: str(w.get("date", "")))[-1]
@@ -192,22 +285,40 @@ def _scheduled_tower(session):
     messages = [r for r in race_rows if r.get("category") == "SessionStatus"]
         
     meeting_name = session.get("meeting_name")
-    if not meeting_name:
+    if not meeting_name and session.get("year") and session.get("meeting_key"):
         try:
-            meeting_name = _meetings_for_year(session.get("year", 2026)).get(session.get("meeting_key"))
+            try:
+                meeting_name = _meetings_for_year(session["year"], series=series).get(session["meeting_key"])
+            except TypeError:
+                meeting_name = _meetings_for_year(session["year"]).get(session["meeting_key"])
         except Exception:
             pass
-    if not meeting_name:
-        meeting_name = "United States Grand Prix"
 
-    circuit = session.get("circuit_short_name") or session.get("circuit") or "Circuit of The Americas"
-    if circuit == "Austin":
-        circuit = "Circuit of The Americas"
+    circuit = session.get("circuit_short_name") or session.get("circuit")
+    country = session.get("country_name") or session.get("country")
+    location = session.get("location")
+    date_start = session.get("date_start")
+    date_end = session.get("date_end")
 
-    country = session.get("country_name") or session.get("country") or "Estados Unidos"
-    location = session.get("location") or "Austin"
-    date_start = session.get("date_start") or "2026-10-23T17:30:00+00:00"
-    date_end = session.get("date_end") or "2026-10-23T18:30:00+00:00"
+    is_time_confirmed = session.get("is_time_confirmed", True if series == "f1" else False)
+    time_status = session.get("time_status", "confirmed" if series == "f1" else "estimated")
+
+    is_testing = bool(session.get("is_testing")) or _is_testing_meeting({"meeting_name": meeting_name}) or _is_testing_session(session, meeting_name=meeting_name)
+    session_type_val = "Testing" if is_testing else (session.get("session_type") or session.get("type") or "Practice")
+    period_val = session.get("period") or (_detect_session_period(raw_name) if is_testing else None)
+
+    prefix = "Sessão de testes agendada" if is_testing else "Sessão agendada"
+    schedule_parts = [f"{prefix}: {pt_name}"]
+    if date_start:
+        try:
+            dt = _parse_dt(date_start)
+            time_note = " (horário estimado sujeito a confirmação pela FIA)" if not is_time_confirmed else ""
+            schedule_parts.append(f"programada para {dt.strftime('%d/%m às %H:%M UTC')}{time_note}")
+        except Exception:
+            schedule_parts.append(f"programada para {date_start}")
+    if circuit:
+        schedule_parts.append(f"em {circuit}")
+    dynamic_schedule_msg = " ".join(schedule_parts) + "."
 
     msg_list = [
         {
@@ -219,8 +330,8 @@ def _scheduled_tower(session):
     ] if messages else [
         {
             "date": date_start,
-            "message": f"Race Week: {pt_name} em 23/10 às 14:30 (BRT) no {circuit}",
-            "flag": "GREEN",
+            "message": dynamic_schedule_msg,
+            "flag": flag_value or "GREEN",
         }
     ]
 
@@ -229,7 +340,10 @@ def _scheduled_tower(session):
             "key": sk,
             "session_key": sk,
             "name": pt_name,
-            "type": session.get("session_type") or session.get("type") or "Practice",
+            "session_name": raw_name,
+            "type": session_type_val,
+            "is_testing": is_testing,
+            "period": period_val,
             "year": session.get("year", 2026),
             "circuit": circuit,
             "country": country,
@@ -239,18 +353,31 @@ def _scheduled_tower(session):
             "date_end": date_end,
             "state": "scheduled",
             "live": False,
+            "time_status": time_status,
+            "is_time_confirmed": is_time_confirmed,
         },
         "flag": flag_value,
         "current_lap": None,
         "drivers": [],
         "weather": {
-            "air_temperature": weather_last.get("air_temperature") or 26.5,
-            "track_temperature": weather_last.get("track_temperature") or 34.0,
-            "wind_speed": weather_last.get("wind_speed") or 7.5,
-            "humidity": weather_last.get("relative_humidity") or 44,
-            "rainfall": weather_last.get("rainfall") or 0,
+            "air_temperature": weather_last.get("air_temperature") if weather_last else None,
+            "track_temperature": weather_last.get("track_temperature") if weather_last else None,
+            "wind_speed": weather_last.get("wind_speed") if weather_last else None,
+            "humidity": weather_last.get("relative_humidity") if weather_last else None,
+            "rainfall": weather_last.get("rainfall") if weather_last else None,
         },
         "messages": msg_list,
+        "updated_at": _now_utc().isoformat(),
+        "data_status": "scheduled",
+        "source_status": {
+            "available": True,
+            "status_code": 200,
+            "reason": "scheduled",
+            "message": "Sessão agendada — aguardando início das atividades de pista",
+        },
+        "is_stale": False,
+        "last_valid_update": None,
+        "series": series,
     }
 def _windowed(path, session_key, date_start, date_end, minutes=(45,)):
     rows = []
@@ -266,7 +393,7 @@ def _windowed(path, session_key, date_start, date_end, minutes=(45,)):
     ) or []
 
 
-def _build_tower(session, state):
+def _build_tower(session, state, series="f1"):
     sk = session["session_key"]
     now = _now_utc()
     live = state == "live"
@@ -393,22 +520,45 @@ def _build_tower(session, state):
         r["lap_number"] for r in rows if isinstance(r["lap_number"], int)
     ]
 
+    meeting_name = session.get("meeting_name")
+    if not meeting_name and session.get("year") and session.get("meeting_key"):
+        try:
+            try:
+                meeting_name = _meetings_for_year(session["year"], series=series).get(
+                    session["meeting_key"]
+                )
+            except TypeError:
+                meeting_name = _meetings_for_year(session["year"]).get(
+                    session["meeting_key"]
+                )
+        except Exception:
+            pass
+
+    raw_name = session.get("session_name") or session.get("name") or "Practice 1"
+    is_testing = _is_testing_meeting({"meeting_name": meeting_name}) or _is_testing_session(session, meeting_name=meeting_name)
+    session_type_val = "Testing" if is_testing else (session.get("session_type") or session.get("type") or "Practice")
+    period_val = _detect_session_period(raw_name) if is_testing else None
+
     return {
         "session": {
             "key": sk,
+            "session_key": sk,
             "name": session.get("session_name"),
-            "type": session.get("session_type"),
+            "session_name": session.get("session_name"),
+            "type": session_type_val,
+            "is_testing": is_testing,
+            "period": period_val,
             "year": session.get("year"),
             "circuit": session.get("circuit_short_name"),
             "country": session.get("country_name"),
             "location": session.get("location"),
-            "meeting_name": _meetings_for_year(session["year"]).get(
-                session["meeting_key"]
-            ),
-            "date_start": session["date_start"],
-            "date_end": session["date_end"],
+            "meeting_name": meeting_name,
+            "date_start": session.get("date_start"),
+            "date_end": session.get("date_end"),
             "state": state,
             "live": state == "live",
+            "time_status": session.get("time_status", "confirmed" if series == "f1" else "estimated"),
+            "is_time_confirmed": session.get("is_time_confirmed", True if series == "f1" else False),
         },
         "flag": flag_value,
         "current_lap": max(laps) if laps else None,
@@ -431,6 +581,16 @@ def _build_tower(session, state):
             )[-6:]
         ],
         "updated_at": now.isoformat(),
+        "data_status": "live" if live else "finished",
+        "source_status": {
+            "available": True,
+            "status_code": 200,
+            "reason": "ok",
+            "message": "Telemetria conectada e atualizada" if live else "Sessão encerrada",
+        },
+        "is_stale": False,
+        "last_valid_update": now.isoformat(),
+        "series": series,
     }
 
 
@@ -447,6 +607,13 @@ def live_tower():
         schema:
           type: integer
         description: "Sessao especifica (padrao: atual ou ultima encerrada)"
+      - in: query
+        name: series
+        schema:
+          type: string
+          enum: [f1, f2, f3]
+          default: f1
+        description: "Categoria (padrao: f1)"
     responses:
       200:
         description: Torre de tempos com sessao, bandeira, clima e mensagens
@@ -473,6 +640,8 @@ def live_tower():
                   type: array
                   items:
                     type: object
+      400:
+        description: Categoria invalida
       404:
         description: Nenhuma sessao disponivel
         content:
@@ -480,53 +649,185 @@ def live_tower():
             schema:
               $ref: '#/components/schemas/Error'
     """
+    series = _get_series_arg()
     now = _now_utc()
     requested = parse_int(request.args.get("session_key"), "session_key")
     detected = None
     state = None
+
+    if series in {"f2", "f3"} and not requested:
+        series_name = "Fórmula 2" if series == "f2" else "Fórmula 3"
+        return jsonify({
+            "session": None,
+            "flag": None,
+            "current_lap": None,
+            "drivers": [],
+            "weather": {},
+            "messages": [],
+            "data_status": "unavailable",
+            "source_status": {
+                "available": False,
+                "status_code": 200,
+                "reason": "provider_not_configured",
+                "message": f"Telemetria em tempo real para {series_name} indisponível nesta etapa.",
+            },
+            "is_stale": False,
+            "last_valid_update": None,
+            "series": series,
+        })
+
     if requested:
-        detected = _session_by_key(requested)
+        try:
+            detected = _session_by_key(requested, series=series)
+        except TypeError:
+            detected = _session_by_key(requested)
         if detected is not None:
             state = session_state(detected, now)
         else:
             raise ApiError("Sessao nao encontrada", 404)
     else:
         try:
-            detected, state = detect_session(now)
+            try:
+                detected, state = detect_session(now, series=series)
+            except TypeError:
+                detected, state = detect_session(now)
         except Exception as exc:
             logger.warning("Falha ao detectar sessao: %s", exc)
             detected, state = None, None
 
     if detected is None:
-        detected = {
-            "session_key": 11389,
-            "meeting_key": 1297,
-            "session_name": "Treino Livre 1",
-            "session_type": "Practice",
-            "circuit_short_name": "Circuit of The Americas",
-            "country_name": "Estados Unidos",
-            "location": "Austin",
-            "meeting_name": "United States Grand Prix",
-            "date_start": "2026-10-23T17:30:00+00:00",
-            "date_end": "2026-10-23T18:30:00+00:00",
-            "year": 2026,
-        }
-        state = "scheduled"
+        raise ApiError("Nenhuma sessao disponivel", 404)
 
     sk = detected["session_key"]
-    tower_key = f"live:tower:{sk}"
+    tower_key = f"live:{series}:tower:{sk}"
+    last_valid_key = f"live:{series}:tower:{sk}:last_valid"
+
     if state in {"finished", "scheduled"}:
         cached = app_cache.get(tower_key)
         if cached is not None:
             return jsonify(cached)
-    try:
+
+    if series in {"f2", "f3"}:
+        series_name = "Fórmula 2" if series == "f2" else "Fórmula 3"
         if state == "scheduled":
-            tower = _scheduled_tower(detected)
+            tower = _scheduled_tower(detected, series=series)
             app_cache.set(tower_key, tower, TOWER_SCHEDULED_TTL)
             return jsonify(tower)
-        tower = _build_tower(detected, state)
+
+        raw_name = detected.get("session_name") or "Practice"
+        pt_name = SESSION_NAME_PT.get(raw_name, raw_name)
+        is_testing = bool(detected.get("is_testing"))
+        session_type_val = "Testing" if is_testing else (detected.get("session_type") or "Practice")
+        period_val = detected.get("period") or (_detect_session_period(raw_name) if is_testing else None)
+        tower = {
+            "session": {
+                "key": sk,
+                "session_key": sk,
+                "name": pt_name,
+                "session_name": raw_name,
+                "type": session_type_val,
+                "is_testing": is_testing,
+                "period": period_val,
+                "year": detected.get("year", 2026),
+                "circuit": detected.get("circuit_short_name"),
+                "country": detected.get("country_name"),
+                "location": detected.get("location"),
+                "meeting_name": detected.get("meeting_name"),
+                "date_start": detected.get("date_start"),
+                "date_end": detected.get("date_end"),
+                "state": state,
+                "live": state == "live",
+                "time_status": detected.get("time_status", "estimated"),
+                "is_time_confirmed": detected.get("is_time_confirmed", False),
+            },
+            "flag": None,
+            "current_lap": None,
+            "drivers": [],
+            "weather": {},
+            "messages": [],
+            "data_status": "unavailable",
+            "source_status": {
+                "available": False,
+                "status_code": 200,
+                "reason": "provider_not_configured",
+                "message": f"Feed de cronometragem ao vivo não configurado para {series_name}.",
+            },
+            "is_stale": False,
+            "last_valid_update": None,
+            "series": series,
+        }
+        if state == "finished":
+            app_cache.set(tower_key, tower, TOWER_FINISHED_TTL)
+        return jsonify(tower)
+
+    try:
+        if state == "scheduled":
+            tower = _scheduled_tower(detected, series=series)
+            app_cache.set(tower_key, tower, TOWER_SCHEDULED_TTL)
+            return jsonify(tower)
+
+        tower = _build_tower(detected, state, series=series)
+        if state == "live" and not tower.get("drivers"):
+            cached_valid = app_cache.get(last_valid_key)
+            if cached_valid and cached_valid.get("drivers"):
+                stale_response = dict(cached_valid)
+                stale_response["data_status"] = "cached"
+                stale_response["is_stale"] = True
+                stale_response["series"] = series
+                stale_response["source_status"] = {
+                    "available": False,
+                    "status_code": 200,
+                    "reason": "empty_live_data",
+                    "message": "Fonte de telemetria externa retornou dados de pista vazios durante a sessão ao vivo; exibindo última leitura válida.",
+                }
+                return jsonify(stale_response)
+            return jsonify(tower)
+
+        app_cache.set(last_valid_key, tower, TOWER_FINISHED_TTL if state == "finished" else 7200)
     except openf1.OpenF1Error as exc:
-        raise ApiError(f"OpenF1 indisponivel: {exc}", 503)
+        cached_valid = app_cache.get(last_valid_key)
+        if cached_valid is not None:
+            stale_valid = dict(cached_valid)
+            stale_valid["data_status"] = "cached"
+            stale_valid["is_stale"] = True
+            stale_valid["series"] = series
+            stale_valid["source_status"] = {
+                "available": False,
+                "status_code": exc.status_code,
+                "reason": exc.reason,
+                "message": (
+                    "Acesso à telemetria ao vivo da OpenF1 temporariamente restrito durante a sessão oficial."
+                    if exc.reason == "unauthorized"
+                    else "Fonte de telemetria externa temporariamente indisponível."
+                ),
+            }
+            return jsonify(stale_valid)
+
+        status_code = 504 if exc.reason == "timeout" else (429 if exc.reason == "rate_limited" else 503)
+        raise ApiError(
+            f"OpenF1 indisponivel: {exc.args[0] if exc.args else 'Erro de conexao'}",
+            status_code,
+            details={
+                "reason": exc.reason,
+                "status_code": exc.status_code,
+                "source_available": False,
+                "series": series,
+                "session": {
+                    "key": detected.get("session_key"),
+                    "name": detected.get("session_name"),
+                    "type": detected.get("session_type"),
+                    "is_testing": _is_testing_session(detected),
+                    "circuit": detected.get("circuit_short_name"),
+                    "country": detected.get("country_name"),
+                    "location": detected.get("location"),
+                    "date_start": detected.get("date_start"),
+                    "date_end": detected.get("date_end"),
+                    "state": state,
+                    "live": state == "live",
+                },
+            },
+        )
+
     if state == "finished":
         app_cache.set(tower_key, tower, TOWER_FINISHED_TTL)
     return jsonify(tower)
@@ -539,20 +840,51 @@ def live_state():
     ---
     tags:
       - Live
+    parameters:
+      - in: query
+        name: session_key
+        schema:
+          type: integer
+        description: "Sessao especifica (padrao: atual ou ultima encerrada)"
+      - in: query
+        name: series
+        schema:
+          type: string
+          enum: [f1, f2, f3]
+          default: f1
+        description: "Categoria (padrao: f1)"
     responses:
       200:
         description: Estado da sessao atual
+      400:
+        description: Categoria invalida
     """
+    series = _get_series_arg()
     now = _now_utc()
     requested = parse_int(request.args.get("session_key"), "session_key")
+
+    if series in {"f2", "f3"} and not requested:
+        return jsonify({
+            "active": False,
+            "state": "offseason",
+            "session": None,
+            "series": series,
+        })
+
     if requested:
-        detected = _session_by_key(requested)
+        try:
+            detected = _session_by_key(requested, series=series)
+        except TypeError:
+            detected = _session_by_key(requested)
         if not detected:
             raise ApiError("Sessao nao encontrada", 404)
         state = session_state(detected, now)
     else:
         try:
-            detected, state = detect_session(now)
+            try:
+                detected, state = detect_session(now, series=series)
+            except TypeError:
+                detected, state = detect_session(now)
         except Exception:
             detected, state = None, None
 
@@ -560,7 +892,8 @@ def live_state():
         return jsonify({
             "active": False,
             "state": "offseason",
-            "session": None
+            "session": None,
+            "series": series,
         })
 
     return jsonify({
@@ -571,6 +904,10 @@ def live_state():
         "meeting_name": detected.get("meeting_name"),
         "date_start": detected.get("date_start"),
         "date_end": detected.get("date_end"),
+        "series": series,
+        "is_testing": bool(detected.get("is_testing")) or _is_testing_session(detected),
+        "time_status": detected.get("time_status", "confirmed" if series == "f1" else "estimated"),
+        "is_time_confirmed": detected.get("is_time_confirmed", True if series == "f1" else False),
     })
 
 
@@ -588,10 +925,17 @@ def live_sessions():
           type: integer
           example: 2026
         description: "Temporada (padrao: ano corrente)"
+      - in: query
+        name: series
+        schema:
+          type: string
+          enum: [f1, f2, f3]
+          default: f1
+        description: "Categoria (padrao: f1)"
     responses:
       200:
         description: >-
-          GPs da temporada em ordem de calendario, cada um com suas
+          GPs e testes oficiais da temporada em ordem de calendario, cada um com suas
           sessoes e estado (scheduled/live/finished)
         content:
           application/json:
@@ -600,10 +944,14 @@ def live_sessions():
               properties:
                 year:
                   type: integer
+                series:
+                  type: string
                 data:
                   type: array
                   items:
                     type: object
+      400:
+        description: Categoria invalida
       503:
         description: OpenF1 indisponivel
         content:
@@ -611,19 +959,70 @@ def live_sessions():
             schema:
               $ref: '#/components/schemas/Error'
     """
+    series = _get_series_arg()
     now = _now_utc()
     year = parse_int(request.args.get("year"), "year") or now.year
+
+    if series in {"f2", "f3"}:
+        raw_meetings = _cached(
+            ("meetingsraw", year),
+            lambda: f2_f3_data.get_series_meetings(series, year=year),
+            series=series,
+        )
+        data = []
+        for meeting in raw_meetings:
+            is_testing_meet = bool(meeting.get("is_testing"))
+            data.append(
+                {
+                    "meeting_key": meeting["meeting_key"],
+                    "round": meeting["round"],
+                    "is_testing": is_testing_meet,
+                    "meeting_name": meeting["meeting_name"],
+                    "circuit": meeting.get("circuit_short_name"),
+                    "country": meeting.get("country_name"),
+                    "location": meeting.get("location"),
+                    "date_start": meeting["date_start"],
+                    "date_end": meeting["date_end"],
+                    "sessions": [
+                        {
+                            "key": s["session_key"],
+                            "session_key": s["session_key"],
+                            "name": SESSION_NAME_PT.get(s.get("session_name"), s.get("session_name")),
+                            "session_name": s.get("session_name"),
+                            "type": s.get("session_type"),
+                            "is_testing": bool(s.get("is_testing")),
+                            "period": s.get("period") or (_detect_session_period(s.get("session_name")) if s.get("is_testing") else None),
+                            "date_start": s["date_start"],
+                            "date_end": s["date_end"],
+                            "state": session_state(s, now),
+                            "time_status": s.get("time_status", "estimated"),
+                            "is_time_confirmed": s.get("is_time_confirmed", False),
+                        }
+                        for s in meeting.get("sessions", [])
+                    ],
+                }
+            )
+        return jsonify({"year": year, "series": series, "data": data})
+
     try:
+        raw_meetings = _cached(
+            ("meetingsraw", year),
+            lambda: openf1.get("meetings", year=year) or [],
+            series=series,
+        )
         meetings = [
             m
-            for m in _cached(
-                ("meetingsraw", year),
-                lambda: openf1.get("meetings", year=year) or [],
+            for m in raw_meetings
+            if (
+                str(m.get("meeting_name", "")).endswith("Grand Prix")
+                or _is_testing_meeting(m)
             )
-            if str(m.get("meeting_name", "")).endswith("Grand Prix")
             and not m.get("is_cancelled")
         ]
-        sessions = _sessions_for_year(year)
+        try:
+            sessions = _sessions_for_year(year, series=series)
+        except TypeError:
+            sessions = _sessions_for_year(year)
     except openf1.OpenF1Error as exc:
         raise ApiError(f"OpenF1 indisponivel: {exc}", 503)
 
@@ -651,7 +1050,20 @@ def live_sessions():
         by_meeting.setdefault(session["meeting_key"], []).append(session)
 
     data = []
-    for round_, meeting in enumerate(meetings, start=1):
+    gp_round = 1
+    for meeting in meetings:
+        is_testing_meet = _is_testing_meeting(meeting)
+        meeting_sessions = sorted(
+            by_meeting.get(meeting["meeting_key"], []),
+            key=lambda s: s["date_start"],
+        )
+        if is_testing_meet and not meeting_sessions:
+            continue
+
+        meeting_round = 0 if is_testing_meet else gp_round
+        if not is_testing_meet:
+            gp_round += 1
+
         meeting_sessions = sorted(
             by_meeting.get(meeting["meeting_key"], []),
             key=lambda s: s["date_start"],
@@ -659,7 +1071,8 @@ def live_sessions():
         data.append(
             {
                 "meeting_key": meeting["meeting_key"],
-                "round": round_,
+                "round": meeting_round,
+                "is_testing": is_testing_meet,
                 "meeting_name": meeting["meeting_name"],
                 "circuit": meeting.get("circuit_short_name"),
                 "country": meeting.get("country_name"),
@@ -669,20 +1082,31 @@ def live_sessions():
                 "sessions": [
                     {
                         "key": s["session_key"],
+                        "session_key": s["session_key"],
                         "name": SESSION_NAME_PT.get(s.get("session_name"), s.get("session_name")),
-                        "type": s.get("session_type"),
+                        "session_name": s.get("session_name"),
+                        "type": "Testing" if is_testing_meet else s.get("session_type"),
+                        "is_testing": is_testing_meet,
+                        "period": _detect_session_period(s.get("session_name")) if is_testing_meet else None,
                         "date_start": s["date_start"],
                         "date_end": s["date_end"],
                         "state": session_state(s, now),
+                        "time_status": "confirmed",
+                        "is_time_confirmed": True,
                     }
                     for s in meeting_sessions
                 ],
             }
         )
-    return jsonify({"year": year, "data": data})
+    return jsonify({"year": year, "series": series, "data": data})
+
 
 @bp.get('/live/practice/<int:session_key>')
 def live_practice_results(session_key):
+    series = _get_series_arg()
+    if series != "f1":
+        return jsonify({"data": {"laps": [], "drivers": []}, "series": series})
+
     def fetch_practice():
         try:
             laps = openf1.get('laps', session_key=session_key) or []
@@ -690,13 +1114,18 @@ def live_practice_results(session_key):
             return {'laps': laps, 'drivers': drivers}
         except openf1.OpenF1Error as e:
             raise ApiError(str(e), 502)
-            
+
     ttl = 7 * 24 * 3600
-    data = app_cache.cache_get_or_set(f'practice:{session_key}', ttl, fetch_practice)
-    return jsonify({'data': data})
+    data = app_cache.cache_get_or_set(f'live:{series}:practice:{session_key}', ttl, fetch_practice)
+    return jsonify({'data': data, 'series': series})
+
 
 @bp.get('/live/tyres/<int:session_key>')
 def live_tyres(session_key):
+    series = _get_series_arg()
+    if series != "f1":
+        return jsonify({"data": {"stints": [], "drivers": []}, "series": series})
+
     def fetch_tyres():
         try:
             stints = openf1.get('stints', session_key=session_key) or []
@@ -704,7 +1133,7 @@ def live_tyres(session_key):
             return {'stints': stints, 'drivers': drivers}
         except openf1.OpenF1Error as e:
             raise ApiError(str(e), 502)
-            
+
     ttl = 7 * 24 * 3600
-    data = app_cache.cache_get_or_set(f'tyres:{session_key}', ttl, fetch_tyres)
-    return jsonify({'data': data})
+    data = app_cache.cache_get_or_set(f'live:{series}:tyres:{session_key}', ttl, fetch_tyres)
+    return jsonify({'data': data, 'series': series})

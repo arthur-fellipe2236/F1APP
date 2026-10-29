@@ -26,7 +26,7 @@ import { formatDate, formatPoints, formatStatus } from "@/lib/format"
 import { QualyResults } from "@/components/qualy-results"
 import { CountryFlag } from "@/components/flag"
 import { findMeetingForRace } from "@/lib/meeting-match"
-import { resultsPollInterval } from "@/lib/request-gate"
+import { notifySeasonDataUpdated, resultsPollInterval } from "@/lib/request-gate"
 import { PracticeResults } from "@/components/practice-results"
 import { RacePaceChart } from "@/components/race-pace-chart"
 import { TrackDominanceChart } from "@/components/track-dominance-chart"
@@ -318,6 +318,15 @@ function RaceDetailPageInner() {
 
   const [meetingSessions, setMeetingSessions] = useState<any[] | null>(null)
   const raceSeries = race.data?.series || "f1"
+
+  useEffect(() => {
+    if (resultsState?.final && hasResults) {
+      notifySeasonDataUpdated({
+        series: raceSeries,
+        season: race.data?.season,
+      })
+    }
+  }, [resultsState?.final, hasResults, raceSeries, race.data?.season])
 
   useEffect(() => {
     setMeetingSessions(null)

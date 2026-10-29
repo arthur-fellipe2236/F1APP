@@ -14,6 +14,7 @@ from ..results_refresh import (
     ensure_race_results,
     maybe_refresh_pending_results,
     race_results_state,
+    season_progress,
 )
 from .helpers import ApiError, get_or_404, paginate, parse_int, pagination_args
 from .live import session_state
@@ -34,6 +35,7 @@ def _meeting_to_race_dict(m, series):
         "circuit_id": None,
         "circuit_name": m.get("circuit_short_name"),
         "circuit_country": m.get("country_name"),
+        "is_testing": bool(m.get("is_testing", False)),
     }
 
 def _next_race_f2_f3_payload(series: str):
@@ -550,6 +552,9 @@ def list_races():
 
         meetings = get_series_meetings(series, 2026)
         items = [_meeting_to_race_dict(m, series) for m in meetings]
+        championship_total = sum(
+            1 for m in meetings if not m.get("is_testing") and (m.get("round") or 0) > 0
+        )
         total = len(items)
         pages = (total + per_page - 1) // per_page if total > 0 else 0
         start = (page - 1) * per_page
@@ -561,6 +566,7 @@ def list_races():
                 "per_page": per_page,
                 "total": total,
                 "pages": pages,
+                "championship_total": championship_total,
             }
         })
 
@@ -571,7 +577,13 @@ def list_races():
         query = query.filter_by(series=series)
 
     query = query.order_by(Race.season.desc(), Race.round)
-    return jsonify(paginate(query, Race.to_dict))
+    payload = paginate(query, Race.to_dict)
+    if season:
+        progress = season_progress(season, series)
+        payload["meta"]["championship_total"] = progress["total_races"]
+        payload["meta"]["completed_races"] = progress["completed_races"]
+        payload["meta"]["pending_results"] = progress["pending_results"]
+    return jsonify(payload)
 
 
 @bp.get("/races/<int:race_id>")

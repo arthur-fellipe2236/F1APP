@@ -6,8 +6,36 @@ from ..extensions import db
 from ..models import Driver, Race, RaceResult, Team
 from .helpers import parse_int
 from ..scraper import get_standings
+from ..results_refresh import maybe_refresh_pending_results, season_progress
+from .historical_rules import (
+    DRIVER_DROP_RULES,
+    FIRST_CONSTRUCTORS_SEASON,
+    BEST_CAR_ONLY_LAST_SEASON,
+    historical_driver_points,
+    historical_team_points,
+)
 
 bp = Blueprint("standings", __name__)
+
+
+def _attach_progress(payload, season, series, scraped_rows=None):
+    """Acrescenta o progresso da temporada (campos aditivos, contrato preservado).
+
+    ``completed_races``: corridas/etapas com resultados oficiais disponíveis.
+    ``total_races``: total de etapas do campeonato na temporada (exclui pré-temporada).
+    ``pending_results``: ha corrida encerrada ainda sem resultados; o cliente
+    deve voltar a consultar e a importacao em background e acionada.
+    """
+    norm_series = (series or "f1").lower()
+    target_season = season or (2026 if norm_series in ("f2", "f3") else None)
+    if not target_season:
+        return
+    progress = season_progress(target_season, norm_series, scraped_rows=scraped_rows)
+    payload["completed_races"] = progress["completed_races"]
+    payload["total_races"] = progress["total_races"]
+    payload["pending_results"] = progress["pending_results"]
+    if progress["pending_results"] and norm_series == "f1":
+        maybe_refresh_pending_results(current_app, season=target_season, series="f1")
 
 
 def _driver_aggregates_sq(season, series=None):
@@ -18,14 +46,27 @@ def _driver_aggregates_sq(season, series=None):
         ).label("points"),
         func.sum(case((RaceResult.position == 1, 1), else_=0)).label("wins"),
         func.sum(case((RaceResult.position <= 3, 1), else_=0)).label("podiums"),
-        func.count(RaceResult.id).label("races"),
+        func.count(func.distinct(RaceResult.race_id)).label("races"),
     ).join(Race, RaceResult.race_id == Race.id)
-    query = query.filter(RaceResult.status != 'Dummy')
+    query = query.filter(
+        RaceResult.status != 'Dummy',
+        (Race.round.is_(None)) | (Race.round > 0),
+    )
     if season:
         query = query.filter(Race.season == season)
     if series:
         query = query.filter(Race.series == series)
     return query.group_by(RaceResult.driver_id).subquery()
+
+
+def _race_index_map(season):
+    """Mapeia race_id -> indice (1-based) da corrida na temporada F1."""
+    races = (
+        Race.query.filter(Race.season == season, Race.series == "f1")
+        .order_by(Race.round, Race.date, Race.id)
+        .all()
+    )
+    return {r.id: idx for idx, r in enumerate(races, start=1)}, {r.id: r.name for r in races}
 
 
 def _latest_results_sq(season, series=None):
@@ -34,7 +75,10 @@ def _latest_results_sq(season, series=None):
         RaceResult.driver_id.label("driver_id"),
         func.max(RaceResult.id).label("result_id"),
     ).join(Race, RaceResult.race_id == Race.id)
-    query = query.filter(RaceResult.status != 'Dummy')
+    query = query.filter(
+        RaceResult.status != 'Dummy',
+        (Race.round.is_(None)) | (Race.round > 0),
+    )
     if season:
         query = query.filter(Race.season == season)
     if series:
@@ -82,9 +126,15 @@ def driver_standings():
     series = request.args.get("series")
     
     if series in ['f2', 'f3']:
+        if season is not None and season != 2026 and Race.query.filter_by(series=series, season=season).count() == 0:
+            payload = {"season": season, "data": []}
+            _attach_progress(payload, season, series, scraped_rows=[])
+            return jsonify(payload)
         scraped_data = get_standings(series, 'driver')
         if scraped_data:
-            return jsonify({"season": season, "data": scraped_data})
+            payload = {"season": season, "data": scraped_data}
+            _attach_progress(payload, season or 2026, series, scraped_rows=scraped_data)
+            return jsonify(payload)
 
     aggregates = _driver_aggregates_sq(season, series)
     latest = _latest_results_sq(season, series)
@@ -135,37 +185,34 @@ def driver_standings():
                 "races": int(races_count or 0),
             }
         )
-    # Apply historical dropped scores rules for F1 drivers
-    if series == 'f1' or series is None:
-        if season and 1981 <= season <= 1990:
-            # Re-calculate using "Best 11 results"
-            raw_points = db.session.query(
-                RaceResult.driver_id, RaceResult.points
-            ).join(Race, RaceResult.race_id == Race.id).filter(
-                Race.season == season,
-                Race.series == 'f1',
-                RaceResult.status != 'Dummy',
-                RaceResult.points > 0
-            ).all()
-            
-            from collections import defaultdict
-            dp = defaultdict(list)
-            for d_id, pts in raw_points:
-                dp[d_id].append(float(pts))
-                
-            for row in standing:
-                d_id = row["driver_id"]
-                if d_id in dp:
-                    # Sum best 11
-                    best_11 = sum(sorted(dp[d_id], reverse=True)[:11])
-                    row["points"] = best_11
+    # Regras historicas oficiais de descartes (1950-1990)
+    if (series == 'f1' or series is None) and season in DRIVER_DROP_RULES:
+        race_idx, _ = _race_index_map(season)
+        raw = (
+            db.session.query(
+                RaceResult.driver_id,
+                RaceResult.race_id,
+                RaceResult.points + func.coalesce(RaceResult.sprint_points, 0),
+            )
+            .join(Race, RaceResult.race_id == Race.id)
+            .filter(Race.season == season, Race.series == 'f1', RaceResult.status != 'Dummy')
+            .all()
+        )
+        adjusted = historical_driver_points(
+            season, ((d, race_idx.get(r, 0), pts) for d, r, pts in raw)
+        )
+        for row in standing:
+            if row["driver_id"] in adjusted:
+                row["points"] = adjusted[row["driver_id"]]
 
         # Re-sort standing after adjusting points
         standing.sort(key=lambda x: (-x["points"], x["driver_name"]))
 
     for position, row in enumerate(standing, start=1):
         row["position"] = position
-    return jsonify({"season": season, "data": standing})
+    payload = {"season": season, "data": standing}
+    _attach_progress(payload, season, series, scraped_rows=standing if series in ("f2", "f3") else None)
+    return jsonify(payload)
 
 
 @bp.get("/standings/teams")
@@ -209,9 +256,15 @@ def team_standings():
     series = request.args.get("series")
     
     if series in ['f2', 'f3']:
+        if season is not None and season != 2026 and Race.query.filter_by(series=series, season=season).count() == 0:
+            payload = {"season": season, "data": []}
+            _attach_progress(payload, season, series, scraped_rows=[])
+            return jsonify(payload)
         scraped_data = get_standings(series, 'team')
         if scraped_data:
-            return jsonify({"season": season, "data": scraped_data})
+            payload = {"season": season, "data": scraped_data}
+            _attach_progress(payload, season or 2026, series, scraped_rows=scraped_data)
+            return jsonify(payload)
 
     team_id_expr = func.coalesce(RaceResult.team_id, Driver.team_id).label(
         "team_id"
@@ -229,7 +282,10 @@ def team_standings():
         )
         .join(Driver, RaceResult.driver_id == Driver.id)
         .join(Race, RaceResult.race_id == Race.id)
-        .filter(RaceResult.status != 'Dummy')
+        .filter(
+            RaceResult.status != 'Dummy',
+            (Race.round.is_(None)) | (Race.round > 0),
+        )
         .group_by(team_id_expr)
     )
     if season:
@@ -274,9 +330,45 @@ def team_standings():
                     "races": 0
                 })
 
-    standing.sort(key=lambda row: (-row["points"], row["team_name"] or ""))
+    official = True
+    if (series == "f1" or series is None) and season and season <= BEST_CAR_ONLY_LAST_SEASON:
+        # Regras da epoca: so o melhor carro pontua, sem Indy 500, sem ponto de
+        # volta mais rapida (anos 50) e com descartes oficiais.
+        race_idx, race_names = _race_index_map(season)
+        raw = (
+            db.session.query(
+                team_id_expr,
+                RaceResult.race_id,
+                RaceResult.points,
+                RaceResult.position,
+            )
+            .join(Driver, RaceResult.driver_id == Driver.id)
+            .join(Race, RaceResult.race_id == Race.id)
+            .filter(Race.season == season, Race.series == "f1", RaceResult.status != "Dummy")
+            .all()
+        )
+        adjusted = historical_team_points(
+            season,
+            (
+                (t, r, race_idx.get(r, 0), race_names.get(r), pts, pos)
+                for t, r, pts, pos in raw
+            ),
+        )
+        standing = [row for row in standing if row["team_id"] in adjusted]
+        for row in standing:
+            row["points"] = adjusted[row["team_id"]]
+        official = season >= FIRST_CONSTRUCTORS_SEASON
 
+    standing.sort(key=lambda row: (-row["points"], row["team_name"] or ""))
 
     for position, row in enumerate(standing, start=1):
         row["position"] = position
-    return jsonify({"season": season, "data": standing})
+    payload = {"season": season, "data": standing}
+    _attach_progress(payload, season, series, scraped_rows=standing if series in ("f2", "f3") else None)
+    if not official:
+        payload["official"] = False
+        payload["note"] = (
+            "A Copa de Construtores da FIA so foi criada em 1958. "
+            "Classificacao retroativa nao-oficial."
+        )
+    return jsonify(payload)

@@ -1,5 +1,6 @@
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
+import requests
 from flask import Blueprint, current_app, jsonify, request
 from app.models import SeriesState
 
@@ -9,12 +10,85 @@ from .. import f1site, openf1
 from ..extensions import db
 from ..models import Race, RaceResult
 from .. import cache as app_cache
-from .helpers import ApiError, get_or_404, paginate, parse_int
+from ..results_refresh import (
+    ensure_race_results,
+    maybe_refresh_pending_results,
+    race_results_state,
+    season_progress,
+)
+from .helpers import ApiError, get_or_404, paginate, parse_int, pagination_args
 from .live import session_state
+from ..f2_f3_data import get_series_meetings, get_series_sessions, get_series_session_by_key
 
 bp = Blueprint("races", __name__)
 
 NEXT_RACE_TTL = 300
+
+def _meeting_to_race_dict(m, series):
+    return {
+        "id": m.get("meeting_key"),
+        "season": m.get("year", 2026),
+        "series": series,
+        "round": m.get("round", 0),
+        "name": m.get("meeting_name"),
+        "date": m["date_start"][:10] if m.get("date_start") else None,
+        "circuit_id": None,
+        "circuit_name": m.get("circuit_short_name"),
+        "circuit_country": m.get("country_name"),
+        "is_testing": bool(m.get("is_testing", False)),
+    }
+
+def _next_race_f2_f3_payload(series: str):
+    now = datetime.now(timezone.utc)
+    meetings = get_series_meetings(series, 2026)
+    upcoming_meeting = None
+    for m in meetings:
+        end_dt = _parse_dt(m["date_end"])
+        if end_dt > now:
+            upcoming_meeting = m
+            break
+
+    if upcoming_meeting:
+        sessions_payload = []
+        for s in upcoming_meeting.get("sessions", []):
+            s_start = _parse_dt(s["date_start"])
+            s_end = _parse_dt(s.get("date_end", s["date_start"]))
+            state = "upcoming" if s_start > now else ("live" if s_end > now else "past")
+            sessions_payload.append({
+                "key": s["session_key"],
+                "name": s.get("session_name"),
+                "type": s.get("session_type"),
+                "date_start": s["date_start"],
+                "date_end": s.get("date_end", s["date_start"]),
+                "state": state,
+                "time_status": s.get("time_status", "estimated"),
+                "is_time_confirmed": s.get("is_time_confirmed", False),
+            })
+
+        return {
+            "source": f"fia-formula{series[1:]}-2026",
+            "round": upcoming_meeting.get("round", 0),
+            "name": upcoming_meeting.get("meeting_name"),
+            "country": upcoming_meeting.get("country_name"),
+            "location": upcoming_meeting.get("location"),
+            "circuit": upcoming_meeting.get("circuit_short_name"),
+            "weekend_start": upcoming_meeting["date_start"][:10],
+            "weekend_end": upcoming_meeting["date_end"][:10],
+            "race_start": upcoming_meeting["sessions"][-1]["date_start"] if upcoming_meeting.get("sessions") else None,
+            "time_status": upcoming_meeting.get("time_status", "estimated"),
+            "is_time_confirmed": upcoming_meeting.get("is_time_confirmed", False),
+            "sessions": sessions_payload,
+        }
+
+    state = check_series_state(series)
+    if state:
+        return state
+    return {
+        "source": "auto",
+        "offseason": True,
+        "season": 2026,
+        "message": f"Temporada de Fórmula {series[1:].upper()} encerrada.",
+    }
 
 def check_series_state(series):
     state = SeriesState.query.filter_by(series=series).first()
@@ -331,9 +405,17 @@ def next_race():
             schema:
               $ref: '#/components/schemas/Error'
     """
-    cached = app_cache.get("next-race")
+    series = (request.args.get("series") or "f1").lower()
+    cache_key = f"next-race:{series}"
+    cached = app_cache.get(cache_key)
     if cached is not None:
         return jsonify(cached)
+
+    if series in {"f2", "f3"}:
+        payload = _next_race_f2_f3_payload(series)
+        app_cache.set(cache_key, payload, NEXT_RACE_TTL)
+        return jsonify(payload)
+
     try:
         payload = _next_race_payload()
     except (f1site.F1SiteError, openf1.OpenF1Error) as exc:
@@ -342,6 +424,7 @@ def next_race():
         )
     if payload is None:
         raise ApiError("Nenhuma proxima corrida encontrada", 404)
+    app_cache.set(cache_key, payload, NEXT_RACE_TTL)
     app_cache.set("next-race", payload, NEXT_RACE_TTL)
     return jsonify(payload)
 
@@ -353,6 +436,12 @@ def list_seasons():
     ---
     tags:
       - Races
+    parameters:
+      - in: query
+        name: series
+        schema:
+          type: string
+        description: Filtra por categoria (f1, f2, f3)
     responses:
       200:
         description: Temporadas em ordem decrescente
@@ -367,6 +456,22 @@ def list_seasons():
                     type: integer
                   example: [2026, 2025, 2024, 2023]
     """
+    series = request.args.get("series")
+    if series:
+        series = series.lower()
+    if series in {"f2", "f3"}:
+        db_seasons = [
+            row[0]
+            for row in db.session.query(Race.season)
+            .filter(Race.series == series)
+            .distinct()
+            .order_by(desc(Race.season))
+            .all()
+        ]
+        if db_seasons:
+            return jsonify({"data": db_seasons})
+        return jsonify({"data": [2026]})
+
     rows = (
         db.session.query(Race.season)
         .distinct()
@@ -389,6 +494,11 @@ def list_races():
         schema:
           type: integer
         description: Filtra por temporada (ex. 2024)
+      - in: query
+        name: series
+        schema:
+          type: string
+        description: Filtra por categoria (f1, f2, f3)
       - in: query
         name: page
         schema:
@@ -415,17 +525,65 @@ def list_races():
                 meta:
                   $ref: '#/components/schemas/Meta'
     """
-    query = Race.query
     season = parse_int(request.args.get("season"), "season")
-    series = request.args.get("series")
-    
+    series_param = request.args.get("series")
+    series = (series_param or "f1").lower()
+
+    if series in {"f2", "f3"}:
+        db_count = Race.query.filter_by(series=series).count()
+        if db_count > 0:
+            query = Race.query.filter_by(series=series)
+            if season:
+                query = query.filter_by(season=season)
+            query = query.order_by(Race.season.desc(), Race.round)
+            return jsonify(paginate(query, Race.to_dict))
+
+        page, per_page = pagination_args()
+        if season is not None and season != 2026:
+            return jsonify({
+                "data": [],
+                "meta": {
+                    "page": page,
+                    "per_page": per_page,
+                    "total": 0,
+                    "pages": 0,
+                }
+            })
+
+        meetings = get_series_meetings(series, 2026)
+        items = [_meeting_to_race_dict(m, series) for m in meetings]
+        championship_total = sum(
+            1 for m in meetings if not m.get("is_testing") and (m.get("round") or 0) > 0
+        )
+        total = len(items)
+        pages = (total + per_page - 1) // per_page if total > 0 else 0
+        start = (page - 1) * per_page
+        end = start + per_page
+        return jsonify({
+            "data": items[start:end],
+            "meta": {
+                "page": page,
+                "per_page": per_page,
+                "total": total,
+                "pages": pages,
+                "championship_total": championship_total,
+            }
+        })
+
+    query = Race.query
     if season:
         query = query.filter_by(season=season)
-    if series:
+    if series_param:
         query = query.filter_by(series=series)
-        
+
     query = query.order_by(Race.season.desc(), Race.round)
-    return jsonify(paginate(query, Race.to_dict))
+    payload = paginate(query, Race.to_dict)
+    if season:
+        progress = season_progress(season, series)
+        payload["meta"]["championship_total"] = progress["total_races"]
+        payload["meta"]["completed_races"] = progress["completed_races"]
+        payload["meta"]["pending_results"] = progress["pending_results"]
+    return jsonify(payload)
 
 
 @bp.get("/races/<int:race_id>")
@@ -455,8 +613,16 @@ def get_race(race_id):
             schema:
               $ref: '#/components/schemas/Error'
     """
-    race = get_or_404(Race, race_id, "Corrida nao encontrada")
-    return jsonify(race.to_dict())
+    race = db.session.get(Race, race_id)
+    if race:
+        return jsonify(race.to_dict())
+
+    for s_name in ("f2", "f3"):
+        for m in get_series_meetings(s_name, 2026):
+            if m.get("meeting_key") == race_id:
+                return jsonify(_meeting_to_race_dict(m, s_name))
+
+    raise ApiError("Corrida nao encontrada", 404)
 
 
 @bp.get("/races/<int:race_id>/results")
@@ -493,67 +659,232 @@ def race_results(race_id):
             schema:
               $ref: '#/components/schemas/Error'
     """
-    race = get_or_404(Race, race_id, "Corrida nao encontrada")
-    query = (
-        RaceResult.query.filter_by(race_id=race.id)
-        .order_by(RaceResult.position.is_(None), desc(RaceResult.points), RaceResult.position)
+    race = db.session.get(Race, race_id)
+    if race:
+        ensure_race_results(race, current_app)
+        # Ordem oficial de chegada. Ordenar por pontos distorcia corridas com
+        # pontos de volta rapida, penalidades pos-corrida e eras com carros
+        # compartilhados; quem nao tem posicao (DNS/sprint) vai ao final.
+        query = (
+            RaceResult.query.filter_by(race_id=race.id)
+            .order_by(
+                RaceResult.position.is_(None),
+                RaceResult.position,
+                desc(RaceResult.points),
+                RaceResult.id,
+            )
+        )
+        payload = paginate(query, RaceResult.to_dict)
+        payload["results_state"] = race_results_state(
+            race.date, payload["meta"]["total"] > 0
+        )
+        if not payload["results_state"]["final"]:
+            maybe_refresh_pending_results(
+                current_app, season=race.season, series=race.series or "f1"
+            )
+        return jsonify(payload)
+
+    for s_name in ("f2", "f3"):
+        for m in get_series_meetings(s_name, 2026):
+            if m.get("meeting_key") == race_id:
+                page, per_page = pagination_args()
+                meeting_date = (m.get("date_end") or m.get("date_start") or "")[:10]
+                state = race_results_state(
+                    date.fromisoformat(meeting_date) if meeting_date else None,
+                    False,
+                )
+                if state["state"] in {"pending", "in_progress"}:
+                    # Nao ha fonte de resultados homologada para F2/F3.
+                    state = {
+                        "state": "unavailable",
+                        "final": False,
+                        "message": (
+                            "Resultados da F2/F3 ainda não estão disponíveis "
+                            "em uma fonte homologada pelo aplicativo."
+                        ),
+                    }
+                return jsonify({
+                    "data": [],
+                    "meta": {
+                        "page": page,
+                        "per_page": per_page,
+                        "total": 0,
+                        "pages": 0,
+                    },
+                    "results_state": state,
+                })
+
+    raise ApiError("Corrida nao encontrada", 404)
+
+
+JOLPICA_QUALIFYING_URL = "https://api.jolpi.ca/ergast/f1/{season}/{round}/qualifying.json"
+QUALIFYING_TTL_FOUND = 6 * 3600
+QUALIFYING_TTL_EMPTY = 600
+
+
+def _fetch_jolpica_qualifying(season, round_):
+    """Linhas de classificacao da Jolpica; [] quando a fonte nao tem a sessao."""
+    try:
+        response = requests.get(
+            JOLPICA_QUALIFYING_URL.format(season=season, round=round_),
+            timeout=15,
+            headers={"User-Agent": "f1app/1.0"},
+        )
+    except requests.RequestException as exc:
+        raise ApiError("Falha ao consultar a fonte de classificação", 502) from exc
+    if response.status_code == 404:
+        return []
+    if response.status_code != 200:
+        raise ApiError(
+            f"Fonte de classificação respondeu {response.status_code}", 502
+        )
+    try:
+        races = response.json()["MRData"]["RaceTable"]["Races"]
+    except (ValueError, KeyError) as exc:
+        raise ApiError("Resposta inesperada da fonte de classificação", 502) from exc
+    return races[0].get("QualifyingResults", []) if races else []
+
+
+def _normalize_qualifying(rows):
+    """Converte linhas Ergast em um formato unico, preservando a ordem da fonte.
+
+    Formatos historicos nao tem todas as sessoes: entre 1994 e 2005 so ha Q1
+    (e Q2 em 2005), portanto apenas colunas com algum tempo sao informadas.
+    """
+    data = []
+    for row in rows:
+        driver = row.get("Driver") or {}
+        constructor = row.get("Constructor") or {}
+        name = " ".join(
+            part for part in (driver.get("givenName"), driver.get("familyName")) if part
+        )
+        times = {key: (row.get(key.upper()) or None) for key in ("q1", "q2", "q3")}
+        best = times["q3"] or times["q2"] or times["q1"]
+        try:
+            position = int(row.get("position"))
+        except (TypeError, ValueError):
+            position = None
+        data.append(
+            {
+                "position": position,
+                "driver_name": name or None,
+                "driver_code": driver.get("code"),
+                "driver_number": row.get("number"),
+                "team_name": constructor.get("name"),
+                **times,
+                "best_time": best,
+            }
+        )
+    columns = [key for key in ("q1", "q2", "q3") if any(item[key] for item in data)]
+    return data, columns
+
+
+def _grid_rows(race):
+    results = (
+        RaceResult.query.filter(RaceResult.race_id == race.id, RaceResult.grid > 0)
+        .order_by(RaceResult.grid, RaceResult.id)
+        .all()
     )
-    return jsonify(paginate(query, RaceResult.to_dict))
+    return [
+        {
+            "position": item.grid,
+            "driver_name": item.driver.full_name if item.driver else None,
+            "driver_code": item.driver.code if item.driver else None,
+            "driver_number": None,
+            "team_name": item.team.name if item.team else None,
+            "q1": None,
+            "q2": None,
+            "q3": None,
+            "best_time": None,
+        }
+        for item in results
+    ]
+
+
+@bp.get("/races/<int:race_id>/qualifying")
+def race_qualifying(race_id):
+    """
+    Classificacao (qualifying) de uma corrida
+    ---
+    tags:
+      - Races
+    parameters:
+      - in: path
+        name: race_id
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: >
+          Tempos de classificacao (kind=qualifying), grid de largada quando a
+          fonte nao tem tempos (kind=starting_grid) ou lista vazia (kind=none).
+      404:
+        description: Corrida nao encontrada
+      502:
+        description: Fonte externa indisponivel
+    """
+    race = db.session.get(Race, race_id)
+    if race is None:
+        raise ApiError("Corrida nao encontrada", 404)
+
+    info = {"season": race.season, "round": race.round, "series": race.series or "f1"}
+    if info["series"] != "f1":
+        return jsonify({
+            "data": [],
+            "info": {
+                **info,
+                "kind": "none",
+                "columns": [],
+                "message": "Não há fonte homologada de classificação para esta categoria.",
+            },
+        })
+
+    cache_key = f"qualifying:{race.season}:{race.round}"
+    rows = app_cache.get(cache_key)
+    if rows is None:
+        rows = _fetch_jolpica_qualifying(race.season, race.round)
+        app_cache.set(
+            cache_key, rows, QUALIFYING_TTL_FOUND if rows else QUALIFYING_TTL_EMPTY
+        )
+
+    data, columns = _normalize_qualifying(rows)
+    if data:
+        return jsonify({
+            "data": data,
+            "info": {**info, "kind": "qualifying", "columns": columns, "message": None},
+        })
+
+    grid = _grid_rows(race)
+    if grid:
+        return jsonify({
+            "data": grid,
+            "info": {
+                **info,
+                "kind": "starting_grid",
+                "columns": [],
+                "message": (
+                    "A fonte não registra os tempos de classificação desta corrida. "
+                    "Exibindo o grid de largada oficial, sem tempos."
+                ),
+            },
+        })
+    return jsonify({
+        "data": [],
+        "info": {
+            **info,
+            "kind": "none",
+            "columns": [],
+            "message": "A fonte não disponibiliza dados de classificação para esta corrida.",
+        },
+    })
 
 
 @bp.get('/f2/next-race')
 def f2_next_race():
-    state = check_series_state("f2")
-    if state: return jsonify(state)
-    return jsonify({
-        "source": "auto",
-        "offseason": True,
-        "season": 2026,
-        "message": "Temporada de Fórmula 2 encerrada. Aguardando a FIA confirmar as datas oficiais dos testes."
-    })
+    return jsonify(_next_race_f2_f3_payload("f2"))
+
 
 @bp.get('/f3/next-race')
 def f3_next_race():
-    state = check_series_state("f3")
-    if state: return jsonify(state)
-    return jsonify({
-        "source": "manual-test",
-        "offseason": False,
-        "season": 2026,
-        "round": "Test",
-        "name": "Testes de Pós-Temporada (Jerez)",
-        "country": "Espanha",
-        "location": "Jerez de la Frontera",
-        "circuit": "Circuito de Jerez",
-        "race_start": "2026-10-20T09:00:00+00:00",
-        "sessions": [
-            {
-                "name": "Jerez - Dia 1",
-                "type": "Practice",
-                "date_start": "2026-10-20T09:00:00+00:00",
-                "date_end": "2026-10-20T17:00:00+00:00",
-                "state": "upcoming"
-            },
-            {
-                "name": "Jerez - Dia 2",
-                "type": "Practice",
-                "date_start": "2026-10-21T09:00:00+00:00",
-                "date_end": "2026-10-21T17:00:00+00:00",
-                "state": "upcoming"
-            },
-            {
-                "name": "Barcelona - Dia 1",
-                "type": "Practice",
-                "date_start": "2026-10-26T09:00:00+00:00",
-                "date_end": "2026-10-26T17:00:00+00:00",
-                "state": "upcoming"
-            },
-            {
-                "name": "Barcelona - Dia 2",
-                "type": "Practice",
-                "date_start": "2026-10-27T09:00:00+00:00",
-                "date_end": "2026-10-27T17:00:00+00:00",
-                "state": "upcoming"
-            }
-        ]
-    })
+    return jsonify(_next_race_f2_f3_payload("f3"))

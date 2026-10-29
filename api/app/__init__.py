@@ -18,8 +18,17 @@ def create_app(config_overrides=None):
             basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             db_uri = f"sqlite:///{os.path.join(basedir, 'instance', 'f1.db')}"
 
+    if not (config_overrides and "SQLALCHEMY_DATABASE_URI" in config_overrides):
+        from .serverless_db import ensure_writable_sqlite_uri
+
+        db_uri = ensure_writable_sqlite_uri(db_uri)
+        os.environ["F1_DATABASE_URI"] = db_uri
+
     app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    from .security import resolve_secret_key, init_security
+
+    app.config["SECRET_KEY"] = resolve_secret_key(db_uri)
     app.json.sort_keys = False
 
     if config_overrides:
@@ -44,6 +53,7 @@ def create_app(config_overrides=None):
     from .api import register_api
     from .api.openapi import init_swagger
 
+    init_security(app)
     register_api(app)
     init_swagger(app)
     register_error_handlers(app)

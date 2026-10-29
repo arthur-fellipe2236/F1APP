@@ -759,3 +759,276 @@ test("Country Flags - covers all modern and historical F1/F2/F3 countries with f
   assert.equal(flagFromCountry(null), null)
   assert.equal(flagFromCountry(""), null)
 })
+
+import {
+  computeSeasonProgress,
+  isTestingOrNonChampionshipRace,
+  resolveEffectiveSeason,
+  seasonProgressPollInterval,
+} from "../src/lib/season-progress"
+import {
+  notifySeasonDataUpdated,
+  onSeasonDataUpdated,
+} from "../src/lib/request-gate"
+import { normalizePersistedSeason } from "../src/store"
+
+test("SeasonProgress - Contagem independente e exata para F1 2026, F2 2026 e F3 2026", () => {
+  // F1 2026: 18 concluídas de 23 GPs (78%, 5 restantes)
+  const f1Progress = computeSeasonProgress({
+    series: "f1",
+    season: 2026,
+    driverStandings: {
+      completed_races: 18,
+      total_races: 23,
+      pending_results: false,
+      data: [{ races: 18 }],
+    },
+    teamStandings: {
+      completed_races: 18,
+      total_races: 23,
+      pending_results: false,
+      data: [{ races: 18 }],
+    },
+    racesMeta: { total: 23, championship_total: 23, completed_races: 18 },
+  })
+  assert.equal(f1Progress.completedRaces, 18)
+  assert.equal(f1Progress.totalRaces, 23)
+  assert.equal(f1Progress.remainingRaces, 5)
+  assert.equal(f1Progress.progressPercentage, 78)
+  assert.equal(f1Progress.resultsPending, false)
+  assert.equal(f1Progress.status, "in_progress")
+
+  // F2 2026: 12 concluídas de 14 etapas oficiais (86%, 2 restantes)
+  // Mesmo que racesMeta.total seja 15 (por incluir 1 teste de pré-temporada),
+  // totalRaces usa as 14 etapas oficiais do campeonato.
+  const f2Progress = computeSeasonProgress({
+    series: "f2",
+    season: 2026,
+    driverStandings: {
+      completed_races: 12,
+      total_races: 14,
+      pending_results: false,
+      data: [{ races: 12 }],
+    },
+    teamStandings: {
+      completed_races: 12,
+      total_races: 14,
+      pending_results: false,
+      data: [{ races: 12 }],
+    },
+    racesMeta: { total: 15, championship_total: 14 },
+  })
+  assert.equal(f2Progress.completedRaces, 12)
+  assert.equal(f2Progress.totalRaces, 14)
+  assert.equal(f2Progress.remainingRaces, 2)
+  assert.equal(f2Progress.progressPercentage, 86)
+  assert.equal(f2Progress.status, "in_progress")
+
+  // F3 2026: 9 concluídas de 9 etapas oficiais (100%, 0 restantes, concluída)
+  const f3Progress = computeSeasonProgress({
+    series: "f3",
+    season: 2026,
+    driverStandings: {
+      completed_races: 9,
+      total_races: 9,
+      pending_results: false,
+      data: [{ races: 9 }],
+    },
+    teamStandings: {
+      completed_races: 9,
+      total_races: 9,
+      pending_results: false,
+      data: [{ races: 9 }],
+    },
+    racesMeta: { total: 9, championship_total: 9 },
+  })
+  assert.equal(f3Progress.completedRaces, 9)
+  assert.equal(f3Progress.totalRaces, 9)
+  assert.equal(f3Progress.remainingRaces, 0)
+  assert.equal(f3Progress.progressPercentage, 100)
+  assert.equal(f3Progress.status, "completed")
+})
+
+test("SeasonProgress - Exclusão de pré-temporada e proibição de contar corrida sem resultado como concluída", () => {
+  assert.equal(
+    isTestingOrNonChampionshipRace({
+      round: 0,
+      is_testing: true,
+      name: "Formula 2 Pre-Season Testing 2026",
+    }),
+    true,
+  )
+  assert.equal(
+    isTestingOrNonChampionshipRace({
+      round: 1,
+      is_testing: false,
+      name: "Melbourne Formula 2 Round 2026",
+    }),
+    false,
+  )
+
+  // Lista com 1 sessão de pré-temporada + 14 etapas oficiais deve resultar em 14 etapas
+  const f2MeetingsList = [
+    { round: 0, is_testing: true, name: "Formula 2 Pre-Season Testing 2026" },
+    ...Array.from({ length: 14 }, (_, i) => ({
+      round: i + 1,
+      is_testing: false,
+      name: `Round ${i + 1}`,
+    })),
+  ]
+  const fromList = computeSeasonProgress({
+    series: "f2",
+    season: 2026,
+    racesList: f2MeetingsList,
+    driverStandings: { data: [{ races: 12 }] },
+  })
+  assert.equal(fromList.totalRaces, 14)
+  assert.equal(fromList.completedRaces, 12)
+
+  // Corrida encerrada mas ainda sem resultado importado: permanece pendente,
+  // nunca é contada como concluída apenas porque a data passou (nem em temporada passada).
+  const pendingPastSeason = computeSeasonProgress({
+    series: "f1",
+    season: 2024,
+    driverStandings: {
+      completed_races: 0,
+      total_races: 24,
+      pending_results: true,
+      data: [],
+    },
+    racesMeta: { total: 24, championship_total: 24, completed_races: 0, pending_results: true },
+  })
+  assert.equal(pendingPastSeason.completedRaces, 0, "Não deve assumir totalRaces quando não há resultados")
+  assert.equal(pendingPastSeason.resultsPending, true)
+  assert.equal(pendingPastSeason.status, "pending_results")
+
+  // Proteção contra acumulado histórico (1167 corridas de 1950–2026) ao visualizar 2026
+  const guardHistorical = computeSeasonProgress({
+    series: "f1",
+    season: 2026,
+    racesMeta: { total: 1167 },
+    driverStandings: { data: [{ races: 18 }] },
+  })
+  assert.equal(guardHistorical.totalRaces, 23, "Nunca deve usar 1167 corridas históricas na temporada 2026")
+  assert.equal(guardHistorical.completedRaces, 18)
+})
+
+test("SeasonProgress - Atualização imediata do card 'Corridas disputadas', polling e sincronização", () => {
+  // 1. Estado enquanto a 18ª corrida (GP dos EUA) está pendente
+  const beforeImport = computeSeasonProgress({
+    series: "f1",
+    season: 2026,
+    driverStandings: {
+      completed_races: 17,
+      total_races: 23,
+      pending_results: true,
+      data: [{ races: 17 }],
+    },
+    teamStandings: {
+      completed_races: 17,
+      total_races: 23,
+      pending_results: true,
+      data: [{ races: 17 }],
+    },
+  })
+  assert.equal(beforeImport.completedRaces, 17)
+  assert.equal(beforeImport.remainingRaces, 6)
+  assert.equal(beforeImport.progressPercentage, 74)
+  assert.equal(beforeImport.resultsPending, true)
+  assert.equal(
+    seasonProgressPollInterval({
+      pendingResults: beforeImport.resultsPending,
+      completedRaces: beforeImport.completedRaces,
+      totalRaces: beforeImport.totalRaces,
+      season: 2026,
+      currentYear: 2026,
+    }),
+    RESULTS_POLL_MS,
+    "Deve consultar a cada 60s enquanto houver resultado pendente",
+  )
+
+  // 2. Assim que o resultado oficial chega (mesmo que driverStandings atualize um instante antes de teamStandings),
+  // o card 'Corridas disputadas' já reflete 18 de 23 (78%, 5 restantes) imediatamente
+  const afterImport = computeSeasonProgress({
+    series: "f1",
+    season: 2026,
+    driverStandings: {
+      completed_races: 18,
+      total_races: 23,
+      pending_results: false,
+      data: [{ races: 18 }],
+    },
+    teamStandings: {
+      completed_races: 17,
+      total_races: 23,
+      pending_results: false,
+      data: [{ races: 17 }],
+    },
+  })
+  assert.equal(afterImport.completedRaces, 18)
+  assert.equal(afterImport.remainingRaces, 5)
+  assert.equal(afterImport.progressPercentage, 78)
+  assert.equal(afterImport.resultsPending, false)
+  assert.equal(
+    seasonProgressPollInterval({
+      pendingResults: afterImport.resultsPending,
+      completedRaces: afterImport.completedRaces,
+      totalRaces: afterImport.totalRaces,
+      season: 2026,
+      currentYear: 2026,
+    }),
+    NEXT_RACE_POLL_MS,
+    "Sem pendência imediata na temporada atual em andamento, reduz polling para 120s",
+  )
+
+  // 3. Quando a temporada termina (ex.: F3 9 de 9), o polling encerra (false)
+  assert.equal(
+    seasonProgressPollInterval({
+      pendingResults: false,
+      completedRaces: 9,
+      totalRaces: 9,
+      season: 2026,
+      currentYear: 2026,
+    }),
+    false,
+    "Temporada 100% concluída sem pendências deve encerrar o polling",
+  )
+
+  // 4. Barramento de atualização imediata (notifySeasonDataUpdated / onSeasonDataUpdated)
+  const received: Array<{ series?: string; season?: number }> = []
+  const unsubscribe = onSeasonDataUpdated((evt) => {
+    received.push(evt)
+  })
+  notifySeasonDataUpdated({ series: "f1", season: 2026, completedRaces: 18 })
+  assert.equal(received.length, 1)
+  assert.equal(received[0].series, "f1")
+  assert.equal(received[0].season, 2026)
+  unsubscribe()
+  notifySeasonDataUpdated({ series: "f1", season: 2026 })
+  assert.equal(received.length, 1, "Após unsubscribe não deve receber novos eventos")
+})
+
+test("Dashboard Default Season - Inicia em 2026 sem sobrescrever temporada válida salva pelo usuário", () => {
+  // Store inicial e normalização de persistência
+  assert.equal(useAppStore.getState().season, "2026")
+  assert.equal(normalizePersistedSeason(""), "2026")
+  assert.equal(normalizePersistedSeason(undefined), "2026")
+  assert.equal(normalizePersistedSeason(null), "2026")
+  assert.equal(normalizePersistedSeason("invalid"), "2026")
+  assert.equal(normalizePersistedSeason("2025"), "2025", "Preserva temporada 2025 salva pelo usuário")
+  assert.equal(normalizePersistedSeason("1994"), "1994", "Preserva temporada histórica 1994 salva pelo usuário")
+
+  // Resolução no Dashboard por série e temporadas disponíveis
+  assert.equal(resolveEffectiveSeason("", "f1", [2026, 2025, 2024]), "2026")
+  assert.equal(resolveEffectiveSeason("2024", "f1", [2026, 2025, 2024]), "2024")
+  assert.equal(
+    resolveEffectiveSeason("1994", "f2", [2026]),
+    "2026",
+    "Ao alternar para F2 com temporada 1994 selecionada, ajusta para 2026 sem misturar dados",
+  )
+  assert.equal(
+    resolveEffectiveSeason("1994", "f3", [2026]),
+    "2026",
+    "Ao alternar para F3 com temporada 1994 selecionada, ajusta para 2026 sem misturar dados",
+  )
+})

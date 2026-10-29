@@ -137,18 +137,29 @@ export function useApi<T>(
     if (!pollingMs) return
     const visible = () =>
       typeof document === "undefined" || document.visibilityState === "visible"
+    let wasHidden = !visible()
     const timer = setInterval(() => {
       if (shouldPollNow({ inFlight: inFlightRef.current, visible: visible() })) {
         run(true)
       }
     }, pollingMs)
     const onVisible = () => {
+      if (!visible()) {
+        wasHidden = true
+        return
+      }
+      const now = Date.now()
+      const minDebounceElapsed =
+        updatedAtRef.current === undefined || now - updatedAtRef.current >= 1_000
       if (
-        visible() &&
         shouldPollNow({ inFlight: inFlightRef.current, visible: true }) &&
-        isStale(updatedAtRef.current, pollingMs, Date.now())
+        minDebounceElapsed &&
+        (wasHidden || isStale(updatedAtRef.current, pollingMs, now))
       ) {
+        wasHidden = false
         run(true)
+      } else {
+        wasHidden = false
       }
     }
     document.addEventListener("visibilitychange", onVisible)

@@ -168,11 +168,19 @@ export function RacesPage() {
   const displayData = useMemo(() => {
     if (!races.data) return []
     // Se estiver filtrado por uma temporada específica, numera sequencialmente
+    // apenas as etapas oficiais do campeonato (mantendo round 0 para pré-temporada).
     if (seasonParam) {
-      return races.data.map((race, index) => ({
-        ...race,
-        round: index + 1
-      }))
+      let champRound = 0
+      return races.data.map((race) => {
+        if (race.is_testing || race.round === 0) {
+          return { ...race, round: 0 }
+        }
+        champRound += 1
+        return {
+          ...race,
+          round: champRound,
+        }
+      })
     }
     return races.data
   }, [races.data, seasonParam])
@@ -185,7 +193,9 @@ export function RacesPage() {
       sortable: true,
       selector: (row) => row.round,
       cell: (row) => (
-        <span className="font-semibold font-mono tracking-tight tabular-nums">{row.round}</span>
+        <span className="font-semibold font-mono tracking-tight tabular-nums">
+          {row.is_testing || row.round === 0 ? "Teste" : row.round}
+        </span>
       ),
     },
     {

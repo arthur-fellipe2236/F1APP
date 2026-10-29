@@ -66,3 +66,36 @@ export function resultsPollInterval(state?: string | null): number | false {
     ? RESULTS_POLL_MS
     : false
 }
+
+export interface SeasonDataUpdateEvent {
+  series?: string
+  season?: number
+  completedRaces?: number
+}
+
+type SeasonDataUpdateListener = (event: SeasonDataUpdateEvent) => void
+
+const _seasonUpdateListeners = new Set<SeasonDataUpdateListener>()
+
+/**
+ * Notifica componentes montados (ex.: card "Corridas disputadas" e tabelas)
+ * quando novos resultados oficiais acabaram de ser importados ou detectados.
+ */
+export function notifySeasonDataUpdated(event: SeasonDataUpdateEvent = {}): void {
+  for (const listener of Array.from(_seasonUpdateListeners)) {
+    try {
+      listener(event)
+    } catch {
+      // Listener errors must never break caller
+    }
+  }
+}
+
+export function onSeasonDataUpdated(
+  listener: SeasonDataUpdateListener,
+): () => void {
+  _seasonUpdateListeners.add(listener)
+  return () => {
+    _seasonUpdateListeners.delete(listener)
+  }
+}

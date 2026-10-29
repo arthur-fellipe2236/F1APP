@@ -1,9 +1,10 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, current_app, jsonify, request
 
 from sqlalchemy import desc, func
 
 from ..extensions import db
 from ..models import Circuit, Driver, Race, RaceResult
+from ..results_refresh import maybe_refresh_pending_results, season_progress
 from .helpers import (
     commit_unique,
     get_or_404,
@@ -200,6 +201,9 @@ def list_circuits():
 
     # For F1
     if season:
+        progress = season_progress(season, "f1")
+        if progress["pending_results"]:
+            maybe_refresh_pending_results(current_app, season=season, series="f1")
         query = (
             db.session.query(Circuit, func.min(Race.round).label("round"))
             .join(Race, Race.circuit_id == Circuit.id)
@@ -207,17 +211,19 @@ def list_circuits():
             .group_by(Circuit.id)
             .order_by(func.min(Race.round))
         )
-        return jsonify(
-            paginate(
-                query,
-                lambda row: {
-                    **row[0].to_dict(),
-                    "round": row[1],
-                    "winner": _winner_for(row[0].id, season, race_type),
-                    "sprint_winner": _winner_for(row[0].id, season, "sprint"),
-                },
-            )
+        payload = paginate(
+            query,
+            lambda row: {
+                **row[0].to_dict(),
+                "round": row[1],
+                "winner": _winner_for(row[0].id, season, race_type),
+                "sprint_winner": _winner_for(row[0].id, season, "sprint"),
+            },
         )
+        payload["completed_races"] = progress["completed_races"]
+        payload["total_races"] = progress["total_races"]
+        payload["pending_results"] = progress["pending_results"]
+        return jsonify(payload)
     
     query = Circuit.query.order_by(Circuit.name)
     return jsonify(

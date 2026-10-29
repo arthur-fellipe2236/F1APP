@@ -97,29 +97,125 @@ def pending_races(today=None, series="f1", season=None):
     earliest = today - timedelta(days=PENDING_WINDOW_DAYS)
     query = Race.query.filter(
         Race.series == series,
+        (Race.round.is_(None)) | (Race.round > 0),
         Race.date.isnot(None),
         Race.date <= latest,
         Race.date >= earliest,
-        ~exists().where(RaceResult.race_id == Race.id),
+        ~exists().where((RaceResult.race_id == Race.id) & (RaceResult.status != "Dummy")),
     )
     if season:
         query = query.filter(Race.season == season)
     return query.order_by(Race.date).all()
 
 
-def season_progress(season, series="f1", today=None):
-    """Corridas com resultados e se ha corridas encerradas aguardando resultados."""
-    completed = (
-        db.session.query(Race.id)
-        .filter(
-            Race.season == season,
-            Race.series == series,
-            exists().where(RaceResult.race_id == Race.id),
+def _championship_meetings_for_series(series, season):
+    """Retorna apenas as etapas oficiais do campeonato (exclui testes/pré-temporada)."""
+    from .f2_f3_data import get_series_meetings
+
+    meetings = [
+        m
+        for m in get_series_meetings(series, season)
+        if not m.get("is_testing") and (m.get("round") or 0) > 0
+    ]
+    meetings.sort(key=lambda m: (m.get("round") or 0, m.get("date_start") or ""))
+    return meetings
+
+
+def season_progress(season, series="f1", today=None, scraped_rows=None):
+    """Corridas com resultados, total de etapas do campeonato e se ha resultados pendentes.
+
+    Regras:
+    - Exclui sessoes de teste / pre-temporada (`round <= 0` ou `is_testing == True`).
+    - Nunca conta uma corrida como concluida apenas porque sua data passou.
+    - Para F1 (ou series com corridas no banco), conta `Race` com `RaceResult` oficial.
+    - Para F2/F3 baseadas no calendario canonico e na classificacao oficial da FIA,
+      usa `completed_races` confirmado pelos resultados publicados na fonte e sinaliza
+      `pending_results=True` quando uma etapa ja realizada dentro da janela ainda nao
+      teve seus resultados refletidos na classificacao.
+    """
+    norm_series = (series or "f1").lower()
+    today_d = _as_date(today) or date.today()
+
+    from flask import has_app_context
+
+    db_total = 0
+    base_q = None
+    if has_app_context():
+        base_q = db.session.query(Race.id).filter(
+            Race.series == norm_series,
+            (Race.round.is_(None)) | (Race.round > 0),
         )
-        .count()
-    )
-    pending = bool(pending_races(today=today, series=series, season=season))
-    return {"completed_races": completed, "pending_results": pending}
+        if season:
+            base_q = base_q.filter(Race.season == season)
+        db_total = base_q.count()
+
+    if norm_series == "f1" or db_total > 0:
+        completed = (
+            base_q.filter(
+                exists().where((RaceResult.race_id == Race.id) & (RaceResult.status != "Dummy"))
+            ).count()
+            if base_q is not None
+            else 0
+        )
+        pending = (
+            bool(pending_races(today=today_d, series=norm_series, season=season))
+            if base_q is not None
+            else False
+        )
+        return {
+            "completed_races": completed,
+            "total_races": db_total,
+            "pending_results": pending,
+        }
+
+    if norm_series in ("f2", "f3"):
+        target_season = season or 2026
+        meetings = _championship_meetings_for_series(norm_series, target_season)
+        total = len(meetings)
+        if total == 0:
+            return {
+                "completed_races": 0,
+                "total_races": 0,
+                "pending_results": False,
+            }
+
+        rows = scraped_rows
+        if rows is None:
+            from .scraper import get_standings
+
+            rows = get_standings(norm_series, "team") or get_standings(norm_series, "driver")
+
+        completed = max((int(r.get("races") or 0) for r in (rows or [])), default=0)
+        completed = max(0, min(completed, total))
+
+        pending = False
+        for idx, m in enumerate(meetings, start=1):
+            if idx <= completed:
+                continue
+            start_str = (m.get("date_start") or "")[:10]
+            end_str = (m.get("date_end") or start_str)[:10]
+            if not start_str:
+                continue
+            try:
+                start_d = date.fromisoformat(start_str)
+                end_d = date.fromisoformat(end_str) if end_str else start_d
+            except ValueError:
+                continue
+            if start_d <= today_d <= end_d + timedelta(days=PENDING_WINDOW_DAYS):
+                pending = True
+                break
+
+        return {
+            "completed_races": completed,
+            "total_races": total,
+            "pending_results": pending,
+        }
+
+    return {
+        "completed_races": 0,
+        "total_races": 0,
+        "pending_results": False,
+    }
 
 
 # --- importacao leve de resultados pendentes (Jolpica + fallback OpenF1) -----
@@ -146,6 +242,16 @@ def _resolve_driver(row, season):
             team = _upsert_team(constructor) if constructor else None
             return match, team
     return _upsert_ergast_row(row)
+
+
+def _invalidate_progress_caches():
+    """Invalida caches em memória após importação de resultados."""
+    try:
+        from . import cache as app_cache
+
+        app_cache.clear()
+    except Exception:  # noqa: BLE001
+        pass
 
 
 def _import_from_openf1(race):
@@ -206,6 +312,7 @@ def _import_from_openf1(race):
         race.name = saved_name
         race.date = saved_date
         db.session.commit()
+        _invalidate_progress_caches()
     return bool(ok)
 
 
@@ -279,6 +386,7 @@ def import_results_for_race(race):
                 _store_sprint_points(race.id, sprint_entries)
         except Exception:  # noqa: BLE001 - sprint e opcional
             db.session.rollback()
+    _invalidate_progress_caches()
     return True
 
 

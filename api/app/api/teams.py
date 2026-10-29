@@ -8,6 +8,7 @@ from .helpers import (
     commit_unique,
     get_or_404,
     paginate,
+    pagination_args,
     parse_int,
     parse_json_body,
     validate_fields,
@@ -16,6 +17,25 @@ from .helpers import (
 bp = Blueprint("teams", __name__)
 
 ALLOWED_FIELDS = {"name", "base_city", "base_country", "engine_manufacturer", "founded_year"}
+
+
+def _get_f2_f3_teams(series):
+    if series == "f2":
+        from app.mock_data import F2_2026_TEAMS
+        raw_teams = F2_2026_TEAMS
+    elif series == "f3":
+        from app.mock_data import F3_2026_TEAMS
+        raw_teams = F3_2026_TEAMS
+    else:
+        return []
+
+    teams = []
+    for t in raw_teams:
+        item = dict(t)
+        item["series"] = series
+        item.setdefault("base_city", None)
+        teams.append(item)
+    return teams
 
 
 @bp.get("/teams")
@@ -58,18 +78,38 @@ def list_teams():
                   $ref: '#/components/schemas/Meta'
     """
 
-    series = request.args.get("series")
+    series_param = request.args.get("series")
+    series = series_param.lower() if series_param else None
     season = parse_int(request.args.get("season"), "season")
 
-    if series == 'f2' and season == 2026:
-        from app.mock_data import F2_2026_TEAMS
-        return jsonify({"data": F2_2026_TEAMS, "meta": {"pages": 1, "total": len(F2_2026_TEAMS)}})
-    if series == 'f3' and season == 2026:
-        from app.mock_data import F3_2026_TEAMS
-        return jsonify({"data": F3_2026_TEAMS, "meta": {"pages": 1, "total": len(F3_2026_TEAMS)}})
+    if series in ("f2", "f3"):
+        page, per_page = pagination_args()
+        if season is not None and season != 2026:
+            return jsonify({
+                "data": [],
+                "meta": {
+                    "page": page,
+                    "per_page": per_page,
+                    "total": 0,
+                    "pages": 0,
+                }
+            })
+        items = _get_f2_f3_teams(series)
+        total = len(items)
+        pages = (total + per_page - 1) // per_page if total > 0 else 0
+        start = (page - 1) * per_page
+        end = start + per_page
+        return jsonify({
+            "data": items[start:end],
+            "meta": {
+                "page": page,
+                "per_page": per_page,
+                "total": total,
+                "pages": pages,
+            }
+        })
 
     query = Team.query
-    series = request.args.get("series")
     if series:
         query = query.filter_by(series=series)
     season = parse_int(request.args.get("season"), "season")
@@ -173,8 +213,26 @@ def get_team(team_id):
             schema:
               $ref: '#/components/schemas/Error'
     """
-    team = get_or_404(Team, team_id, "Equipe nao encontrada")
-    return jsonify(team.to_dict())
+    series_param = request.args.get("series")
+    series = series_param.lower() if series_param else None
+
+    if series in ("f2", "f3"):
+        for t in _get_f2_f3_teams(series):
+            if t["id"] == team_id:
+                return jsonify(t)
+        raise ApiError("Equipe nao encontrada", 404)
+
+    team = db.session.get(Team, team_id)
+    if team and (series is None or team.series == series):
+        return jsonify(team.to_dict())
+
+    if series != "f1":
+        for s in ("f2", "f3"):
+            for t in _get_f2_f3_teams(s):
+                if t["id"] == team_id:
+                    return jsonify(t)
+
+    raise ApiError("Equipe nao encontrada", 404)
 
 
 @bp.put("/teams/<int:team_id>")
