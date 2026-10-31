@@ -15,9 +15,11 @@ Valida:
 """
 
 from datetime import datetime, timezone
+from unittest.mock import patch
 import pytest
 from app import cache as app_cache
 from app.api import live
+from app.openf1 import OpenF1Error
 
 
 @pytest.fixture(autouse=True)
@@ -211,21 +213,48 @@ def test_cache_namespaces_isolation_f1_f2_f3(client):
 
 def test_f1_regression_and_invalid_series(client):
     """Garante que a F1 continua intacta com time_status confirmed e séries inválidas retornam 400."""
-    # F1 padrão (sem series)
-    res_f1_def = client.get("/api/v1/live/sessions?year=2026")
-    assert res_f1_def.status_code == 200
-    body_f1 = res_f1_def.get_json()
-    assert body_f1["series"] == "f1"
-    # F1 sessions têm time_status confirmed e is_time_confirmed True
-    for meeting in body_f1["data"]:
-        for s in meeting["sessions"]:
-            assert s["time_status"] == "confirmed"
-            assert s["is_time_confirmed"] is True
+    mock_meetings = [{
+        "meeting_key": 1228,
+        "meeting_name": "Bahrain Grand Prix",
+        "circuit_short_name": "Sakhir",
+        "country_name": "Bahrain",
+        "location": "Sakhir",
+        "date_start": "2026-03-01T10:00:00+00:00",
+        "date_end": "2026-03-01T18:00:00+00:00",
+    }]
+    mock_sessions = [{
+        "session_key": 9462,
+        "meeting_key": 1228,
+        "session_name": "Race",
+        "session_type": "Race",
+        "date_start": "2026-03-01T15:00:00+00:00",
+        "date_end": "2026-03-01T17:00:00+00:00",
+    }]
 
-    # F1 explícito
-    res_f1_exp = client.get("/api/v1/live/sessions?series=f1&year=2026")
-    assert res_f1_exp.status_code == 200
-    assert res_f1_exp.get_json()["series"] == "f1"
+    with patch("app.openf1.get") as mock_get:
+        def side_effect(endpoint, **kwargs):
+            if endpoint == "meetings":
+                return mock_meetings
+            if endpoint == "sessions":
+                return mock_sessions
+            return []
+        mock_get.side_effect = side_effect
+
+        # F1 padrão (sem series)
+        res_f1_def = client.get("/api/v1/live/sessions?year=2026")
+        assert res_f1_def.status_code == 200
+        body_f1 = res_f1_def.get_json()
+        assert body_f1["series"] == "f1"
+        # F1 sessions têm time_status confirmed e is_time_confirmed True
+        for meeting in body_f1["data"]:
+            for s in meeting["sessions"]:
+                assert s["time_status"] == "confirmed"
+                assert s["is_time_confirmed"] is True
+
+        # F1 explícito
+        res_f1_exp = client.get("/api/v1/live/sessions?series=f1&year=2026")
+        assert res_f1_exp.status_code == 200
+        assert res_f1_exp.get_json()["series"] == "f1"
 
     # Categoria inválida -> 400
     res_inv_sess = client.get("/api/v1/live/sessions?series=indycar")
@@ -236,3 +265,9 @@ def test_f1_regression_and_invalid_series(client):
 
     res_inv_state = client.get("/api/v1/live/state?series=motogp")
     assert res_inv_state.status_code == 400
+
+    # Cenario de indisponibilidade externa (OpenF1 falha/503)
+    app_cache._memory.clear()
+    with patch("app.openf1.get", side_effect=OpenF1Error("OpenF1 indisponivel", status_code=503)):
+        res_503 = client.get("/api/v1/live/sessions?series=f1&year=2026")
+        assert res_503.status_code == 503

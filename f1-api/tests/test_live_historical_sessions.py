@@ -24,14 +24,43 @@ def clean_cache():
 def test_f1_historical_sessions_by_key(client):
     """Testa recuperacao de sessao historica de F1 (Day 1 / Testing / Race) via /live/tower."""
     # 11465 e uma sessao concluida de testes da F1 em 2026
-    res = client.get("/api/v1/live/tower?series=f1&session_key=11465")
-    assert res.status_code == 200
-    body = res.get_json()
-    assert body["series"] == "f1"
-    assert body["session"]["session_key"] == 11465
-    assert body["session"]["state"] == "finished"
-    assert body["data_status"] == "finished"
-    assert len(body["drivers"]) > 0
+    mock_11465 = [{
+        "session_key": 11465,
+        "session_name": "Day 1",
+        "session_type": "Practice",
+        "meeting_key": 1228,
+        "circuit_short_name": "Sakhir",
+        "country_name": "Bahrain",
+        "location": "Sakhir",
+        "date_start": "2026-02-21T07:00:00+00:00",
+        "date_end": "2026-02-21T16:00:00+00:00",
+        "year": 2026,
+    }]
+
+    with patch("app.openf1.get") as mock_get:
+        def side_effect(endpoint, **kwargs):
+            if endpoint == "sessions" and (kwargs.get("year") == 2026 or kwargs.get("session_key") == 11465):
+                return mock_11465
+            if endpoint == "session_result":
+                return [
+                    {"driver_number": 1, "position": 1, "number_of_laps": 66},
+                ]
+            if endpoint == "drivers":
+                return [
+                    {"driver_number": 1, "full_name": "Max Verstappen", "name_acronym": "VER", "team_name": "Red Bull"},
+                ]
+            return []
+
+        mock_get.side_effect = side_effect
+
+        res = client.get("/api/v1/live/tower?series=f1&session_key=11465")
+        assert res.status_code == 200
+        body = res.get_json()
+        assert body["series"] == "f1"
+        assert body["session"]["session_key"] == 11465
+        assert body["session"]["state"] == "finished"
+        assert body["data_status"] == "finished"
+        assert len(body["drivers"]) > 0
 
 
 def test_f1_direct_session_lookup_fallback(client):
@@ -124,8 +153,9 @@ def test_f3_historical_and_scheduled_sessions(client):
 
 def test_unknown_session_and_invalid_series(client):
     """Garante que sessao inexistente retorna 404 e categoria invalida retorna 400."""
-    res_404 = client.get("/api/v1/live/tower?series=f1&session_key=88888888")
-    assert res_404.status_code == 404
+    with patch("app.openf1.get", return_value=[]):
+        res_404 = client.get("/api/v1/live/tower?series=f1&session_key=88888888")
+        assert res_404.status_code == 404
 
     res_400 = client.get("/api/v1/live/tower?series=motogp&session_key=11465")
     assert res_400.status_code == 400
