@@ -6,7 +6,11 @@ from ..extensions import db
 from ..models import Driver, Race, RaceResult, Team
 from .helpers import parse_int
 from ..scraper import get_standings
-from ..results_refresh import maybe_refresh_pending_results, season_progress
+from ..results_refresh import (
+    contingency_refresh_pending_standings,
+    maybe_refresh_pending_results,
+    season_progress,
+)
 from .historical_rules import (
     DRIVER_DROP_RULES,
     FIRST_CONSTRUCTORS_SEASON,
@@ -16,6 +20,8 @@ from .historical_rules import (
 )
 
 bp = Blueprint("standings", __name__)
+
+DEFAULT_CURRENT_SEASON = 2026
 
 
 def _attach_progress(payload, season, series, scraped_rows=None):
@@ -27,7 +33,7 @@ def _attach_progress(payload, season, series, scraped_rows=None):
     deve voltar a consultar e a importacao em background e acionada.
     """
     norm_series = (series or "f1").lower()
-    target_season = season or (2026 if norm_series in ("f2", "f3") else None)
+    target_season = season or DEFAULT_CURRENT_SEASON
     if not target_season:
         return
     progress = season_progress(target_season, norm_series, scraped_rows=scraped_rows)
@@ -86,6 +92,99 @@ def _latest_results_sq(season, series=None):
     return query.group_by(RaceResult.driver_id).subquery()
 
 
+ACTIVE_F1_TEAMS_2026 = [
+    "McLaren",
+    "Mercedes",
+    "Red Bull Racing",
+    "Ferrari",
+    "Williams",
+    "Aston Martin",
+    "Alpine",
+    "Haas",
+    "Audi",
+    "Racing Bulls",
+    "Cadillac",
+]
+
+
+def _driver_finish_counts(season, series=None):
+    """Contagem de posicoes de chegada em Grande Premio por piloto na temporada.
+    Conforme FIA 2026 Sporting Regulations (Section A Art A2.2 / Section B Art 7.2):
+    O desempate (countback) considera apenas chegadas oficiais em corrida de Grande Premio
+    (posicoes validas > 0 e round > 0). Resultados de Sprint nao contam como chegadas de GP.
+    """
+    query = (
+        db.session.query(
+            RaceResult.driver_id,
+            RaceResult.position,
+            func.count(RaceResult.id).label("cnt"),
+        )
+        .join(Race, RaceResult.race_id == Race.id)
+        .filter(
+            RaceResult.status != "Dummy",
+            RaceResult.position.isnot(None),
+            RaceResult.position > 0,
+            (Race.round.is_(None)) | (Race.round > 0),
+        )
+    )
+    if season:
+        query = query.filter(Race.season == season)
+    if series:
+        query = query.filter(Race.series == series)
+    rows = query.group_by(RaceResult.driver_id, RaceResult.position).all()
+
+    counts = {}
+    max_pos = 1
+    for d_id, pos, cnt in rows:
+        if d_id not in counts:
+            counts[d_id] = {}
+        counts[d_id][pos] = cnt
+        if pos > max_pos:
+            max_pos = pos
+    return counts, max_pos
+
+
+def _team_finish_counts(season, series=None):
+    """Contagem de posicoes de chegada em Grande Premio por equipe na temporada.
+    Conforme FIA 2026 Sporting Regulations (Section A Art A2.2 / Section B Art 7.2):
+    Agrupa por equipe vigente na epoca do evento (team_id_expr).
+    Ambos os carros contam no countback de posicoes de GP. Sprint nao conta como GP.
+    """
+    team_id_expr = func.coalesce(RaceResult.team_id, Driver.team_id).label("team_id")
+    query = (
+        db.session.query(
+            team_id_expr,
+            RaceResult.position,
+            func.count(RaceResult.id).label("cnt"),
+        )
+        .join(Driver, RaceResult.driver_id == Driver.id)
+        .join(Race, RaceResult.race_id == Race.id)
+        .filter(
+            RaceResult.status != "Dummy",
+            RaceResult.position.isnot(None),
+            RaceResult.position > 0,
+            (Race.round.is_(None)) | (Race.round > 0),
+        )
+    )
+    if season:
+        query = query.filter(Race.season == season)
+    if series:
+        query = query.filter(Race.series == series)
+    rows = query.group_by(team_id_expr, RaceResult.position).all()
+
+    counts = {}
+    max_pos = 1
+    for t_id, pos, cnt in rows:
+        if t_id is None:
+            continue
+        if t_id not in counts:
+            counts[t_id] = {}
+        counts[t_id][pos] = cnt
+        if pos > max_pos:
+            max_pos = pos
+    return counts, max_pos
+
+
 @bp.get("/standings/drivers")
 def driver_standings():
     """
@@ -122,18 +221,25 @@ def driver_standings():
             schema:
               $ref: '#/components/schemas/Error'
     """
-    season = parse_int(request.args.get("season"), "season")
+    raw_season = parse_int(request.args.get("season"), "season")
     series = request.args.get("series")
-    
+    norm_series = (series or "f1").lower()
+    season = raw_season or DEFAULT_CURRENT_SEASON
+    target_season = season
+
+    # Contingência sob demanda com Lease Lock e Fail-Soft para Serverless (OP-06.70 / Alternativa C)
+    if norm_series == "f1" and target_season:
+        contingency_refresh_pending_standings(app=current_app, season=target_season, series="f1")
+
     if series in ['f2', 'f3']:
-        if season is not None and season != 2026 and Race.query.filter_by(series=series, season=season).count() == 0:
-            payload = {"season": season, "data": []}
-            _attach_progress(payload, season, series, scraped_rows=[])
+        if raw_season is not None and raw_season != 2026 and Race.query.filter_by(series=series, season=raw_season).count() == 0:
+            payload = {"season": raw_season, "data": []}
+            _attach_progress(payload, raw_season, series, scraped_rows=[])
             return jsonify(payload)
         scraped_data = get_standings(series, 'driver')
         if scraped_data:
             payload = {"season": season, "data": scraped_data}
-            _attach_progress(payload, season or 2026, series, scraped_rows=scraped_data)
+            _attach_progress(payload, season, series, scraped_rows=scraped_data)
             return jsonify(payload)
 
     aggregates = _driver_aggregates_sq(season, series)
@@ -147,24 +253,26 @@ def driver_standings():
             func.coalesce(aggregates.c.races, 0),
             Team.name,
         )
-    if season == 2026 and series == "f1":
+    if season == 2026 and (series == "f1" or series is None):
         query = query.outerjoin(aggregates, aggregates.c.driver_id == Driver.id)
-        driver_ids = [34, 39, 36, 238, 13, 46, 32, 1, 35, 9, 20, 29, 31, 49, 27, 43, 236, 47, 45, 48, 237, 18]
-        query = query.filter(Driver.id.in_(driver_ids))
+        active_teams_subq = db.session.query(Team.id).filter(Team.name.in_(ACTIVE_F1_TEAMS_2026))
+        cond = (aggregates.c.driver_id.isnot(None)) | (Driver.team_id.in_(active_teams_subq))
+        query = query.filter(Driver.series == "f1", cond)
     elif season and not current_app.config.get("TESTING"):
         query = query.join(aggregates, aggregates.c.driver_id == Driver.id)
+        if series:
+            query = query.filter(Driver.series == series)
     else:
         query = query.outerjoin(aggregates, aggregates.c.driver_id == Driver.id)
-        
-    if series and not (season == 2026 and series == "f1"):
-        query = query.filter(Driver.series == series)
+        if series:
+            query = query.filter(Driver.series == series)
     
     rows = (
         query
         .outerjoin(latest, latest.c.driver_id == Driver.id)
         .outerjoin(RaceResult, RaceResult.id == latest.c.result_id)
         .outerjoin(Team, Team.id == RaceResult.team_id)
-        .order_by(desc(aggregates.c.points), Driver.last_name)
+        .order_by(desc(aggregates.c.points), Driver.id)
         .all()
     )
 
@@ -205,8 +313,16 @@ def driver_standings():
             if row["driver_id"] in adjusted:
                 row["points"] = adjusted[row["driver_id"]]
 
-        # Re-sort standing after adjusting points
-        standing.sort(key=lambda x: (-x["points"], x["driver_name"]))
+    # Desempate oficial FIA 2026 (Countback: vitórias, 2ºs, 3ºs, ..., Artigo 7.2)
+    # Não utiliza ordem alfabética. Em caso de empate absoluto, preserva determinismo por driver_id.
+    counts_by_driver, max_pos = _driver_finish_counts(season, series)
+    standing.sort(
+        key=lambda row: (
+            -row["points"],
+            tuple(-counts_by_driver.get(row["driver_id"], {}).get(p, 0) for p in range(1, max_pos + 1)),
+            row["driver_id"],
+        )
+    )
 
     for position, row in enumerate(standing, start=1):
         row["position"] = position
@@ -252,18 +368,25 @@ def team_standings():
             schema:
               $ref: '#/components/schemas/Error'
     """
-    season = parse_int(request.args.get("season"), "season")
+    raw_season = parse_int(request.args.get("season"), "season")
     series = request.args.get("series")
-    
+    norm_series = (series or "f1").lower()
+    season = raw_season or DEFAULT_CURRENT_SEASON
+    target_season = season
+
+    # Contingência sob demanda com Lease Lock e Fail-Soft para Serverless (OP-06.70 / Alternativa C)
+    if norm_series == "f1" and target_season:
+        contingency_refresh_pending_standings(app=current_app, season=target_season, series="f1")
+
     if series in ['f2', 'f3']:
-        if season is not None and season != 2026 and Race.query.filter_by(series=series, season=season).count() == 0:
-            payload = {"season": season, "data": []}
-            _attach_progress(payload, season, series, scraped_rows=[])
+        if raw_season is not None and raw_season != 2026 and Race.query.filter_by(series=series, season=raw_season).count() == 0:
+            payload = {"season": raw_season, "data": []}
+            _attach_progress(payload, raw_season, series, scraped_rows=[])
             return jsonify(payload)
         scraped_data = get_standings(series, 'team')
         if scraped_data:
             payload = {"season": season, "data": scraped_data}
-            _attach_progress(payload, season or 2026, series, scraped_rows=scraped_data)
+            _attach_progress(payload, season, series, scraped_rows=scraped_data)
             return jsonify(payload)
 
     team_id_expr = func.coalesce(RaceResult.team_id, Driver.team_id).label(
@@ -313,14 +436,13 @@ def team_standings():
         )
         
     # Inject teams with 0 points for 2026 grid
-    if season == 2026 and series == "f1":
-        active_teams = ["McLaren", "Mercedes", "Red Bull Racing", "Ferrari", "Williams", "Aston Martin", "Alpine", "Haas", "Audi", "Racing Bulls", "Cadillac"]
+    if season == 2026 and (series == "f1" or series is None):
         # Filter standing to ONLY include active_teams
-        standing = [r for r in standing if r["team_name"] in active_teams]
+        standing = [r for r in standing if r["team_name"] in ACTIVE_F1_TEAMS_2026]
         # Recalculate found_team_ids after filtering
         found_team_ids = {r["team_id"] for r in standing}
         for t_id, t_name in team_names.items():
-            if t_name in active_teams and t_id not in found_team_ids:
+            if t_name in ACTIVE_F1_TEAMS_2026 and t_id not in found_team_ids:
                 standing.append({
                     "team_id": t_id,
                     "team_name": t_name,
@@ -359,7 +481,16 @@ def team_standings():
             row["points"] = adjusted[row["team_id"]]
         official = season >= FIRST_CONSTRUCTORS_SEASON
 
-    standing.sort(key=lambda row: (-row["points"], row["team_name"] or ""))
+    # Desempate oficial FIA 2026 para construtores (Countback: vitórias, 2ºs, 3ºs, ..., Artigo 7.2)
+    # Não utiliza ordem alfabética. Em caso de empate absoluto, preserva determinismo por team_id.
+    counts_by_team, max_team_pos = _team_finish_counts(season, series)
+    standing.sort(
+        key=lambda row: (
+            -row["points"],
+            tuple(-counts_by_team.get(row["team_id"], {}).get(p, 0) for p in range(1, max_team_pos + 1)),
+            row["team_id"] or 0,
+        )
+    )
 
     for position, row in enumerate(standing, start=1):
         row["position"] = position
