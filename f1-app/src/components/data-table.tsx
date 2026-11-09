@@ -12,19 +12,19 @@ createTheme(
   "f1-dark",
   {
     text: {
-      primary: "#ffffff",
+      primary: "#f4f4f5",
       secondary: "#a1a1aa",
-      disabled: "#52525b",
+      disabled: "#71717a",
     },
     background: {
-      default: "#1c1c24",
+      default: "transparent",
     },
     context: {
-      background: "#cb4b16",
-      text: "#FFFFFF",
+      background: "#dc2626",
+      text: "#ffffff",
     },
     divider: {
-      default: "#3f3f46",
+      default: "rgba(255, 255, 255, 0.08)",
     },
   },
   "dark",

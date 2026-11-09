@@ -9,6 +9,8 @@ import { F1DataTable } from "@/components/data-table"
 import { VirtualDataTable } from "@/components/virtual-table"
 import { ErrorState } from "@/components/error-state"
 import { NextRaceCard } from "@/components/next-race-card"
+import { LiveContextBanner } from "@/components/live-context-banner"
+import { RaceHighlightsCards } from "@/components/race-highlights-cards"
 import { PageHeader } from "@/components/page-header"
 import { PositionBadge } from "@/components/position-badge"
 import { RaceNewsCards } from "@/components/race-news-cards"
@@ -33,8 +35,12 @@ import { cn } from "@/lib/utils"
 const getDriverColumns = (seasonParam?: number): TableColumn<DriverStanding>[] => [
   {
     name: "Pos",
-    width: "72px",
-    cell: (row) => <PositionBadge position={row.position} />,
+    width: "76px",
+    cell: (row) => (
+      <div className="flex items-center">
+        <PositionBadge position={row.position} />
+      </div>
+    ),
   },
   {
     name: "Piloto",
@@ -42,8 +48,8 @@ const getDriverColumns = (seasonParam?: number): TableColumn<DriverStanding>[] =
     selector: (row) => row.driver_name,
     minWidth: "220px",
     cell: (row) => (
-      <div className="flex items-center gap-2">
-        <span className="font-medium">{row.driver_name}</span>
+      <div className="flex items-center gap-2.5">
+        <span className="font-bold text-foreground text-sm tracking-tight">{row.driver_name}</span>
         <CodeBadge code={row.driver_code} nationality={row.nationality} />
       </div>
     ),
@@ -60,18 +66,38 @@ const getDriverColumns = (seasonParam?: number): TableColumn<DriverStanding>[] =
     right: true,
     sortable: true,
     selector: (row) => row.races,
+    cell: (row) => (
+      <span className="font-mono text-muted-foreground tabular-nums text-xs sm:text-sm">
+        {row.races}
+      </span>
+    ),
   },
   {
     name: "Pódios",
     right: true,
     sortable: true,
     selector: (row) => row.podiums,
+    cell: (row) => (
+      <span className="font-mono text-muted-foreground tabular-nums text-xs sm:text-sm">
+        {row.podiums}
+      </span>
+    ),
   },
   {
     name: "Vitórias",
     right: true,
     sortable: true,
     selector: (row) => row.wins,
+    cell: (row) => (
+      <span
+        className={cn(
+          "font-mono tabular-nums text-xs sm:text-sm",
+          row.wins > 0 ? "font-bold text-amber-400" : "text-muted-foreground"
+        )}
+      >
+        {row.wins}
+      </span>
+    ),
   },
   {
     name: "Pontos",
@@ -79,7 +105,7 @@ const getDriverColumns = (seasonParam?: number): TableColumn<DriverStanding>[] =
     sortable: true,
     selector: (row) => row.points,
     cell: (row) => (
-      <span className="font-semibold font-mono tracking-tight tabular-nums">
+      <span className="font-mono font-bold text-foreground text-sm tabular-nums bg-secondary/70 px-2.5 py-1 rounded-md border border-border/40">
         {formatPoints(row.points)}
       </span>
     ),
@@ -89,8 +115,12 @@ const getDriverColumns = (seasonParam?: number): TableColumn<DriverStanding>[] =
 const getTeamColumns = (seasonParam?: number): TableColumn<TeamStanding>[] => [
   {
     name: "Pos",
-    width: "72px",
-    cell: (row) => <PositionBadge position={row.position} />,
+    width: "76px",
+    cell: (row) => (
+      <div className="flex items-center">
+        <PositionBadge position={row.position} />
+      </div>
+    ),
   },
   {
     name: "Equipe",
@@ -104,18 +134,38 @@ const getTeamColumns = (seasonParam?: number): TableColumn<TeamStanding>[] => [
     right: true,
     sortable: true,
     selector: (row) => row.races,
+    cell: (row) => (
+      <span className="font-mono text-muted-foreground tabular-nums text-xs sm:text-sm">
+        {row.races}
+      </span>
+    ),
   },
   {
     name: "Vitórias",
     right: true,
     sortable: true,
     selector: (row) => row.wins,
+    cell: (row) => (
+      <span
+        className={cn(
+          "font-mono tabular-nums text-xs sm:text-sm",
+          row.wins > 0 ? "font-bold text-amber-400" : "text-muted-foreground"
+        )}
+      >
+        {row.wins}
+      </span>
+    ),
   },
   {
     name: "Pódios",
     right: true,
     sortable: true,
     selector: (row) => row.podiums,
+    cell: (row) => (
+      <span className="font-mono text-muted-foreground tabular-nums text-xs sm:text-sm">
+        {row.podiums}
+      </span>
+    ),
   },
   {
     name: "Pontos",
@@ -123,7 +173,7 @@ const getTeamColumns = (seasonParam?: number): TableColumn<TeamStanding>[] => [
     sortable: true,
     selector: (row) => row.points,
     cell: (row) => (
-      <span className="font-semibold font-mono tracking-tight tabular-nums">
+      <span className="font-mono font-bold text-foreground text-sm tabular-nums bg-secondary/70 px-2.5 py-1 rounded-md border border-border/40">
         {formatPoints(row.points)}
       </span>
     ),
@@ -542,26 +592,50 @@ export function DashboardPage() {
   } = seasonProgress
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Próximas Corridas"
-      />
+    <div className="space-y-10 sm:space-y-12">
+      {/* 1. Banner contextual AO VIVO (renderizado somente quando houver sessão confirmada) */}
+      <LiveContextBanner series={series} />
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <NextRaceCard series="f1" />
-        <NextRaceCard series="f2" />
-        <NextRaceCard series="f3" />
+      {/* 3. Seção de Próximas Corridas */}
+      <section aria-labelledby="next-races-heading" className="space-y-4">
+        <div id="next-races-heading" className="scroll-mt-24">
+          <PageHeader
+            title="Próximas Corridas"
+            description="Acompanhe o calendário oficial e a contagem regressiva para os próximos GPs"
+          />
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          <NextRaceCard series="f1" />
+          <NextRaceCard series="f2" />
+          <NextRaceCard series="f3" />
+        </div>
+      </section>
+
+      {/* 4. Três cards de melhores momentos oficiais da Fórmula 1 */}
+      <div id="highlights-heading" className="scroll-mt-24">
+        <RaceHighlightsCards />
       </div>
 
-      <RaceNewsCards series={series} />
+      {/* Seção de Notícias */}
+      <div id="noticias" className="scroll-mt-24 space-y-4">
+        <RaceNewsCards series={series} />
+      </div>
 
-      <div className="flex items-center justify-end gap-2">
-        <span className="text-sm text-muted-foreground">Temporada</span>
-          <div className="flex items-center gap-4">
-            
+      {/* 6. Classificação da Temporada */}
+      <section aria-labelledby="standings-heading" className="space-y-4">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div id="standings-heading" className="scroll-mt-24">
+            <PageHeader
+              title="Classificação do Campeonato"
+              description="Tabelas consolidadas com aplicação do critério oficial de desempate FIA"
+            />
+          </div>
+          <div className="flex items-center gap-2 ml-auto">
+            <span className="text-sm text-muted-foreground">Temporada</span>
             <SeasonSelector value={effectiveSeason} onValueChange={setSeason} />
           </div>
-      </div>
+        </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
         <SummaryCard
@@ -702,11 +776,21 @@ export function DashboardPage() {
         </SummaryCard>
       </div>
 
-      <Tabs defaultValue="drivers">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <TabsList>
-            <TabsTrigger value="drivers">Classificação de pilotos</TabsTrigger>
-            <TabsTrigger value="teams">Classificação de equipes</TabsTrigger>
+      <Tabs defaultValue="drivers" className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-1">
+          <TabsList className="bg-secondary/40 border border-border/40 p-1 rounded-xl">
+            <TabsTrigger
+              value="drivers"
+              className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm rounded-lg text-xs sm:text-sm font-semibold transition-all"
+            >
+              Classificação de pilotos
+            </TabsTrigger>
+            <TabsTrigger
+              value="teams"
+              className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm rounded-lg text-xs sm:text-sm font-semibold transition-all"
+            >
+              Classificação de equipes
+            </TabsTrigger>
           </TabsList>
           {resultsPending ? (
             <span
@@ -732,16 +816,14 @@ export function DashboardPage() {
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="font-mono text-2xl font-black text-muted-foreground/30 tabular-nums">
-                        {row.position}º
-                      </span>
-                      <span className="font-bold text-lg leading-tight">{row.driver_name}</span>
+                      <PositionBadge position={row.position} />
+                      <span className="font-bold text-base leading-tight text-foreground">{row.driver_name}</span>
                     </div>
-                    <span className="font-bold text-lg tabular-nums">
-                      {formatPoints(row.points)} pts
+                    <span className="font-mono font-bold text-base tabular-nums bg-secondary/80 border border-border/40 px-2 py-0.5 rounded-md">
+                      {formatPoints(row.points)} <span className="text-[10px] uppercase font-sans text-muted-foreground">pts</span>
                     </span>
                   </div>
-                  <div className="flex items-center justify-between pt-2 border-t border-border/50">
+                  <div className="flex items-center justify-between pt-2 border-t border-border/40">
                     <TeamInline season={seasonParam} name={row.team_name ?? null} />
                   </div>
                 </div>
@@ -770,11 +852,9 @@ export function DashboardPage() {
                 renderMobileCard={(row) => (
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
-                      <span className="font-mono text-2xl font-black text-muted-foreground/40 tabular-nums w-8 text-center shrink-0">
-                        {row.position}º
-                      </span>
+                      <PositionBadge position={row.position} />
                       <div className="min-w-0">
-                        <div className="font-bold text-base leading-tight truncate">
+                        <div className="font-bold text-base leading-tight truncate text-foreground">
                           {row.driver_name}
                         </div>
                         <div className="mt-1">
@@ -783,10 +863,10 @@ export function DashboardPage() {
                       </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <div className="font-black text-lg text-primary tabular-nums">
-                        {formatPoints(row.points)} <span className="text-xs font-semibold text-muted-foreground">pts</span>
+                      <div className="font-mono font-black text-base text-foreground tabular-nums bg-secondary/80 border border-border/40 px-2.5 py-0.5 rounded-md">
+                        {formatPoints(row.points)} <span className="text-[10px] font-sans font-semibold text-muted-foreground uppercase">pts</span>
                       </div>
-                      <div className="text-xs text-muted-foreground font-medium">
+                      <div className="text-xs text-muted-foreground font-mono mt-1">
                         {row.wins > 0 ? `${row.wins} vit.` : `${row.races} corr.`}
                       </div>
                     </div>
@@ -817,18 +897,16 @@ export function DashboardPage() {
               renderMobileCard={(row) => (
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="font-mono text-2xl font-black text-muted-foreground/40 tabular-nums w-8 text-center shrink-0">
-                      {row.position}º
-                    </span>
+                    <PositionBadge position={row.position} />
                     <div className="min-w-0">
                       <TeamName name={row.team_name} season={seasonParam} />
                     </div>
                   </div>
                   <div className="text-right shrink-0">
-                    <div className="font-black text-lg text-primary tabular-nums">
-                      {formatPoints(row.points)} <span className="text-xs font-semibold text-muted-foreground">pts</span>
+                    <div className="font-mono font-black text-base text-foreground tabular-nums bg-secondary/80 border border-border/40 px-2.5 py-0.5 rounded-md">
+                      {formatPoints(row.points)} <span className="text-[10px] font-sans font-semibold text-muted-foreground uppercase">pts</span>
                     </div>
-                    <div className="text-xs text-muted-foreground font-medium">
+                    <div className="text-xs text-muted-foreground font-mono mt-1">
                       {row.wins > 0 ? `${row.wins} vitórias` : `${row.podiums} pódios`}
                     </div>
                   </div>
@@ -838,6 +916,7 @@ export function DashboardPage() {
           )}
         </TabsContent>
       </Tabs>
+      </section>
     </div>
   )
 }
