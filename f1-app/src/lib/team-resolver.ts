@@ -2305,7 +2305,7 @@ export function mapNameToTeamId(name: string, season?: number): string | null {
   if (lower.includes('cooper')) return 'COOPER';
   if (lower.includes('brm') || lower.includes('british racing motors')) return 'BRM';
   if (lower.includes('matra')) return 'MATRA';
-  if (lower.includes('march')) return 'MARCH';
+  if (/\bmarch\b/i.test(lower)) return 'MARCH';
   if (lower.includes('surtees')) return 'SURTEES';
   if (lower.includes('hesketh')) return 'HESKETH';
   if (lower.includes('shadow')) return 'SHADOW';
@@ -2339,7 +2339,7 @@ export function mapNameToTeamId(name: string, season?: number): string | null {
   if (lower.includes('forti')) return 'FORTI';
   if (lower.includes('ensign')) return 'ENSIGN';
   if (lower.includes('theodore')) return 'THEODORE';
-  if (lower.includes('ats')) return 'ATS';
+  if (/\bats\b/i.test(lower) || lower.includes('automobili turismo e sport')) return 'ATS';
   if (lower.includes('caterham')) return 'CATERHAM_TEAM';
   if (lower.includes('marussia') || lower.includes('manor') || lower.includes('virgin')) return 'MANOR_MARUSSIA';
   if (lower.includes('hrt') || lower.includes('hispania')) return 'HRT_TEAM';

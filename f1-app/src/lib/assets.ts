@@ -2439,7 +2439,7 @@ export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   if (canonical === "Lotus" || canonical === "Team Lotus" || name.toLowerCase().includes("team lotus") || (season && season <= 1994 && name.toLowerCase().includes("lotus"))) {
     return { url: "/teams/teamlotus.svg", color: "#004225", className: "object-contain p-0.5 filter-none" }
   }
-  if (canonical === "March" || canonical === "March Engineering" || name.toLowerCase().includes("march")) {
+  if (canonical === "March" || canonical === "March Engineering" || (/\bmarch\b/i.test(name) && !name.toLowerCase().includes("marchese"))) {
     return { url: "/classic/march.svg", color: "#009384", className: "object-contain p-0.5 filter-none" }
   }
   if (canonical === "Wolf" || canonical === "Walter Wolf Racing" || name.toLowerCase().includes("wolf")) {
