@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 95" width="100%" height="100%">
+  <defs>
+    <!-- Pure Classic Chrome/Silver Gradients for 1954 Dreizackstern -->
+    <linearGradient id="mb54StarLight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#D9E2E8" />
+      <stop offset="100%" stop-color="#9AA6AF" />
+    </linearGradient>
+    <linearGradient id="mb54StarDark" x1="100%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#2D353C" />
+      <stop offset="50%" stop-color="#556068" />
+      <stop offset="100%" stop-color="#8B97A0" />
+    </linearGradient>
+    <linearGradient id="mb54Ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#5C6770" />
+      <stop offset="100%" stop-color="#BAC5CD" />
+    </linearGradient>
+    <filter id="mb54Shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Left Emblem: The Historic 1954 Three-Pointed Star (Pure Daimler-Benz) -->
+  <g transform="translate(18, 12)" filter="url(#mb54Shadow)">
+    <circle cx="35" cy="35" r="32" fill="#14181B" stroke="url(#mb54Ring)" stroke-width="3.5" />
+    <circle cx="35" cy="35" r="29" fill="none" stroke="#000000" stroke-width="0.8" opacity="0.6" />
+
+    <!-- Three-Pointed Star (Dreizackstern) Facets -->
+    <!-- Top Point -->
+    <polygon points="35,8 33.6,35 35,35" fill="url(#mb54StarLight)" />
+    <polygon points="35,8 36.4,35 35,35" fill="url(#mb54StarDark)" />
+
+    <!-- Bottom-Right Point -->
+    <polygon points="58.4,48.5 35,33.6 35,35" fill="url(#mb54StarLight)" />
+    <polygon points="58.4,48.5 35,36.4 35,35" fill="url(#mb54StarDark)" />
+
+    <!-- Bottom-Left Point -->
+    <polygon points="11.6,48.5 35,36.4 35,35" fill="url(#mb54StarLight)" />
+    <polygon points="11.6,48.5 35,33.6 35,35" fill="url(#mb54StarDark)" />
+
+    <!-- Center Specular Highlight -->
+    <circle cx="35" cy="35" r="2.8" fill="url(#mb54StarLight)" />
+    <circle cx="35" cy="35" r="1.2" fill="#FFFFFF" />
+  </g>
+
+  <!-- Typography Block: 1954-1955 Silberpfeile (Fangio / Moss Era) -->
+  <g transform="translate(98, 22)">
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="168" height="15" rx="3" fill="#D9E2E8" fill-opacity="0.15" stroke="#9AA6AF" stroke-width="0.8" />
+      <circle cx="8" cy="7.5" r="2.5" fill="#D9E2E8" />
+      <text x="16" y="11" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8" font-weight="800" fill="#E2E8F0" letter-spacing="1.2">SILBERPFEILE · 1954–1955</text>
+    </g>
+
+    <!-- Wordmark: MERCEDES-BENZ (No AMG, No Petronas) -->
+    <g transform="translate(0, 37)">
+      <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="0.8">MERCEDES-BENZ</text>
+    </g>
+
+    <g transform="translate(1, 51)">
+      <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="800" fill="#A1A1AA" letter-spacing="2.8">DAIMLER-BENZ AG · STUTTGART</text>
+    </g>
+
+    <line x1="0" y1="58" x2="225" y2="58" stroke="#27272A" stroke-width="1.2" />
+    <line x1="0" y1="58" x2="80" y2="58" stroke="url(#mb54Ring)" stroke-width="2.5" />
+    <line x1="83" y1="58" x2="98" y2="58" stroke="#FFFFFF" stroke-width="2.5" />
+  </g>
+</svg>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 95" width="100%" height="100%">
+  <defs>
+    <linearGradient id="alfRosso" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9E0000" />
+      <stop offset="100%" stop-color="#6B0000" />
+    </linearGradient>
+    <linearGradient id="alfGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFDF73" />
+      <stop offset="100%" stop-color="#C99700" />
+    </linearGradient>
+    <filter id="alfShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Left Emblem: The Historic 1950 Alfa Corse Quadrifoglio on White Triangle -->
+  <g transform="translate(18, 12)" filter="url(#alfShadow)">
+    <circle cx="35" cy="35" r="33" fill="url(#alfRosso)" stroke="url(#alfGold)" stroke-width="1.8" />
+    
+    <!-- White Equilateral Triangle (Ugo Sivocci 1923 heritage) -->
+    <polygon points="35,9 60,54 10,54" fill="#FFFFFF" stroke="#000000" stroke-width="0.8" />
+
+    <!-- The Historic Quadrifoglio Verde (Four-Leaf Clover) -->
+    <g transform="translate(35, 38) scale(0.9)">
+      <!-- Top-Left Leaf -->
+      <path d="M 0 -2 C -2 -7 -8 -10 -11 -7 C -14 -4 -12 2 -7 4 Z" fill="#008537" />
+      <!-- Top-Right Leaf -->
+      <path d="M 0 -2 C 2 -7 8 -10 11 -7 C 14 -4 12 2 7 4 Z" fill="#008537" />
+      <!-- Bottom-Left Leaf -->
+      <path d="M 0 0 C -2 5 -8 8 -11 5 C -14 2 -12 -4 -7 -2 Z" fill="#008537" />
+      <!-- Bottom-Right Leaf -->
+      <path d="M 0 0 C 2 5 8 8 11 5 C 14 2 12 -4 7 -2 Z" fill="#008537" />
+      <!-- Stem -->
+      <path d="M 0 1 C -1 6 -3 10 -6 13 L -4 13.5 C -1 10 1 6 1 1 Z" fill="#00662A" />
+      <!-- Center node -->
+      <circle cx="0" cy="-1" r="1.5" fill="#004D1F" />
+    </g>
+  </g>
+
+  <!-- Typography Block: Alfa Corse (1950-1951 Farina / Fangio World Champions) -->
+  <g transform="translate(98, 22)">
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="168" height="15" rx="3" fill="#9E0000" fill-opacity="0.25" stroke="#9E0000" stroke-width="0.8" />
+      <circle cx="8" cy="7.5" r="2.5" fill="#9E0000" />
+      <text x="16" y="11" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8" font-weight="800" fill="#FFA3A3" letter-spacing="1.2">ALFETTA 158/159 · 1950–1951</text>
+    </g>
+
+    <g transform="translate(0, 37)">
+      <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="26" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="0.5">ALFA ROMEO</text>
+    </g>
+
+    <g transform="translate(1, 51)">
+      <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="800" fill="#A1A1AA" letter-spacing="2.8">ALFA CORSE · MILANO</text>
+    </g>
+
+    <line x1="0" y1="58" x2="225" y2="58" stroke="#27272A" stroke-width="1.2" />
+    <line x1="0" y1="58" x2="75" y2="58" stroke="url(#alfRosso)" stroke-width="2.5" />
+    <line x1="78" y1="58" x2="94" y2="58" stroke="url(#alfGold)" stroke-width="2.5" />
+    <line x1="97" y1="58" x2="112" y2="58" stroke="#008537" stroke-width="2.5" />
+  </g>
+</svg>

@@ -1,3 +1,4 @@
+import { resolveTeamLogo, mapNameToTeamId, getTeamBrandColor } from "./team-resolver"
 const NATIONALITY_TO_ISO = {
   neerlandês: "nl",
 
@@ -2129,6 +2130,31 @@ const TEAM_ALIASES: Record<string, string> = {
 
 export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   if (!name) return null
+
+  // OP-08.04: Resolução histórica assistida para contextos com temporada confiável
+  if (season !== undefined && season !== null && !isNaN(season)) {
+    const canonicalId = mapNameToTeamId(name, season)
+    if (canonicalId) {
+      const resolved = resolveTeamLogo(canonicalId, season)
+      if (resolved.status === 'FOUND' && resolved.assetPath) {
+        return {
+          url: resolved.assetPath,
+          color: getTeamBrandColor(canonicalId),
+          className: "object-contain p-0.5 filter-none",
+        }
+      }
+      // Se for lacuna histórica, fora do intervalo, extinta ou quarentena:
+      // Retorna null de forma defensiva para que a UI renderize o badge com iniciais
+      if (
+        resolved.status === 'HISTORICAL_GAP' ||
+        resolved.status === 'BEFORE_ORIGIN' ||
+        resolved.status === 'AFTER_DECEASE' ||
+        resolved.status === 'QUARANTINED_OR_INVALID'
+      ) {
+        return null
+      }
+    }
+  }
   const canonical = TEAM_ALIASES[name.trim().toLowerCase()] || name
 
   // Mercedes-AMG Petronas F1 Team High-Res Vector Branding (2010-2026 and 1954-1955)
