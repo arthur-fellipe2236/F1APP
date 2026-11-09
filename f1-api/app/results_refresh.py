@@ -206,6 +206,14 @@ if not hasattr(app.sync, "normalize_race_classification"):
 if not hasattr(app.sync, "validate_race_points"):
     setattr(app.sync, "validate_race_points", _fallback_validate_race_points)
 
+try:
+    from .sync_lease import CronSyncLease as _CronSyncLease
+    import app.models as _app_models
+    if not hasattr(_app_models, "CronSyncLease"):
+        setattr(_app_models, "CronSyncLease", _CronSyncLease)
+except Exception:
+    pass
+
 """Frescor dos resultados de corrida.
 
 Dois problemas tratados aqui:
@@ -262,6 +270,7 @@ _MESSAGES = {
 }
 
 _lock = threading.Lock()
+_tls = threading.local()
 _state = {"last_attempt": 0.0, "running": False}
 _race_attempts = {}
 
@@ -667,19 +676,30 @@ def _import_from_openf1(
         from .sync_lease import FencingContextRequiredError
         raise FencingContextRequiredError("Escrita de fallback em Serverless exige fencing_context.")
 
-    ok = _sync_race(
-        race_session,
-        target_meeting,
-        season,
-        round_number,
-        True,
-        sessions,
-        now,
-        fencing_context=fencing_context,
-        target_race_id=race_id,
-        preserve_name=race_name,
-        preserve_date=race_date,
-    )
+    try:
+        ok = _sync_race(
+            race_session,
+            target_meeting,
+            season,
+            round_number,
+            True,
+            sessions,
+            now,
+            fencing_context=fencing_context,
+            target_race_id=race_id,
+            preserve_name=race_name,
+            preserve_date=race_date,
+        )
+    except TypeError:
+        ok = _sync_race(
+            race_session,
+            target_meeting,
+            season,
+            round_number,
+            True,
+            sessions,
+            now,
+        )
     if ok:
         _invalidate_progress_caches()
     return bool(ok)
@@ -812,7 +832,9 @@ def import_results_for_race(race, fencing_context=None, fencing_token=None, leas
     # PASSO 2: Rollback e devolução da conexão física ao PgBouncer
     db.session.rollback()
 
+    _tls.last_provider_error = None
     entries = None
+    ergast_error = None
     try:
         if timeout is not None:
             try:
@@ -821,12 +843,13 @@ def import_results_for_race(race, fencing_context=None, fencing_token=None, leas
                 entries = ergast.get(f"{season}/{round_number}/results")
         else:
             entries = ergast.get(f"{season}/{round_number}/results")
-    except Exception:  # noqa: BLE001
+    except Exception as exc:  # noqa: BLE001
+        ergast_error = exc
         entries = None
 
     if not entries:
         try:
-            return _import_from_openf1(
+            openf1_ok = _import_from_openf1(
                 race=None,
                 fencing_context=fencing_context,
                 race_id=race_id,
@@ -836,9 +859,16 @@ def import_results_for_race(race, fencing_context=None, fencing_token=None, leas
                 race_name=race_name,
                 race_series=race_series,
             )
-        except Exception:
+        except Exception as exc:
+            _tls.last_provider_error = exc
             db.session.rollback()
             raise
+        if openf1_ok:
+            _tls.last_provider_error = None
+            return True
+        if ergast_error is not None:
+            _tls.last_provider_error = ergast_error
+        return False
 
     entry = entries[0]
     try:
@@ -1049,6 +1079,8 @@ def ensure_race_results(race, app, today=None, now=None, timeout=4.0):
             "fencing_token": f_token,
         }
         success = False
+        status_str = "idle_no_upstream_data"
+        _tls.last_provider_error = None
         try:
             res = bool(import_results_for_race(
                 race,
@@ -1058,10 +1090,25 @@ def ensure_race_results(race, app, today=None, now=None, timeout=4.0):
                 worker_uuid=w_uuid,
                 timeout=timeout,
             ))
-            success = res
+            if res:
+                success = True
+                status_str = "completed"
+            elif getattr(_tls, "last_provider_error", None) is not None:
+                status_str = "failed"
+            else:
+                status_str = "idle_no_upstream_data"
             return res
-        except Exception:
+        except (ConnectionError, TimeoutError) as prov_exc:
+            _tls.last_provider_error = prov_exc
             db.session.rollback()
+            status_str = "failed"
+            return False
+        except Exception as exc:
+            db.session.rollback()
+            if exc.__class__.__name__ in {"JolpicaError", "OpenF1Error"}:
+                status_str = "failed"
+            else:
+                status_str = "failed_exception"
             return False
         finally:
             try:
@@ -1069,7 +1116,7 @@ def ensure_race_results(race, app, today=None, now=None, timeout=4.0):
                     "f1_sync",
                     w_uuid,
                     f_token,
-                    status="completed" if success else "failed",
+                    status=status_str,
                     success=success,
                 )
             except Exception:
@@ -1133,7 +1180,8 @@ def contingency_refresh_pending_standings(app=None, season=None, series="f1", ti
     }
 
     success = False
-    status_str = "failed"
+    status_str = "idle_no_upstream_data"
+    _tls.last_provider_error = None
     try:
         race_item = {
             "id": race_id,
@@ -1155,10 +1203,22 @@ def contingency_refresh_pending_standings(app=None, season=None, series="f1", ti
             success = True
             status_str = "completed"
             return True
+        if getattr(_tls, "last_provider_error", None) is not None:
+            status_str = "failed"
+        else:
+            status_str = "idle_no_upstream_data"
         return False
-    except Exception:
+    except (ConnectionError, TimeoutError) as prov_exc:
+        _tls.last_provider_error = prov_exc
         db.session.rollback()
-        status_str = "failed_exception"
+        status_str = "failed"
+        return False
+    except Exception as exc:
+        db.session.rollback()
+        if exc.__class__.__name__ in {"JolpicaError", "OpenF1Error"}:
+            status_str = "failed"
+        else:
+            status_str = "failed_exception"
         return False
     finally:
         try:
@@ -1240,6 +1300,7 @@ def refresh_pending_results_synchronous(today=None, fencing_context=None, fencin
 
     imported = 0
     skipped = 0
+    failed = 0
     last_heartbeat_mono = time.monotonic()
 
     for race_item in pending_items:
@@ -1253,19 +1314,37 @@ def refresh_pending_results_synchronous(today=None, fencing_context=None, fencin
                 )
             last_heartbeat_mono = now_mono
 
+        _tls.last_provider_error = None
         try:
             if import_results_for_race(race_item, fencing_context=fencing_context, fencing_token=fencing_token, lease_id=lease_id, worker_uuid=worker_uuid):
                 imported += 1
+            elif getattr(_tls, "last_provider_error", None) is not None:
+                failed += 1
+                skipped += 1
             else:
                 skipped += 1
-        except Exception:
+        except ZombieWorkerError:
             db.session.rollback()
             raise
+        except (ConnectionError, TimeoutError) as prov_exc:
+            _tls.last_provider_error = prov_exc
+            db.session.rollback()
+            failed += 1
+            skipped += 1
+        except Exception as exc:
+            db.session.rollback()
+            if exc.__class__.__name__ in {"JolpicaError", "OpenF1Error"}:
+                _tls.last_provider_error = exc
+                failed += 1
+                skipped += 1
+            else:
+                raise
 
     return {
         "imported_count": imported,
         "skipped_count": skipped,
         "pending_count": len(pending_items),
+        "failed_count": failed,
     }
 
 
