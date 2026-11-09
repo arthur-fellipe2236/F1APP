@@ -29,13 +29,13 @@ const getColumns = (seasonParam?: number): TableColumn<Team>[] => [
     sortable: true,
     minWidth: "190px",
     selector: (row) => {
-      const meta = getTeamMetadata(row.name)
-      return row.base_country || meta?.country || ""
+      const meta = getTeamMetadata(row.name, seasonParam)
+      return meta?.country || row.base_country || ""
     },
     cell: (row) => {
-      const meta = getTeamMetadata(row.name)
-      const city = row.base_city || meta?.city
-      const country = row.base_country || meta?.country
+      const meta = getTeamMetadata(row.name, seasonParam)
+      const city = meta?.city || row.base_city
+      const country = meta?.country || row.base_country
       const flagUrl = flagFromCountry(country)
       const locationText = city && country ? `${city}, ${formatCountry(country)}` : (formatCountry(country) || "—")
       
@@ -94,9 +94,13 @@ const getColumns = (seasonParam?: number): TableColumn<Team>[] => [
     right: true,
     sortable: true,
     width: "110px",
-    selector: (row) => row.founded_year || getTeamMetadata(row.name)?.founded || 0,
+    selector: (row) => {
+      const meta = getTeamMetadata(row.name, seasonParam)
+      return meta?.founded || row.founded_year || 0
+    },
     format: (row) => {
-      const year = row.founded_year || getTeamMetadata(row.name)?.founded
+      const meta = getTeamMetadata(row.name, seasonParam)
+      const year = meta?.founded || row.founded_year
       return year ? formatNumber(year) : "—"
     },
   },
@@ -173,14 +177,14 @@ export function TeamsPage() {
           data={sortedTeams}
           getRowColor={(row) => teamLogo(row.name, seasonParam)?.color || undefined}
           renderMobileCard={(row) => {
-            const meta = getTeamMetadata(row.name)
-            const city = row.base_city || meta?.city
-            const country = row.base_country || meta?.country
+            const meta = getTeamMetadata(row.name, seasonParam)
+            const city = meta?.city || row.base_city
+            const country = meta?.country || row.base_country
             const flagUrl = flagFromCountry(country)
             const locationText = city && country ? `${city}, ${formatCountry(country)}` : (formatCountry(country) || "—")
             const engineName = getTeamEngine(row.name, seasonParam, row.engine_manufacturer)
             const engineSvg = engineLogo(engineName)
-            const founded = row.founded_year || meta?.founded
+            const founded = meta?.founded || row.founded_year
 
             return (
               <>

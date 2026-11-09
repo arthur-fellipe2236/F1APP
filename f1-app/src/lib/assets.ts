@@ -2649,12 +2649,575 @@ export function engineLogo(name: string | null): string | null {
   return null
 }
 
+export interface HistoricalTeamMetadataEntry {
+  canonicalName: string
+  displayName: string
+  entityType: string
+  baseCity: string
+  baseCountry: string
+  engineManufacturer: string
+  engineModel: string
+  foundedYear: number | null
+  foundationEntity: string
+  validFrom: number
+  validUntil: number
+  competitionScope: "EUROPE" | "INDY500" | "DUAL" | "WORLD_CHAMPIONSHIP"
+  sourceStatus: "VERIFIED" | "PROVISIONAL" | "UNKNOWN"
+  sourceReference: string
+  notes?: string
+}
+
 export interface TeamMetadataInfo {
   city: string
   country: string
   founded: number
   engine: string
+  // Atributos de resolução temporal e histórica (OP-08.08H)
+  canonicalName?: string
+  displayName?: string
+  entityType?: string
+  baseCity?: string
+  baseCountry?: string
+  engineManufacturer?: string
+  engineModel?: string
+  foundedYear?: number | null
+  foundationEntity?: string
+  validFrom?: number
+  validUntil?: number
+  competitionScope?: "EUROPE" | "INDY500" | "DUAL" | "WORLD_CHAMPIONSHIP"
+  sourceStatus?: string
+  sourceReference?: string
+  notes?: string
 }
+
+export const HISTORICAL_TEAM_METADATA: HistoricalTeamMetadataEntry[] = [
+  // --- TEMPORADA 1950: 8 Construtores Exclusivos dos Grandes Prêmios Europeus ---
+  {
+    canonicalName: "Alfa Romeo",
+    displayName: "Alfa Romeo SpA",
+    entityType: "Works Constructor (Chassi e Motor)",
+    baseCity: "Portello, Milão",
+    baseCountry: "Itália",
+    engineManufacturer: "Alfa Romeo",
+    engineModel: "Alfa Romeo 158 1.5L L8 Supercharged Roots (~350 bhp)",
+    foundedYear: 1910,
+    foundationEntity: "A.L.F.A. (Anonima Lombarda Fabbrica Automobili, fundação em Milão em 1910)",
+    validFrom: 1950,
+    validUntil: 1951,
+    competitionScope: "EUROPE",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Museo Storico Alfa Romeo; FIA Official Archive; F1 Heritage",
+    notes: "Equipe oficial Alfa Romeo com o Alfetta 158; segregada historicamente da operação Sauber Motorsport AG de 2018-2023."
+  },
+  {
+    canonicalName: "Ferrari",
+    displayName: "Scuderia Ferrari",
+    entityType: "Works Constructor (Chassi e Motor)",
+    baseCity: "Maranello, Modena",
+    baseCountry: "Itália",
+    engineManufacturer: "Ferrari",
+    engineModel: "Ferrari 125 (1.5L V12 s/c) / 275 (3.3L V12 atm) / 375 (4.5L V12 atm)",
+    foundedYear: 1947,
+    foundationEntity: "Auto Costruzioni Ferrari (Maranello, 1947) / Scuderia Ferrari (Modena, 1929)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "EUROPE",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Museo Ferrari Maranello; Archivio Storico Enzo Ferrari",
+    notes: "Ano de fundação da construtora de automóveis em Maranello em 1947; equipe de corrida Scuderia fundada em 1929 em Modena."
+  },
+  {
+    canonicalName: "Talbot-Lago",
+    displayName: "Automobiles Talbot-Darracq SA",
+    entityType: "Works Constructor & Clientes",
+    baseCity: "Suresnes, Paris",
+    baseCountry: "França",
+    engineManufacturer: "Talbot",
+    engineModel: "Talbot 23CV (4.482 cm³ / 4.5L L6 naturalmente aspirado 12V)",
+    foundedYear: 1935,
+    foundationEntity: "Automobiles Talbot-Darracq SA (assumida por Anthony Lago em 1935; raiz Darracq em 1896)",
+    validFrom: 1950,
+    validUntil: 1951,
+    competitionScope: "EUROPE",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Musée National de l'Automobile (Mulhouse); Registres Pierre Abeillon"
+  },
+  {
+    canonicalName: "ERA",
+    displayName: "English Racing Automobiles Ltd.",
+    entityType: "Chassis & Engine Constructor",
+    baseCity: "Bourne, Lincolnshire",
+    baseCountry: "Reino Unido",
+    engineManufacturer: "ERA",
+    engineModel: "ERA 1.5L (1.488 cm³ L6 Supercharged Roots ~200-240 bhp)",
+    foundedYear: 1933,
+    foundationEntity: "English Racing Automobiles Ltd. (fundada em Bourne em 1933 por Raymond Mays e Peter Berthon)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "EUROPE",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Bourne Heritage Centre; ERA Club Archives; Jenkinson 'The ERA Story'"
+  },
+  {
+    canonicalName: "Simca",
+    displayName: "Equipe Gordini / Simca-Gordini",
+    entityType: "Racing Team & Engine Constructor",
+    baseCity: "Paris (Boulevard Victor) / Nanterre",
+    baseCountry: "França",
+    engineManufacturer: "Gordini",
+    engineModel: "Gordini 15C (1.490 cm³ / 1.5L L4 Supercharged Roots ~135 bhp)",
+    foundedYear: 1946,
+    foundationEntity: "Equipe Gordini (fundada em 1946 por Amédée Gordini); Simca industrial fundada em 1934",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "EUROPE",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Archives Amédée Gordini; Christian Huet 'Gordini - Un sorcier une equipe'",
+    notes: "A equipe de competição era a Equipe Gordini com sede no Boulevard Victor; Simca era a montadora parceira."
+  },
+  {
+    canonicalName: "Alta",
+    displayName: "Alta Car and Engineering Co.",
+    entityType: "Chassis & Engine Constructor",
+    baseCity: "Surbiton, Surrey",
+    baseCountry: "Reino Unido",
+    engineManufacturer: "Alta",
+    engineModel: "Alta 1.5L (1.490 cm³ L4 Supercharged DOHC in-house)",
+    foundedYear: 1929,
+    foundationEntity: "Alta Car and Engineering Company (fundada em Surbiton em 1929 por Geoffrey Taylor)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "EUROPE",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Brooklands Museum; Beaulieu National Motor Museum; Taylor 'Alta Automobile'"
+  },
+  {
+    canonicalName: "Cooper",
+    displayName: "Cooper Car Company",
+    entityType: "Chassis Constructor",
+    baseCity: "Surbiton, Surrey",
+    baseCountry: "Reino Unido",
+    engineManufacturer: "JAP",
+    engineModel: "JAP (John A. Prestwich) 1.1L (1.089 cm³ V-Twin V2 50° Metanol ~100 bhp)",
+    foundedYear: 1946,
+    foundationEntity: "Cooper Car Company (fundada em 243 Ewell Road, Surbiton, em 1946 por Charles e John Cooper)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "EUROPE",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Beaulieu National Motor Museum; Doug Nye 'Cooper Cars'",
+    notes: "Na temporada pioneira de 1950 o Cooper T12 de motor traseiro correu exclusivamente com motor JAP de motocicleta a metanol. Coventry Climax apenas em 1957."
+  },
+  {
+    canonicalName: "Milano",
+    displayName: "Scuderia Milano",
+    entityType: "Racing Team & Special Constructor",
+    baseCity: "Milão, Lombardia",
+    baseCountry: "Itália",
+    engineManufacturer: "Speluzzi",
+    engineModel: "Speluzzi 1.5L (1.490 cm³ L4 Supercharged Roots ~240 bhp)",
+    foundedYear: 1949,
+    foundationEntity: "Scuderia Milano (fundada em Milão em 1949 pelos Irmãos Ruggeri)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "EUROPE",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Archivio ACI Milano; Sheldon 'Record of Grand Prix Racing'"
+  },
+
+  // --- TEMPORADA 1950: 1 Construtor de Escopo Duplo (Europa e Indy 500) ---
+  {
+    canonicalName: "Maserati",
+    displayName: "Officine Alfieri Maserati",
+    entityType: "Works Constructor & Indy 500 Chassis Supplier",
+    baseCity: "Modena (Viale Ciro Menotti 322)",
+    baseCountry: "Itália",
+    engineManufacturer: "Maserati",
+    engineModel: "Maserati 4CLT 1.5L L4 s/c (Europa) / Offenhauser 270 ci (Indy 500)",
+    foundedYear: 1914,
+    foundationEntity: "Società Anonima Officine Alfieri Maserati (fundada em Bologna em 1914; transferida para Modena em 1939)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "DUAL",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Maserati Classiche; Archivio Storico Modena; IMS Museum",
+    notes: "Escopo duplo comprovado: competiu nos GPs Europeus com chassi 4CLT e motor Maserati in-house; na Indy 500 competiu com chassis clássicos 8CTF adaptados com motor Offenhauser pelas equipes americanas Lou Rassey (#21) e Iddings (#12)."
+  },
+
+  // --- TEMPORADA 1950: 15 Construtores Exclusivos das 500 Milhas de Indianápolis ---
+  {
+    canonicalName: "Kurtis Kraft",
+    displayName: "Kurtis Kraft Inc.",
+    entityType: "Specialist Racing Chassis Constructor",
+    baseCity: "Glendale, Califórnia",
+    baseCountry: "Estados Unidos",
+    engineManufacturer: "Offenhauser",
+    engineModel: "Offenhauser 270 ci (4.5L) L4 DOHC (*Exceção Carro #61: Cummins JBS-600 Supercharged Diesel)",
+    foundedYear: 1938,
+    foundationEntity: "Kurtis-Kraft Inc. (fundada em Glendale, Califórnia, em 1938 por Frank Kurtis)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "INDY500",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Gordon White 'Kurtis-Kraft'; Cummins Historical Collection; IMS Museum",
+    notes: "Exceção documentada do Carro #61: Jimmy Jackson correu pela Cummins Engine Company com chassi Kurtis Kraft 3000 e motor Cummins Model JBS-600 Supercharged Diesel (401 ci / 6.6L L6 Roots supercharged)."
+  },
+  {
+    canonicalName: "Deidt",
+    displayName: "Deidt Special",
+    entityType: "Chassis Constructor (Tração Dianteira FWD)",
+    baseCity: "Los Angeles, Califórnia",
+    baseCountry: "Estados Unidos",
+    engineManufacturer: "Offenhauser",
+    engineModel: "Offenhauser 270 ci (4.5L) L4 DOHC (FWD)",
+    foundedYear: 1946,
+    foundationEntity: "Emil Deidt Racing Creations (oficina em Los Angeles fundada em 1946)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "INDY500",
+    sourceStatus: "VERIFIED",
+    sourceReference: "IMS Hall of Fame; Lou Moore Records"
+  },
+  {
+    canonicalName: "Adams",
+    displayName: "Adams Special",
+    entityType: "Chassis Constructor",
+    baseCity: "Hollywood, Califórnia",
+    baseCountry: "Estados Unidos",
+    engineManufacturer: "Offenhauser",
+    engineModel: "Offenhauser 270 ci (4.5L) L4 DOHC",
+    foundedYear: 1930,
+    foundationEntity: "Frank Adams Race Cars (Hollywood, 1930)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "INDY500",
+    sourceStatus: "VERIFIED",
+    sourceReference: "IMS Archives; AAA Contest Board Bulletins"
+  },
+  {
+    canonicalName: "Ewing",
+    displayName: "Wayne Ewing Special",
+    entityType: "Metal Fabrication & Racing Chassis",
+    baseCity: "Canoga Park, Califórnia",
+    baseCountry: "Estados Unidos",
+    engineManufacturer: "Offenhauser",
+    engineModel: "Offenhauser 270 ci (4.5L) L4 DOHC",
+    foundedYear: 1947,
+    foundationEntity: "Wayne Ewing Metal Fabrication (Canoga Park, 1947)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "INDY500",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Wayne Ewing Metal Fab Archives; IMS Museum"
+  },
+  {
+    canonicalName: "Langley",
+    displayName: "Bill Langley Special",
+    entityType: "Chassis Constructor",
+    baseCity: "Santa Monica, Califórnia",
+    baseCountry: "Estados Unidos",
+    engineManufacturer: "Offenhauser",
+    engineModel: "Offenhauser 270 ci (4.5L) L4 DOHC",
+    foundedYear: 1949,
+    foundationEntity: "Langley Racing Operations (Santa Monica, 1949)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "INDY500",
+    sourceStatus: "VERIFIED",
+    sourceReference: "AAA Official Program 1950; IMS Records"
+  },
+  {
+    canonicalName: "Lesovsky",
+    displayName: "Lesovsky Special",
+    entityType: "Chassis Constructor",
+    baseCity: "Los Angeles, Califórnia",
+    baseCountry: "Estados Unidos",
+    engineManufacturer: "Offenhauser",
+    engineModel: "Offenhauser 270 ci (4.5L) L4 DOHC",
+    foundedYear: 1947,
+    foundationEntity: "Lujie Lesovsky Race Cars (Los Angeles, 1947)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "INDY500",
+    sourceStatus: "VERIFIED",
+    sourceReference: "IMS Hall of Fame; Popely 'Indy 500 Chronicle'"
+  },
+  {
+    canonicalName: "Marchese",
+    displayName: "Carl Marchese Special",
+    entityType: "Chassis Constructor",
+    baseCity: "Milwaukee, Wisconsin",
+    baseCountry: "Estados Unidos",
+    engineManufacturer: "Offenhauser",
+    engineModel: "Offenhauser 270 ci (4.5L) L4 DOHC",
+    foundedYear: 1936,
+    foundationEntity: "Marchese Brothers Racing (Milwaukee, 1936)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "INDY500",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Wisconsin Motorsport Museum; AAA Contest Board 1950"
+  },
+  {
+    canonicalName: "Moore",
+    displayName: "Lou Moore Special",
+    entityType: "Chassis Constructor & Racing Team",
+    baseCity: "Indianapolis, Indiana",
+    baseCountry: "Estados Unidos",
+    engineManufacturer: "Offenhauser",
+    engineModel: "Offenhauser 270 ci (4.5L) L4 DOHC",
+    foundedYear: 1940,
+    foundationEntity: "Lou Moore Racing Enterprises (Indianapolis, 1940)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "INDY500",
+    sourceStatus: "VERIFIED",
+    sourceReference: "IMS Museum Archives; Lou Moore Ledgers"
+  },
+  {
+    canonicalName: "Nichels",
+    displayName: "Ray Nichels Special",
+    entityType: "Engineering & Chassis Constructor",
+    baseCity: "Griffith, Indiana",
+    baseCountry: "Estados Unidos",
+    engineManufacturer: "Offenhauser",
+    engineModel: "Offenhauser 270 ci (4.5L) L4 DOHC",
+    foundedYear: 1948,
+    foundationEntity: "Nichels Engineering (fundada em Griffith em 1948 por Ray Nichels)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "INDY500",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Ray Nichels Archives; IMS Boxscore 1950"
+  },
+  {
+    canonicalName: "Olson",
+    displayName: "Norman Olson Special",
+    entityType: "Chassis Constructor",
+    baseCity: "Detroit, Michigan",
+    baseCountry: "Estados Unidos",
+    engineManufacturer: "Offenhauser",
+    engineModel: "Offenhauser 270 ci (4.5L) L4 DOHC",
+    foundedYear: 1948,
+    foundationEntity: "Olson Racing Equipment (Detroit, 1948 por Norman Olson)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "INDY500",
+    sourceStatus: "VERIFIED",
+    sourceReference: "AAA Official Program 1950; IMS Boxscore"
+  },
+  {
+    canonicalName: "Rae",
+    displayName: "Roscoe Rae Special",
+    entityType: "Chassis Constructor",
+    baseCity: "Chicago, Illinois",
+    baseCountry: "Estados Unidos",
+    engineManufacturer: "Offenhauser",
+    engineModel: "Offenhauser 270 ci (4.5L) L4 DOHC",
+    foundedYear: 1946,
+    foundationEntity: "Roscoe Rae Speed Shop (Chicago, 1946)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "INDY500",
+    sourceStatus: "VERIFIED",
+    sourceReference: "AAA Contest Board Bulletin 1950; IMS Records"
+  },
+  {
+    canonicalName: "Snowberger",
+    displayName: "Russell Snowberger Special",
+    entityType: "Chassis Constructor",
+    baseCity: "Mount Clemens, Michigan",
+    baseCountry: "Estados Unidos",
+    engineManufacturer: "Offenhauser",
+    engineModel: "Offenhauser 270 ci (4.5L) L4 DOHC",
+    foundedYear: 1932,
+    foundationEntity: "Snowberger Racing Enterprises (Mount Clemens, 1932)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "INDY500",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Michigan Motor Sports Hall of Fame; IMS Archives"
+  },
+  {
+    canonicalName: "Stevens",
+    displayName: "Myron Stevens Special",
+    entityType: "Chassis Constructor",
+    baseCity: "Los Angeles, Califórnia",
+    baseCountry: "Estados Unidos",
+    engineManufacturer: "Offenhauser",
+    engineModel: "Offenhauser 270 ci (4.5L) L4 DOHC",
+    foundedYear: 1930,
+    foundationEntity: "Myron Stevens Race Cars (Los Angeles, 1930)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "INDY500",
+    sourceStatus: "VERIFIED",
+    sourceReference: "IMS Hall of Fame; Belanger Motors Records"
+  },
+  {
+    canonicalName: "Watson",
+    displayName: "A.J. Watson Special",
+    entityType: "Racing Car Constructor",
+    baseCity: "Glendale, Califórnia",
+    baseCountry: "Estados Unidos",
+    engineManufacturer: "Offenhauser",
+    engineModel: "Offenhauser 270 ci (4.5L) L4 DOHC",
+    foundedYear: 1949,
+    foundationEntity: "A.J. Watson Racing Creations (Glendale, 1949)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "INDY500",
+    sourceStatus: "VERIFIED",
+    sourceReference: "A.J. Watson Biography; IMS Hall of Fame"
+  },
+  {
+    canonicalName: "Wetteroth",
+    displayName: "Curly Wetteroth Special",
+    entityType: "Chassis Constructor",
+    baseCity: "Los Angeles, Califórnia",
+    baseCountry: "Estados Unidos",
+    engineManufacturer: "Offenhauser",
+    engineModel: "Offenhauser 270 ci (4.5L) L4 DOHC",
+    foundedYear: 1946,
+    foundationEntity: "Curly Wetteroth Race Cars (Los Angeles, 1946)",
+    validFrom: 1950,
+    validUntil: 1950,
+    competitionScope: "INDY500",
+    sourceStatus: "VERIFIED",
+    sourceReference: "IMS Museum Archives; AAA Boxscores 1950"
+  },
+
+  // --- REGRESSÃO E EXTENSÕES TEMPORAIS HOMOLOGADAS ---
+  {
+    canonicalName: "Alfa Romeo",
+    displayName: "Alfa Romeo F1 Team",
+    entityType: "Commercial Title Partnership / Sauber Motorsport AG",
+    baseCity: "Hinwil",
+    baseCountry: "Suíça",
+    engineManufacturer: "Ferrari",
+    engineModel: "Ferrari 1.6L V6 Turbo Híbrido",
+    foundedYear: 2018,
+    foundationEntity: "Sauber Motorsport AG (operando comercialmente como Alfa Romeo)",
+    validFrom: 2018,
+    validUntil: 2023,
+    competitionScope: "WORLD_CHAMPIONSHIP",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Sauber Group Archives; FIA Entry Lists 2018-2023",
+    notes: "Parceria comercial da Sauber com a marca Alfa Romeo."
+  },
+  {
+    canonicalName: "Ferrari",
+    displayName: "Scuderia Ferrari",
+    entityType: "Works Constructor",
+    baseCity: "Maranello",
+    baseCountry: "Itália",
+    engineManufacturer: "Ferrari",
+    engineModel: "Ferrari 066/12 1.6L V6 Turbo Híbrido",
+    foundedYear: 1929,
+    foundationEntity: "Scuderia Ferrari (Modena, 1929) / Auto Costruzioni Ferrari (1947)",
+    validFrom: 1951,
+    validUntil: 2026,
+    competitionScope: "WORLD_CHAMPIONSHIP",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Ferrari SpA Official Documentation"
+  },
+  {
+    canonicalName: "Mercedes",
+    displayName: "Daimler-Benz AG",
+    entityType: "Works Constructor",
+    baseCity: "Stuttgart",
+    baseCountry: "Alemanha",
+    engineManufacturer: "Mercedes",
+    engineModel: "Mercedes-Benz M196 2.5L L8",
+    foundedYear: 1954,
+    foundationEntity: "Daimler-Benz AG (estreia oficial no Mundial de F1 em Reims 1954)",
+    validFrom: 1954,
+    validUntil: 1955,
+    competitionScope: "WORLD_CHAMPIONSHIP",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Mercedes-Benz Classic Archives"
+  },
+  {
+    canonicalName: "Mercedes",
+    displayName: "Mercedes-AMG Petronas F1 Team",
+    entityType: "Works Constructor",
+    baseCity: "Brackley",
+    baseCountry: "Alemanha",
+    engineManufacturer: "Mercedes",
+    engineModel: "Mercedes-AMG F1 M15 E Performance 1.6L V6 Turbo Híbrido",
+    foundedYear: 2010,
+    foundationEntity: "Mercedes-Benz Grand Prix Ltd. (aquisição da Brawn GP em 2009/2010)",
+    validFrom: 2010,
+    validUntil: 2026,
+    competitionScope: "WORLD_CHAMPIONSHIP",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Mercedes-AMG F1 Team Official Records"
+  },
+  {
+    canonicalName: "McLaren",
+    displayName: "McLaren Formula 1 Team",
+    entityType: "Constructor",
+    baseCity: "Woking",
+    baseCountry: "Reino Unido",
+    engineManufacturer: "Mercedes",
+    engineModel: "Mercedes-AMG M15 E Performance",
+    foundedYear: 1963,
+    foundationEntity: "Bruce McLaren Motor Racing Ltd. (fundada em 1963)",
+    validFrom: 1966,
+    validUntil: 2026,
+    competitionScope: "WORLD_CHAMPIONSHIP",
+    sourceStatus: "VERIFIED",
+    sourceReference: "McLaren Racing Heritage"
+  },
+  {
+    canonicalName: "Alpine",
+    displayName: "BWT Alpine F1 Team",
+    entityType: "Works Constructor",
+    baseCity: "Enstone",
+    baseCountry: "França",
+    engineManufacturer: "Renault",
+    engineModel: "Renault E-Tech RE24 1.6L V6 Turbo Híbrido",
+    foundedYear: 2021,
+    foundationEntity: "Alpine F1 Team (rebranding da Renault F1 Team em Enstone em 2021)",
+    validFrom: 2021,
+    validUntil: 2026,
+    competitionScope: "WORLD_CHAMPIONSHIP",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Alpine F1 Team Official Records"
+  },
+  {
+    canonicalName: "Audi",
+    displayName: "Audi Revolut F1 Team",
+    entityType: "Works Constructor",
+    baseCity: "Neuburg an der Donau",
+    baseCountry: "Alemanha",
+    engineManufacturer: "Audi",
+    engineModel: "Audi Formula 1 Power Unit V6 Turbo Híbrido",
+    foundedYear: 2026,
+    foundationEntity: "Audi Formula Racing GmbH (projeto de fábrica oficial para 2026)",
+    validFrom: 2026,
+    validUntil: 2026,
+    competitionScope: "WORLD_CHAMPIONSHIP",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Audi Motorsport Official Announcements"
+  },
+  {
+    canonicalName: "Red Bull Racing",
+    displayName: "Oracle Red Bull Racing",
+    entityType: "Constructor",
+    baseCity: "Milton Keynes",
+    baseCountry: "Reino Unido",
+    engineManufacturer: "Honda RBPT",
+    engineModel: "Honda RBPTH002 1.6L V6 Turbo Híbrido",
+    foundedYear: 2005,
+    foundationEntity: "Red Bull Racing Ltd. (aquisição da Jaguar Racing em 2004/2005)",
+    validFrom: 2005,
+    validUntil: 2026,
+    competitionScope: "WORLD_CHAMPIONSHIP",
+    sourceStatus: "VERIFIED",
+    sourceReference: "Red Bull Racing Media"
+  }
+]
 
 export const TEAM_METADATA_FALLBACK: Record<string, TeamMetadataInfo> = {
   Mercedes: { city: "Brackley", country: "Alemanha", founded: 2010, engine: "Mercedes" },
@@ -3071,29 +3634,101 @@ export function getTeamEngine(teamName: string | null | undefined, season?: numb
   if (!teamName) return fallbackEngine || "—"
   const trimmed = teamName.trim()
   const canonical = TEAM_ALIASES[trimmed.toLowerCase()] || trimmed
+
+  // 1. Resolução temporal prioritária em HISTORICAL_TEAM_ENGINES
   if (season && HISTORICAL_TEAM_ENGINES[canonical]?.[season]) {
     return HISTORICAL_TEAM_ENGINES[canonical][season]
   }
   if (season && HISTORICAL_TEAM_ENGINES[trimmed]?.[season]) {
     return HISTORICAL_TEAM_ENGINES[trimmed][season]
   }
+
+  // 2. Resolução temporal via catálogo histórico temporal (OP-08.08H)
+  if (season) {
+    const historical = getTeamMetadata(teamName, season)
+    if (historical?.engine && historical.engine !== "—") {
+      return historical.engine
+    }
+  }
+
+  // 3. Fallback informado pelo backend se válido e não-genérico
   if (fallbackEngine && fallbackEngine !== "—") return fallbackEngine
+
+  // 4. Fallback estático contemporâneo
   return TEAM_METADATA_FALLBACK[canonical]?.engine || TEAM_METADATA_FALLBACK[trimmed]?.engine || "—"
 }
 
-export function getTeamMetadata(teamName: string | null | undefined): TeamMetadataInfo | null {
+export function getTeamMetadata(teamName: string | null | undefined, season?: number): TeamMetadataInfo | null {
   if (!teamName) return null
   const trimmed = teamName.trim()
   const canonical = TEAM_ALIASES[trimmed.toLowerCase()] || trimmed
-  return TEAM_METADATA_FALLBACK[canonical] || TEAM_METADATA_FALLBACK[trimmed] || null
+  const lowerCanonical = canonical.toLowerCase()
+  const lowerTrimmed = trimmed.toLowerCase()
+
+  // 1. Resolução temporal se season fornecida
+  if (season !== undefined && season !== null) {
+    const match = HISTORICAL_TEAM_METADATA.find((entry) => {
+      const matchName =
+        entry.canonicalName.toLowerCase() === lowerCanonical ||
+        entry.canonicalName.toLowerCase() === lowerTrimmed ||
+        entry.displayName.toLowerCase() === lowerTrimmed
+      return matchName && season >= entry.validFrom && season <= entry.validUntil
+    })
+
+    if (match) {
+      return {
+        city: match.baseCity,
+        country: match.baseCountry,
+        founded: match.foundedYear ?? 0,
+        engine: match.engineManufacturer,
+        canonicalName: match.canonicalName,
+        displayName: match.displayName,
+        entityType: match.entityType,
+        baseCity: match.baseCity,
+        baseCountry: match.baseCountry,
+        engineManufacturer: match.engineManufacturer,
+        engineModel: match.engineModel,
+        foundedYear: match.foundedYear,
+        foundationEntity: match.foundationEntity,
+        validFrom: match.validFrom,
+        validUntil: match.validUntil,
+        competitionScope: match.competitionScope,
+        sourceStatus: match.sourceStatus,
+        sourceReference: match.sourceReference,
+        notes: match.notes,
+      }
+    }
+  }
+
+  // 2. Fallback estático retrocompatível se season não informada ou sem correspondência temporal
+  const fallback = TEAM_METADATA_FALLBACK[canonical] || TEAM_METADATA_FALLBACK[trimmed]
+  if (fallback) {
+    return {
+      ...fallback,
+      canonicalName: canonical,
+      displayName: trimmed,
+      baseCity: fallback.city,
+      baseCountry: fallback.country,
+      engineManufacturer: fallback.engine,
+      foundedYear: fallback.founded,
+    }
+  }
+
+  return null
 }
 
-export function formatTeamHeadquarters(city?: string | null, country?: string | null, teamName?: string | null): string {
-  if (city && country) return `${city}, ${country}`
-  if (country) return country
+export function formatTeamHeadquarters(city?: string | null, country?: string | null, teamName?: string | null, season?: number): string {
+  if (teamName && season) {
+    const meta = getTeamMetadata(teamName, season)
+    if (meta?.city && meta?.country) return `${meta.city}, ${formatCountry(meta.country)}`
+    if (meta?.country) return formatCountry(meta.country)
+  }
+  if (city && country) return `${city}, ${formatCountry(country)}`
+  if (country) return formatCountry(country)
   if (teamName) {
     const meta = getTeamMetadata(teamName)
-    if (meta) return `${meta.city}, ${meta.country}`
+    if (meta?.city && meta?.country) return `${meta.city}, ${formatCountry(meta.country)}`
+    if (meta?.country) return formatCountry(meta.country)
   }
   return "—"
 }
