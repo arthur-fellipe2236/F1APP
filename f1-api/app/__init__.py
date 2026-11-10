@@ -1,27 +1,38 @@
 import os
 
 from flask import Flask, jsonify
-from sqlalchemy import text
 
 from .extensions import db, migrate
 from .api.helpers import ApiError
 
 
-
 def create_app(config_overrides=None):
     app = Flask(__name__)
-    db_uri = os.environ.get("F1_DATABASE_URI", "sqlite:///f1.db")
-    if "postgresql" in db_uri:
-        try:
-            import psycopg2
-        except ImportError:
-            basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            db_uri = f"sqlite:///{os.path.join(basedir, 'instance', 'f1.db')}"
+    testing = bool(config_overrides and config_overrides.get("TESTING"))
 
-    if not (config_overrides and "SQLALCHEMY_DATABASE_URI" in config_overrides):
-        from .serverless_db import ensure_writable_sqlite_uri
+    from .serverless_db import (
+        ensure_writable_sqlite_uri,
+        is_production_environment,
+        normalize_database_uri,
+        resolve_database_uri,
+        validate_postgresql_uri,
+    )
 
-        db_uri = ensure_writable_sqlite_uri(db_uri)
+    if config_overrides and "SQLALCHEMY_DATABASE_URI" in config_overrides:
+        raw_override = str(config_overrides["SQLALCHEMY_DATABASE_URI"] or "").strip()
+        if not raw_override:
+            raise RuntimeError("SQLALCHEMY_DATABASE_URI em config_overrides não pode ser vazia.")
+        db_uri = normalize_database_uri(raw_override)
+        if not db_uri.startswith("sqlite:"):
+            db_uri = validate_postgresql_uri(db_uri)
+        else:
+            if is_production_environment() and not testing:
+                raise RuntimeError(
+                    "Configuração SQLite não é permitida em produção (VERCEL_ENV=production)."
+                )
+            db_uri = ensure_writable_sqlite_uri(db_uri)
+    else:
+        db_uri = resolve_database_uri(testing=testing)
         os.environ["F1_DATABASE_URI"] = db_uri
 
     app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
@@ -33,19 +44,21 @@ def create_app(config_overrides=None):
 
     if config_overrides:
         app.config.update(config_overrides)
+        app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
 
     from . import models  # noqa: F401  (registra tabelas no metadata)
 
     db.init_app(app)
     migrate.init_app(app, db)
     with app.app_context():
-        db.create_all()
-        
+        if db_uri.startswith("sqlite:") or os.environ.get("F1_CREATE_ALL_ON_INIT") == "1":
+            db.create_all()
+
         if app.config.get("TESTING"):
             from .seed import seed
 
             seed()
-        elif not os.environ.get('NO_BACKGROUND_SYNC'):
+        elif not os.environ.get("NO_BACKGROUND_SYNC"):
             from .sync import start_background_sync
 
             start_background_sync(app)

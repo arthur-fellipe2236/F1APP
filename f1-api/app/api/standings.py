@@ -106,6 +106,35 @@ ACTIVE_F1_TEAMS_2026 = [
     "Cadillac",
 ]
 
+# Códigos oficiais dos 22 pilotos titulares integrantes do grid ativo F1 2026
+# (alinhados com a definição canônica em app/api/drivers.py).
+# Pilotos reservas/substitutos que disputarem etapas em 2026 são incluídos
+# automaticamente via `aggregates.c.driver_id.isnot(None)`.
+ACTIVE_F1_DRIVER_CODES_2026 = [
+    "NOR",
+    "PIA",
+    "RUS",
+    "ANT",
+    "VER",
+    "HAD",
+    "LEC",
+    "HAM",
+    "ALB",
+    "SAI",
+    "ALO",
+    "STR",
+    "GAS",
+    "COL",
+    "OCO",
+    "BEA",
+    "HUL",
+    "BOR",
+    "LAW",
+    "LIN",
+    "PER",
+    "BOT",
+]
+
 
 def _driver_finish_counts(season, series=None):
     """Contagem de posicoes de chegada em Grande Premio por piloto na temporada.
@@ -256,7 +285,10 @@ def driver_standings():
     if season == 2026 and (series == "f1" or series is None):
         query = query.outerjoin(aggregates, aggregates.c.driver_id == Driver.id)
         active_teams_subq = db.session.query(Team.id).filter(Team.name.in_(ACTIVE_F1_TEAMS_2026))
-        cond = (aggregates.c.driver_id.isnot(None)) | (Driver.team_id.in_(active_teams_subq))
+        active_grid_cond = (Driver.team_id.in_(active_teams_subq)) & (
+            Driver.code.in_(ACTIVE_F1_DRIVER_CODES_2026)
+        )
+        cond = (aggregates.c.driver_id.isnot(None)) | active_grid_cond
         query = query.filter(Driver.series == "f1", cond)
     elif season and not current_app.config.get("TESTING"):
         query = query.join(aggregates, aggregates.c.driver_id == Driver.id)

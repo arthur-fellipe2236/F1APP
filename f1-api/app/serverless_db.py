@@ -1,26 +1,34 @@
-"""Configuração segura de SQLite para ambientes serverless (ex.: Vercel).
+"""Configuração segura de banco de dados para ambientes locais e serverless (ex.: Vercel).
 
-Limitação arquitetural (importante):
-- Na Vercel (AWS Lambda), o diretório do pacote (`/var/task`) é somente leitura.
-  Abrir `sqlite:////var/task/api/instance/f1.db` diretamente causa falha em
-  qualquer `INSERT`/`UPDATE`/`COMMIT` (`sqlite3.OperationalError: attempt to
-  write a readonly database`).
-- O diretório `/tmp` é gravável, porém **efêmero e isolado por instância**:
-  dados gravados em `/tmp/f1.db` (como importação sob demanda de resultados
-  recém-publicados) persistem durante o ciclo de vida da instância aquecida
-  (warm instance), mas não são compartilhados entre instâncias paralelas nem
-  sobrevivem a cold starts ou novos deploys.
-- Para persistência durável entre instâncias e deploys, é necessário configurar
-  `F1_DATABASE_URI` apontando para um banco gerenciado externo (ex.: PostgreSQL)
-  ou atualizar o banco empacotado (`api/instance/f1.db`) no artefato de deploy.
+Regras de resolução e precedência de URI de banco:
+1. Prioridade de variáveis de ambiente:
+   `F1_DATABASE_URI` > `DATABASE_URL` > `POSTGRES_URL`.
+2. Normalização:
+   Esquemas `postgres://` e `postgres+psycopg2://` são normalizados para
+   `postgresql://` e `postgresql+psycopg2://` (compatibilidade SQLAlchemy 2.0).
+3. Proteção contra fallback silencioso:
+   - Qualquer configuração PostgreSQL explícita (ou via `POSTGRES_URL`) é
+     validada quanto a esquema, host, nome do banco, porta e disponibilidade
+     do driver `psycopg2`. Falhas geram `RuntimeError` explícito — nunca há
+     substituição silenciosa por SQLite.
+   - Em produção (`VERCEL_ENV=production`), uma URI PostgreSQL válida é
+     obrigatória; ausência de configuração ou URI SQLite gera `RuntimeError`.
+4. Fallback SQLite local:
+   Apenas quando nenhuma variável de banco estiver definida (ou quando SQLite
+   for explicitamente configurado) fora de produção, utiliza o SQLite local
+   com cópia atômica para diretório gravável (`/tmp`) se o diretório de origem
+   for somente leitura.
 """
 
 import os
 import shutil
 import tempfile
 import threading
+from urllib.parse import urlsplit
 
 _copy_lock = threading.Lock()
+
+ENV_DB_URI_KEYS = ("F1_DATABASE_URI", "DATABASE_URL", "POSTGRES_URL")
 
 
 def _is_serverless_environment() -> bool:
@@ -30,6 +38,69 @@ def _is_serverless_environment() -> bool:
         or os.environ.get("AWS_LAMBDA_FUNCTION_NAME")
         or os.environ.get("NOW_REGION")
     )
+
+
+def is_production_environment(environ=None) -> bool:
+    """Identifica se a execução atual está em ambiente de produção."""
+    env = environ if environ is not None else os.environ
+    vercel_env = (env.get("VERCEL_ENV") or "").strip().lower()
+    return vercel_env == "production"
+
+
+def normalize_database_uri(raw_uri: str) -> str:
+    """Normaliza esquemas legados `postgres://` para `postgresql://`."""
+    if not raw_uri or not isinstance(raw_uri, str):
+        return ""
+    uri = raw_uri.strip()
+    if uri.startswith("postgres://"):
+        return "postgresql://" + uri[len("postgres://") :]
+    if uri.startswith("postgres+psycopg2://"):
+        return "postgresql+psycopg2://" + uri[len("postgres+psycopg2://") :]
+    return uri
+
+
+def validate_postgresql_uri(db_uri: str) -> str:
+    """Valida sintaxe de URI PostgreSQL e presença do driver psycopg2.
+
+    Lança `RuntimeError` explícito em caso de configuração inválida ou driver
+    ausente, impedindo fallback silencioso para SQLite.
+    """
+    normalized = normalize_database_uri(db_uri)
+    if not normalized:
+        raise RuntimeError("URI PostgreSQL inválida: string vazia.")
+
+    try:
+        parsed = urlsplit(normalized)
+    except Exception as exc:
+        raise RuntimeError(f"URI PostgreSQL malformada: {exc}") from exc
+
+    if parsed.scheme not in ("postgresql", "postgresql+psycopg2"):
+        raise RuntimeError(
+            f"Esquema de URI PostgreSQL inválido ({parsed.scheme!r}); "
+            "esperado 'postgresql://' ou 'postgres://'."
+        )
+
+    if not parsed.hostname:
+        raise RuntimeError("URI PostgreSQL inválida: host ausente.")
+
+    db_name = (parsed.path or "").lstrip("/")
+    if not db_name:
+        raise RuntimeError("URI PostgreSQL inválida: nome do banco de dados ausente.")
+
+    try:
+        _ = parsed.port
+    except ValueError as exc:
+        raise RuntimeError(f"URI PostgreSQL inválida: porta inválida ({exc}).") from exc
+
+    try:
+        import psycopg2  # noqa: F401
+    except ImportError as exc:
+        raise RuntimeError(
+            "Driver PostgreSQL (psycopg2) indisponível no ambiente; "
+            "fallback silencioso para SQLite bloqueado."
+        ) from exc
+
+    return normalized
 
 
 def _is_sqlite_location_writable(db_path: str) -> bool:
@@ -149,7 +220,84 @@ def ensure_writable_sqlite_uri(
     return f"sqlite:///{writable_path}"
 
 
+def resolve_database_uri(
+    default_sqlite_path: str | None = None,
+    runtime_dir: str | None = None,
+    environ=None,
+    testing: bool = False,
+) -> str:
+    """Resolve e valida a URI de conexão respeitando a precedência de ambiente.
+
+    Precedência: `F1_DATABASE_URI` > `DATABASE_URL` > `POSTGRES_URL`.
+    - Se uma URI PostgreSQL for informada, normaliza `postgres://` e valida
+      sintaxe e driver `psycopg2` sem jamais fazer fallback silencioso para SQLite.
+    - Em produção (`VERCEL_ENV=production`), exige URI PostgreSQL válida.
+    - Fora de produção, permite SQLite explícito ou fallback para o SQLite local.
+    """
+    env = environ if environ is not None else os.environ
+    in_prod = is_production_environment(env) and not testing
+
+    source_key = None
+    raw_uri = ""
+    for key in ENV_DB_URI_KEYS:
+        candidate = (env.get(key) or "").strip()
+        if candidate:
+            source_key = key
+            raw_uri = candidate
+            break
+
+    if raw_uri:
+        normalized = normalize_database_uri(raw_uri)
+        if source_key == "POSTGRES_URL" or not normalized.startswith("sqlite:"):
+            return validate_postgresql_uri(normalized)
+
+        # Configuração explícita SQLite
+        if in_prod:
+            raise RuntimeError(
+                "Configuração SQLite não é permitida em produção (VERCEL_ENV=production); "
+                "configure uma URI PostgreSQL válida."
+            )
+        return ensure_writable_sqlite_uri(normalized, runtime_dir=runtime_dir)
+
+    # Nenhuma variável de banco definida no ambiente
+    if in_prod:
+        raise RuntimeError(
+            "Nenhuma URI de banco configurada em produção (VERCEL_ENV=production); "
+            "defina F1_DATABASE_URI, DATABASE_URL ou POSTGRES_URL com uma conexão PostgreSQL válida."
+        )
+
+    if default_sqlite_path:
+        writable_path = resolve_writable_sqlite_path(
+            default_sqlite_path, runtime_dir=runtime_dir
+        )
+        return f"sqlite:///{writable_path}"
+
+    return ensure_writable_sqlite_uri("sqlite:///f1.db", runtime_dir=runtime_dir)
+
+
+def configure_entrypoint_database_uri(
+    bundled_sqlite_path: str,
+    runtime_dir: str | None = None,
+    environ=None,
+) -> str:
+    """Configura `F1_DATABASE_URI` no entrypoint serverless preservando PostgreSQL externo."""
+    env = environ if environ is not None else os.environ
+    resolved_uri = resolve_database_uri(
+        default_sqlite_path=bundled_sqlite_path,
+        runtime_dir=runtime_dir,
+        environ=env,
+    )
+    env["F1_DATABASE_URI"] = resolved_uri
+    return resolved_uri
+
+
 __all__ = [
+    "ENV_DB_URI_KEYS",
+    "is_production_environment",
+    "normalize_database_uri",
+    "validate_postgresql_uri",
     "resolve_writable_sqlite_path",
     "ensure_writable_sqlite_uri",
+    "resolve_database_uri",
+    "configure_entrypoint_database_uri",
 ]
