@@ -16,19 +16,38 @@ from .races import _next_race_payload
 import sqlite3
 import json
 import os
+import tempfile
+
 
 def get_cache_db():
-    db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'instance', 'ai_cache.db')
-    conn = sqlite3.connect(db_path)
-    conn.execute('''CREATE TABLE IF NOT EXISTS article_cache (
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    instance_path = os.path.join(base_dir, "instance", "ai_cache.db")
+    tmp_path = os.path.join(tempfile.gettempdir(), "ai_cache.db")
+    candidates = (
+        [tmp_path]
+        if os.environ.get("F1_SERVERLESS") == "1" or os.environ.get("VERCEL")
+        else [instance_path, tmp_path]
+    )
+    for db_path in candidates:
+        try:
+            parent = os.path.dirname(db_path)
+            if parent and not os.path.exists(parent):
+                os.makedirs(parent, exist_ok=True)
+            conn = sqlite3.connect(db_path, timeout=5)
+            conn.execute(
+                """CREATE TABLE IF NOT EXISTS article_cache (
                         url TEXT,
                         lang TEXT,
                         count INTEGER,
                         response_json TEXT,
                         PRIMARY KEY (url, lang, count)
-                    )''')
-    conn.commit()
-    return conn
+                    )"""
+            )
+            conn.commit()
+            return conn
+        except Exception:
+            continue
+    return None
 
 bp = Blueprint("news", __name__)
 
@@ -394,70 +413,185 @@ def article_summary():
     count = parse_int(request.args.get("sentences"), "sentences") or 10
     count = max(3, min(count, 15))
     lang = (request.args.get("lang") or "").lower()
-    
-    # Check Cache
+    fallback_title = (request.args.get("title") or "").strip() or None
+    fallback_desc = (request.args.get("meta_description") or "").strip() or None
+
+    # Check Cache (resiliente a filesystem read-only em serverless)
     conn = get_cache_db()
-    c = conn.cursor()
-    c.execute("SELECT response_json FROM article_cache WHERE url=? AND lang=? AND count=?", (url, lang, count))
-    cached = c.fetchone()
-    if cached:
-        conn.close()
-        return jsonify(json.loads(cached[0]))
+    if conn is not None:
+        try:
+            c = conn.cursor()
+            c.execute(
+                "SELECT response_json FROM article_cache WHERE url=? AND lang=? AND count=?",
+                (url, lang, count),
+            )
+            cached = c.fetchone()
+            if cached:
+                conn.close()
+                return jsonify(json.loads(cached[0]))
+        except Exception:
+            try:
+                conn.close()
+            except Exception:
+                pass
+            conn = None
 
     if is_motorsport:
         import requests
         from bs4 import BeautifulSoup
         try:
-            res = requests.get(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'}, timeout=10)
-            soup = BeautifulSoup(res.text, 'html.parser')
-            paragraphs = [p.get_text(strip=True) for p in soup.find_all('p') if len(p.get_text(strip=True)) > 20]
-            if not paragraphs:
-                raise ApiError("Nao foi possivel extrair o texto da materia", 503)
-            article = {"title": soup.title.string if soup.title else "News", "paragraphs": paragraphs}
+            res = requests.get(
+                url,
+                headers={
+                    "User-Agent": (
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) "
+                        "Chrome/117.0.0.0 Safari/537.36"
+                    )
+                },
+                timeout=10,
+            )
+            soup = BeautifulSoup(res.text, "html.parser")
+            paragraphs = [
+                p.get_text(strip=True)
+                for p in soup.find_all("p")
+                if len(p.get_text(strip=True)) > 20
+            ]
+            meta_tag = soup.find("meta", attrs={"property": "og:description"}) or soup.find(
+                "meta", attrs={"name": "description"}
+            )
+            meta_desc = (
+                meta_tag.get("content", "").strip()
+                if meta_tag and meta_tag.get("content")
+                else None
+            )
+            article = {
+                "title": (
+                    soup.title.string.strip()
+                    if soup.title and soup.title.string
+                    else fallback_title or "News"
+                ),
+                "paragraphs": paragraphs,
+                "meta_description": meta_desc or fallback_desc,
+            }
         except Exception as exc:
-            raise ApiError(str(exc), 503)
+            if fallback_title or fallback_desc:
+                article = {
+                    "title": fallback_title,
+                    "paragraphs": [],
+                    "meta_description": fallback_desc,
+                }
+            else:
+                if conn is not None:
+                    try:
+                        conn.close()
+                    except Exception:
+                        pass
+                raise ApiError(str(exc), 503)
     else:
         try:
             article = f1site.fetch_article(url)
         except f1site.F1SiteError as exc:
-            raise ApiError(str(exc), 503)
-        
-    if not article["paragraphs"]:
-        raise ApiError("Nao foi possivel extrair o texto da materia", 503)
+            if fallback_title or fallback_desc:
+                article = {
+                    "title": fallback_title,
+                    "paragraphs": [],
+                    "meta_description": fallback_desc,
+                }
+            else:
+                if conn is not None:
+                    try:
+                        conn.close()
+                    except Exception:
+                        pass
+                raise ApiError(str(exc), 503)
 
-    summary_raw = summarize(article["paragraphs"], max_sentences=count)
-    
-    if is_motorsport:
-        summary = summary_raw
-        summary_en = []
+    raw_paragraphs = [
+        p.strip() for p in (article.get("paragraphs") or []) if p and p.strip()
+    ]
+    resolved_title = article.get("title") or fallback_title
+
+    if raw_paragraphs:
+        summary_raw = summarize(raw_paragraphs, max_sentences=count)
+        if not summary_raw:
+            summary_raw = raw_paragraphs[:count]
+        summary_source = "body"
+        limitation_note = None
+        if is_motorsport:
+            summary = summary_raw
+            summary_en = []
+        else:
+            summary_en = summary_raw
+            summary = (
+                translate_many(summary_en) if lang.startswith("pt") else summary_en
+            )
     else:
-        summary_en = summary_raw
-        summary = translate_many(summary_en) if lang.startswith("pt") else summary_en
+        # Ausência de parágrafos convencionais no corpo (ex.: galerias de fotos, notas curtas):
+        # gera resumo a partir dos metadados editoriais disponíveis sem lançar exceção.
+        page_meta_desc = (article.get("meta_description") or "").strip() or None
+        resolved_desc = page_meta_desc or fallback_desc
+
+        meta_bullets_raw = []
+        if resolved_desc:
+            meta_bullets_raw.append(resolved_desc)
+        if (
+            resolved_title
+            and (
+                not resolved_desc
+                or resolved_title.strip().lower() not in resolved_desc.strip().lower()
+            )
+        ):
+            meta_bullets_raw.append(resolved_title)
+
+        if not meta_bullets_raw:
+            meta_bullets_raw = [
+                "Conteúdo editorial publicado na fonte oficial em formato sem parágrafos de texto convencionais (como galeria de imagens ou multimídia)."
+                if lang.startswith("pt")
+                else "Editorial content published on the official source without conventional text paragraphs (such as an image gallery or multimedia)."
+            ]
+
+        summary_en = list(meta_bullets_raw)
+        if lang.startswith("pt") and page_meta_desc and not is_motorsport:
+            translated_meta = translate_many(summary_en)
+            summary = [
+                translated_meta[i] if i < len(translated_meta) and translated_meta[i] else summary_en[i]
+                for i in range(len(summary_en))
+            ]
+        else:
+            summary = list(meta_bullets_raw)
+
+        summary_source = "metadata"
+        limitation_note = (
+            "Resumo gerado a partir dos metadados editoriais disponíveis, pois o conteúdo original (como galeria de imagens ou formato especial) não possui parágrafos convencionais no corpo da matéria. Utilize 'Ler na íntegra' para acessar o conteúdo completo."
+            if lang.startswith("pt")
+            else "Summary generated from available editorial metadata because the original content does not contain conventional body paragraphs."
+        )
 
     response_data = {
-        "title": article["title"],
+        "title": resolved_title,
         "url": url,
-        "sentences": len(summary_en),
+        "sentences": len(summary_en) if summary_en else len(summary),
         "summary": summary,
         "summary_en": summary_en,
+        "summary_source": summary_source,
+        "limitation_note": limitation_note,
     }
 
     # Save to Cache
-    try:
-        c.execute("INSERT OR REPLACE INTO article_cache (url, lang, count, response_json) VALUES (?, ?, ?, ?)", 
-                  (url, lang, count, json.dumps(response_data)))
-        conn.commit()
-    except Exception as e:
-        print("Cache save error:", e)
-    finally:
-        conn.close()
+    if conn is not None:
+        try:
+            c = conn.cursor()
+            c.execute(
+                "INSERT OR REPLACE INTO article_cache (url, lang, count, response_json) VALUES (?, ?, ?, ?)",
+                (url, lang, count, json.dumps(response_data)),
+            )
+            conn.commit()
+        except Exception:
+            pass
+        finally:
+            try:
+                conn.close()
+            except Exception:
+                pass
 
-    return jsonify(
-        {
-            "title": article["title"],
-            "url": url,
-            "sentences": len(summary_en),
-            "summary": summary,
-            "summary_en": summary_en,
-        }
-    )
+    return jsonify(response_data)

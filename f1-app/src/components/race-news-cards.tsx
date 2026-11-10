@@ -47,8 +47,26 @@ function CardImage({ item, className }: { item: NewsItem; className: string }) {
   )
 }
 
-function ArticleSummary({ url, fallbackText }: { url: string; fallbackText?: string }) {
-  const query = useApi(() => api.newsArticle(url), [url])
+function ArticleSummary({
+  url,
+  title,
+  fallbackText,
+  articleType,
+}: {
+  url: string
+  title?: string
+  fallbackText?: string
+  articleType?: string
+}) {
+  const query = useApi(
+    () =>
+      api.newsArticle(url, {
+        title,
+        meta_description: fallbackText,
+        article_type: articleType,
+      }),
+    [url, title, fallbackText, articleType],
+  )
 
   if (query.loading) {
     return (
@@ -64,28 +82,59 @@ function ArticleSummary({ url, fallbackText }: { url: string; fallbackText?: str
   }
 
   if (query.error || !query.data) {
-    if (fallbackText) {
-      return <p className="text-sm leading-relaxed text-card-foreground">{fallbackText}</p>
+    const fallbackBullets = [fallbackText, title].filter(
+      (v, idx, arr): v is string => Boolean(v && v.trim()) && arr.indexOf(v) === idx,
+    )
+    if (fallbackBullets.length > 0) {
+      return (
+        <div className="space-y-3">
+          <ul className="max-h-64 space-y-2.5 overflow-y-auto pr-1">
+            {fallbackBullets.map((line, index) => (
+              <li
+                key={index}
+                className="flex gap-2.5 text-sm leading-relaxed text-card-foreground"
+              >
+                <span className="mt-2 size-1.5 shrink-0 rounded-full bg-red-500" />
+                <span>{line}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs leading-relaxed text-amber-300">
+            Resumo gerado a partir dos metadados editoriais disponíveis (conteúdo sem parágrafos convencionais ou temporariamente indisponível para extração completa). Utilize &ldquo;Ler na íntegra&rdquo; para abrir a matéria original.
+          </p>
+        </div>
+      )
     }
     return (
       <p className="text-xs text-muted-foreground">
-        Não foi possível carregar o resumo da matéria.
+        Não foi possível carregar o resumo da matéria. Utilize &ldquo;Ler na íntegra&rdquo; para abrir a fonte original.
       </p>
     )
   }
 
+  const isMetadataSummary =
+    query.data.summary_source === "metadata" || Boolean(query.data.limitation_note)
+
   return (
-    <ul className="max-h-64 space-y-2.5 overflow-y-auto pr-1">
-      {query.data.summary.map((line, index) => (
-        <li
-          key={index}
-          className="flex gap-2.5 text-sm leading-relaxed text-card-foreground"
-        >
-          <span className="mt-2 size-1.5 shrink-0 rounded-full bg-red-500" />
-          <span>{line}</span>
-        </li>
-      ))}
-    </ul>
+    <div className="space-y-3">
+      <ul className="max-h-64 space-y-2.5 overflow-y-auto pr-1">
+        {query.data.summary.map((line, index) => (
+          <li
+            key={index}
+            className="flex gap-2.5 text-sm leading-relaxed text-card-foreground"
+          >
+            <span className="mt-2 size-1.5 shrink-0 rounded-full bg-red-500" />
+            <span>{line}</span>
+          </li>
+        ))}
+      </ul>
+      {isMetadataSummary ? (
+        <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs leading-relaxed text-amber-300">
+          {query.data.limitation_note ??
+            "Resumo gerado a partir dos metadados editoriais disponíveis, pois o conteúdo original não possui parágrafos convencionais no corpo da matéria."}
+        </p>
+      ) : null}
+    </div>
   )
 }
 
@@ -170,7 +219,12 @@ export function NewsCard({
             <DialogTitle className="text-lg font-bold leading-snug text-foreground">
               {item.title}
             </DialogTitle>
-            <ArticleSummary url={item.url} fallbackText={item.meta_description ?? undefined} />
+            <ArticleSummary
+              url={item.url}
+              title={item.title}
+              fallbackText={item.meta_description ?? undefined}
+              articleType={item.article_type}
+            />
             {item.title_en && item.title_en !== item.title ? (
               <p className="text-xs text-muted-foreground/80 italic pt-1 border-t border-border/40">
                 Original em inglês: {item.title_en}

@@ -3,12 +3,13 @@ import { Play, ExternalLink, VideoOff, Calendar, Flame } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { PageHeader } from "@/components/page-header"
-import { api, type Race } from "@/lib/api"
+import { api } from "@/lib/api"
 import {
   type HighlightVideo,
   OFFICIAL_2026_F1_HIGHLIGHTS_REGISTRY,
   OFFICIAL_2026_RACE_METADATA,
   DEFAULT_2026_HIGHLIGHTS,
+  selectRaceHighlights,
 } from "@/lib/highlights"
 
 export type { HighlightVideo }
@@ -16,6 +17,7 @@ export {
   OFFICIAL_2026_F1_HIGHLIGHTS_REGISTRY,
   OFFICIAL_2026_RACE_METADATA,
   DEFAULT_2026_HIGHLIGHTS,
+  selectRaceHighlights,
 }
 
 type ThumbQuality = "maxresdefault" | "hqdefault"
@@ -169,67 +171,18 @@ export function RaceHighlightsCards({ highlights }: { highlights?: HighlightVide
 
     let isMounted = true
 
-    // Atualização dinâmica: consultar corridas concluídas da temporada 2026
+    // Atualização dinâmica: consultar corridas concluídas da temporada 2026 da Fórmula 1
     api
-      .races({ season: 2026, per_page: 50 })
+      .races({ season: 2026, series: "f1", per_page: 50 })
       .then((response) => {
         if (!isMounted || !response?.data?.length) return
 
-        const races = response.data
-        const now = new Date()
-
-        // Filtrar corridas principais da F1 cuja data já passou em 2026
-        // Exclui futuras etapas e sprints/treinos isolados
-        const completed = races.filter((r: Race) => {
-          if (!r.date) return false
-          // Apenas etapas da Fórmula 1
-          if (r.series && r.series !== "f1") return false
-          const rDate = new Date(r.date + "T23:59:59Z")
-          return rDate <= now
+        const mapped = selectRaceHighlights(response.data, {
+          completedRaces: response.meta?.completed_races,
         })
 
-        // Ordenar da mais recente para a mais antiga (round decrescente)
-        completed.sort((a: Race, b: Race) => b.round - a.round)
-
-        // Selecionar exatamente as 3 mais recentes concluídas
-        const top3 = completed.slice(0, 3)
-
-        if (top3.length === 3) {
-          const mapped: HighlightVideo[] = top3.map((r: Race) => {
-            const reg = OFFICIAL_2026_F1_HIGHLIGHTS_REGISTRY[r.round]
-            const yId = reg?.youtubeId ?? null
-            const meta = OFFICIAL_2026_RACE_METADATA[r.round]
-
-            // Usar metadados oficiais consolidados quando disponíveis
-            let dateStr = meta?.dateStr
-            if (!dateStr) {
-              try {
-                if (r.date) {
-                  const parts = r.date.split("-")
-                  const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]))
-                  dateStr = d.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })
-                }
-              } catch {
-                dateStr = r.date || "2026"
-              }
-            }
-
-            return {
-              id: `f1-2026-r${r.round}`,
-              round: r.round,
-              gpName: meta?.name ?? r.name,
-              country: meta?.country ?? r.circuit_country ?? "F1",
-              season: 2026,
-              date: dateStr,
-              youtubeId: yId,
-              youtubeUrl: yId ? `https://www.youtube.com/watch?v=${yId}` : null,
-              duration: reg?.duration,
-            }
-          })
-
-          if (isMounted) {
-            setItems(mapped)
-          }
+        if (mapped.length === 3 && isMounted) {
+          setItems(mapped)
         }
       })
       .catch(() => {

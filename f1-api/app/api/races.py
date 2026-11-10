@@ -573,7 +573,9 @@ def list_races():
     query = Race.query
     if season:
         query = query.filter_by(season=season)
-    if series_param:
+    if series == "f1":
+        query = query.filter((Race.series == "f1") | (Race.series.is_(None)))
+    elif series_param:
         query = query.filter_by(series=series)
 
     query = query.order_by(Race.season.desc(), Race.round)

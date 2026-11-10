@@ -202,6 +202,8 @@ export interface NewsArticleSummary {
   sentences: number
   summary: string[]
   summary_en: string[]
+  summary_source?: "body" | "metadata"
+  limitation_note?: string | null
 }
 
 export interface LiveSession {
@@ -436,9 +438,22 @@ export const api = {
       `/news?br_drivers=1&series=${series}&limit=${limit}&lang=pt-BR`,
     ),
 
-  newsArticle: (url: string) =>
+  newsArticle: (
+    url: string,
+    meta?: {
+      title?: string | null
+      meta_description?: string | null
+      article_type?: string | null
+    },
+  ) =>
     request<NewsArticleSummary>(
-      `/news/article?url=${encodeURIComponent(url)}&lang=pt-BR`,
+      `/news/article${qs({
+        url,
+        lang: "pt-BR",
+        title: meta?.title ?? undefined,
+        meta_description: meta?.meta_description ?? undefined,
+        article_type: meta?.article_type ?? undefined,
+      })}`,
     ),
 
   liveTower: (
