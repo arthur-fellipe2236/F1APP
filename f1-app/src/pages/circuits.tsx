@@ -13,10 +13,46 @@ import { useApi } from "@/hooks/use-api"
 import { useSeasonsState } from "@/hooks/use-seasons"
 import { resolveSeasonReset } from "@/lib/season-utils"
 import { api, fetchAll, type Circuit } from "@/lib/api"
-import { flagFromCountry } from "@/lib/assets"
+import { driverPhoto, flagFromCountry } from "@/lib/assets"
 import { RESULTS_POLL_MS } from "@/lib/request-gate"
 
-const FALLBACK_AVATAR = "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/A/ANDANT01_Andrea%20Kimi_Antonelli/andant01.png.transform/1col/image.png"
+function WinnerAvatar({ name, headshotUrl }: { name: string; headshotUrl?: string | null }) {
+  const src = driverPhoto(name, undefined, headshotUrl)
+  const [failed, setFailed] = useState(false)
+
+  useEffect(() => {
+    setFailed(false)
+  }, [src])
+
+  if (!src || failed) {
+    const parts = name.trim().split(/\s+/).filter(Boolean)
+    const initials =
+      parts.length > 1
+        ? `${parts[0][0]}${parts[parts.length - 1][0]}`
+        : name.slice(0, 2)
+    return (
+      <span
+        aria-hidden
+        data-driver-avatar-fallback="true"
+        className="flex size-8 shrink-0 items-center justify-center rounded-full border border-border/60 bg-muted text-[10px] font-semibold uppercase text-muted-foreground"
+      >
+        {initials}
+      </span>
+    )
+  }
+
+  return (
+    <img
+      loading="lazy"
+      src={src}
+      alt={name}
+      onError={() => setFailed(true)}
+      className={`size-8 shrink-0 rounded-full bg-muted object-cover ${
+        src.includes("wikimedia") ? "object-center" : "object-top"
+      }`}
+    />
+  )
+}
 
 const roundColumn: TableColumn<Circuit> = {
   name: "Rodada",
@@ -42,12 +78,7 @@ const columns: TableColumn<Circuit>[] = [
     cell: (row) =>
       row.winner ? (
         <div className="flex items-center gap-2">
-          <img
-            loading="lazy"
-            src={row.winner.headshot_url || FALLBACK_AVATAR}
-            alt={row.winner.name}
-            className={`size-8 object-cover rounded-full bg-muted ${(row.winner.headshot_url || "").includes('wikimedia') ? 'object-center' : 'object-top'}`}
-          />
+          <WinnerAvatar name={row.winner.name} headshotUrl={row.winner.headshot_url} />
           <span>{row.winner.name}</span>
         </div>
       ) : (
@@ -71,12 +102,7 @@ const sprintWinnerColumn: TableColumn<Circuit> = {
   cell: (row) =>
     row.sprint_winner ? (
       <div className="flex items-center gap-2">
-        <img
-          loading="lazy"
-          src={row.sprint_winner.headshot_url || FALLBACK_AVATAR}
-          alt={row.sprint_winner.name}
-          className={`size-8 object-cover rounded-full bg-muted ${(row.sprint_winner.headshot_url || "").includes('wikimedia') ? 'object-center' : 'object-top'}`}
-        />
+        <WinnerAvatar name={row.sprint_winner.name} headshotUrl={row.sprint_winner.headshot_url} />
         <span>{row.sprint_winner.name}</span>
       </div>
     ) : (
