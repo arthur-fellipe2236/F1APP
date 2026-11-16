@@ -850,12 +850,9 @@ export function DashboardPage() {
                 keyField="driver_id"
                 progressPending={driverStandings.loading}
                 progressSkeleton
-                pagination={!isF12021}
-                paginationResetDefaultPage={resetPaginationToggle}
+                pagination={false}
                 fixedHeader={isF12021}
                 fixedHeaderScrollHeight={isF12021 ? "280px" : undefined}
-                paginationPerPage={20}
-                paginationRowsPerPageOptions={[10, 20, 50, 100]}
                 renderMobileCard={(row) => (
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
@@ -901,6 +898,10 @@ export function DashboardPage() {
               keyField="team_name"
               progressPending={teamStandings.loading}
               progressSkeleton
+              pagination={!isF12021}
+              paginationResetDefaultPage={resetPaginationToggle}
+              paginationPerPage={20}
+              paginationRowsPerPageOptions={[10, 20, 50, 100]}
               renderMobileCard={(row) => (
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
