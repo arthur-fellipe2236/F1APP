@@ -16,7 +16,7 @@ from ..results_refresh import (
     race_results_state,
     season_progress,
 )
-from .helpers import ApiError, get_or_404, paginate, parse_int, pagination_args
+from .helpers import ApiError, get_or_404, paginate, parse_int, parse_season_arg, pagination_args
 from .live import session_state
 from ..f2_f3_data import get_series_meetings, get_series_sessions, get_series_session_by_key
 
@@ -132,7 +132,7 @@ def _next_race_payload():
     # Calendário Customizado 2026 (Com Fuso de Brasília UTC-3)
     custom_2026 = [
         {
-            "round": 17,
+            "round": 16,
             "name": "Bahrain Grand Prix", "country": "Malásia", "location": "Sepang", "circuit": "Circuito Internacional de Sepang", 
             "weekend_start": "2026-10-02", "weekend_end": "2026-10-04",
             "sessions": [
@@ -144,7 +144,7 @@ def _next_race_payload():
             ]
         },
         {
-            "round": 18,
+            "round": 17,
             "name": "Singapore Grand Prix", "country": "Singapura", "location": "Marina Bay", "circuit": "Marina Bay Street Circuit", 
             "weekend_start": "2026-10-09", "weekend_end": "2026-10-11",
             "sessions": [
@@ -156,7 +156,7 @@ def _next_race_payload():
             ]
         },
         {
-            "round": 19,
+            "round": 18,
             "name": "United States Grand Prix", "country": "Estados Unidos", "location": "Austin", "circuit": "Circuit of The Americas", 
             "weekend_start": "2026-10-23", "weekend_end": "2026-10-25",
             "sessions": [
@@ -168,7 +168,7 @@ def _next_race_payload():
             ]
         },
         {
-            "round": 20,
+            "round": 19,
             "name": "GP do México (Cidade do México)", "country": "México", "location": "Cidade do México", "circuit": "Autódromo Hermanos Rodríguez", 
             "weekend_start": "2026-10-30", "weekend_end": "2026-11-01",
             "sessions": [
@@ -180,7 +180,7 @@ def _next_race_payload():
             ]
         },
         {
-            "round": 21,
+            "round": 20,
             "name": "GP do Brasil (São Paulo - Interlagos)", "country": "Brasil", "location": "São Paulo", "circuit": "Autódromo José Carlos Pace", 
             "weekend_start": "2026-11-06", "weekend_end": "2026-11-08",
             "sessions": [
@@ -192,7 +192,7 @@ def _next_race_payload():
             ]
         },
         {
-            "round": 22,
+            "round": 21,
             "name": "Las Vegas Grand Prix", "country": "Estados Unidos", "location": "Las Vegas", "circuit": "Las Vegas Strip Circuit", 
             "weekend_start": "2026-11-19", "weekend_end": "2026-11-21",
             "sessions": [
@@ -204,7 +204,7 @@ def _next_race_payload():
             ]
         },
         {
-            "round": 23,
+            "round": 22,
             "name": "Qatar Grand Prix", "country": "Catar", "location": "Lusail", "circuit": "Lusail International Circuit", 
             "weekend_start": "2026-11-27", "weekend_end": "2026-11-29",
             "sessions": [
@@ -216,7 +216,7 @@ def _next_race_payload():
             ]
         },
         {
-            "round": 24,
+            "round": 23,
             "name": "Abu Dhabi Grand Prix", "country": "Emirados Árabes Unidos", "location": "Abu Dhabi", "circuit": "Yas Marina Circuit", 
             "weekend_start": "2026-12-04", "weekend_end": "2026-12-06",
             "sessions": [
@@ -525,7 +525,7 @@ def list_races():
                 meta:
                   $ref: '#/components/schemas/Meta'
     """
-    season = parse_int(request.args.get("season"), "season")
+    season = parse_season_arg()
     series_param = request.args.get("series")
     series = (series_param or "f1").lower()
 

@@ -11,6 +11,7 @@ from .helpers import (
     paginate,
     parse_int,
     parse_json_body,
+    parse_season_arg,
     validate_fields,
 )
 
@@ -103,7 +104,7 @@ def list_circuits():
         schema:
           type: string
     """
-    season = parse_int(request.args.get("season"), "season")
+    season = parse_season_arg()
     series = request.args.get("series", "f1")
     race_type = request.args.get("race_type", "feature")
 

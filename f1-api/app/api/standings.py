@@ -4,7 +4,7 @@ from sqlalchemy import case, desc, func
 
 from ..extensions import db
 from ..models import Driver, Race, RaceResult, Team
-from .helpers import parse_int
+from .helpers import parse_season_arg
 from ..scraper import get_standings
 from ..results_refresh import (
     contingency_refresh_pending_standings,
@@ -250,7 +250,7 @@ def driver_standings():
             schema:
               $ref: '#/components/schemas/Error'
     """
-    raw_season = parse_int(request.args.get("season"), "season")
+    raw_season = parse_season_arg()
     series = request.args.get("series")
     norm_series = (series or "f1").lower()
     season = raw_season or DEFAULT_CURRENT_SEASON
@@ -400,7 +400,7 @@ def team_standings():
             schema:
               $ref: '#/components/schemas/Error'
     """
-    raw_season = parse_int(request.args.get("season"), "season")
+    raw_season = parse_season_arg()
     series = request.args.get("series")
     norm_series = (series or "f1").lower()
     season = raw_season or DEFAULT_CURRENT_SEASON

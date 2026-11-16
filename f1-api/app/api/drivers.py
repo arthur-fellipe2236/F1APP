@@ -12,6 +12,7 @@ from .helpers import (
     pagination_args,
     parse_int,
     parse_json_body,
+    parse_season_arg,
     validate_fields,
 )
 
@@ -120,7 +121,7 @@ def list_drivers():
 
     series_param = request.args.get("series")
     series = series_param.lower() if series_param else None
-    season = parse_int(request.args.get("season"), "season")
+    season = parse_season_arg()
     team_id = parse_int(request.args.get("team_id"), "team_id")
 
     if series in ("f2", "f3"):
@@ -154,7 +155,7 @@ def list_drivers():
     if series:
         query = query.filter_by(series=series)
     team_id = parse_int(request.args.get("team_id"), "team_id")
-    season = parse_int(request.args.get("season"), "season")
+    season = parse_season_arg()
 
     if season:
         if series == "f1" and season == 2026:

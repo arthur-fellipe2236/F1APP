@@ -392,14 +392,67 @@ function qs(params: Record<string, string | number | undefined>) {
 
 export async function fetchAll<T>(
   fn: (params: { page: number; per_page: number }) => Promise<Paginated<T>>,
+  options?: { concurrency?: number },
 ): Promise<T[]> {
   const first = await fn({ page: 1, per_page: 50 })
-  const all = [...first.data]
-  for (let page = 2; page <= first.meta.pages; page += 1) {
-    const next = await fn({ page, per_page: 50 })
-    all.push(...next.data)
+  const totalPages = first.meta?.pages ?? 1
+  if (totalPages <= 1) {
+    return [...first.data]
   }
+
+  const concurrency = Math.max(1, Math.min(8, options?.concurrency ?? 4))
+  const all = [...first.data]
+
+  for (let startPage = 2; startPage <= totalPages; startPage += concurrency) {
+    const batchPages: number[] = []
+    for (let p = startPage; p < startPage + concurrency && p <= totalPages; p += 1) {
+      batchPages.push(p)
+    }
+    const batchResults = await Promise.all(
+      batchPages.map((page) => fn({ page, per_page: 50 })),
+    )
+    for (const res of batchResults) {
+      all.push(...res.data)
+    }
+  }
+
   return all
+}
+
+export async function fetchAllRaceResults(
+  raceId: number,
+  options?: { concurrency?: number },
+): Promise<RaceResultsResponse> {
+  const first = await api.raceResults(raceId, { page: 1, per_page: 50 })
+  const totalPages = first.meta?.pages ?? 1
+  if (totalPages <= 1) {
+    return first
+  }
+
+  const concurrency = Math.max(1, Math.min(8, options?.concurrency ?? 4))
+  const all = [...first.data]
+
+  for (let startPage = 2; startPage <= totalPages; startPage += concurrency) {
+    const batchPages: number[] = []
+    for (let p = startPage; p < startPage + concurrency && p <= totalPages; p += 1) {
+      batchPages.push(p)
+    }
+    const batchResults = await Promise.all(
+      batchPages.map((page) => api.raceResults(raceId, { page, per_page: 50 })),
+    )
+    for (const res of batchResults) {
+      all.push(...res.data)
+    }
+  }
+
+  return {
+    ...first,
+    data: all,
+    meta: {
+      ...first.meta,
+      per_page: all.length,
+    },
+  }
 }
 
 export type ListParams = {

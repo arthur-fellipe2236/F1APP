@@ -21,7 +21,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useApi } from "@/hooks/use-api"
-import { api, type RaceResult, type ResultsState, findRaceSession } from "@/lib/api"
+import { api, fetchAllRaceResults, type RaceResult, type ResultsState, findRaceSession } from "@/lib/api"
 import { formatDate, formatPoints, formatStatus } from "@/lib/format"
 import { QualyResults } from "@/components/qualy-results"
 import { CountryFlag } from "@/components/flag"
@@ -308,7 +308,7 @@ function RaceDetailPageInner() {
   const results = useApi(
     () => {
       if (!valid) return Promise.reject(new Error("Corrida inválida"))
-      return api.raceResults(id, { page: 1, per_page: 50 })
+      return fetchAllRaceResults(id)
     },
     [id],
     (data) => resultsPollInterval(data?.results_state?.state),

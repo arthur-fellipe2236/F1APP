@@ -11,6 +11,7 @@ from .helpers import (
     pagination_args,
     parse_int,
     parse_json_body,
+    parse_season_arg,
     validate_fields,
 )
 
@@ -80,7 +81,7 @@ def list_teams():
 
     series_param = request.args.get("series")
     series = series_param.lower() if series_param else None
-    season = parse_int(request.args.get("season"), "season")
+    season = parse_season_arg()
 
     if series in ("f2", "f3"):
         page, per_page = pagination_args()
@@ -112,7 +113,7 @@ def list_teams():
     query = Team.query
     if series:
         query = query.filter_by(series=series)
-    season = parse_int(request.args.get("season"), "season")
+    season = parse_season_arg()
 
     def serialize(team):
         data = team.to_dict()
