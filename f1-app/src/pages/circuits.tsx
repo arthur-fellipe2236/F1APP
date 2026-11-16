@@ -1,6 +1,6 @@
 import { useAppStore } from "@/store"
 import { SeasonSelector } from "@/components/season-selector"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import type { TableColumn } from "react-data-table-component"
 
 import { VirtualDataTable } from "@/components/virtual-table"
@@ -10,7 +10,8 @@ import { PageHeader } from "@/components/page-header"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useApi } from "@/hooks/use-api"
-import { useSeasons } from "@/hooks/use-seasons"
+import { useSeasonsState } from "@/hooks/use-seasons"
+import { resolveSeasonReset } from "@/lib/season-utils"
 import { api, fetchAll, type Circuit } from "@/lib/api"
 import { flagFromCountry } from "@/lib/assets"
 import { RESULTS_POLL_MS } from "@/lib/request-gate"
@@ -88,8 +89,22 @@ export function CircuitsPage() {
   const { series, season, setSeason } = useAppStore()
   const [raceType, setRaceType] = useState("feature")
 
-  const seasons = useSeasons()
+  const { seasons, loading: seasonsLoading } = useSeasonsState(series)
   const defaultSeason = String(seasons[0] ?? "")
+
+  useEffect(() => {
+    const nextSeason = resolveSeasonReset({
+      series,
+      season,
+      seasons,
+      loading: seasonsLoading,
+      includeAll: true,
+    })
+    if (nextSeason !== null) {
+      setSeason(nextSeason)
+    }
+  }, [series, seasons, seasonsLoading, season, setSeason])
+
   const seasonParam =
     (season === "all" ? undefined : Number(season || defaultSeason)) ||
     undefined
@@ -161,7 +176,13 @@ export function CircuitsPage() {
           <Label htmlFor="season-filter" className="text-muted-foreground">
             Temporada
           </Label>
-          <SeasonSelector value={String(season || defaultSeason)} onValueChange={handleSeasonChange} className="w-[180px]" />
+          <SeasonSelector
+            value={String(season || defaultSeason)}
+            onValueChange={handleSeasonChange}
+            series={series}
+            includeAll
+            className="w-[180px]"
+          />
         </div>
       </PageHeader>
 

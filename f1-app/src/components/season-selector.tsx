@@ -1,5 +1,11 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useSeasons } from "@/hooks/use-seasons"
+import { useSeasonsState } from "@/hooks/use-seasons"
+import {
+  ALL_SEASONS_LABEL,
+  ALL_SEASONS_VALUE,
+  groupSeasonsByDecade,
+  resolveSeasonSelectorValue,
+} from "@/lib/season-utils"
 import { useAppStore } from "@/store"
 import { useMemo } from "react"
 
@@ -8,34 +14,37 @@ export function SeasonSelector({
   onValueChange,
   className = "w-[140px]",
   series: seriesProp,
+  includeAll = false,
 }: {
   value: string
   onValueChange: (v: string) => void
   className?: string
   series?: string
+  includeAll?: boolean
 }) {
   const storeSeries = useAppStore((state) => state.series)
   const series = seriesProp ?? storeSeries
-  const seasons = useSeasons(series)
+  const { seasons, loading } = useSeasonsState(series)
 
-  const groupedSeasons = useMemo(() => {
-    const groups: Record<string, number[]> = {}
-    seasons.forEach((year) => {
-      const decade = Math.floor(year / 10) * 10
-      const label = decade >= 2000 ? `Anos ${decade}` : `Anos ${decade.toString().slice(2)}`
-      
-      if (!groups[label]) groups[label] = []
-      groups[label].push(year)
-    })
-    return groups
-  }, [seasons])
+  const groupedSeasons = useMemo(() => groupSeasonsByDecade(seasons), [seasons])
+  const selectedValue = resolveSeasonSelectorValue({
+    value,
+    seasons,
+    loading,
+    includeAll,
+  })
 
   return (
-    <Select value={value} onValueChange={onValueChange}>
+    <Select value={selectedValue} onValueChange={onValueChange}>
       <SelectTrigger className={className} id="season-filter">
         <SelectValue placeholder="Temporada" />
       </SelectTrigger>
       <SelectContent>
+        {includeAll && (
+          <SelectGroup>
+            <SelectItem value={ALL_SEASONS_VALUE}>{ALL_SEASONS_LABEL}</SelectItem>
+          </SelectGroup>
+        )}
         {Object.entries(groupedSeasons).map(([label, years]) => (
           <SelectGroup key={label}>
             <SelectLabel>{label}</SelectLabel>

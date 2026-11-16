@@ -18,7 +18,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { useApi } from "@/hooks/use-api"
-import { useSeasons } from "@/hooks/use-seasons"
+import { useSeasonsState } from "@/hooks/use-seasons"
+import { resolveSeasonReset } from "@/lib/season-utils"
 import { api, fetchAll, type Race } from "@/lib/api"
 import { CountryFlag } from "@/components/flag"
 import { formatDate } from "@/lib/format"
@@ -145,16 +146,21 @@ export function RacesPage() {
   
   const { series, setSeries, season, setSeason } = useAppStore()
   
-  const seasons = useSeasons(series)
+  const { seasons, loading: seasonsLoading } = useSeasonsState(series)
   const defaultSeason = String(seasons[0] ?? "")
 
   useEffect(() => {
-    if (series !== "f1" && seasons.length > 0) {
-      if (!seasons.includes(Number(season))) {
-        setSeason(String(seasons[0]))
-      }
+    const nextSeason = resolveSeasonReset({
+      series,
+      season,
+      seasons,
+      loading: seasonsLoading,
+      includeAll: true,
+    })
+    if (nextSeason !== null) {
+      setSeason(nextSeason)
     }
-  }, [series, seasons, season, setSeason])
+  }, [series, seasons, seasonsLoading, season, setSeason])
 
   const seasonParam =
     (season === "all" ? undefined : Number(season || defaultSeason)) ||
@@ -248,6 +254,7 @@ export function RacesPage() {
               value={String(season || defaultSeason)}
               onValueChange={setSeason}
               series={series}
+              includeAll
               className="w-[180px]"
             />
           </div>
