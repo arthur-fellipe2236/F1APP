@@ -116,7 +116,9 @@ def cron_sync_results():
     """
     import hmac
     import os
-    from datetime import date
+    import time
+    from datetime import date, datetime, timezone
+    from ..cron_audit import record_cron_execution
     from ..extensions import db
     from ..sync_lease import acquire_lease, release_lease, ZombieWorkerError
     from ..results_refresh import pending_races, refresh_pending_results_synchronous
@@ -131,31 +133,52 @@ def cron_sync_results():
     elif not current_app.config.get("TESTING"):
         return jsonify({"error": "Unauthorized"}), 401
 
-    today = date.today()
-    pending = pending_races(today=today)
-    if not pending:
-        return jsonify({
-            "status": "idle_no_pending_races",
-            "pending_races": 0,
-            "imported_count": 0,
-            "skipped_count": 0,
-            "pending_count": 0,
-            "message": "Nenhuma corrida pendente aguardando homologação."
-        }), 200
+    started_at = time.monotonic()
+    executed_at = datetime.now(timezone.utc)
+    audit_status = "failed"
+    audit_pending_count = None
+    audit_imported_count = None
+    audit_skipped_count = None
+    audit_fencing_token = None
+    audit_error_summary = None
 
-    lease = acquire_lease(lease_id="f1_sync", ttl_seconds=180)
-    if not lease or not lease.get("acquired"):
-        return jsonify({
-            "status": "already_running",
-            "reason": "active_lease_held",
-            "retry_after_seconds": 180
-        }), 409
-
-    worker_uuid = lease["worker_uuid"]
-    fencing_token = lease["fencing_token"]
+    lease_acquired = False
+    worker_uuid = None
+    fencing_token = None
     success = False
     status_str = "idle_no_upstream_data"
+
     try:
+        today = date.today()
+        pending = pending_races(today=today)
+        audit_pending_count = len(pending)
+        if not pending:
+            audit_status = "idle_no_pending_races"
+            audit_imported_count = 0
+            audit_skipped_count = 0
+            return jsonify({
+                "status": "idle_no_pending_races",
+                "pending_races": 0,
+                "imported_count": 0,
+                "skipped_count": 0,
+                "pending_count": 0,
+                "message": "Nenhuma corrida pendente aguardando homologação."
+            }), 200
+
+        lease = acquire_lease(lease_id="f1_sync", ttl_seconds=180)
+        if not lease or not lease.get("acquired"):
+            audit_status = "already_running"
+            return jsonify({
+                "status": "already_running",
+                "reason": "active_lease_held",
+                "retry_after_seconds": 180
+            }), 409
+
+        lease_acquired = True
+        worker_uuid = lease["worker_uuid"]
+        fencing_token = lease["fencing_token"]
+        audit_fencing_token = fencing_token
+
         fencing_context = {
             "lease_id": "f1_sync",
             "worker_uuid": worker_uuid,
@@ -190,9 +213,24 @@ def cron_sync_results():
                 "pending_count": pending_count,
             }
 
-        if imported_count > 0:
+        audit_pending_count = pending_count
+        audit_imported_count = imported_count
+        audit_skipped_count = skipped_count
+
+        if imported_count > 0 and failed_count > 0:
+            success = False
+            status_str = "partial_failed"
+            audit_status = "partial_failed"
+            return jsonify({
+                "status": "partial_failed",
+                "fencing_token": fencing_token,
+                "worker_uuid": worker_uuid,
+                **summary_payload
+            }), 200
+        elif imported_count > 0:
             success = True
             status_str = "completed"
+            audit_status = "completed"
             return jsonify({
                 "status": "completed",
                 "fencing_token": fencing_token,
@@ -202,6 +240,7 @@ def cron_sync_results():
         elif failed_count > 0:
             success = False
             status_str = "failed"
+            audit_status = "failed"
             return jsonify({
                 "status": "failed",
                 "fencing_token": fencing_token,
@@ -211,6 +250,7 @@ def cron_sync_results():
         else:
             success = False
             status_str = "idle_no_upstream_data"
+            audit_status = "idle_no_upstream_data"
             return jsonify({
                 "status": "idle_no_upstream_data",
                 "fencing_token": fencing_token,
@@ -219,22 +259,40 @@ def cron_sync_results():
             }), 200
     except ZombieWorkerError as zwe:
         status_str = "zombie_rejected"
+        audit_status = "zombie_rejected"
+        audit_error_summary = f"ZombieWorkerError: {zwe}"
         return jsonify({
             "status": "error",
             "reason": "zombie_worker_rejected",
             "message": str(zwe)
         }), 409
     except Exception as exc:
-        status_str = f"failed_exception: {str(exc)[:40]}"
+        status_str = "failed_exception"
+        audit_status = "failed"
+        audit_error_summary = f"{type(exc).__name__}: {exc}"
+        db.session.rollback()
         raise exc
     finally:
-        try:
-            release_lease(
-                lease_id="f1_sync",
-                worker_uuid=worker_uuid,
-                fencing_token=fencing_token,
-                status=status_str,
-                success=success
-            )
-        except Exception:
-            db.session.rollback()
+        if lease_acquired and worker_uuid is not None:
+            try:
+                release_lease(
+                    lease_id="f1_sync",
+                    worker_uuid=worker_uuid,
+                    fencing_token=fencing_token,
+                    status=status_str[:32],
+                    success=success
+                )
+            except Exception:
+                db.session.rollback()
+
+        duration_ms = int((time.monotonic() - started_at) * 1000)
+        record_cron_execution(
+            status=audit_status,
+            duration_ms=duration_ms,
+            executed_at=executed_at,
+            pending_count=audit_pending_count,
+            imported_count=audit_imported_count,
+            skipped_count=audit_skipped_count,
+            fencing_token=audit_fencing_token,
+            error_summary=audit_error_summary,
+        )

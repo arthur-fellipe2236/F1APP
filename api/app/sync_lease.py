@@ -225,7 +225,7 @@ def release_lease(lease_id, worker_uuid, fencing_token, status="completed", succ
         now_post_lock = datetime.now(timezone.utc)
         record.locked_until = None
         record.locked_by = None
-        record.last_status = status
+        record.last_status = str(status)[:32] if status is not None else None
         record.last_heartbeat = now_post_lock
         if success:
             record.last_successful_sync_at = now_post_lock

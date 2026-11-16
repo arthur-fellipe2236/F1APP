@@ -47,6 +47,7 @@ def create_app(config_overrides=None):
         app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
 
     from . import models  # noqa: F401  (registra tabelas no metadata)
+    from . import cron_audit  # noqa: F401  (registra cron_execution_logs no metadata)
 
     db.init_app(app)
     migrate.init_app(app, db)
