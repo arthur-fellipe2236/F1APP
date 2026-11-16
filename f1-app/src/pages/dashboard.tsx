@@ -461,6 +461,12 @@ export function DashboardPage() {
       currentYear,
     })
 
+  const [resetPaginationToggle, setResetPaginationToggle] = useState(false)
+
+  useEffect(() => {
+    setResetPaginationToggle((prev) => !prev)
+  }, [seasonParam, series])
+
   const driverStandings = useApi(
     () => api.driverStandings(seasonParam, series),
     [seasonParam, series],
@@ -845,19 +851,20 @@ export function DashboardPage() {
                 progressPending={driverStandings.loading}
                 progressSkeleton
                 pagination={!isF12021}
+                paginationResetDefaultPage={resetPaginationToggle}
                 fixedHeader={isF12021}
                 fixedHeaderScrollHeight={isF12021 ? "280px" : undefined}
                 paginationPerPage={20}
-                paginationRowsPerPageOptions={[10, 20]}
+                paginationRowsPerPageOptions={[10, 20, 50, 100]}
                 renderMobileCard={(row) => (
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
                       <PositionBadge position={row.position} />
                       <div className="min-w-0">
-                        <div className="font-bold text-base leading-tight truncate text-foreground">
+                        <div className="font-bold text-base leading-tight break-words text-foreground">
                           {row.driver_name}
                         </div>
-                        <div className="mt-1">
+                        <div className="mt-1 min-w-0">
                           <TeamInline season={seasonParam} name={row.team_name ?? null} />
                         </div>
                       </div>

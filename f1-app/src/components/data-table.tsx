@@ -5,7 +5,13 @@ import DataTable, {
 } from "react-data-table-component"
 import { ptBR } from "react-data-table-component/locales"
 import { useTheme } from "next-themes"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
+import {
+  DEFAULT_PAGE_SIZE_OPTIONS,
+  paginateRows,
+  type PageSizeOption,
+} from "@/lib/pagination-utils"
 import { cn } from "@/lib/utils"
 
 createTheme(
@@ -55,6 +61,8 @@ createTheme(
 const paginationComponentOptions = {
   rowsPerPageText: "Linhas por página:",
   rangeSeparatorText: "de",
+  selectAllRowsItem: true,
+  selectAllRowsItemText: "Todos",
 }
 
 export function TableSkeleton() {
@@ -68,29 +76,123 @@ export function TableSkeleton() {
 }
 
 export interface F1DataTableProps<T> extends TableProps<T> {
-  renderMobileCard?: (row: T) => React.ReactNode;
+  renderMobileCard?: (row: T) => React.ReactNode
+  progressSkeleton?: boolean
 }
 
 export function F1DataTable<T>(props: F1DataTableProps<T>) {
-  const { renderMobileCard, data, ...tableProps } = props
+  const {
+    renderMobileCard,
+    data,
+    pagination,
+    paginationPerPage = 20,
+    paginationRowsPerPageOptions = [...DEFAULT_PAGE_SIZE_OPTIONS],
+    paginationResetDefaultPage,
+    progressPending,
+    progressSkeleton,
+    ...tableProps
+  } = props
   const { resolvedTheme } = useTheme()
   const activeTableTheme = resolvedTheme === "light" ? "f1-light" : "f1-dark"
-  
+
+  const [mobilePage, setMobilePage] = React.useState(1)
+  const [mobilePerPage, setMobilePerPage] = React.useState<PageSizeOption>(paginationPerPage)
+
+  React.useEffect(() => {
+    setMobilePerPage(paginationPerPage)
+  }, [paginationPerPage])
+
+  React.useEffect(() => {
+    setMobilePage(1)
+  }, [paginationResetDefaultPage])
+
+  const mobileSlice = React.useMemo(() => {
+    const rows = data ?? []
+    if (!pagination) {
+      return {
+        items: rows,
+        page: 1,
+        perPage: rows.length || (mobilePerPage === "all" ? rows.length : mobilePerPage),
+        totalRows: rows.length,
+        totalPages: 1,
+        startIndex: rows.length === 0 ? 0 : 1,
+        endIndex: rows.length,
+      }
+    }
+    return paginateRows(rows, mobilePage, mobilePerPage)
+  }, [data, pagination, mobilePage, mobilePerPage])
+
   return (
     <>
-      {renderMobileCard && data && (
+      {renderMobileCard && (
         <div className="md:hidden flex flex-col gap-3.5 w-full mb-6">
-          {data.map((row, idx) => (
-            <div
-              key={idx}
-              className="relative overflow-hidden rounded-xl border border-white/10 bg-card/90 backdrop-blur-md text-card-foreground shadow-sm hover:border-primary/50 transition-all duration-300 hover:shadow-md"
-            >
-              <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
-              <div className="p-4 flex flex-col gap-2 relative z-10">
-                {renderMobileCard(row)}
-              </div>
-            </div>
-          ))}
+          {progressPending && progressSkeleton && (!data || data.length === 0) ? (
+            <TableSkeleton />
+          ) : (
+            <>
+              {mobileSlice.items.map((row, idx) => (
+                <div
+                  key={idx}
+                  className="relative overflow-hidden rounded-xl border border-white/10 bg-card/90 backdrop-blur-md text-card-foreground shadow-sm hover:border-primary/50 transition-all duration-300 hover:shadow-md"
+                >
+                  <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
+                  <div className="p-4 flex flex-col gap-2 relative z-10">
+                    {renderMobileCard(row)}
+                  </div>
+                </div>
+              ))}
+              {pagination && mobileSlice.totalRows > 0 && (
+                <div
+                  data-testid="mobile-pagination"
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border/60 bg-card/90 px-3 py-2.5 text-xs text-muted-foreground"
+                >
+                  <label className="flex items-center gap-1.5">
+                    <span>Por página</span>
+                    <select
+                      aria-label="Linhas por página"
+                      value={String(mobilePerPage)}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        setMobilePerPage(val === "all" ? "all" : Number(val))
+                        setMobilePage(1)
+                      }}
+                      className="h-9 rounded-md border border-border/70 bg-background px-2 text-xs font-medium text-foreground"
+                    >
+                      {paginationRowsPerPageOptions.map((opt) => (
+                        <option key={opt} value={String(opt)}>
+                          {opt}
+                        </option>
+                      ))}
+                      <option value="all">Todos</option>
+                    </select>
+                  </label>
+                  <div className="flex items-center gap-2 ml-auto">
+                    <span className="font-mono tabular-nums text-foreground/90">
+                      {mobileSlice.startIndex}–{mobileSlice.endIndex} de {mobileSlice.totalRows}
+                    </span>
+                    <button
+                      type="button"
+                      aria-label="Página anterior"
+                      disabled={mobileSlice.page <= 1}
+                      onClick={() => setMobilePage((p) => Math.max(1, p - 1))}
+                      className="inline-flex size-9 items-center justify-center rounded-md border border-border/70 bg-background text-foreground disabled:opacity-40"
+                    >
+                      <ChevronLeft className="size-4" aria-hidden />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Próxima página"
+                      disabled={mobileSlice.page >= mobileSlice.totalPages}
+                      onClick={() => setMobilePage((p) => Math.min(mobileSlice.totalPages, p + 1))}
+                      className="inline-flex size-9 items-center justify-center rounded-md border border-border/70 bg-background text-foreground disabled:opacity-40"
+                    >
+                      <ChevronRight className="size-4" aria-hidden />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </div>
       )}
       
@@ -132,6 +234,11 @@ export function F1DataTable<T>(props: F1DataTableProps<T>) {
           responsive
           progressComponent={props.progressComponent || <TableSkeleton />}
           data={data}
+          pagination={pagination}
+          paginationPerPage={paginationPerPage}
+          paginationRowsPerPageOptions={paginationRowsPerPageOptions}
+          paginationResetDefaultPage={paginationResetDefaultPage}
+          progressPending={progressPending}
           {...tableProps}
         />
       </div>

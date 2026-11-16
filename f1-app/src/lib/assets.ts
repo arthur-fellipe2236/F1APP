@@ -3397,6 +3397,15 @@ const NATIONALITY_TO_PT: Record<string, string> = {
   chilean: "Chileno",
   czech: "Tcheco",
   liechtensteiner: "Liechtensteinense",
+  ar: "Argentino",
+  at: "Austríaco",
+  ch: "Suíço",
+  co: "Colombiano",
+  gb: "Britânico",
+  it: "Italiano",
+  nl: "Neerlandês",
+  nz: "Neozelandês",
+  sg: "Singapurense",
   "n/a": "",
 }
 
