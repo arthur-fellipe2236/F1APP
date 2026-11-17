@@ -46,10 +46,12 @@ const getDriverColumns = (seasonParam?: number): TableColumn<DriverStanding>[] =
     name: "Piloto",
     sortable: true,
     selector: (row) => row.driver_name,
-    minWidth: "220px",
+    minWidth: "200px",
+    grow: 1.2,
+    wrap: true,
     cell: (row) => (
-      <div className="flex items-center gap-2.5">
-        <span className="font-bold text-foreground text-sm tracking-tight">{row.driver_name}</span>
+      <div className="flex min-w-0 flex-wrap items-center gap-2 py-1">
+        <span className="font-bold text-foreground text-sm tracking-tight break-words">{row.driver_name}</span>
         <CodeBadge code={row.driver_code} nationality={row.nationality} />
       </div>
     ),
@@ -58,11 +60,14 @@ const getDriverColumns = (seasonParam?: number): TableColumn<DriverStanding>[] =
     name: "Equipe",
     sortable: true,
     selector: (row) => row.team_name ?? "",
-    minWidth: "180px",
+    minWidth: "220px",
+    grow: 1.5,
+    wrap: true,
     cell: (row) => <TeamInline name={row.team_name} season={seasonParam} />,
   },
   {
     name: "Corridas",
+    width: "92px",
     right: true,
     sortable: true,
     selector: (row) => row.races,
@@ -74,6 +79,7 @@ const getDriverColumns = (seasonParam?: number): TableColumn<DriverStanding>[] =
   },
   {
     name: "Pódios",
+    width: "88px",
     right: true,
     sortable: true,
     selector: (row) => row.podiums,
@@ -85,6 +91,7 @@ const getDriverColumns = (seasonParam?: number): TableColumn<DriverStanding>[] =
   },
   {
     name: "Vitórias",
+    width: "96px",
     right: true,
     sortable: true,
     selector: (row) => row.wins,
@@ -101,6 +108,7 @@ const getDriverColumns = (seasonParam?: number): TableColumn<DriverStanding>[] =
   },
   {
     name: "Pontos",
+    width: "110px",
     right: true,
     sortable: true,
     selector: (row) => row.points,
@@ -127,6 +135,8 @@ const getTeamColumns = (seasonParam?: number): TableColumn<TeamStanding>[] => [
     sortable: true,
     selector: (row) => row.team_name,
     minWidth: "220px",
+    grow: 1.5,
+    wrap: true,
     cell: (row) => <TeamName name={row.team_name} season={seasonParam} />,
   },
   {
@@ -142,6 +152,7 @@ const getTeamColumns = (seasonParam?: number): TableColumn<TeamStanding>[] => [
   },
   {
     name: "Vitórias",
+    width: "96px",
     right: true,
     sortable: true,
     selector: (row) => row.wins,
@@ -158,6 +169,7 @@ const getTeamColumns = (seasonParam?: number): TableColumn<TeamStanding>[] => [
   },
   {
     name: "Pódios",
+    width: "88px",
     right: true,
     sortable: true,
     selector: (row) => row.podiums,
@@ -169,6 +181,7 @@ const getTeamColumns = (seasonParam?: number): TableColumn<TeamStanding>[] => [
   },
   {
     name: "Pontos",
+    width: "110px",
     right: true,
     sortable: true,
     selector: (row) => row.points,

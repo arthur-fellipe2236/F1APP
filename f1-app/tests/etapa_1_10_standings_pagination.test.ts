@@ -86,3 +86,16 @@ test("Frente B - Códigos ISO de F2/F3 e nacionalidades F1 normalizam para PT-BR
     assert.equal(flagFromNationality(raw), `https://flagcdn.com/w40/${expectedIso}.png`)
   }
 })
+
+test("Visual - TeamInline/TeamName usam quebra controlada sem truncate e colunas Equipe/Pontos tem larguras explicitas", () => {
+  const tnSrc = fs.readFileSync(path.join(srcRoot, "components/team-name.tsx"), "utf8")
+  const dashSrc = fs.readFileSync(path.join(srcRoot, "pages/dashboard.tsx"), "utf8")
+  const rdSrc = fs.readFileSync(path.join(srcRoot, "pages/race-detail.tsx"), "utf8")
+  const vtSrc = fs.readFileSync(path.join(srcRoot, "components/virtual-table.tsx"), "utf8")
+
+  assert.doesNotMatch(tnSrc, /className="truncate"/)
+  assert.match(tnSrc, /whitespace-normal break-words/)
+  assert.match(dashSrc, /minWidth:\s*"220px"[\s\S]*?wrap:\s*true/)
+  assert.match(rdSrc, /minWidth:\s*"220px"[\s\S]*?wrap:\s*true/)
+  assert.match(vtSrc, /col\.right \? "flex-end"/)
+})

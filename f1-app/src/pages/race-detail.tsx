@@ -181,10 +181,13 @@ const getResultColumns = (season?: number): TableColumn<RaceResult>[] => [
   {
     name: "Piloto",
     sortable: true,
+    minWidth: "190px",
+    grow: 1.2,
+    wrap: true,
     selector: (row) => row.driver_name ?? "",
     cell: (row) => (
-      <div className="flex items-center gap-2">
-        <span className="font-medium">{row.driver_name ?? "—"}</span>
+      <div className="flex min-w-0 flex-wrap items-center gap-2 py-1">
+        <span className="font-medium break-words">{row.driver_name ?? "—"}</span>
         <CodeBadge
           code={row.driver_code}
           nationality={row.driver_nationality}
@@ -195,6 +198,9 @@ const getResultColumns = (season?: number): TableColumn<RaceResult>[] => [
   {
     name: "Equipe",
     sortable: true,
+    minWidth: "220px",
+    grow: 1.5,
+    wrap: true,
     selector: (row) => row.team_name ?? "",
     cell: (row) => <TeamInline name={row.team_name} season={season} />,
   },

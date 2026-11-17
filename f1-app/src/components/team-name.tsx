@@ -33,14 +33,14 @@ export function TeamInline({ name, season }: { name: string | null; season?: num
     const textColor = logo?.color ? getContrastColor(logo.color) : "var(--secondary-foreground)"
     
     return (
-      <span className="flex items-center gap-2">
+      <span className="flex min-w-0 max-w-full items-center gap-2 py-1">
         <span 
           className="flex h-7 min-w-10 sm:min-w-12 px-1 shrink-0 items-center justify-center rounded-md text-[10px] font-bold shadow-xs border border-border/40"
           style={{ backgroundColor: bgColor, color: textColor }}
         >
           {initials(name).slice(0, 3)}
         </span>
-        <span className="truncate">{displayTeamName(name, season)}</span>
+        <span className="min-w-0 whitespace-normal break-words leading-tight">{displayTeamName(name, season)}</span>
       </span>
     )
   }
@@ -52,7 +52,7 @@ export function TeamInline({ name, season }: { name: string | null; season?: num
   const isHistorical = !logo.color
 
   return (
-    <span className="flex items-center gap-2">
+    <span className="flex min-w-0 max-w-full items-center gap-2 py-1">
       <span 
         className={cn(
           "flex h-7 w-12 sm:w-14 shrink-0 items-center justify-center rounded-md px-1.5 py-0.5 shadow-xs border border-border/50 transition-all",
@@ -74,7 +74,7 @@ export function TeamInline({ name, season }: { name: string | null; season?: num
           )}
         />
       </span>
-      <span className="truncate">{displayTeamName(name, season)}</span>
+      <span className="min-w-0 whitespace-normal break-words leading-tight">{displayTeamName(name, season)}</span>
     </span>
   )
 }
@@ -88,14 +88,14 @@ export function TeamName({ name, season }: { name: string; season?: number }) {
     const textColor = logo?.color ? getContrastColor(logo.color) : "var(--secondary-foreground)"
     
     return (
-      <span className="flex items-center gap-3 min-h-10 group">
+      <span className="flex min-w-0 max-w-full items-center gap-3 min-h-10 py-1 group">
         <span 
           className="flex h-9 min-w-14 sm:min-w-16 px-1.5 shrink-0 items-center justify-center rounded-md text-[11px] font-bold shadow-xs border border-border/40 transition-transform duration-300 group-hover:scale-105"
           style={{ backgroundColor: bgColor, color: textColor }}
         >
           {initials(name)}
         </span>
-        <span className="font-medium text-foreground">{displayTeamName(name, season)}</span>
+        <span className="min-w-0 whitespace-normal break-words leading-tight font-medium text-foreground">{displayTeamName(name, season)}</span>
       </span>
     )
   }
@@ -106,7 +106,7 @@ export function TeamName({ name, season }: { name: string; season?: number }) {
   const isHistorical = !logo.color
   
   return (
-    <span className="flex items-center gap-3 min-h-10 group">
+    <span className="flex min-w-0 max-w-full items-center gap-3 min-h-10 py-1 group">
       <span 
         className={cn(
           "flex h-9 w-16 sm:h-10 sm:w-20 shrink-0 items-center justify-center rounded-md px-1.5 py-0.5 shadow-xs border border-border/50 transition-transform duration-300 group-hover:scale-105",
@@ -128,7 +128,7 @@ export function TeamName({ name, season }: { name: string; season?: number }) {
           )}
         />
       </span>
-      <span className="font-medium text-foreground">
+      <span className="min-w-0 whitespace-normal break-words leading-tight font-medium text-foreground">
         {displayTeamName(name, season)}
       </span>
     </span>

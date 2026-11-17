@@ -12,7 +12,7 @@ interface VirtualTableProps<T> {
   onRowClicked?: (row: T) => void
 }
 
-export function VirtualDataTable<T>({ data, columns, rowHeight = 60, getRowColor, renderMobileCard, onRowClicked }: VirtualTableProps<T>) {
+export function VirtualDataTable<T>({ data, columns, rowHeight = 66, getRowColor, renderMobileCard, onRowClicked }: VirtualTableProps<T>) {
   const parentRef = React.useRef<HTMLDivElement>(null)
 
   const rowVirtualizer = useVirtualizer({
@@ -23,7 +23,7 @@ export function VirtualDataTable<T>({ data, columns, rowHeight = 60, getRowColor
   })
 
   // We need a minimum width so horizontal scroll activates on dense tables
-  const minTableWidth = columns.reduce((acc, col) => acc + (parseInt(col.width as string) || 150), 0)
+  const minTableWidth = columns.reduce((acc, col) => acc + (parseInt((col.width || col.minWidth) as string) || 150), 0)
 
   return (
     <>
@@ -84,9 +84,10 @@ export function VirtualDataTable<T>({ data, columns, rowHeight = 60, getRowColor
                   key={idx}
                   className={cn("flex items-center px-4 py-3 bg-muted", isSticky && "sticky left-0 z-30 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]")}
                   style={{
-                    width: col.width || "150px",
-                    flex: col.width ? "0 0 auto" : 1,
-                    justifyContent: col.center ? "center" : "flex-start",
+                    width: col.width || col.minWidth || "150px",
+                    minWidth: col.minWidth || col.width || "150px",
+                    flex: col.width ? "0 0 auto" : (col.grow ?? 1),
+                    justifyContent: col.right ? "flex-end" : col.center ? "center" : "flex-start",
                   }}
                 >
                   {col.name}
@@ -99,7 +100,7 @@ export function VirtualDataTable<T>({ data, columns, rowHeight = 60, getRowColor
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const row = data[virtualRow.index]
             const accentColor = getRowColor ? getRowColor(row) : undefined
-            
+
             return (
               <div
                 key={virtualRow.index}
@@ -118,7 +119,7 @@ export function VirtualDataTable<T>({ data, columns, rowHeight = 60, getRowColor
                 {accentColor && (
                   <div className="absolute left-0 top-0 bottom-0 w-1 z-40" style={{ backgroundColor: accentColor }} />
                 )}
-                
+
                 {columns.map((col, idx) => {
                   const isSticky = idx === 1
                   let content: React.ReactNode = null
@@ -127,18 +128,19 @@ export function VirtualDataTable<T>({ data, columns, rowHeight = 60, getRowColor
                   } else if (col.selector) {
                     content = col.selector(row, virtualRow.index) as React.ReactNode
                   }
-                  
+
                   return (
                     <div
                       key={idx}
                       className={cn(
-                        "flex items-center px-4 bg-card group-hover:bg-muted/50 transition-colors", 
+                        "flex min-w-0 items-center px-4 bg-card group-hover:bg-muted/50 transition-colors",
                         isSticky && "sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
                       )}
                       style={{
-                        width: col.width || "150px",
-                        flex: col.width ? "0 0 auto" : 1,
-                        justifyContent: col.center ? "center" : "flex-start",
+                        width: col.width || col.minWidth || "150px",
+                        minWidth: col.minWidth || col.width || "150px",
+                        flex: col.width ? "0 0 auto" : (col.grow ?? 1),
+                        justifyContent: col.right ? "flex-end" : col.center ? "center" : "flex-start",
                       }}
                     >
                       {content}
