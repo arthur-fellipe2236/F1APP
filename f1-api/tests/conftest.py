@@ -1,6 +1,7 @@
 import pytest
 
 from app import create_app
+from app import schedule
 from app.extensions import db
 from app.seed import seed
 
@@ -19,6 +20,7 @@ def app(tmp_path_factory):
 
 @pytest.fixture(autouse=True)
 def fresh_db(app):
+    schedule.reset_for_tests()
     with app.app_context():
         db.drop_all()
         db.create_all()
