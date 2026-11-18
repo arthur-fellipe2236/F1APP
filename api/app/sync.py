@@ -7,7 +7,9 @@ Temporadas completas ja sincronizadas sao puladas; a temporada corrente e
 re-sincronizada a cada execucao para incorporar corridas novas.
 """
 
+import logging
 import os
+import re
 import threading
 import unicodedata
 from datetime import date, datetime, timedelta, timezone
@@ -16,9 +18,12 @@ from sqlalchemy import func
 
 from . import ergast
 from . import openf1
+from . import schedule
 from .extensions import db
 from .models import Circuit, Driver, Race, RaceResult, Team
 from .seed import ensure_demo_season, seed
+
+logger = logging.getLogger(__name__)
 
 MIN_OPENF1_SEASON = 2023
 MIN_JOLPICA_SEASON = 1985
@@ -633,50 +638,203 @@ def _upsert_team(name):
     return team
 
 
+def _circuit_name_key(name):
+    cleaned = re.sub(r"[-_/]+", " ", _place_key(name))
+    return re.sub(r"\s+", " ", cleaned).strip()
+
+
+def _normalized_place_pair(city, country):
+    city_norm = _place_key(city)
+    city_norm = CITY_ALIASES.get(city_norm, city_norm)
+    country_norm = _place_key(country)
+    country_norm = COUNTRY_ALIASES.get(country_norm, country_norm)
+    return city_norm, country_norm
+
+
+def _find_matching_circuit(name, city=None, country=None):
+    """Identifica circuito existente de forma deterministica e segura.
+
+    Prioridade:
+    1. Match exato por nome.
+    2. Match por nome normalizado ou grupo canonico conhecido (CIRCUIT_CANONICAL_GROUPS).
+    3. Match por (city, country) normalizado apenas quando city != country e ha
+       exatamente 1 circuito candidato (evita unir circuitos distintos na mesma cidade/pais).
+    """
+    if name:
+        exact = Circuit.query.filter_by(name=name).first()
+        if exact is not None:
+            return exact
+
+    all_circuits = Circuit.query.all()
+    if not all_circuits:
+        return None
+
+    def _canonical_rank(circuit):
+        race_count = Race.query.filter_by(circuit_id=circuit.id).count()
+        return (-race_count, circuit.id)
+
+    target_name_key = _circuit_name_key(name)
+    target_group = CIRCUIT_CANONICAL_GROUPS.get(target_name_key)
+
+    if target_name_key:
+        name_matches = [
+            c for c in all_circuits
+            if _circuit_name_key(c.name) == target_name_key
+            or (target_group and CIRCUIT_CANONICAL_GROUPS.get(_circuit_name_key(c.name)) == target_group)
+        ]
+        if name_matches:
+            name_matches.sort(key=_canonical_rank)
+            return name_matches[0]
+
+    in_city, in_country = _normalized_place_pair(city, country)
+    if in_city and in_country and in_city != in_country:
+        place_matches = []
+        for c in all_circuits:
+            c_city, c_country = _normalized_place_pair(c.city, c.country)
+            if c_city and c_country and c_city != c_country and (c_city, c_country) == (in_city, in_country):
+                place_matches.append(c)
+        if len(place_matches) == 1:
+            return place_matches[0]
+
+    return None
+
+
+def _is_country_placeholder(city, country):
+    city_norm, country_norm = _normalized_place_pair(city, country)
+    return bool(city_norm and country_norm and city_norm == country_norm)
+
+
 def _upsert_circuit(meeting, laps):
-    name = meeting["circuit_short_name"]
-    circuit = Circuit.query.filter_by(name=name).first()
+    normalized = schedule.apply_display_overrides(dict(meeting))
+    if normalized.get("meeting_key") == 1308 or _place_key(normalized.get("circuit_short_name")) == "kuala lumpur":
+        normalized["circuit_short_name"] = "Sepang"
+        normalized["location"] = "Sepang"
+        normalized["country_name"] = "Malásia"
+
+    name = normalized["circuit_short_name"]
+    city = normalized.get("location")
+    country = normalized.get("country_name")
+
+    circuit = _find_matching_circuit(name, city=city, country=country)
     if circuit is None:
         circuit = Circuit(name=name)
         db.session.add(circuit)
-    circuit.city = meeting.get("location")
-    circuit.country = meeting.get("country_name")
-    if laps:
+
+    if city and (not circuit.city or _is_country_placeholder(circuit.city, circuit.country)):
+        if not _is_country_placeholder(city, country) or not circuit.city:
+            circuit.city = city
+    if country and not circuit.country:
+        circuit.country = country
+    if laps and not circuit.laps:
         circuit.laps = laps
     db.session.commit()
     return circuit
 
 
+def _name_tokens(first_name, last_name):
+    combined = f"{first_name or ''} {last_name or ''}"
+    cleaned = re.sub(r"[-_'.]+", " ", _place_key(combined))
+    return [tok for tok in cleaned.split() if tok]
+
+
+def _names_compatible(first_a, last_a, first_b, last_b):
+    toks_a = set(_name_tokens(first_a, last_a))
+    toks_b = set(_name_tokens(first_b, last_b))
+    if not toks_a or not toks_b:
+        return False
+    if toks_a == toks_b:
+        return True
+    last_toks_a = set(_name_tokens("", last_a))
+    last_toks_b = set(_name_tokens("", last_b))
+    shares_surname = bool(last_toks_a & last_toks_b)
+    if not shares_surname:
+        return False
+    smaller, larger = (toks_a, toks_b) if len(toks_a) <= len(toks_b) else (toks_b, toks_a)
+    return len(smaller) >= 2 and smaller.issubset(larger)
+
+
 def _upsert_driver(info):
-    code = info.get("name_acronym") or None
-    driver = Driver.query.filter_by(
-        first_name=info.get("first_name"),
-        last_name=info.get("last_name"),
-        series="f1"
-    ).first()
+    first_name = (info.get("first_name") or "").strip()
+    last_name = (info.get("last_name") or "").strip()
+    if (not first_name or not last_name) and info.get("full_name"):
+        parts = str(info["full_name"]).strip().split()
+        if len(parts) >= 2:
+            first_name = first_name or parts[0]
+            last_name = last_name or " ".join(parts[1:])
+
+    code = (info.get("name_acronym") or "").strip().upper() or None
+    nationality = _to_nationality(info.get("country_code"))
+
+    driver = None
+    if first_name and last_name:
+        driver = Driver.query.filter_by(
+            first_name=first_name,
+            last_name=last_name,
+            series="f1",
+        ).first()
+
     if driver is None and code:
-        # Fallback para o codigo APENAS se o nome nao for passado corretamente
-        # e verificando para nao sobrescrever alguem com nome completamente diferente
-        candidate = Driver.query.filter_by(code=code, series="f1").first()
-        if candidate and (not info.get("first_name") or candidate.last_name == info.get("last_name")):
-            driver = candidate
+        code_candidates = Driver.query.filter_by(code=code, series="f1").all()
+        compatible = [
+            c for c in code_candidates
+            if (not first_name and not last_name)
+            or _names_compatible(first_name, last_name, c.first_name, c.last_name)
+        ]
+        if len(compatible) == 1:
+            driver = compatible[0]
+        elif len(code_candidates) > 0:
+            logger.warning(
+                "Ambiguous or incompatible driver code match skipped: code=%s name=%s %s",
+                code,
+                first_name,
+                last_name,
+            )
+
+    if driver is None and first_name and last_name:
+        series_drivers = Driver.query.filter_by(series="f1").all()
+        name_candidates = []
+        for cand in series_drivers:
+            if not _names_compatible(first_name, last_name, cand.first_name, cand.last_name):
+                continue
+            if code and cand.code and cand.code != code:
+                continue
+            if nationality and cand.nationality and _place_key(cand.nationality) != _place_key(nationality):
+                continue
+            name_candidates.append(cand)
+        if len(name_candidates) == 1:
+            driver = name_candidates[0]
+        elif len(name_candidates) > 1:
+            logger.warning(
+                "Ambiguous driver name match skipped (no auto-merge): name=%s %s candidates=%s",
+                first_name,
+                last_name,
+                [c.id for c in name_candidates],
+            )
 
     if driver is None:
         driver = Driver(
-            first_name=info.get("first_name") or "?",
-            last_name=info.get("last_name") or "?",
+            first_name=first_name or "?",
+            last_name=last_name or "?",
         )
         if code and Driver.query.filter_by(code=code, series="f1").first() is None:
             driver.code = code
         db.session.add(driver)
     else:
-        driver.first_name = info.get("first_name") or driver.first_name
-        driver.last_name = info.get("last_name") or driver.last_name
+        in_tokens = _name_tokens(first_name, last_name)
+        cur_tokens = _name_tokens(driver.first_name, driver.last_name)
+        if first_name and (not driver.first_name or driver.first_name == "?"):
+            driver.first_name = first_name
+        if last_name and (not driver.last_name or driver.last_name == "?"):
+            driver.last_name = last_name
+        if len(in_tokens) > len(cur_tokens) and _names_compatible(first_name, last_name, driver.first_name, driver.last_name):
+            driver.first_name = first_name or driver.first_name
+            driver.last_name = last_name or driver.last_name
         if code and driver.code is None:
             if Driver.query.filter_by(code=code, series="f1").first() is None:
                 driver.code = code
 
-    driver.nationality = _to_nationality(info.get("country_code")) or driver.nationality
+    if nationality and not driver.nationality:
+        driver.nationality = nationality
     if info.get("headshot_url"):
         driver.headshot_url = info["headshot_url"]
 
@@ -955,14 +1113,22 @@ def _sync_jolpica_race(entry, season, round_):
 
     circuit_data = entry.get("Circuit", {})
     location = circuit_data.get("Location", {})
-    circuit = Circuit.query.filter_by(
-        name=circuit_data.get("circuitName")
-    ).first()
+    circuit_name = circuit_data.get("circuitName")
+    circuit_city = location.get("locality")
+    circuit_country = location.get("country")
+    circuit = _find_matching_circuit(
+        circuit_name,
+        city=circuit_city,
+        country=circuit_country,
+    )
     if circuit is None:
-        circuit = Circuit(name=circuit_data.get("circuitName"))
+        circuit = Circuit(name=circuit_name)
         db.session.add(circuit)
-    circuit.city = location.get("locality") or circuit.city
-    circuit.country = location.get("country") or circuit.country
+    if circuit_city and (not circuit.city or _is_country_placeholder(circuit.city, circuit.country)):
+        if not _is_country_placeholder(circuit_city, circuit_country) or not circuit.city:
+            circuit.city = circuit_city
+    if circuit_country and not circuit.country:
+        circuit.country = circuit_country
     db.session.commit()
 
     RaceResult.query.filter_by(race_id=race.id).delete()
@@ -1189,6 +1355,33 @@ CIRCUIT_LENGTH_KM = {
 COUNTRY_ALIASES = {
     "usa": "united states",
     "uk": "united kingdom",
+    "estados unidos": "united states",
+    "eua": "united states",
+    "reino unido": "united kingdom",
+    "inglaterra": "united kingdom",
+    "italia": "italy",
+    "mexico": "mexico",
+    "japao": "japan",
+    "canada": "canada",
+    "holanda": "netherlands",
+    "paises baixos": "netherlands",
+    "malasia": "malaysia",
+    "espanha": "spain",
+    "brasil": "brazil",
+    "australia": "australia",
+    "alemanha": "germany",
+    "franca": "france",
+    "austria": "austria",
+    "belgica": "belgium",
+    "hungria": "hungary",
+    "singapura": "singapore",
+    "catar": "qatar",
+    "emirados arabes unidos": "united arab emirates",
+    "arabia saudita": "saudi arabia",
+    "china": "china",
+    "bahrein": "bahrain",
+    "monaco": "monaco",
+    "azerbaijao": "azerbaijan",
 }
 
 # Cidades que as duas fontes descrevem de formas diferentes para o mesmo
@@ -1196,6 +1389,27 @@ COUNTRY_ALIASES = {
 CITY_ALIASES = {
     "miami gardens": "miami",
     "spa-francorchamps": "spa",
+    "cidade do mexico": "mexico city",
+}
+
+# Aliases canonicos de circuitos conhecidos (somente equivalencias inequivocas).
+CIRCUIT_CANONICAL_GROUPS = {
+    "autodromo nazionale di monza": "monza",
+    "autodromo nazionale monza": "monza",
+    "autodromo hermanos rodriguez": "mexico_city",
+    "albert park grand prix circuit": "albert_park",
+    "melbourne grand prix circuit": "albert_park",
+    "suzuka circuit": "suzuka",
+    "suzuka international racing course": "suzuka",
+    "circuit gilles villeneuve": "montreal",
+    "circuit park zandvoort": "zandvoort",
+    "circuit zandvoort": "zandvoort",
+    "miami": "miami",
+    "miami international autodrome": "miami",
+    "sepang": "sepang",
+    "sepang international circuit": "sepang",
+    "circuito internacional de sepang": "sepang",
+    "kuala lumpur": "sepang",
 }
 
 
