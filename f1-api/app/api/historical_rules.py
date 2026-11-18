@@ -104,3 +104,75 @@ def historical_team_points(season, rows):
             score = max(pts_list) if best_car_only else sum(pts_list)
             per_team[team_id].append((race_index[race_id], score))
     return {t: apply_drop_rule(rule, res) for t, res in per_team.items()}
+
+
+CONSTRUCTOR_SANCTIONS = {
+    ("f1", 2007): [
+        {
+            "team_name": "McLaren",
+            "sanction_type": "championship_exclusion",
+            "official_points": 0.0,
+            "points_delta": None,
+            "exclude_from_ranking": True,
+            "final_status": "excluded",
+            "authority": "FIA World Motor Sport Council (WMSC)",
+            "decision_date": "2007-09-13",
+            "official_source": (
+                "FIA World Motor Sport Council Decision, Paris, 13 September 2007 (Spygate)"
+            ),
+            "scope": "constructors_only",
+            "effective_from_round": None,
+            "note": (
+                "McLaren excluida do Campeonato Mundial de Construtores de 2007 "
+                "por decisao do Conselho Mundial da FIA (13/09/2007). "
+                "Pilotos mantiveram seus pontos individuais."
+            ),
+        }
+    ]
+}
+
+
+def get_constructor_sanction_note(season, series="f1"):
+    """Retorna nota consolidada de sancoes de construtores para (series, season), se houver."""
+    if not season:
+        return None
+    rules = CONSTRUCTOR_SANCTIONS.get(((series or "f1").lower(), season), [])
+    notes = [r["note"] for r in rules if r.get("note")]
+    return " ".join(notes) if notes else None
+
+
+def apply_constructor_sanctions(standing, *, season, series="f1"):
+    """Aplica sancoes historicas declarativas exclusivamente na tabela de construtores.
+
+    Nao altera resultados individuais de corridas nem a classificacao de pilotos.
+    """
+    if not season or not standing:
+        return standing
+    rules = CONSTRUCTOR_SANCTIONS.get(((series or "f1").lower(), season))
+    if not rules:
+        return standing
+
+    by_team = {
+        str(rule["team_name"]).strip().lower(): rule
+        for rule in rules
+        if rule.get("team_name")
+    }
+    for row in standing:
+        tname = str(row.get("team_name") or "").strip().lower()
+        rule = by_team.get(tname)
+        if not rule:
+            continue
+        stype = rule.get("sanction_type")
+        row["sanctioned"] = True
+        row["sanction_type"] = stype
+        if rule.get("note"):
+            row["sanction_note"] = rule["note"]
+        if stype == "championship_exclusion":
+            row["points"] = float(rule.get("official_points") or 0.0)
+            if rule.get("exclude_from_ranking", True):
+                row["excluded"] = True
+                row["position_text"] = "EX"
+        elif stype == "points_deduction":
+            delta = float(rule.get("points_delta") or 0.0)
+            row["points"] = max(0.0, float(row.get("points") or 0.0) + delta)
+    return standing
