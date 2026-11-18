@@ -1,11 +1,17 @@
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 
-export function PositionBadge({ position }: { position: number | null }) {
+export function PositionBadge({
+  position,
+  label,
+}: {
+  position: number | null
+  label?: string | null
+}) {
   if (!position) {
     return (
       <Badge variant="destructive" className="w-9 justify-center text-[10px] font-mono font-bold">
-        OUT
+        {label || "OUT"}
       </Badge>
     )
   }

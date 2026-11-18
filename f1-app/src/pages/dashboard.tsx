@@ -126,7 +126,7 @@ const getTeamColumns = (seasonParam?: number): TableColumn<TeamStanding>[] => [
     width: "76px",
     cell: (row) => (
       <div className="flex items-center">
-        <PositionBadge position={row.position} />
+        <PositionBadge position={row.position} label={row.position_text} />
       </div>
     ),
   },
@@ -895,7 +895,7 @@ export function DashboardPage() {
           )}
         </TabsContent>
         <TabsContent value="teams">
-          {!isF12021 && teamStandings.data?.official === false && teamStandings.data?.note && (
+          {!isF12021 && teamStandings.data?.note && (
             <div className="mb-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
               ⚠️ {teamStandings.data.note}
             </div>
@@ -919,7 +919,7 @@ export function DashboardPage() {
               renderMobileCard={(row) => (
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <PositionBadge position={row.position} />
+                    <PositionBadge position={row.position} label={row.position_text} />
                     <div className="min-w-0">
                       <TeamName name={row.team_name} season={seasonParam} />
                     </div>

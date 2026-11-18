@@ -15,6 +15,8 @@ from .historical_rules import (
     DRIVER_DROP_RULES,
     FIRST_CONSTRUCTORS_SEASON,
     BEST_CAR_ONLY_LAST_SEASON,
+    apply_constructor_sanctions,
+    get_constructor_sanction_note,
     historical_driver_points,
     historical_team_points,
 )
@@ -513,19 +515,32 @@ def team_standings():
             row["points"] = adjusted[row["team_id"]]
         official = season >= FIRST_CONSTRUCTORS_SEASON
 
+    standing = apply_constructor_sanctions(
+        standing,
+        season=season,
+        series=norm_series,
+    )
+
     # Desempate oficial FIA 2026 para construtores (Countback: vitórias, 2ºs, 3ºs, ..., Artigo 7.2)
     # Não utiliza ordem alfabética. Em caso de empate absoluto, preserva determinismo por team_id.
     counts_by_team, max_team_pos = _team_finish_counts(season, series)
     standing.sort(
         key=lambda row: (
+            1 if row.get("excluded") else 0,
             -row["points"],
             tuple(-counts_by_team.get(row["team_id"], {}).get(p, 0) for p in range(1, max_team_pos + 1)),
             row["team_id"] or 0,
         )
     )
 
-    for position, row in enumerate(standing, start=1):
-        row["position"] = position
+    pos_counter = 1
+    for row in standing:
+        if row.get("excluded"):
+            row["position"] = None
+            row.setdefault("position_text", "EX")
+        else:
+            row["position"] = pos_counter
+            pos_counter += 1
     payload = {"season": season, "data": standing}
     _attach_progress(payload, season, series, scraped_rows=standing if series in ("f2", "f3") else None)
     if not official:
@@ -534,4 +549,8 @@ def team_standings():
             "A Copa de Construtores da FIA so foi criada em 1958. "
             "Classificacao retroativa nao-oficial."
         )
+    else:
+        sanction_note = get_constructor_sanction_note(season, norm_series)
+        if sanction_note:
+            payload["note"] = sanction_note
     return jsonify(payload)

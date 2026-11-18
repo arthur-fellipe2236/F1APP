@@ -104,7 +104,12 @@ export interface DriverStanding {
 }
 
 export interface TeamStanding {
-  position: number
+  position: number | null
+  position_text?: string | null
+  excluded?: boolean
+  sanctioned?: boolean
+  sanction_type?: string | null
+  sanction_note?: string | null
   team_id: number | null
   team_name: string
   points: number
