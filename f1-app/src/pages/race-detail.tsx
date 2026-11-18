@@ -23,6 +23,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useApi } from "@/hooks/use-api"
 import { api, fetchAllRaceResults, type RaceResult, type ResultsState, findRaceSession } from "@/lib/api"
 import { formatDate, formatPoints, formatStatus } from "@/lib/format"
+import { formatSessionDayMonth, formatSessionTime, formatSessionWeekday } from "@/lib/datetime"
 import { QualyResults } from "@/components/qualy-results"
 import { CountryFlag } from "@/components/flag"
 import { findMeetingForRace } from "@/lib/meeting-match"
@@ -427,7 +428,6 @@ function RaceDetailPageInner() {
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               {meetingSessions.map((s: any) => {
-                const sDate = new Date(s.date_start)
                 const isLive = s.state === "live"
                 return (
                   <div
@@ -440,7 +440,7 @@ function RaceDetailPageInner() {
                   >
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-[11px] font-bold uppercase tracking-wider text-red-400">
-                        {sDate.toLocaleDateString("pt-BR", { weekday: "short" })} ({sDate.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })})
+                        {formatSessionWeekday(s.date_start)} ({formatSessionDayMonth(s.date_start)})
                       </span>
                       {isLive && (
                         <span className="flex h-2 w-2 relative">
@@ -457,7 +457,7 @@ function RaceDetailPageInner() {
                         <Clock className="size-3" /> Início:
                       </span>
                       <span className="font-mono font-bold text-sm text-white">
-                        {sDate.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+                        {formatSessionTime(s.date_start)}
                       </span>
                     </div>
                   </div>

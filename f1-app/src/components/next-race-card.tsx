@@ -8,6 +8,7 @@ import { api, type LiveSessionEntry } from "@/lib/api"
 import { flagFromCountry } from "@/lib/assets"
 import { mediaUrl } from "@/lib/media"
 import { cn } from "@/lib/utils"
+import { formatSessionDateTime, formatSessionTime, instantMs } from "@/lib/datetime"
 import { NEXT_RACE_POLL_MS } from "@/lib/request-gate"
 
 const SESSION_SHORT: Record<string, string> = {
@@ -41,22 +42,6 @@ const SESSION_SHORT: Record<string, string> = {
   "Corrida": "R",
 }
 
-// Formatadores padronizados no fuso horário oficial de Brasília (America/Sao_Paulo)
-const dateTimeFmt = new Intl.DateTimeFormat("pt-BR", {
-  timeZone: "America/Sao_Paulo",
-  weekday: "short",
-  day: "2-digit",
-  month: "short",
-  hour: "2-digit",
-  minute: "2-digit",
-})
-
-const timeFmt = new Intl.DateTimeFormat("pt-BR", {
-  timeZone: "America/Sao_Paulo",
-  hour: "2-digit",
-  minute: "2-digit",
-})
-
 interface Remaining {
   days: number
   hours: number
@@ -66,8 +51,9 @@ interface Remaining {
 }
 
 function remainingUntil(target: string): Remaining {
-  const diff = new Date(target).getTime() - Date.now()
-  if (diff <= 0) {
+  const targetMs = instantMs(target)
+  const diff = (targetMs ?? Number.NaN) - Date.now()
+  if (!Number.isFinite(diff) || diff <= 0) {
     return { days: 0, hours: 0, minutes: 0, seconds: 0, done: true }
   }
   return {
@@ -171,8 +157,8 @@ function SessionPill({
   const live = session.state === "live"
   return (
     <span
-      title={`${session.name} — ${dateTimeFmt.format(
-        new Date(session.date_start),
+      title={`${session.name} — ${formatSessionDateTime(
+        session.date_start,
       )} (Horário de Brasília)${live ? " · ao vivo" : ""}`}
       className={cn(
         "flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-[10px] sm:text-[11px] font-semibold font-mono tracking-tight tabular-nums transition-all duration-200",
@@ -192,7 +178,7 @@ function SessionPill({
       {live && <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />}
       <span>{sessionLabel(session)}</span>
       <span className="font-normal opacity-85">
-        {timeFmt.format(new Date(session.date_start))}
+        {formatSessionTime(session.date_start)}
       </span>
     </span>
   )
@@ -290,7 +276,7 @@ export function NextRaceCard({
       (session: LiveSessionEntry) =>
         session.state === "live" ||
         (session.state !== "finished" &&
-          new Date(session.date_start).getTime() > now),
+          (instantMs(session.date_start) ?? 0) > now),
     ) ?? null
   const target = nextSession?.date_start ?? data.race_start
   const targetIsRace = (nextSession?.name ?? "Race") === "Race"
@@ -361,13 +347,19 @@ export function NextRaceCard({
           </div>
 
           {nextSession ? (
-            <div className="mt-2.5 flex items-center gap-1.5 text-xs text-muted-foreground font-mono">
-              <CalendarDays className={cn("size-3.5 shrink-0", seriesMeta.accent)} />
-              <span className="truncate">
-                {nextSession.name === "Race"
-                  ? `Largada: ${dateTimeFmt.format(new Date(nextSession.date_start))} (Brasília)`
-                  : `${nextSession.name}: ${dateTimeFmt.format(new Date(nextSession.date_start))} (Brasília)`}
+            <div className="mt-2.5 flex items-start gap-1.5 text-xs text-muted-foreground font-mono">
+              <CalendarDays className={cn("size-3.5 shrink-0 mt-0.5", seriesMeta.accent)} />
+              <span className="whitespace-normal break-words leading-snug">
+                {nextSession.name === "Race" || nextSession.name === "Corrida Principal" || nextSession.name === "Corrida"
+                  ? `Largada: ${formatSessionDateTime(nextSession.date_start)} (Brasília)`
+                  : `${nextSession.name}: ${formatSessionDateTime(nextSession.date_start)} (Brasília)`}
               </span>
+            </div>
+          ) : null}
+
+          {data.schedule?.stale ? (
+            <div className="mt-1 text-[10px] text-amber-400/90" data-testid="schedule-stale">
+              Horários podem estar desatualizados (fonte temporariamente indisponível)
             </div>
           ) : null}
 

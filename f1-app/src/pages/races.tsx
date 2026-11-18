@@ -23,6 +23,12 @@ import { resolveSeasonReset } from "@/lib/season-utils"
 import { api, fetchAll, type Race } from "@/lib/api"
 import { CountryFlag } from "@/components/flag"
 import { formatDate } from "@/lib/format"
+import {
+  DISPLAY_TIME_ZONE_LABEL,
+  formatSessionTime,
+  formatSessionWeekdayDate,
+  instantMs,
+} from "@/lib/datetime"
 import { NEXT_RACE_POLL_MS } from "@/lib/request-gate"
 
 function NextRaceHero({ season, series }: { season: number | undefined, series: string }) {
@@ -38,10 +44,10 @@ function NextRaceHero({ season, series }: { season: number | undefined, series: 
   const { nextMeeting, nextSession } = useMemo(() => {
     const meetings = sessionsQuery.data?.data ?? []
     if (meetings.length === 0) return { nextMeeting: null, nextSession: null }
-    const upcoming = meetings.find((m: any) => new Date(m.date_end).getTime() > nowMs)
+    const upcoming = meetings.find((m: any) => (instantMs(m.date_end) ?? 0) > nowMs)
     if (!upcoming) return { nextMeeting: null, nextSession: null }
     const nextS = upcoming.sessions?.find(
-      (s: any) => new Date(s.date_end || s.date_start).getTime() > nowMs,
+      (s: any) => (instantMs(s.date_end || s.date_start) ?? 0) > nowMs,
     )
     return {
       nextMeeting: upcoming,
@@ -51,8 +57,12 @@ function NextRaceHero({ season, series }: { season: number | undefined, series: 
 
   useEffect(() => {
     if (!nextSession) return
-    const target = new Date(nextSession.date_start).getTime()
-    const endTarget = new Date(nextSession.date_end || nextSession.date_start).getTime()
+    const target = instantMs(nextSession.date_start)
+    const endTarget = instantMs(nextSession.date_end || nextSession.date_start)
+    if (target === null || endTarget === null) {
+      setCountdown("Horário a confirmar")
+      return
+    }
 
     const tick = () => {
       const current = Date.now()
@@ -107,7 +117,7 @@ function NextRaceHero({ season, series }: { season: number | undefined, series: 
           <div className="flex-1">
             <h4 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
               <CalendarDays className="size-4" /> 
-              Horários (Seu Fuso Local)
+              Horários ({DISPLAY_TIME_ZONE_LABEL})
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
               {nextMeeting.sessions?.map((s: any) => {
@@ -116,10 +126,10 @@ function NextRaceHero({ season, series }: { season: number | undefined, series: 
                   <div key={sKey} className={`text-xs p-2 rounded border ${sKey === (nextSession?.key || nextSession?.session_key) ? 'bg-red-500/20 border-red-500/50 text-white' : 'bg-white/5 border-white/10 text-muted-foreground'}`}>
                     <div className="font-bold mb-1">{s.name || s.session_name}</div>
                     <div>
-                      {new Date(s.date_start).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' })}
+                      {formatSessionWeekdayDate(s.date_start)}
                     </div>
                     <div>
-                      {new Date(s.date_start).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+                      {formatSessionTime(s.date_start)}
                     </div>
                   </div>
                 )

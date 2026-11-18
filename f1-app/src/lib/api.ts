@@ -169,6 +169,14 @@ export interface QualifyingResponse {
   }
 }
 
+export interface ScheduleInfo {
+  source: string
+  status: "fresh" | "stale" | "seed"
+  stale: boolean
+  fetched_at: string | null
+  time_zone_display: string
+}
+
 export interface NextRace {
   source: string
   round: number | null
@@ -180,6 +188,7 @@ export interface NextRace {
   weekend_end: string
   race_start: string | null
   sessions?: LiveSessionEntry[] | null
+  schedule?: ScheduleInfo | null
 }
 
 export interface NewsItem {
@@ -528,7 +537,7 @@ export const api = {
   },
 
   liveSessions: (year?: number, series?: string) =>
-    request<{ year: number; series?: string; data: LiveMeetingEntry[] }>(
+    request<{ year: number; series?: string; data: LiveMeetingEntry[]; schedule?: ScheduleInfo | null }>(
       `/live/sessions${qs({ year, series })}`,
     ),
 
