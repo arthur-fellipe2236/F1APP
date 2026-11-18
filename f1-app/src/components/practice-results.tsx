@@ -43,12 +43,15 @@ const getColumns = (season: number): TableColumn<PracticeRow>[] => [
   },
   {
     name: "Piloto",
+    minWidth: "240px",
+    grow: 1.5,
+    wrap: true,
     cell: (row) => (
-      <div className="flex flex-col py-2">
-        <span className="font-semibold">
+      <div className="flex min-w-0 w-full flex-col gap-1 py-2">
+        <span className="font-semibold break-words leading-tight">
           {row.driver_name} <span className="text-muted-foreground ml-1">#{row.driver_number}</span>
         </span>
-        <div className="scale-90 origin-left text-muted-foreground mt-0.5">
+        <div className="min-w-0 max-w-full text-xs text-muted-foreground">
           <TeamInline name={row.team_name} season={season} />
         </div>
       </div>
@@ -58,14 +61,18 @@ const getColumns = (season: number): TableColumn<PracticeRow>[] => [
   },
   {
     name: "Tempo",
+    minWidth: "120px",
+    right: true,
     selector: (row) => row.time,
     sortable: true,
-    cell: (row) => <span className="font-mono text-sm">{formatLapTime(row.time)}</span>,
+    cell: (row) => <span className="font-mono text-sm tabular-nums">{formatLapTime(row.time)}</span>,
   },
   {
     name: "Diferença",
+    minWidth: "110px",
+    right: true,
     selector: (row) => row.gap,
-    cell: (row) => <span className="font-mono text-sm text-muted-foreground">{row.gap}</span>,
+    cell: (row) => <span className="font-mono text-sm text-muted-foreground tabular-nums">{row.gap}</span>,
   },
 ]
 
@@ -221,7 +228,7 @@ export function PracticeResults({ season, countryName }: { season: number; count
                 {row.position}º
               </span>
               <div className="min-w-0">
-                <div className="font-bold text-sm leading-tight truncate">
+                <div className="font-bold text-sm leading-tight break-words">
                   {row.driver_name} <span className="text-xs text-muted-foreground font-normal">#{row.driver_number}</span>
                 </div>
                 <div className="text-xs text-muted-foreground mt-0.5">

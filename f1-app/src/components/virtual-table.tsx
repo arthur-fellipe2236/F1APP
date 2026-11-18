@@ -133,7 +133,7 @@ export function VirtualDataTable<T>({ data, columns, rowHeight = 66, getRowColor
                     <div
                       key={idx}
                       className={cn(
-                        "flex min-w-0 items-center px-4 bg-card group-hover:bg-muted/50 transition-colors",
+                        "flex min-w-0 overflow-hidden items-center px-4 bg-card group-hover:bg-muted/50 transition-colors",
                         isSticky && "sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
                       )}
                       style={{

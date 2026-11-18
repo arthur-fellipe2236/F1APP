@@ -222,6 +222,8 @@ const getResultColumns = (season?: number): TableColumn<RaceResult>[] => [
   },
   {
     name: "Status",
+    minWidth: "120px",
+    wrap: true,
     sortable: true,
     selector: (row) => row.status ?? "",
     cell: (row) => (
@@ -572,7 +574,7 @@ function RaceDetailPageInner() {
                     <div className="flex items-center gap-3 min-w-0">
                       <PositionBadge position={row.position} />
                       <div className="min-w-0">
-                        <div className="font-bold text-sm leading-tight flex items-center gap-2 truncate">
+                        <div className="font-bold text-sm leading-tight flex flex-wrap items-center gap-2 break-words">
                           <span>{row.driver_name ?? "—"}</span>
                           {row.fastest_lap && (
                             <span title="Volta mais rápida">

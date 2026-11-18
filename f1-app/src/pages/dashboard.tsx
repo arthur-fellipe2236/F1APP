@@ -67,7 +67,7 @@ const getDriverColumns = (seasonParam?: number): TableColumn<DriverStanding>[] =
   },
   {
     name: "Corridas",
-    width: "92px",
+    width: "104px",
     right: true,
     sortable: true,
     selector: (row) => row.races,
@@ -141,6 +141,7 @@ const getTeamColumns = (seasonParam?: number): TableColumn<TeamStanding>[] => [
   },
   {
     name: "Corridas",
+    width: "104px",
     right: true,
     sortable: true,
     selector: (row) => row.races,
