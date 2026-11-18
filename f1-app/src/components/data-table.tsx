@@ -1,6 +1,7 @@
 import * as React from "react"
 import DataTable, {
   createTheme,
+  type TableColumn,
   type TableProps,
 } from "react-data-table-component"
 import { ptBR } from "react-data-table-component/locales"
@@ -10,6 +11,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import {
   DEFAULT_PAGE_SIZE_OPTIONS,
   paginateRows,
+  parsePageSizeOption,
+  sortRowsBySelector,
   type PageSizeOption,
 } from "@/lib/pagination-utils"
 import { cn } from "@/lib/utils"
@@ -80,6 +83,21 @@ export interface F1DataTableProps<T> extends TableProps<T> {
   progressSkeleton?: boolean
 }
 
+function resolveMobileRowKey<T>(
+  row: T,
+  keyField: string | undefined,
+  fallbackIndex: number,
+): string {
+  if (keyField && row && typeof row === "object") {
+    const rec = row as Record<string, unknown>
+    const val = rec[keyField]
+    if (val !== undefined && val !== null && String(val).length > 0) {
+      return `${String(val)}-${fallbackIndex}`
+    }
+  }
+  return `row-${fallbackIndex}`
+}
+
 function TablePaginationBar({
   testId,
   perPage,
@@ -106,6 +124,10 @@ function TablePaginationBar({
   return (
     <div
       data-testid={testId}
+      data-page={page}
+      data-total-pages={totalPages}
+      data-per-page={String(perPage)}
+      data-total-rows={totalRows}
       className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border/60 bg-card/90 px-3 py-2.5 text-xs text-muted-foreground"
     >
       <label className="flex items-center gap-1.5">
@@ -114,8 +136,7 @@ function TablePaginationBar({
           aria-label="Linhas por página"
           value={String(perPage)}
           onChange={(e) => {
-            const val = e.target.value
-            onPerPageChange(val === "all" ? "all" : Number(val))
+            onPerPageChange(parsePageSizeOption(e.target.value))
           }}
           className="h-9 rounded-md border border-border/70 bg-background px-2 text-xs font-medium text-foreground dark:[color-scheme:dark]"
         >
@@ -182,6 +203,8 @@ export function F1DataTable<T>(props: F1DataTableProps<T>) {
     paginationResetDefaultPage,
     progressPending,
     progressSkeleton,
+    keyField,
+    onSort,
     ...tableProps
   } = props
   const { resolvedTheme } = useTheme()
@@ -189,6 +212,10 @@ export function F1DataTable<T>(props: F1DataTableProps<T>) {
 
   const [currentPage, setCurrentPage] = React.useState(1)
   const [perPage, setPerPage] = React.useState<PageSizeOption>(paginationPerPage)
+  const [sortState, setSortState] = React.useState<{
+    column: TableColumn<T>
+    direction: "asc" | "desc"
+  } | null>(null)
 
   React.useEffect(() => {
     setPerPage(paginationPerPage)
@@ -196,10 +223,22 @@ export function F1DataTable<T>(props: F1DataTableProps<T>) {
 
   React.useEffect(() => {
     setCurrentPage(1)
+    setSortState(null)
   }, [paginationResetDefaultPage])
 
-  const pageSlice = React.useMemo(() => {
+  const sortedRows = React.useMemo(() => {
     const rows = data ?? []
+    if (!sortState) return rows
+    return sortRowsBySelector(
+      rows,
+      sortState.column.selector as ((row: T, rowIndex?: number) => unknown) | undefined,
+      sortState.direction,
+      sortState.column.sortFunction,
+    )
+  }, [data, sortState])
+
+  const pageSlice = React.useMemo(() => {
+    const rows = sortedRows
     if (!pagination) {
       return {
         items: rows,
@@ -212,12 +251,37 @@ export function F1DataTable<T>(props: F1DataTableProps<T>) {
       }
     }
     return paginateRows(rows, currentPage, perPage)
-  }, [data, pagination, currentPage, perPage])
+  }, [sortedRows, pagination, currentPage, perPage])
+
+  React.useEffect(() => {
+    if (pagination && currentPage !== pageSlice.page) {
+      setCurrentPage(pageSlice.page)
+    }
+  }, [pagination, currentPage, pageSlice.page])
 
   const handlePerPageChange = React.useCallback((next: PageSizeOption) => {
     setPerPage(next)
     setCurrentPage(1)
   }, [])
+
+  const handleSort = React.useCallback(
+    (
+      selectedColumn: TableColumn<T>,
+      sortDirection: "asc" | "desc",
+      sortedSlice: T[],
+      sortColumns: { column: TableColumn<T>; sortDirection: "asc" | "desc" }[],
+    ) => {
+      setSortState({
+        column: selectedColumn,
+        direction: sortDirection === "desc" ? "desc" : "asc",
+      })
+      setCurrentPage(1)
+      if (onSort) {
+        onSort(selectedColumn, sortDirection as never, sortedSlice, sortColumns as never)
+      }
+    },
+    [onSort],
+  )
 
   return (
     <>
@@ -225,11 +289,18 @@ export function F1DataTable<T>(props: F1DataTableProps<T>) {
         <div className="md:hidden flex flex-col gap-3.5 w-full mb-6">
           {progressPending && progressSkeleton && (!data || data.length === 0) ? (
             <TableSkeleton />
+          ) : pageSlice.totalRows === 0 ? (
+            <div
+              data-testid="mobile-empty-state"
+              className="rounded-xl border border-border/60 bg-card/90 p-6 text-center text-sm text-muted-foreground"
+            >
+              Não há registros para exibir
+            </div>
           ) : (
             <>
               {pageSlice.items.map((row, idx) => (
                 <div
-                  key={idx}
+                  key={resolveMobileRowKey(row, keyField as string | undefined, pageSlice.startIndex + idx)}
                   className="relative overflow-hidden rounded-xl border border-white/10 bg-card/90 backdrop-blur-md text-card-foreground shadow-sm hover:border-primary/50 transition-all duration-300 hover:shadow-md"
                 >
                   <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
@@ -293,9 +364,22 @@ export function F1DataTable<T>(props: F1DataTableProps<T>) {
           paginationComponentOptions={paginationComponentOptions}
           highlightOnHover
           responsive
+          noDataComponent={
+            props.noDataComponent || (
+              <div
+                data-testid="desktop-empty-state"
+                className="p-6 text-center text-sm text-muted-foreground"
+              >
+                Não há registros para exibir
+              </div>
+            )
+          }
           progressComponent={props.progressComponent || <TableSkeleton />}
           data={pageSlice.items}
+          keyField={keyField}
           pagination={false}
+          sortServer
+          onSort={handleSort as never}
           progressPending={progressPending}
           {...tableProps}
         />

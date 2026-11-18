@@ -911,7 +911,7 @@ export function DashboardPage() {
               keyField="team_name"
               progressPending={teamStandings.loading}
               progressSkeleton
-              pagination={!isF12021}
+              pagination={true}
               paginationResetDefaultPage={resetPaginationToggle}
               paginationPerPage={20}
               paginationRowsPerPageOptions={[10, 20, 50, 100]}

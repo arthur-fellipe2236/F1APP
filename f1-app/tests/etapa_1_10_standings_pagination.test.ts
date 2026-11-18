@@ -60,9 +60,9 @@ test("Frente A - Pilotos no DashboardPage exibe lista completa (pagination={fals
   assert.doesNotMatch(driversSection, /paginationRowsPerPageOptions/)
   assert.doesNotMatch(driversSection, /paginationPerPage/)
 
-  // Classificação de Equipes preserva paginação completa
+  // Classificação de Equipes preserva paginação completa em todas as temporadas
   const teamsSection = dashSrc.split('<TabsContent value="teams">')[1] ?? ""
-  assert.match(teamsSection, /pagination=\{!isF12021\}/)
+  assert.match(teamsSection, /pagination=\{true\}/)
   assert.match(teamsSection, /paginationPerPage=\{20\}/)
   assert.match(teamsSection, /paginationRowsPerPageOptions=\{\[10, 20, 50, 100\]\}/)
   assert.match(teamsSection, /paginationResetDefaultPage=\{resetPaginationToggle\}/)
