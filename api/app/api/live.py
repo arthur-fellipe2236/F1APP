@@ -13,6 +13,7 @@ from flask import Blueprint, jsonify, request
 from .. import cache as app_cache
 from .. import f2_f3_data
 from .. import openf1
+from .. import schedule
 from .helpers import ApiError, parse_int
 
 logger = logging.getLogger(__name__)
@@ -104,7 +105,7 @@ def _sessions_for_year(year, series="f1"):
         )
     return _cached(
         ("sessions", year),
-        lambda: openf1.get("sessions", year=year) or [],
+        lambda: schedule.get_sessions(year),
         series=series,
     )
 
@@ -122,8 +123,8 @@ def _meetings_for_year(year, series="f1"):
     return _cached(
         ("meetings", year),
         lambda: {
-            m["meeting_key"]: m.get("meeting_name")
-            for m in (openf1.get("meetings", year=year) or [])
+            m["meeting_key"]: schedule.apply_display_overrides(dict(m)).get("meeting_name")
+            for m in schedule.get_meetings(year)
         },
         series=series,
     )
@@ -228,7 +229,7 @@ def detect_session(now=None, series="f1", *args, **kwargs):
             if session_state(session, now) == "finished"
         ]
         if ended:
-            return max(ended, key=lambda s: _parse_dt(s["date_end"])), "finished"
+            return max(ended, key=lambda s: _parse_dt(s.get("date_end") or s["date_start"])), "finished"
 
     return None, None
 
@@ -397,7 +398,7 @@ def _build_tower(session, state, series="f1"):
     sk = session["session_key"]
     now = _now_utc()
     live = state == "live"
-    date_end = _parse_dt(session["date_end"])
+    date_end = _parse_dt(session.get("date_end") or session["date_start"])
     start_iso = session["date_start"]
     has_gaps = (session.get("session_name") or "").lower() in {
         "race",
@@ -1007,7 +1008,7 @@ def live_sessions():
     try:
         raw_meetings = _cached(
             ("meetingsraw", year),
-            lambda: openf1.get("meetings", year=year) or [],
+            lambda: schedule.get_meetings(year),
             series=series,
         )
         meetings = [
@@ -1023,26 +1024,13 @@ def live_sessions():
             sessions = _sessions_for_year(year, series=series)
         except TypeError:
             sessions = _sessions_for_year(year)
+        schedule_info = schedule.get_info(year)
     except openf1.OpenF1Error as exc:
         raise ApiError(f"OpenF1 indisponivel: {exc}", 503)
 
-    # Patch for 2026 GPs in the OpenF1 mock data
+    # Nomes de exibicao compartilhados com /next-race (fonte unica: schedule)
     for m in meetings:
-        if m.get("location") == "Kuala Lumpur" or m.get("meeting_key") == 1308:
-            m["meeting_name"] = "Bahrain Grand Prix"
-            m["location"] = "Sepang"
-            m["country_name"] = "Malásia"
-            m["circuit_short_name"] = "Sepang"
-        elif m.get("meeting_key") == 1298 or m.get("location") == "Mexico City":
-            m["meeting_name"] = "GP do México (Cidade do México)"
-            m["location"] = "Cidade do México"
-            m["country_name"] = "México"
-            m["circuit_short_name"] = "Autódromo Hermanos Rodríguez"
-        elif m.get("meeting_key") == 1299 or m.get("location") == "São Paulo":
-            m["meeting_name"] = "GP do Brasil (São Paulo - Interlagos)"
-            m["location"] = "São Paulo"
-            m["country_name"] = "Brasil"
-            m["circuit_short_name"] = "Autódromo José Carlos Pace (Interlagos)"
+        schedule.apply_display_overrides(m)
 
     meetings.sort(key=lambda m: m["date_start"])
     by_meeting = {}
@@ -1091,14 +1079,16 @@ def live_sessions():
                         "date_start": s["date_start"],
                         "date_end": s["date_end"],
                         "state": session_state(s, now),
-                        "time_status": "confirmed",
-                        "is_time_confirmed": True,
+                        "time_status": "confirmed" if not schedule_info["stale"] else "stale",
+                        "is_time_confirmed": not schedule_info["stale"],
                     }
                     for s in meeting_sessions
                 ],
             }
         )
-    return jsonify({"year": year, "series": series, "data": data})
+    return jsonify(
+        {"year": year, "series": series, "data": data, "schedule": schedule_info}
+    )
 
 
 @bp.get('/live/practice/<int:session_key>')
