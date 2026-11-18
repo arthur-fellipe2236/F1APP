@@ -19,11 +19,21 @@ from app.models import Circuit, Driver, Race, RaceResult, Team
 @pytest.fixture(scope="module")
 def app(tmp_path_factory):
     db_path = tmp_path_factory.mktemp("etapa13_db") / "etapa13.db"
-    os.environ["F1_DATABASE_URI"] = f"sqlite:///{db_path}"
-    os.environ["NO_BACKGROUND_SYNC"] = "1"
-    application = create_app()
-    application.config["TESTING"] = True
-    return application
+    env_keys = ("F1_DATABASE_URI", "NO_BACKGROUND_SYNC")
+    previous_env = {key: os.environ.get(key) for key in env_keys}
+
+    try:
+        os.environ["F1_DATABASE_URI"] = f"sqlite:///{db_path}"
+        os.environ["NO_BACKGROUND_SYNC"] = "1"
+        application = create_app()
+        application.config["TESTING"] = True
+        yield application
+    finally:
+        for key, value in previous_env.items():
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
 
 
 @pytest.fixture(autouse=True)

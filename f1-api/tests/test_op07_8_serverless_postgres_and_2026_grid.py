@@ -66,9 +66,10 @@ def _run_python_subprocess(code: str, env_overrides: dict[str, str | None]) -> s
 
 
 def test_01_f1_database_uri_postgresql_preserved_by_entrypoint(monkeypatch, tmp_path):
-    """1. F1_DATABASE_URI PostgreSQL é preservada intacta pelo entrypoint e por create_app."""
+    """1. F1_DATABASE_URI PostgreSQL usa o driver Psycopg 2 no entrypoint e em create_app."""
     _clear_db_env(monkeypatch)
     pg_uri = "postgresql://postgres.ropn:secret@aws-0-us-east-1.pooler.supabase.com:6543/postgres"
+    expected_uri = pg_uri.replace("postgresql://", "postgresql+psycopg2://", 1)
     monkeypatch.setenv("F1_DATABASE_URI", pg_uri)
     monkeypatch.setenv("VERCEL_ENV", "production")
 
@@ -77,7 +78,7 @@ def test_01_f1_database_uri_postgresql_preserved_by_entrypoint(monkeypatch, tmp_
     bundled.write_bytes(b"sqlite-placeholder")
 
     resolved = configure_entrypoint_database_uri(str(bundled))
-    assert resolved == pg_uri
+    assert resolved == expected_uri
     assert not resolved.startswith("sqlite:")
 
     proc = _run_python_subprocess(
@@ -85,7 +86,7 @@ def test_01_f1_database_uri_postgresql_preserved_by_entrypoint(monkeypatch, tmp_
         {"F1_DATABASE_URI": pg_uri, "VERCEL_ENV": "production", "NO_BACKGROUND_SYNC": "1"},
     )
     assert proc.returncode == 0, proc.stderr
-    assert proc.stdout.strip() == pg_uri
+    assert proc.stdout.strip() == expected_uri
 
 
 def test_02_database_url_and_postgres_url_precedence(monkeypatch, tmp_path):
@@ -93,9 +94,9 @@ def test_02_database_url_and_postgres_url_precedence(monkeypatch, tmp_path):
     _clear_db_env(monkeypatch)
     bundled = str(tmp_path / "f1.db")
 
-    uri_f1 = "postgresql://u1:p1@db1.example.com:5432/f1_primary"
-    uri_db = "postgresql://u2:p2@db2.example.com:5432/f1_secondary"
-    uri_pg = "postgresql://u3:p3@db3.example.com:5432/f1_tertiary"
+    uri_f1 = "postgresql+psycopg2://u1:p1@db1.example.com:5432/f1_primary"
+    uri_db = "postgresql+psycopg2://u2:p2@db2.example.com:5432/f1_secondary"
+    uri_pg = "postgresql+psycopg2://u3:p3@db3.example.com:5432/f1_tertiary"
 
     # Apenas POSTGRES_URL definida
     monkeypatch.setenv("POSTGRES_URL", uri_pg)
@@ -112,12 +113,17 @@ def test_02_database_url_and_postgres_url_precedence(monkeypatch, tmp_path):
 
 
 def test_03_postgres_scheme_normalized_to_postgresql(monkeypatch, tmp_path):
-    """3. URI postgres:// é normalizada para postgresql:// no entrypoint e em create_app."""
+    """3. URIs PostgreSQL sem driver explícito são normalizadas para Psycopg 2."""
     _clear_db_env(monkeypatch)
     raw = "postgres://user:pass@aws-0-us-east-1.pooler.supabase.com:5432/postgres"
-    expected = "postgresql://user:pass@aws-0-us-east-1.pooler.supabase.com:5432/postgres"
+    expected = "postgresql+psycopg2://user:pass@aws-0-us-east-1.pooler.supabase.com:5432/postgres"
 
     assert normalize_database_uri(raw) == expected
+    assert normalize_database_uri("postgresql://u:p@host:5432/db") == (
+        "postgresql+psycopg2://u:p@host:5432/db"
+    )
+    assert normalize_database_uri(expected) == expected
+    assert normalize_database_uri("postgres://u:p@host:5432/db") == "postgresql+psycopg2://u:p@host:5432/db"
     assert (
         normalize_database_uri("postgres+psycopg2://u:p@host:5432/db")
         == "postgresql+psycopg2://u:p@host:5432/db"
@@ -146,6 +152,10 @@ def test_04_postgresql_driver_available_in_serverless_package():
 
     assert "psycopg2-binary>=2.9" in api_req
     assert "psycopg2-binary>=2.9" in f1_api_req
+    assert "Flask-Migrate>=4.0" in api_req
+    assert "Flask-Migrate>=4.0" in f1_api_req
+    assert "PyJWT>=2.8" in api_req
+    assert "PyJWT>=2.8" in f1_api_req
     assert "psycopg2-binary>=2.9" in api_pyproject
     assert 'name = "psycopg2-binary"' in api_uv_lock
 
@@ -159,6 +169,7 @@ def test_04_postgresql_driver_available_in_serverless_package():
         "postgresql://user:pass@host-without-db:5432/",
         "postgresql://user:pass@host:notaport/postgres",
         "mysql://user:pass@host:3306/db",
+        "postgresql+asyncpg://user:pass@host:5432/db",
         "http://example.com/db",
         "not-a-uri",
     ],
@@ -390,7 +401,7 @@ def test_10_parity_between_f1_api_and_api_app_directories():
 def test_11_api_index_entrypoint_preserves_postgresql_in_subprocess_simulation():
     """11. Carregar api/index.py com F1_DATABASE_URI PostgreSQL preserva a URI no app Flask criado."""
     pg_uri = "postgres://postgres.ropn:secret@aws-0-us-east-1.pooler.supabase.com:6543/postgres"
-    expected_uri = "postgresql://postgres.ropn:secret@aws-0-us-east-1.pooler.supabase.com:6543/postgres"
+    expected_uri = "postgresql+psycopg2://postgres.ropn:secret@aws-0-us-east-1.pooler.supabase.com:6543/postgres"
     index_path = str(REPO_ROOT / "api" / "index.py")
 
     code = (

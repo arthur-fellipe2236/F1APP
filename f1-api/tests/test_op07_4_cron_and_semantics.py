@@ -30,6 +30,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from app.extensions import db
+from app.cron_audit import CronExecutionLog
 from app.models import Driver, Race, RaceResult, Team
 from app.results_refresh import (
     contingency_refresh_pending_standings,
@@ -555,7 +556,16 @@ def test_tc19_cron_endpoint_unhandled_exception_releases_lease_with_failed_excep
         rec = db.session.get(CronSyncLease, "f1_sync")
         assert rec.locked_by is None
         assert rec.locked_until is None
-        assert rec.last_status.startswith("failed_exception:")
+        assert rec.last_status == "failed_exception"
+
+        audit_rec = (
+            CronExecutionLog.query
+            .order_by(CronExecutionLog.id.desc())
+            .first()
+        )
+        assert audit_rec is not None
+        assert audit_rec.status == "failed"
+        assert audit_rec.error_summary == "RuntimeError: Unexpected fatal error"
 
 
 # ------------------------------------------------------------------------------

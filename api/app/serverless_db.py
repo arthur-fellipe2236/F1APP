@@ -4,8 +4,8 @@ Regras de resolução e precedência de URI de banco:
 1. Prioridade de variáveis de ambiente:
    `F1_DATABASE_URI` > `DATABASE_URL` > `POSTGRES_URL`.
 2. Normalização:
-   Esquemas `postgres://` e `postgres+psycopg2://` são normalizados para
-   `postgresql://` e `postgresql+psycopg2://` (compatibilidade SQLAlchemy 2.0).
+   Esquemas `postgres://` e `postgresql://` são normalizados para
+   `postgresql+psycopg2://` (compatibilidade explícita com Psycopg 2).
 3. Proteção contra fallback silencioso:
    - Qualquer configuração PostgreSQL explícita (ou via `POSTGRES_URL`) é
      validada quanto a esquema, host, nome do banco, porta e disponibilidade
@@ -48,12 +48,14 @@ def is_production_environment(environ=None) -> bool:
 
 
 def normalize_database_uri(raw_uri: str) -> str:
-    """Normaliza esquemas legados `postgres://` para `postgresql://`."""
+    """Força o driver Psycopg 2 para URIs PostgreSQL sem driver explícito."""
     if not raw_uri or not isinstance(raw_uri, str):
         return ""
     uri = raw_uri.strip()
     if uri.startswith("postgres://"):
-        return "postgresql://" + uri[len("postgres://") :]
+        return "postgresql+psycopg2://" + uri[len("postgres://") :]
+    if uri.startswith("postgresql://"):
+        return "postgresql+psycopg2://" + uri[len("postgresql://") :]
     if uri.startswith("postgres+psycopg2://"):
         return "postgresql+psycopg2://" + uri[len("postgres+psycopg2://") :]
     return uri
@@ -74,10 +76,10 @@ def validate_postgresql_uri(db_uri: str) -> str:
     except Exception as exc:
         raise RuntimeError(f"URI PostgreSQL malformada: {exc}") from exc
 
-    if parsed.scheme not in ("postgresql", "postgresql+psycopg2"):
+    if parsed.scheme != "postgresql+psycopg2":
         raise RuntimeError(
             f"Esquema de URI PostgreSQL inválido ({parsed.scheme!r}); "
-            "esperado 'postgresql://' ou 'postgres://'."
+            "esperado 'postgresql+psycopg2://'."
         )
 
     if not parsed.hostname:
@@ -229,8 +231,8 @@ def resolve_database_uri(
     """Resolve e valida a URI de conexão respeitando a precedência de ambiente.
 
     Precedência: `F1_DATABASE_URI` > `DATABASE_URL` > `POSTGRES_URL`.
-    - Se uma URI PostgreSQL for informada, normaliza `postgres://` e valida
-      sintaxe e driver `psycopg2` sem jamais fazer fallback silencioso para SQLite.
+    - Se uma URI PostgreSQL for informada, normaliza para `postgresql+psycopg2://`
+      e valida sintaxe e driver `psycopg2` sem fallback silencioso para SQLite.
     - Em produção (`VERCEL_ENV=production`), exige URI PostgreSQL válida.
     - Fora de produção, permite SQLite explícito ou fallback para o SQLite local.
     """
