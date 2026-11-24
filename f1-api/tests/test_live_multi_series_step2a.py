@@ -266,8 +266,10 @@ def test_f1_regression_and_invalid_series(client):
     res_inv_state = client.get("/api/v1/live/state?series=motogp")
     assert res_inv_state.status_code == 400
 
-    # Cenario de indisponibilidade externa (OpenF1 falha/503)
+    # Cenario de indisponibilidade externa (OpenF1 falha/503 sem snapshot previo)
+    from app import schedule
     app_cache._memory.clear()
+    schedule.reset_for_tests()
     with patch("app.openf1.get", side_effect=OpenF1Error("OpenF1 indisponivel", status_code=503)):
         res_503 = client.get("/api/v1/live/sessions?series=f1&year=2026")
         assert res_503.status_code == 503

@@ -96,6 +96,13 @@ def app(tmp_path_factory):
             "TESTING": True,
             "SQLALCHEMY_DATABASE_URI": uri,
         })
+        # Restore NO_BACKGROUND_SYNC immediately after create_app so tests that
+        # explicitly monkeypatch _refresh_enabled (e.g. results_refresh tests)
+        # are not blocked by NO_BACKGROUND_SYNC leaking into the test body.
+        if prev_no_sync is None:
+            os.environ.pop("NO_BACKGROUND_SYNC", None)
+        else:
+            os.environ["NO_BACKGROUND_SYNC"] = prev_no_sync
         # Verify effective URI matches supplied URI
         if application.config.get("SQLALCHEMY_DATABASE_URI") != uri:
             raise RuntimeError("Effective DB URI does not match the temporary URI")
