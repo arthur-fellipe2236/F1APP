@@ -13,9 +13,16 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
+    watch: {
+      usePolling: process.env.CHOKIDAR_USEPOLLING === "true",
+      interval: 300,
+    },
     proxy: {
       "/api": {
-        target: process.env.VITE_API_URL || "http://localhost:5000",
+        target:
+          process.env.API_PROXY_TARGET ||
+          process.env.VITE_API_URL ||
+          "http://localhost:5000",
         changeOrigin: true,
       },
     },
