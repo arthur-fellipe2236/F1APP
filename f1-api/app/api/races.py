@@ -2,7 +2,7 @@ from datetime import date, datetime, timedelta, timezone
 
 import requests
 from flask import Blueprint, current_app, jsonify, request
-from app.models import SeriesState
+from ..models import SeriesState
 
 from sqlalchemy import desc
 

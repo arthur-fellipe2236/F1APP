@@ -8,6 +8,18 @@ from .extensions import db, migrate
 from .api.helpers import ApiError
 
 
+def _resolve_migrations_dir() -> str:
+    """Resolve o diretório oficial de migrations (`f1-api/migrations`)."""
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    candidate = os.path.join(base_dir, "migrations")
+    if os.path.isdir(candidate):
+        return candidate
+    repo_candidate = os.path.join(os.path.dirname(base_dir), "f1-api", "migrations")
+    if os.path.isdir(repo_candidate):
+        return repo_candidate
+    return candidate
+
+
 def _validate_sqlalchemy_url_and_driver(db_uri: str) -> None:
     """Valida sintaxe SQLAlchemy, esquema suportado e driver instalado (D2)."""
     try:
@@ -92,7 +104,7 @@ def create_app(config_overrides=None):
     from . import sync_lease  # noqa: F401  (registra cron_sync_leases no metadata)
 
     db.init_app(app)
-    migrate.init_app(app, db)
+    migrate.init_app(app, db, directory=_resolve_migrations_dir())
     with app.app_context():
         is_alembic_cli = (
             os.environ.get("F1_SKIP_CREATE_ALL") == "1"
