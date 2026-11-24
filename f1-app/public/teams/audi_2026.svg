@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 95" width="340" height="95">
+  <defs>
+    <linearGradient id="audiBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#111317" /><stop offset="50%" stop-color="#0A0B0E" /><stop offset="100%" stop-color="#050608" />
+    </linearGradient>
+    <filter id="audishadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.7" />
+    </filter>
+  </defs>
+  <rect width="340" height="95" rx="10" fill="url(#audiBg)" />
+  <rect x="1.5" y="1.5" width="337" height="92" rx="8.5" fill="none" stroke="#262930" stroke-width="1.5" />
+  <rect x="16" y="2" width="308" height="3" fill="#ED1C24" rx="1" />
+  
+  <!-- Four Interlocking Rings (Vier Ringe) -->
+  <g transform="translate(20, 29)" filter="url(#audishadow)">
+    <circle cx="18" cy="18" r="16" fill="none" stroke="#FFFFFF" stroke-width="3.2" />
+    <circle cx="42" cy="18" r="16" fill="none" stroke="#FFFFFF" stroke-width="3.2" />
+    <circle cx="66" cy="18" r="16" fill="none" stroke="#FFFFFF" stroke-width="3.2" />
+    <circle cx="90" cy="18" r="16" fill="none" stroke="#FFFFFF" stroke-width="3.2" />
+  </g>
+
+  <!-- Wordmark & Typography -->
+  <g transform="translate(142, 20)" filter="url(#audishadow)">
+    <text x="0" y="26" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="24" letter-spacing="4">AUDI</text>
+    <text x="2" y="41" fill="#ED1C24" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="9" letter-spacing="2.8">FORMULA 1 TEAM</text>
+    <line x1="2" y1="46" x2="178" y2="46" stroke="#ED1C24" stroke-width="1.5" opacity="0.7" />
+    <text x="2" y="57" fill="#94A3B8" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="7.5" letter-spacing="1.6">NEUBURG &#x2022; HINWIL &#x2022; 2026&#x2013;</text>
+  </g>
+</svg>

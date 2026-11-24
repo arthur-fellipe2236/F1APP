@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 95" width="100%" height="100%">
+  <defs>
+    <linearGradient id="papayaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF9500" />
+      <stop offset="100%" stop-color="#FF6B00" />
+    </linearGradient>
+    <filter id="mclPapShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Left Emblem: Modern Papaya Speedmark Badge -->
+  <g transform="translate(18, 12)" filter="url(#mclPapShadow)">
+    <circle cx="35" cy="35" r="33" fill="#09090B" stroke="#27272A" stroke-width="1.5" />
+    
+    <!-- Modern Speedmark in Papaya Orange -->
+    <path d="
+      M 16 46 
+      C 22 24 38 18 52 24 
+      C 46 29 36 32 30 46 
+      C 38 38 48 37 54 41 
+      C 42 54 26 55 16 46 Z
+    " fill="url(#papayaGrad)" />
+  </g>
+
+  <!-- Typography Block: Contemporary McLaren Papaya (2017-2026) -->
+  <g transform="translate(98, 22)">
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="168" height="15" rx="3" fill="#FF8000" fill-opacity="0.2" stroke="#FF8000" stroke-width="0.8" />
+      <circle cx="8" cy="7.5" r="2.5" fill="#FF8000" />
+      <text x="16" y="11" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8" font-weight="800" fill="#FFBD80" letter-spacing="1.2">PAPAYA ERA · 2017–2026</text>
+    </g>
+
+    <g transform="translate(0, 37)">
+      <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="27" font-weight="900" font-style="italic" fill="#FFFFFF" letter-spacing="0.5">MCLAREN</text>
+      <!-- Integrated Modern Papaya Accent -->
+      <path d="M 160 -18 C 166 -22 173 -21 176 -18 C 172 -16 168 -15 166 -10 C 169 -13 173 -13 175 -11 C 170 -6 163 -7 160 -18 Z" fill="url(#papayaGrad)" />
+    </g>
+
+    <g transform="translate(1, 51)">
+      <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="800" fill="#A1A1AA" letter-spacing="2.8">FORMULA 1 TEAM · WOKING</text>
+    </g>
+
+    <line x1="0" y1="58" x2="225" y2="58" stroke="#27272A" stroke-width="1.2" />
+    <line x1="0" y1="58" x2="80" y2="58" stroke="url(#papayaGrad)" stroke-width="2.5" />
+    <line x1="83" y1="58" x2="105" y2="58" stroke="#38BDF8" stroke-width="2.5" />
+  </g>
+</svg>
