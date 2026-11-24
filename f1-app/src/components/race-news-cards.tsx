@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useAppStore } from "@/store"
 import { Newspaper, ExternalLink, Calendar, Sparkles } from "lucide-react"
 
@@ -6,7 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -88,7 +91,7 @@ function ArticleSummary({
     if (fallbackBullets.length > 0) {
       return (
         <div className="space-y-3">
-          <ul className="max-h-64 space-y-2.5 overflow-y-auto pr-1">
+          <ul className="sm:max-h-64 space-y-2.5 sm:overflow-y-auto pr-1">
             {fallbackBullets.map((line, index) => (
               <li
                 key={index}
@@ -117,7 +120,7 @@ function ArticleSummary({
 
   return (
     <div className="space-y-3">
-      <ul className="max-h-64 space-y-2.5 overflow-y-auto pr-1">
+      <ul className="sm:max-h-64 space-y-2.5 sm:overflow-y-auto pr-1">
         {query.data.summary.map((line, index) => (
           <li
             key={index}
@@ -145,11 +148,54 @@ export function NewsCard({
   item: NewsItem
   badgeLabel?: string
 }) {
+  const [open, setOpen] = useState(false)
+  const pushedHistoryRef = useRef(false)
+  const modalKey = `f1-news-${item.id}`
+
+  const handleOpenChange = useCallback(
+    (nextOpen: boolean) => {
+      setOpen(nextOpen)
+      if (typeof window === "undefined") return
+      if (nextOpen) {
+        if (!pushedHistoryRef.current) {
+          window.history.pushState(
+            { ...(window.history.state ?? {}), f1NewsModal: modalKey },
+            "",
+          )
+          pushedHistoryRef.current = true
+        }
+      } else if (pushedHistoryRef.current) {
+        pushedHistoryRef.current = false
+        if (window.history.state?.f1NewsModal === modalKey) {
+          window.history.back()
+        }
+      }
+    },
+    [modalKey],
+  )
+
+  useEffect(() => {
+    if (!open || typeof window === "undefined") return
+
+    const handlePopState = () => {
+      if (pushedHistoryRef.current) {
+        pushedHistoryRef.current = false
+        setOpen(false)
+      }
+    }
+
+    window.addEventListener("popstate", handlePopState)
+    return () => {
+      window.removeEventListener("popstate", handlePopState)
+    }
+  }, [open])
+
   const isFavorite = badgeLabel?.includes("Favorito")
   const isWeekendGP = item.matched || badgeLabel?.includes("fim de semana")
 
+  /* <Dialog> controlado com sincronizacao de historico mobile */
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <button type="button" className="group block w-full text-left outline-none">
           <Card
@@ -199,14 +245,17 @@ export function NewsCard({
           </Card>
         </button>
       </DialogTrigger>
-      <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-xl rounded-2xl border-border/60 bg-card/95 backdrop-blur-xl">
-        <div className="relative h-60 w-full overflow-hidden bg-muted">
+      <DialogContent className="flex flex-col gap-0 overflow-hidden p-0 sm:max-w-xl max-h-[calc(100dvh-2rem-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px))] rounded-2xl border-border/60 bg-card/95 backdrop-blur-xl">
+        <div className="relative h-44 sm:h-60 w-full shrink-0 overflow-hidden bg-muted">
           <CardImage item={item} className="h-full w-full object-cover" />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         </div>
-        <div className="flex flex-col gap-4 p-6">
+        <div
+          data-slot="dialog-body"
+          className="flex flex-1 min-h-0 flex-col gap-4 overflow-y-auto overscroll-contain p-4 sm:p-6"
+        >
           <DialogHeader className="gap-2.5 text-left">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Badge variant={isFavorite ? "default" : isWeekendGP ? "destructive" : "secondary"}>
                 {isFavorite && <Sparkles className="size-3 mr-1 inline" />}
                 {item.matched ? "GP do fim de semana" : item.article_type}
@@ -216,9 +265,12 @@ export function NewsCard({
                 {newsDate.format(new Date(item.updated_at))} (Brasília)
               </span>
             </div>
-            <DialogTitle className="text-lg font-bold leading-snug text-foreground">
+            <DialogTitle className="text-base sm:text-lg font-bold leading-snug text-foreground">
               {item.title}
             </DialogTitle>
+            <DialogDescription className="sr-only">
+              Resumo editorial em português da matéria: {item.title}
+            </DialogDescription>
             <ArticleSummary
               url={item.url}
               title={item.title}
@@ -231,18 +283,36 @@ export function NewsCard({
               </p>
             ) : null}
           </DialogHeader>
-          <DialogFooter className="sm:justify-between items-center pt-2 border-t border-border/40">
-            <span className="text-xs text-muted-foreground">
-              Tradução e síntese editorial em pt-BR
-            </span>
-            <Button asChild size="sm" variant="default" className="bg-red-600 hover:bg-red-700 text-white gap-1.5 font-semibold">
+        </div>
+        <DialogFooter className="m-0 shrink-0 flex-row items-center justify-between gap-2 border-t border-border/40 bg-muted/40 px-4 py-3 sm:px-6 sm:py-3.5">
+          <span className="hidden sm:inline text-xs text-muted-foreground">
+            Tradução e síntese editorial em pt-BR
+          </span>
+          <div className="flex w-full sm:w-auto items-center justify-end gap-2">
+            <DialogClose asChild>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                data-testid="news-modal-footer-close"
+                className="min-h-10 sm:min-h-8 px-4 font-semibold"
+              >
+                Fechar
+              </Button>
+            </DialogClose>
+            <Button
+              asChild
+              size="sm"
+              variant="default"
+              className="min-h-10 sm:min-h-8 bg-red-600 hover:bg-red-700 text-white gap-1.5 font-semibold"
+            >
               <a href={item.url} target="_blank" rel="noopener noreferrer">
                 <span>Ler na íntegra</span>
                 <ExternalLink className="size-3.5" />
               </a>
             </Button>
-          </DialogFooter>
-        </div>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

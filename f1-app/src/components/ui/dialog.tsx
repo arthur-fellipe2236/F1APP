@@ -37,7 +37,7 @@ function DialogOverlay({
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
       className={cn(
-        "fixed inset-0 isolate z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+        "fixed inset-0 isolate z-[60] bg-black/60 duration-100 supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
         className,
       )}
       {...props}
@@ -59,7 +59,7 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "fixed top-1/2 left-1/2 z-[60] grid w-full max-w-[calc(100%-1.5rem)] max-h-[calc(100dvh-2rem-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px))] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
           className,
         )}
         {...props}
@@ -68,12 +68,14 @@ function DialogContent({
         {showCloseButton && (
           <DialogPrimitive.Close data-slot="dialog-close" asChild>
             <Button
+              type="button"
               variant="ghost"
-              className="absolute top-2 right-2"
+              aria-label="Fechar visualização"
+              className="absolute top-3 right-3 z-20 min-h-11 min-w-11 sm:min-h-9 sm:min-w-9 rounded-full border border-white/20 bg-black/75 text-white shadow-lg backdrop-blur-md hover:bg-black/90 hover:text-white focus-visible:ring-2 focus-visible:ring-red-500"
               size="icon-sm"
             >
-              <XIcon />
-              <span className="sr-only">Close</span>
+              <XIcon className="size-5 sm:size-4" />
+              <span className="sr-only">Fechar</span>
             </Button>
           </DialogPrimitive.Close>
         )}
