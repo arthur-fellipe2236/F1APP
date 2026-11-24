@@ -72,3 +72,20 @@ f1-app/print_*.py
 !api/instance/
 !api/instance/f1.db
 f1-app/scripts/
+
+# Backups locais de bancos de dados
+*.bak
+
+# Scripts locais de auditoria e diagnóstico
+/audit_*.py
+/check_*.py
+/compute_hashes*.py
+/compute_hashes*.ps1
+/inspect_*.py
+/print_uri.py
+/test_app.py
+/test_migration_audit.py
+
+# Diretórios temporários de auditoria de migrações
+/f1-api/tmp_migration/
+/f1-api/tmp_migration_work/
