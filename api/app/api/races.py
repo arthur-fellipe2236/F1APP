@@ -1,4 +1,7 @@
 from datetime import date, datetime, timedelta, timezone
+import re
+import unicodedata
+import xml.etree.ElementTree as ET
 
 import requests
 from flask import Blueprint, current_app, jsonify, request
@@ -542,12 +545,197 @@ def list_races():
 
     query = query.order_by(Race.season.desc(), Race.round)
     payload = paginate(query, Race.to_dict)
+    _enrich_races_payload(payload, season=season, series=series)
     if season:
         progress = season_progress(season, series)
         payload["meta"]["championship_total"] = progress["total_races"]
         payload["meta"]["completed_races"] = progress["completed_races"]
         payload["meta"]["pending_results"] = progress["pending_results"]
     return jsonify(payload)
+
+
+F1_YOUTUBE_CHANNEL_ID = "UCB_qr75-ydFVKSF9Dmo6izg"
+F1_YOUTUBE_RSS_URL = f"https://www.youtube.com/feeds/videos.xml?channel_id={F1_YOUTUBE_CHANNEL_ID}"
+HIGHLIGHTS_CACHE_TTL = 900
+
+_RACE_HIGHLIGHTS_TITLE_RE = re.compile(
+    r"^Race\s+Highlights\s*\|\s*(\d{4})\s+(.+?)\s*$",
+    re.IGNORECASE,
+)
+_NON_MAIN_RACE_TOKENS = (
+    "sprint",
+    "qualifying",
+    "shootout",
+    "practice",
+    "fp1",
+    "fp2",
+    "fp3",
+    "testing",
+)
+
+VERIFIED_2026_F1_HIGHLIGHTS_BY_SLUG = {
+    "singapore": {"youtube_id": "ohgEehLtucc", "duration": "8:01"},
+    "united states": {"youtube_id": "srLm23RUAH0", "duration": "8:02"},
+    "mexico city": {"youtube_id": "tIiRK7hKScU", "duration": "8:08"},
+    "mexico": {"youtube_id": "tIiRK7hKScU", "duration": "8:08"},
+    "sao paulo": {"youtube_id": "lkb5kqDJYXk", "duration": "8:11"},
+    "brazil": {"youtube_id": "lkb5kqDJYXk", "duration": "8:11"},
+    "las vegas": {"youtube_id": "Vyk_6bNm7lo", "duration": "8:13"},
+}
+
+
+def _normalize_gp_slug(text: str | None) -> str:
+    if not text:
+        return ""
+    ascii_text = (
+        unicodedata.normalize("NFKD", str(text))
+        .encode("ascii", "ignore")
+        .decode("ascii")
+        .lower()
+    )
+    ascii_text = re.sub(r"\b(formula\s*1|f1|grand\s+prix|gp\s+do|gp\s+da|gp\s+de|gp)\b", " ", ascii_text)
+    ascii_text = re.sub(r"[^a-z0-9]+", " ", ascii_text)
+    return " ".join(ascii_text.split())
+
+
+def parse_f1_youtube_highlights_xml(xml_text: str, season: int = 2026) -> dict[str, dict]:
+    """Extrai vídeos oficiais de 'Race Highlights | <season> <GP>' do feed Atom @Formula1.
+
+    Exclui estritamente sessões Sprint, Qualifying, Shootout, Practice/FP e Testing.
+    """
+    if not xml_text or not xml_text.strip():
+        return {}
+    try:
+        root = ET.fromstring(xml_text)
+    except ET.ParseError:
+        return {}
+
+    ns = {
+        "atom": "http://www.w3.org/2005/Atom",
+        "yt": "http://www.youtube.com/xml/schemas/2015",
+    }
+    discovered: dict[str, dict] = {}
+    for entry in root.findall("atom:entry", ns):
+        title_el = entry.find("atom:title", ns)
+        vid_el = entry.find("yt:videoId", ns)
+        pub_el = entry.find("atom:published", ns)
+        if title_el is None or vid_el is None:
+            continue
+        title = (title_el.text or "").strip()
+        video_id = (vid_el.text or "").strip()
+        if not title or len(video_id) != 11:
+            continue
+        lower_title = title.lower()
+        if any(tok in lower_title for tok in _NON_MAIN_RACE_TOKENS):
+            continue
+        m = _RACE_HIGHLIGHTS_TITLE_RE.match(title)
+        if not m:
+            continue
+        year_str, gp_raw = m.group(1), m.group(2)
+        if int(year_str) != int(season):
+            continue
+        slug = _normalize_gp_slug(gp_raw)
+        if not slug or slug in discovered:
+            continue
+        base_info = VERIFIED_2026_F1_HIGHLIGHTS_BY_SLUG.get(slug, {})
+        discovered[slug] = {
+            "youtube_id": video_id,
+            "youtube_url": f"https://www.youtube.com/watch?v={video_id}",
+            "duration": base_info.get("duration"),
+            "title": title,
+            "published_at": (pub_el.text or "").strip() if pub_el is not None else None,
+        }
+    return discovered
+
+
+def _get_season_highlights_map(season: int) -> dict[str, dict]:
+    base_map: dict[str, dict] = {}
+    if int(season) == 2026:
+        for slug, info in VERIFIED_2026_F1_HIGHLIGHTS_BY_SLUG.items():
+            vid = info["youtube_id"]
+            base_map[slug] = {
+                "youtube_id": vid,
+                "youtube_url": f"https://www.youtube.com/watch?v={vid}",
+                "duration": info.get("duration"),
+            }
+
+    if current_app and current_app.config.get("TESTING"):
+        return base_map
+
+    cache_key = f"highlights:f1:{int(season)}"
+    cached = app_cache.get(cache_key)
+    if isinstance(cached, dict):
+        return {**base_map, **cached}
+
+    discovered: dict[str, dict] = {}
+    try:
+        resp = requests.get(
+            F1_YOUTUBE_RSS_URL,
+            headers={"User-Agent": "F1App/1.0"},
+            timeout=3.5,
+        )
+        if resp.ok and resp.text:
+            discovered = parse_f1_youtube_highlights_xml(resp.text, season=int(season))
+            if discovered:
+                app_cache.set(cache_key, discovered, HIGHLIGHTS_CACHE_TTL)
+    except Exception:  # noqa: BLE001
+        pass
+
+    return {**base_map, **discovered}
+
+
+def _match_highlight_for_race(race_item: dict, highlights_map: dict[str, dict]) -> dict | None:
+    if not race_item or not highlights_map:
+        return None
+    candidates = [
+        _normalize_gp_slug(race_item.get("name")),
+        _normalize_gp_slug(race_item.get("circuit_city")),
+        _normalize_gp_slug(race_item.get("circuit_country")),
+    ]
+    for cand in candidates:
+        if not cand:
+            continue
+        if cand in highlights_map:
+            return highlights_map[cand]
+        for slug, info in highlights_map.items():
+            if slug and (slug in cand or cand in slug):
+                return info
+    return None
+
+
+def _enrich_races_payload(payload: dict, season: int | None, series: str) -> None:
+    items = payload.get("data") if isinstance(payload, dict) else None
+    if not items:
+        return
+    race_ids = [item["id"] for item in items if isinstance(item, dict) and item.get("id") is not None]
+    completed_ids = set()
+    if race_ids:
+        rows = (
+            db.session.query(RaceResult.race_id)
+            .filter(RaceResult.race_id.in_(race_ids))
+            .distinct()
+            .all()
+        )
+        completed_ids = {r[0] for r in rows}
+
+    highlights_map = (
+        _get_season_highlights_map(season)
+        if series == "f1" and season is not None
+        else {}
+    )
+
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        has_res = item.get("id") in completed_ids
+        item["has_results"] = bool(has_res)
+        item["is_completed"] = bool(has_res)
+        if has_res and highlights_map:
+            matched_video = _match_highlight_for_race(item, highlights_map)
+            if matched_video:
+                item["highlight_video"] = matched_video
+                item["youtube_id"] = matched_video.get("youtube_id")
+                item["duration"] = matched_video.get("duration")
 
 
 @bp.get("/races/<int:race_id>")

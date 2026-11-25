@@ -42,7 +42,7 @@ test("OP-06.53 [1] Destaques exibem três corridas válidas em ordem cronológic
 
   assert.deepEqual(
     DEFAULT_2026_HIGHLIGHTS.map((h) => h.round),
-    [20, 19, 18],
+    [21, 20, 19],
   )
 })
 

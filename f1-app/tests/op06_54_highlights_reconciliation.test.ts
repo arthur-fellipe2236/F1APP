@@ -92,23 +92,33 @@ test("5. Teste de reconciliação factual com fonte oficial", () => {
   assert.equal(OFFICIAL_2026_F1_HIGHLIGHTS_REGISTRY[20].youtubeId, "lkb5kqDJYXk")
   assert.equal(OFFICIAL_2026_F1_HIGHLIGHTS_REGISTRY[20].duration, "8:11")
 
+  assert.ok(OFFICIAL_2026_F1_HIGHLIGHTS_REGISTRY[21], "Round 21 (Las Vegas) possui registro oficial")
+  assert.equal(OFFICIAL_2026_F1_HIGHLIGHTS_REGISTRY[21].youtubeId, "Vyk_6bNm7lo")
+  assert.equal(OFFICIAL_2026_F1_HIGHLIGHTS_REGISTRY[21].duration, "8:13")
+
   assert.equal(OFFICIAL_2026_RACE_METADATA[17].dateStr, "11 de Outubro de 2026")
   assert.equal(OFFICIAL_2026_RACE_METADATA[18].dateStr, "25 de Outubro de 2026")
   assert.equal(OFFICIAL_2026_RACE_METADATA[19].dateStr, "01 de Novembro de 2026")
   assert.equal(OFFICIAL_2026_RACE_METADATA[20].dateStr, "08 de Novembro de 2026")
+  assert.equal(OFFICIAL_2026_RACE_METADATA[21].dateStr, "21 de Novembro de 2026")
 })
 
-test("6. Teste de cards com vídeos oficiais confirmados (Rounds 20, 19, 18 e 17)", () => {
-  for (const round of [17, 18, 19, 20]) {
+test("6. Teste de cards com vídeos oficiais confirmados (Rounds 21, 20, 19, 18 e 17)", () => {
+  for (const round of [17, 18, 19, 20, 21]) {
     const entry = OFFICIAL_2026_F1_HIGHLIGHTS_REGISTRY[round]
     assert.ok(entry?.youtubeId && entry.youtubeId.length === 11, `Vídeo do Round ${round} tem ID válido`)
   }
 
   assert.deepEqual(
     DEFAULT_2026_HIGHLIGHTS.map((h) => h.round),
-    [20, 19, 18],
-    "DEFAULT_2026_HIGHLIGHTS deve exibir Rounds 20, 19 e 18 em ordem cronológica decrescente",
+    [21, 20, 19],
+    "DEFAULT_2026_HIGHLIGHTS deve exibir Rounds 21, 20 e 19 em ordem cronológica decrescente",
   )
+
+  const defaultR21 = DEFAULT_2026_HIGHLIGHTS.find((h) => h.round === 21)
+  assert.equal(defaultR21?.youtubeId, "Vyk_6bNm7lo", "Card de Las Vegas possui youtubeId oficial comprovado")
+  assert.equal(defaultR21?.youtubeUrl, "https://www.youtube.com/watch?v=Vyk_6bNm7lo")
+  assert.equal(defaultR21?.duration, "8:13")
 
   const defaultR20 = DEFAULT_2026_HIGHLIGHTS.find((h) => h.round === 20)
   assert.equal(defaultR20?.youtubeId, "lkb5kqDJYXk", "Card de São Paulo possui youtubeId oficial comprovado")
@@ -117,11 +127,18 @@ test("6. Teste de cards com vídeos oficiais confirmados (Rounds 20, 19, 18 e 17
 })
 
 test("7. Teste de fallback para próxima corrida concluída com vídeo oficial disponível", () => {
-  // Cenário: Round 21 concluída na data, porém ainda sem vídeo oficial no registro
+  // Cenário: Round 21 concluída na data, porém simulando registro sem vídeo oficial de R21
   const afterLasVegas = new Date("2026-11-22T12:00:00Z")
+  const registryWithoutR21 = {
+    17: OFFICIAL_2026_F1_HIGHLIGHTS_REGISTRY[17],
+    18: OFFICIAL_2026_F1_HIGHLIGHTS_REGISTRY[18],
+    19: OFFICIAL_2026_F1_HIGHLIGHTS_REGISTRY[19],
+    20: OFFICIAL_2026_F1_HIGHLIGHTS_REGISTRY[20],
+  }
   const selected = selectRaceHighlights(MOCK_2026_RACES, {
     referenceDate: afterLasVegas,
     completedRaces: 21,
+    registry: registryWithoutR21,
   })
   assert.deepEqual(
     selected.map((h) => h.round),
