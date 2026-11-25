@@ -264,3 +264,20 @@ def get_standings(series, category):
         _cache[key] = {'time': now, 'data': data}
 
     return data
+
+
+DRIVER_NAME_ALIASES = {
+    "alexander dunne": "alex dunne",
+    "emerson fittipaldi": "emerson fittipaldi jr.",
+    "maciej gladysz": "maciej gladysz",
+    "noah stromsted": "noah stromsted",
+}
+
+
+def canonical_driver_name(name: str) -> str:
+    """Normaliza acentos especiais (ł/ø) e aliases oficiais FIA <-> roster estatico."""
+    import unicodedata
+    s = (name or "").replace("ł", "l").replace("Ł", "L").replace("ø", "o").replace("Ø", "O")
+    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
+    s = re.sub(r"\s+", " ", s).strip().lower()
+    return DRIVER_NAME_ALIASES.get(s, s)

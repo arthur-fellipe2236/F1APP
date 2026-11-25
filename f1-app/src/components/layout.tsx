@@ -227,35 +227,43 @@ export function Layout() {
           boxShadow: isThemed ? "0 4px 30px var(--team-glow)" : "none"
         }}
       >
-        {/* DESKTOP HEADER (MD+) */}
-        <div className="mx-auto hidden md:flex flex-col items-center pt-3 pb-2 px-4 relative z-10 w-full">
-          {/* LOGO MULTI-SERIES CIRCULAR CENTRALIZADO */}
-          <Link to="/" className="mb-2.5 hover:scale-105 transition-transform shrink-0" title="Início">
+        {/* DESKTOP HEADER (MD+) — EDITORIAL SLIM */}
+        <div className="mx-auto hidden md:flex items-center justify-between h-16 max-w-7xl px-4 lg:px-6 relative z-10 w-full gap-4">
+          {/* LOGO MULTI-SERIES CIRCULAR CENTRALIZADO E NOME OFICIAL */}
+          <Link to="/" className="flex items-center gap-3 hover:opacity-95 transition-opacity shrink-0 group select-none" title="Além da Pista - Início">
             <img
               src="/multi-series-logo.png"
-              alt="F1 Multi-Series Logo"
-              className="h-12 w-12 object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)] rounded-full border border-white/20"
+              alt="Além da Pista Logo"
+              className="h-10 w-10 object-contain drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)] rounded-full border border-white/20 shrink-0 group-hover:border-white/40 transition-colors"
             />
+            <div className="flex flex-col text-left">
+              <span className="font-f1 text-base lg:text-lg font-black tracking-wider text-white leading-none">
+                ALÉM DA PISTA
+              </span>
+              <span className="text-[9px] uppercase tracking-[0.16em] text-white/70 font-sans font-medium mt-0.5">
+                O esporte não termina na linha de chegada
+              </span>
+            </div>
           </Link>
 
           {/* CÁPSULA PILL DE NAVEGAÇÃO FLUTUANTE COMPACTA E UNIFORME */}
-          <div className="w-fit max-w-full mx-auto">
-            <nav className="w-fit max-w-full h-12 rounded-full bg-[#101015]/85 border border-white/15 backdrop-blur-xl px-4 lg:px-5 flex items-center justify-center gap-2.5 lg:gap-3.5 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
-              <div className="flex items-center gap-2.5 lg:gap-3.5 min-w-0">
+          <div className="w-fit max-w-full">
+            <nav className="w-fit max-w-full h-11 rounded-full bg-[#101015]/85 border border-white/15 backdrop-blur-xl px-3.5 lg:px-4 flex items-center justify-center gap-2 lg:gap-3 shadow-[0_6px_24px_rgba(0,0,0,0.5)]">
+              <div className="flex items-center gap-1.5 lg:gap-2.5 min-w-0">
                 {navItems.map((item) => (
                   <NavLink
                     key={item.to}
                     to={item.to}
                     className={({ isActive }) =>
                       cn(
-                        "flex items-center gap-1.5 font-f1 uppercase text-[11px] lg:text-xs xl:text-[13px] tracking-wider transition-all shrink-0 whitespace-nowrap",
+                        "flex items-center gap-1.5 font-f1 uppercase text-[11px] lg:text-xs xl:text-[13px] tracking-wider transition-all shrink-0 whitespace-nowrap px-2 py-1 rounded-md",
                         item.isHighlight
                           ? isActive
                             ? "px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-[#E10600] text-white font-black border border-amber-200 shadow-[0_0_18px_rgba(245,158,11,0.65)]"
                             : "px-3 py-1 rounded-full bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 hover:text-amber-200 font-extrabold border border-amber-400/50 shadow-[0_0_12px_rgba(245,158,11,0.28)]"
                           : isActive
-                          ? "text-white font-bold"
-                          : "text-white/70 font-semibold hover:text-white"
+                          ? "text-white font-bold bg-white/10"
+                          : "text-white/70 font-semibold hover:text-white hover:bg-white/5"
                       )
                     }
                   >
@@ -268,8 +276,8 @@ export function Layout() {
                     to="/admin"
                     className={({ isActive }) =>
                       cn(
-                        "flex items-center font-f1 uppercase text-[11px] lg:text-xs tracking-wider font-semibold transition-all hover:text-amber-500 shrink-0 whitespace-nowrap",
-                        isActive ? "text-amber-500 font-bold" : "text-amber-500/70"
+                        "flex items-center font-f1 uppercase text-[11px] lg:text-xs tracking-wider font-semibold transition-all hover:text-amber-500 shrink-0 whitespace-nowrap px-2 py-1 rounded-md",
+                        isActive ? "text-amber-500 font-bold bg-amber-500/10" : "text-amber-500/70"
                       )
                     }
                   >
@@ -299,11 +307,11 @@ export function Layout() {
           >
             <img
               src="/multi-series-logo.png"
-              alt="F1 Multi-Series Logo"
+              alt="Além da Pista Logo"
               className="h-10 w-auto object-contain drop-shadow-md rounded-full shrink-0"
             />
             <span className="font-f1 text-base font-black tracking-wider text-white">
-              F1 APP
+              ALÉM DA PISTA
             </span>
           </Link>
 
@@ -508,9 +516,12 @@ export function Layout() {
         <Outlet />
       </main>
       {!location.pathname.startsWith("/novatos") && <RadioPlayer />}
-      <footer className="mx-auto max-w-6xl w-full px-4 pb-8 relative z-10 text-center">
+      <footer className="mx-auto max-w-6xl w-full px-4 pb-8 relative z-10 text-center space-y-1.5">
+        <p className="font-f1 text-sm font-semibold tracking-wider text-foreground">
+          ALÉM DA PISTA
+        </p>
         <p className="text-xs text-muted-foreground mx-auto max-w-2xl leading-relaxed">
-          Painel conectado à f1-api. Dados provisórios/simulados para temporadas futuras.
+          O esporte não termina na linha de chegada. Informação, educação, análises e acompanhamento ao vivo.
         </p>
       </footer>
     </div>

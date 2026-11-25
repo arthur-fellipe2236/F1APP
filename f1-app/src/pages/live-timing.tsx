@@ -18,6 +18,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { api, type LiveMeetingEntry, type LiveSessionEntry } from "@/lib/api"
+import {
+  DISPLAY_TIME_ZONE_LABEL,
+  formatSessionDateTimeLong,
+  formatSessionTimeSeconds,
+  instantMs,
+  parseInstant,
+} from "@/lib/datetime"
 import { useAppStore } from "@/store"
 import { SeriesSelector, type SeriesCategory } from "@/components/series-selector"
 import { SERIES_NAMES, isEstimatedSessionTime } from "@/lib/series"
@@ -94,24 +101,13 @@ const COMPOUND_COLORS: Record<string, string> = {
 
 
 function formatSessionDate(dateStr?: string | null): string {
-  if (!dateStr) return "Horário a confirmar"
-  const d = new Date(dateStr)
-  if (isNaN(d.getTime())) return "Horário a confirmar"
-  return `${d.toLocaleDateString("pt-BR", {
-    weekday: "long",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  })} (horário local)`
+  if (!parseInstant(dateStr)) return "Horário a confirmar"
+  return `${formatSessionDateTimeLong(dateStr)} (${DISPLAY_TIME_ZONE_LABEL})`
 }
 
 function formatLocalTime(dateStr?: string | null): string {
-  if (!dateStr) return "--:--"
-  const d = new Date(dateStr)
-  if (isNaN(d.getTime())) return "--:--"
-  return `${d.toLocaleTimeString("pt-BR")} (horário local)`
+  if (!parseInstant(dateStr)) return "--:--"
+  return `${formatSessionTimeSeconds(dateStr)} (${DISPLAY_TIME_ZONE_LABEL})`
 }
 
 const LIVE_POLL_INTERVAL_MS = 15_000
@@ -419,11 +415,14 @@ export function LiveTimingPage() {
 
     if (targetDate) {
       const interval = setInterval(() => {
-        const target = new Date(targetDate).getTime()
-        const now = new Date().getTime()
-        const distance = target - now
+        const target = instantMs(targetDate)
+        const now = Date.now()
+        const distance = (target ?? Number.NaN) - now
 
-        if (distance < 0) {
+        if (target === null) {
+          setTimeLeft(null)
+          clearInterval(interval)
+        } else if (distance < 0) {
           setTimeLeft(null)
           clearInterval(interval)
         } else {
@@ -617,7 +616,7 @@ export function LiveTimingPage() {
                 ? `Cronometragem da ${currentSeriesLabel} indisponível`
                 : `Sessão da ${currentSeriesLabel} agendada`}{" "}
               • Última verificação:{" "}
-              {lastCheckTime ? lastCheckTime.toLocaleTimeString("pt-BR") : "--:--:--"}
+              {lastCheckTime ? formatSessionTimeSeconds(lastCheckTime.toISOString()) : "--:--:--"}
             </span>
           </div>
           <div className="flex items-center gap-3">

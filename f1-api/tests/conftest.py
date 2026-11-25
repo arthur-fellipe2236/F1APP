@@ -3,6 +3,7 @@ import pathlib
 import pytest
 
 from app import create_app
+from app import schedule
 from app.extensions import db
 from app.seed import seed
 
@@ -23,11 +24,12 @@ ALL_PROTECTED_PATHS = OFFICIAL_DB_PATHS | BACKUP_DB_PATHS
 # Alias used by tests and validator
 PROTECTED_PATHS = ALL_PROTECTED_PATHS
 
+
 def _validate_temp_db(candidate_path: pathlib.Path):
     """Validate a temporary SQLite DB candidate.
 
     Steps:
-    1. Keep a reference to the original user‑supplied path for error messages.
+    1. Keep a reference to the original user-supplied path for error messages.
     2. Reject if the candidate is a symbolic link (including dangling links).
     3. Reject if the candidate already exists as a file or directory.
     4. Resolve (normalize) the candidate with ``resolve(strict=False)`` – this
@@ -35,7 +37,7 @@ def _validate_temp_db(candidate_path: pathlib.Path):
     5. Compare the normalized candidate with each protected path (also
        resolved). If they are equal, raise.
     6. If a protected path exists on disk, we can safely use ``samefile`` to
-       detect a hard‑link; however ``samefile`` cannot be used when the candidate
+       detect a hard-link; however ``samefile`` cannot be used when the candidate
        does **not** exist, because it would raise ``FileNotFoundError``. The
        check therefore runs only for existing protected files.
     """
@@ -58,10 +60,11 @@ def _validate_temp_db(candidate_path: pathlib.Path):
             try:
                 if candidate.samefile(protected):
                     raise RuntimeError(
-                        f"Temporary DB {original} hard‑links to protected file {protected}"
+                        f"Temporary DB {original} hard-links to protected file {protected}"
                     )
             except FileNotFoundError:
                 pass
+
 
 @pytest.fixture(autouse=True)
 def _clear_f1_env(monkeypatch):
@@ -70,6 +73,7 @@ def _clear_f1_env(monkeypatch):
     """
     monkeypatch.delenv("F1_DATABASE_URI", raising=False)
     monkeypatch.delenv("NO_BACKGROUND_SYNC", raising=False)
+
 
 @pytest.fixture
 def app(tmp_path_factory):
@@ -92,12 +96,19 @@ def app(tmp_path_factory):
             "TESTING": True,
             "SQLALCHEMY_DATABASE_URI": uri,
         })
+        # Restore NO_BACKGROUND_SYNC immediately after create_app so tests that
+        # explicitly monkeypatch _refresh_enabled (e.g. results_refresh tests)
+        # are not blocked by NO_BACKGROUND_SYNC leaking into the test body.
+        if prev_no_sync is None:
+            os.environ.pop("NO_BACKGROUND_SYNC", None)
+        else:
+            os.environ["NO_BACKGROUND_SYNC"] = prev_no_sync
         # Verify effective URI matches supplied URI
         if application.config.get("SQLALCHEMY_DATABASE_URI") != uri:
             raise RuntimeError("Effective DB URI does not match the temporary URI")
         yield application
     finally:
-        # ---------- 1️⃣ Restore environment variables (always) ----------
+        # ---------- 1. Restore environment variables (always) ----------
         if prev_f1_uri is None:
             os.environ.pop("F1_DATABASE_URI", None)
         else:
@@ -106,17 +117,16 @@ def app(tmp_path_factory):
             os.environ.pop("NO_BACKGROUND_SYNC", None)
         else:
             os.environ["NO_BACKGROUND_SYNC"] = prev_no_sync
-        # ---------- 2️⃣ Dispose SQLAlchemy resources (if app was created) ----------
+        # ---------- 2. Dispose SQLAlchemy resources (if app was created) ----------
         if application is not None:
             try:
                 with application.app_context():
-                    # Try to get engine via get_engine (patchable). If it raises KeyError (engine missing), fallback to .engine.
                     engine = db.engine
                     db.session.remove()
                     engine.dispose()
             except Exception as exc:
                 cleanup_errors.append(exc)
-        # ---------- 3️⃣ Remove temporary DB file (must happen) ----------
+        # ---------- 3. Remove temporary DB file (must happen) ----------
         try:
             if db_path.exists():
                 os.remove(db_path)
@@ -126,14 +136,17 @@ def app(tmp_path_factory):
         if cleanup_errors:
             raise RuntimeError(f"Fixture cleanup failures: {cleanup_errors}")
 
+
 @pytest.fixture(autouse=True)
 def fresh_db(app):
-    """Re‑create a clean database for each test."""
+    """Re-create a clean database for each test."""
+    schedule.reset_for_tests()
     with app.app_context():
         db.drop_all()
         db.create_all()
         seed()
     yield
+
 
 @pytest.fixture
 def client(app):

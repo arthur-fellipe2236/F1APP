@@ -5,7 +5,8 @@
   "functions": {
     "api/**": {
       "includeFiles": "api/**",
-      "excludeFiles": "{book-translator/**,f1-iframe-extension/**,f1-api/**,f1-app/**}"
+      "excludeFiles": "{book-translator/**,f1-iframe-extension/**,f1-api/**,f1-app/**}",
+      "maxDuration": 60
     }
   },
   "rewrites": [
@@ -47,6 +48,12 @@
           "value": "frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://accounts.spotify.com; object-src 'none'"
         }
       ]
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/v1/cron/sync-results",
+      "schedule": "0 22 * * *"
     }
   ]
 }

@@ -104,7 +104,12 @@ export interface DriverStanding {
 }
 
 export interface TeamStanding {
-  position: number
+  position: number | null
+  position_text?: string | null
+  excluded?: boolean
+  sanctioned?: boolean
+  sanction_type?: string | null
+  sanction_note?: string | null
   team_id: number | null
   team_name: string
   points: number
@@ -169,6 +174,14 @@ export interface QualifyingResponse {
   }
 }
 
+export interface ScheduleInfo {
+  source: string
+  status: "fresh" | "stale" | "seed"
+  stale: boolean
+  fetched_at: string | null
+  time_zone_display: string
+}
+
 export interface NextRace {
   source: string
   round: number | null
@@ -180,6 +193,7 @@ export interface NextRace {
   weekend_end: string
   race_start: string | null
   sessions?: LiveSessionEntry[] | null
+  schedule?: ScheduleInfo | null
 }
 
 export interface NewsItem {
@@ -202,6 +216,8 @@ export interface NewsArticleSummary {
   sentences: number
   summary: string[]
   summary_en: string[]
+  summary_source?: "body" | "metadata"
+  limitation_note?: string | null
 }
 
 export interface LiveSession {
@@ -390,14 +406,67 @@ function qs(params: Record<string, string | number | undefined>) {
 
 export async function fetchAll<T>(
   fn: (params: { page: number; per_page: number }) => Promise<Paginated<T>>,
+  options?: { concurrency?: number },
 ): Promise<T[]> {
   const first = await fn({ page: 1, per_page: 50 })
-  const all = [...first.data]
-  for (let page = 2; page <= first.meta.pages; page += 1) {
-    const next = await fn({ page, per_page: 50 })
-    all.push(...next.data)
+  const totalPages = first.meta?.pages ?? 1
+  if (totalPages <= 1) {
+    return [...first.data]
   }
+
+  const concurrency = Math.max(1, Math.min(8, options?.concurrency ?? 4))
+  const all = [...first.data]
+
+  for (let startPage = 2; startPage <= totalPages; startPage += concurrency) {
+    const batchPages: number[] = []
+    for (let p = startPage; p < startPage + concurrency && p <= totalPages; p += 1) {
+      batchPages.push(p)
+    }
+    const batchResults = await Promise.all(
+      batchPages.map((page) => fn({ page, per_page: 50 })),
+    )
+    for (const res of batchResults) {
+      all.push(...res.data)
+    }
+  }
+
   return all
+}
+
+export async function fetchAllRaceResults(
+  raceId: number,
+  options?: { concurrency?: number },
+): Promise<RaceResultsResponse> {
+  const first = await api.raceResults(raceId, { page: 1, per_page: 50 })
+  const totalPages = first.meta?.pages ?? 1
+  if (totalPages <= 1) {
+    return first
+  }
+
+  const concurrency = Math.max(1, Math.min(8, options?.concurrency ?? 4))
+  const all = [...first.data]
+
+  for (let startPage = 2; startPage <= totalPages; startPage += concurrency) {
+    const batchPages: number[] = []
+    for (let p = startPage; p < startPage + concurrency && p <= totalPages; p += 1) {
+      batchPages.push(p)
+    }
+    const batchResults = await Promise.all(
+      batchPages.map((page) => api.raceResults(raceId, { page, per_page: 50 })),
+    )
+    for (const res of batchResults) {
+      all.push(...res.data)
+    }
+  }
+
+  return {
+    ...first,
+    data: all,
+    meta: {
+      ...first.meta,
+      per_page: all.length,
+    },
+  }
 }
 
 export type ListParams = {
@@ -436,9 +505,22 @@ export const api = {
       `/news?br_drivers=1&series=${series}&limit=${limit}&lang=pt-BR`,
     ),
 
-  newsArticle: (url: string) =>
+  newsArticle: (
+    url: string,
+    meta?: {
+      title?: string | null
+      meta_description?: string | null
+      article_type?: string | null
+    },
+  ) =>
     request<NewsArticleSummary>(
-      `/news/article?url=${encodeURIComponent(url)}&lang=pt-BR`,
+      `/news/article${qs({
+        url,
+        lang: "pt-BR",
+        title: meta?.title ?? undefined,
+        meta_description: meta?.meta_description ?? undefined,
+        article_type: meta?.article_type ?? undefined,
+      })}`,
     ),
 
   liveTower: (
@@ -460,7 +542,7 @@ export const api = {
   },
 
   liveSessions: (year?: number, series?: string) =>
-    request<{ year: number; series?: string; data: LiveMeetingEntry[] }>(
+    request<{ year: number; series?: string; data: LiveMeetingEntry[]; schedule?: ScheduleInfo | null }>(
       `/live/sessions${qs({ year, series })}`,
     ),
 

@@ -1,12 +1,15 @@
 from datetime import date, datetime, timedelta, timezone
+import re
+import unicodedata
+import xml.etree.ElementTree as ET
 
 import requests
 from flask import Blueprint, current_app, jsonify, request
-from app.models import SeriesState
+from ..models import SeriesState
 
 from sqlalchemy import desc
 
-from .. import f1site, openf1
+from .. import f1site, openf1, schedule
 from ..extensions import db
 from ..models import Race, RaceResult
 from .. import cache as app_cache
@@ -16,7 +19,7 @@ from ..results_refresh import (
     race_results_state,
     season_progress,
 )
-from .helpers import ApiError, get_or_404, paginate, parse_int, pagination_args
+from .helpers import ApiError, get_or_404, paginate, parse_int, parse_season_arg, pagination_args
 from .live import session_state
 from ..f2_f3_data import get_series_meetings, get_series_sessions, get_series_session_by_key
 
@@ -106,13 +109,20 @@ def _parse_dt(value):
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
-def _weekend_sessions(meeting_key, now):
-    """Sessoes do fim de semana (P1..Race) em ordem cronologica, com estado."""
+def _weekend_sessions(meeting_key, now, year):
+    """Sessoes do fim de semana (P1..Race) em ordem cronologica, com estado.
+
+    Fonte unica: ``schedule`` (instantes UTC validados, ids estaveis da OpenF1),
+    a mesma usada por ``/live/sessions``.
+    """
     try:
-        rows = openf1.get("sessions", meeting_key=meeting_key) or []
+        rows = schedule.get_sessions(year, meeting_key=meeting_key)
+        info = schedule.get_info(year)
     except openf1.OpenF1Error:
         return None
+    rows = [s for s in rows if not s.get("is_cancelled")]
     rows.sort(key=lambda s: s["date_start"])
+    confirmed = not info["stale"]
     return [
         {
             "key": s["session_key"],
@@ -121,137 +131,72 @@ def _weekend_sessions(meeting_key, now):
             "date_start": s["date_start"],
             "date_end": s.get("date_end") or s["date_start"],
             "state": session_state(s, now),
+            "time_status": "confirmed" if confirmed else "stale",
+            "is_time_confirmed": confirmed,
         }
         for s in rows
     ]
 
 
+def _gp_round(year, meeting_key, fallback_round=None):
+    """Numero da rodada derivado do calendario (GPs nao cancelados, por data)."""
+    try:
+        meetings = schedule.get_meetings(year)
+    except openf1.OpenF1Error:
+        return fallback_round
+    gps = sorted(
+        (
+            m
+            for m in meetings
+            if str(m.get("meeting_name", "")).endswith("Grand Prix")
+            and not m.get("is_cancelled")
+            and "testing" not in str(m.get("meeting_official_name", "")).lower()
+        ),
+        key=lambda m: m["date_start"],
+    )
+    if fallback_round is not None and len(gps) < 15:
+        return fallback_round
+    for index, meeting in enumerate(gps, start=1):
+        if meeting["meeting_key"] == meeting_key:
+            return index
+    return fallback_round
+
+
+def _session_Matches_weekend(session, start_dt, weekend_start, weekend_end):
+    """Compara a data da corrida com a janela do fim de semana do circuito.
+
+    Corridas noturnas nas Americas (ex.: Las Vegas 20:00 PST de sabado 21/11)
+    ocorrem no inicio da madrugada de domingo em UTC (22/11 04:00Z), portanto
+    a data UTC pode estar 1 dia apos ``weekend_end`` local do circuito.
+    """
+    if weekend_start <= start_dt.date() <= weekend_end + timedelta(days=1):
+        return True
+    offset_str = str(session.get("gmt_offset") or "").strip()
+    if offset_str:
+        try:
+            sign = -1 if offset_str.startswith("-") else 1
+            parts = [int(p) for p in offset_str.lstrip("+-").split(":")]
+            delta = timedelta(hours=parts[0], minutes=parts[1] if len(parts) > 1 else 0)
+            local_date = (start_dt + sign * delta).date()
+            if weekend_start <= local_date <= weekend_end:
+                return True
+        except (ValueError, IndexError):
+            pass
+    return False
+
+
 def _next_race_payload():
     now = datetime.now(timezone.utc)
 
-    # Calendário Customizado 2026 (Com Fuso de Brasília UTC-3)
-    custom_2026 = [
-        {
-            "round": 17,
-            "name": "Bahrain Grand Prix", "country": "Malásia", "location": "Sepang", "circuit": "Circuito Internacional de Sepang", 
-            "weekend_start": "2026-10-02", "weekend_end": "2026-10-04",
-            "sessions": [
-                {"name": "Treino Livre 1", "type": "Practice", "date_start": "2026-10-02T01:30:00-03:00", "date_end": "2026-10-02T02:30:00-03:00"},
-                {"name": "Treino Livre 2", "type": "Practice", "date_start": "2026-10-02T05:00:00-03:00", "date_end": "2026-10-02T06:00:00-03:00"},
-                {"name": "Treino Livre 3", "type": "Practice", "date_start": "2026-10-03T01:30:00-03:00", "date_end": "2026-10-03T02:30:00-03:00"},
-                {"name": "Classificação", "type": "Qualifying", "date_start": "2026-10-03T05:00:00-03:00", "date_end": "2026-10-03T06:00:00-03:00"},
-                {"name": "Corrida", "type": "Race", "date_start": "2026-10-04T04:00:00-03:00", "date_end": "2026-10-04T06:00:00-03:00"}
-            ]
-        },
-        {
-            "round": 18,
-            "name": "Singapore Grand Prix", "country": "Singapura", "location": "Marina Bay", "circuit": "Marina Bay Street Circuit", 
-            "weekend_start": "2026-10-09", "weekend_end": "2026-10-11",
-            "sessions": [
-                {"name": "Treino Livre 1", "type": "Practice", "date_start": "2026-10-09T05:30:00-03:00", "date_end": "2026-10-09T06:30:00-03:00"},
-                {"name": "Classificação Sprint", "type": "Qualifying", "date_start": "2026-10-09T09:30:00-03:00", "date_end": "2026-10-09T10:15:00-03:00"},
-                {"name": "Corrida Sprint", "type": "Race", "date_start": "2026-10-10T06:00:00-03:00", "date_end": "2026-10-10T07:00:00-03:00"},
-                {"name": "Classificação Principal", "type": "Qualifying", "date_start": "2026-10-10T10:00:00-03:00", "date_end": "2026-10-10T11:00:00-03:00"},
-                {"name": "Corrida Principal", "type": "Race", "date_start": "2026-10-11T09:00:00-03:00", "date_end": "2026-10-11T11:00:00-03:00"}
-            ]
-        },
-        {
-            "round": 19,
-            "name": "United States Grand Prix", "country": "Estados Unidos", "location": "Austin", "circuit": "Circuit of The Americas", 
-            "weekend_start": "2026-10-23", "weekend_end": "2026-10-25",
-            "sessions": [
-                {"name": "Treino Livre 1", "type": "Practice", "date_start": "2026-10-23T14:30:00-03:00", "date_end": "2026-10-23T15:30:00-03:00"},
-                {"name": "Treino Livre 2", "type": "Practice", "date_start": "2026-10-23T18:00:00-03:00", "date_end": "2026-10-23T19:00:00-03:00"},
-                {"name": "Treino Livre 3", "type": "Practice", "date_start": "2026-10-24T14:00:00-03:00", "date_end": "2026-10-24T15:00:00-03:00"},
-                {"name": "Classificação", "type": "Qualifying", "date_start": "2026-10-24T18:00:00-03:00", "date_end": "2026-10-24T19:00:00-03:00"},
-                {"name": "Corrida", "type": "Race", "date_start": "2026-10-25T16:00:00-03:00", "date_end": "2026-10-25T18:00:00-03:00"}
-            ]
-        },
-        {
-            "round": 20,
-            "name": "GP do México (Cidade do México)", "country": "México", "location": "Cidade do México", "circuit": "Autódromo Hermanos Rodríguez", 
-            "weekend_start": "2026-10-30", "weekend_end": "2026-11-01",
-            "sessions": [
-                {"name": "Treino Livre 1", "type": "Practice", "date_start": "2026-10-30T15:30:00-03:00", "date_end": "2026-10-30T16:30:00-03:00"},
-                {"name": "Treino Livre 2", "type": "Practice", "date_start": "2026-10-30T19:00:00-03:00", "date_end": "2026-10-30T20:00:00-03:00"},
-                {"name": "Treino Livre 3", "type": "Practice", "date_start": "2026-10-31T14:30:00-03:00", "date_end": "2026-10-31T15:30:00-03:00"},
-                {"name": "Classificação", "type": "Qualifying", "date_start": "2026-10-31T18:00:00-03:00", "date_end": "2026-10-31T19:00:00-03:00"},
-                {"name": "Corrida", "type": "Race", "date_start": "2026-11-01T17:00:00-03:00", "date_end": "2026-11-01T19:00:00-03:00"}
-            ]
-        },
-        {
-            "round": 21,
-            "name": "GP do Brasil (São Paulo - Interlagos)", "country": "Brasil", "location": "São Paulo", "circuit": "Autódromo José Carlos Pace", 
-            "weekend_start": "2026-11-06", "weekend_end": "2026-11-08",
-            "sessions": [
-                {"name": "Treino Livre 1", "type": "Practice", "date_start": "2026-11-06T12:30:00-03:00", "date_end": "2026-11-06T13:30:00-03:00"},
-                {"name": "Treino Livre 2", "type": "Practice", "date_start": "2026-11-06T16:00:00-03:00", "date_end": "2026-11-06T17:00:00-03:00"},
-                {"name": "Treino Livre 3", "type": "Practice", "date_start": "2026-11-07T11:30:00-03:00", "date_end": "2026-11-07T12:30:00-03:00"},
-                {"name": "Classificação", "type": "Qualifying", "date_start": "2026-11-07T15:00:00-03:00", "date_end": "2026-11-07T16:00:00-03:00"},
-                {"name": "Corrida", "type": "Race", "date_start": "2026-11-08T14:00:00-03:00", "date_end": "2026-11-08T16:00:00-03:00"}
-            ]
-        },
-        {
-            "round": 22,
-            "name": "Las Vegas Grand Prix", "country": "Estados Unidos", "location": "Las Vegas", "circuit": "Las Vegas Strip Circuit", 
-            "weekend_start": "2026-11-19", "weekend_end": "2026-11-21",
-            "sessions": [
-                {"name": "Treino Livre 1", "type": "Practice", "date_start": "2026-11-19T23:30:00-03:00", "date_end": "2026-11-20T00:30:00-03:00"},
-                {"name": "Treino Livre 2", "type": "Practice", "date_start": "2026-11-20T03:00:00-03:00", "date_end": "2026-11-20T04:00:00-03:00"},
-                {"name": "Treino Livre 3", "type": "Practice", "date_start": "2026-11-20T23:30:00-03:00", "date_end": "2026-11-21T00:30:00-03:00"},
-                {"name": "Classificação", "type": "Qualifying", "date_start": "2026-11-21T03:00:00-03:00", "date_end": "2026-11-21T04:00:00-03:00"},
-                {"name": "Corrida", "type": "Race", "date_start": "2026-11-22T03:00:00-03:00", "date_end": "2026-11-22T05:00:00-03:00"}
-            ]
-        },
-        {
-            "round": 23,
-            "name": "Qatar Grand Prix", "country": "Catar", "location": "Lusail", "circuit": "Lusail International Circuit", 
-            "weekend_start": "2026-11-27", "weekend_end": "2026-11-29",
-            "sessions": [
-                {"name": "Treino Livre 1", "type": "Practice", "date_start": "2026-11-27T10:30:00-03:00", "date_end": "2026-11-27T11:30:00-03:00"},
-                {"name": "Classificatória Sprint", "type": "Qualifying", "date_start": "2026-11-27T14:30:00-03:00", "date_end": "2026-11-27T15:15:00-03:00"},
-                {"name": "Corrida Sprint", "type": "Race", "date_start": "2026-11-28T10:00:00-03:00", "date_end": "2026-11-28T11:00:00-03:00"},
-                {"name": "Classificação", "type": "Qualifying", "date_start": "2026-11-28T14:00:00-03:00", "date_end": "2026-11-28T15:00:00-03:00"},
-                {"name": "Corrida", "type": "Race", "date_start": "2026-11-29T14:00:00-03:00", "date_end": "2026-11-29T16:00:00-03:00"}
-            ]
-        },
-        {
-            "round": 24,
-            "name": "Abu Dhabi Grand Prix", "country": "Emirados Árabes Unidos", "location": "Abu Dhabi", "circuit": "Yas Marina Circuit", 
-            "weekend_start": "2026-12-04", "weekend_end": "2026-12-06",
-            "sessions": [
-                {"name": "Treino Livre 1", "type": "Practice", "date_start": "2026-12-04T06:30:00-03:00", "date_end": "2026-12-04T07:30:00-03:00"},
-                {"name": "Treino Livre 2", "type": "Practice", "date_start": "2026-12-04T10:00:00-03:00", "date_end": "2026-12-04T11:00:00-03:00"},
-                {"name": "Treino Livre 3", "type": "Practice", "date_start": "2026-12-05T07:30:00-03:00", "date_end": "2026-12-05T08:30:00-03:00"},
-                {"name": "Classificação", "type": "Qualifying", "date_start": "2026-12-05T11:00:00-03:00", "date_end": "2026-12-05T12:00:00-03:00"},
-                {"name": "Corrida", "type": "Race", "date_start": "2026-12-06T10:00:00-03:00", "date_end": "2026-12-06T12:00:00-03:00"}
-            ]
-        }
-    ]
-    
-    if not current_app.config.get("TESTING"):
-        for race in custom_2026:
-            # Pega o horário da corrida principal para comparar
-            race_dt = datetime.fromisoformat(race["sessions"][-1]["date_start"])
-            if race_dt > now:
-                for s in race["sessions"]:
-                    s["key"] = hash(s["name"] + race["name"]) % 100000
-                    sess_dt = datetime.fromisoformat(s["date_start"])
-                    s["state"] = "upcoming" if sess_dt > now else "past"
-                return {
-                    "source": "formula1.com-2026-custom",
-                    "round": race["round"],
-                    "name": race["name"],
-                    "country": race["country"],
-                    "location": race["location"],
-                    "circuit": race["circuit"],
-                    "weekend_start": race["weekend_start"],
-                    "weekend_end": race["weekend_end"],
-                    "race_start": race["sessions"][-1]["date_start"],
-                    "sessions": race["sessions"]
-                }
-            
+    # Fonte unica: schedule (OpenF1 validado, UTC). Sem calendario manual.
     return _dynamic_next_race_payload(now)
+
+
+def _schedule_info(year):
+    try:
+        return schedule.get_info(year)
+    except openf1.OpenF1Error:
+        return None
 
 
 def _dynamic_next_race_payload(now):
@@ -260,50 +205,68 @@ def _dynamic_next_race_payload(now):
 
     def sessions(year):
         if year not in sessions_cache:
-            sessions_cache[year] = (
-                openf1.get("sessions", year=year, session_type="Race") or []
+            sessions_cache[year] = sorted(
+                (
+                    s
+                    for s in schedule.get_sessions(year, session_type="Race")
+                    if not s.get("is_cancelled")
+                ),
+                key=lambda s: _parse_dt(s["date_start"]),
             )
         return sessions_cache[year]
 
     def meeting_name(year, meeting_key):
         if year not in meetings_cache:
             meetings_cache[year] = {
-                m["meeting_key"]: m.get("meeting_name")
-                for m in (openf1.get("meetings", year=year) or [])
+                m["meeting_key"]: schedule.apply_display_overrides(dict(m)).get("meeting_name")
+                for m in schedule.get_meetings(year)
             }
         return meetings_cache[year].get(meeting_key)
 
     try:
-        upcoming = f1site.upcoming_rounds()
+        try:
+            upcoming = f1site.upcoming_rounds(ref=now.date() - timedelta(days=1))
+        except TypeError:
+            upcoming = f1site.upcoming_rounds()
     except f1site.F1SiteError:
         upcoming = []
     openf1_failed = False
-    for candidate in upcoming[:8]:
-        year = candidate["weekend_start"].year
+
+    # Seleciona sempre a proxima corrida cronologica em UTC e associa ao
+    # registro do formula1.com quando houver correspondencia de fim de semana.
+    earliest_future = None
+    for year in (now.year, now.year + 1):
         try:
-            year_sessions = sessions(year)
+            future_in_year = [s for s in sessions(year) if _parse_dt(s["date_start"]) > now]
         except openf1.OpenF1Error:
             openf1_failed = True
             break
-        for session in year_sessions:
-            start = _parse_dt(session["date_start"])
-            if (
-                start > now
-                and candidate["weekend_start"]
-                <= start.date()
-                <= candidate["weekend_end"]
+        if future_in_year:
+            earliest_future = future_in_year[0]
+            break
+
+    if earliest_future is not None:
+        start = _parse_dt(earliest_future["date_start"])
+        year = start.year
+        for candidate in upcoming[:8]:
+            if _session_Matches_weekend(
+                earliest_future,
+                start,
+                candidate["weekend_start"],
+                candidate["weekend_end"],
             ):
                 return {
                     "source": "formula1.com+openf1",
-                    "round": candidate["round"],
-                    "name": meeting_name(year, session["meeting_key"]),
-                    "country": session.get("country_name"),
-                    "location": session.get("location"),
-                    "circuit": session.get("circuit_short_name"),
+                    "round": _gp_round(year, earliest_future["meeting_key"], candidate["round"]),
+                    "name": meeting_name(year, earliest_future["meeting_key"]),
+                    "country": earliest_future.get("country_name"),
+                    "location": earliest_future.get("location"),
+                    "circuit": earliest_future.get("circuit_short_name"),
                     "weekend_start": candidate["weekend_start"].isoformat(),
                     "weekend_end": candidate["weekend_end"].isoformat(),
-                    "race_start": session["date_start"],
-                    "sessions": _weekend_sessions(session["meeting_key"], now),
+                    "race_start": earliest_future["date_start"],
+                    "sessions": _weekend_sessions(earliest_future["meeting_key"], now, year),
+                    "schedule": _schedule_info(year),
                 }
 
     fallback = []
@@ -323,7 +286,7 @@ def _dynamic_next_race_payload(now):
         start = _parse_dt(session["date_start"])
         return {
             "source": "openf1",
-            "round": None,
+            "round": _gp_round(year, session["meeting_key"]),
             "name": meeting_name(year, session["meeting_key"]),
             "country": session.get("country_name"),
             "location": session.get("location"),
@@ -331,11 +294,13 @@ def _dynamic_next_race_payload(now):
             "weekend_start": (start.date() - timedelta(days=2)).isoformat(),
             "weekend_end": (start.date() + timedelta(days=1)).isoformat(),
             "race_start": session["date_start"],
-            "sessions": _weekend_sessions(session["meeting_key"], now),
+            "sessions": _weekend_sessions(session["meeting_key"], now, year),
+            "schedule": _schedule_info(year),
         }
 
-    if upcoming:
-        candidate = upcoming[0]
+    upcoming_today = [c for c in upcoming if c["weekend_end"] >= now.date()] or upcoming
+    if upcoming_today:
+        candidate = upcoming_today[0]
         return {
             "source": "formula1.com",
             "round": candidate["round"],
@@ -525,7 +490,7 @@ def list_races():
                 meta:
                   $ref: '#/components/schemas/Meta'
     """
-    season = parse_int(request.args.get("season"), "season")
+    season = parse_season_arg()
     series_param = request.args.get("series")
     series = (series_param or "f1").lower()
 
@@ -573,17 +538,204 @@ def list_races():
     query = Race.query
     if season:
         query = query.filter_by(season=season)
-    if series_param:
+    if series == "f1":
+        query = query.filter((Race.series == "f1") | (Race.series.is_(None)))
+    elif series_param:
         query = query.filter_by(series=series)
 
     query = query.order_by(Race.season.desc(), Race.round)
     payload = paginate(query, Race.to_dict)
+    _enrich_races_payload(payload, season=season, series=series)
     if season:
         progress = season_progress(season, series)
         payload["meta"]["championship_total"] = progress["total_races"]
         payload["meta"]["completed_races"] = progress["completed_races"]
         payload["meta"]["pending_results"] = progress["pending_results"]
     return jsonify(payload)
+
+
+F1_YOUTUBE_CHANNEL_ID = "UCB_qr75-ydFVKSF9Dmo6izg"
+F1_YOUTUBE_RSS_URL = f"https://www.youtube.com/feeds/videos.xml?channel_id={F1_YOUTUBE_CHANNEL_ID}"
+HIGHLIGHTS_CACHE_TTL = 900
+
+_RACE_HIGHLIGHTS_TITLE_RE = re.compile(
+    r"^Race\s+Highlights\s*\|\s*(\d{4})\s+(.+?)\s*$",
+    re.IGNORECASE,
+)
+_NON_MAIN_RACE_TOKENS = (
+    "sprint",
+    "qualifying",
+    "shootout",
+    "practice",
+    "fp1",
+    "fp2",
+    "fp3",
+    "testing",
+)
+
+VERIFIED_2026_F1_HIGHLIGHTS_BY_SLUG = {
+    "singapore": {"youtube_id": "ohgEehLtucc", "duration": "8:01"},
+    "united states": {"youtube_id": "srLm23RUAH0", "duration": "8:02"},
+    "mexico city": {"youtube_id": "tIiRK7hKScU", "duration": "8:08"},
+    "mexico": {"youtube_id": "tIiRK7hKScU", "duration": "8:08"},
+    "sao paulo": {"youtube_id": "lkb5kqDJYXk", "duration": "8:11"},
+    "brazil": {"youtube_id": "lkb5kqDJYXk", "duration": "8:11"},
+    "las vegas": {"youtube_id": "Vyk_6bNm7lo", "duration": "8:13"},
+}
+
+
+def _normalize_gp_slug(text: str | None) -> str:
+    if not text:
+        return ""
+    ascii_text = (
+        unicodedata.normalize("NFKD", str(text))
+        .encode("ascii", "ignore")
+        .decode("ascii")
+        .lower()
+    )
+    ascii_text = re.sub(r"\b(formula\s*1|f1|grand\s+prix|gp\s+do|gp\s+da|gp\s+de|gp)\b", " ", ascii_text)
+    ascii_text = re.sub(r"[^a-z0-9]+", " ", ascii_text)
+    return " ".join(ascii_text.split())
+
+
+def parse_f1_youtube_highlights_xml(xml_text: str, season: int = 2026) -> dict[str, dict]:
+    """Extrai vídeos oficiais de 'Race Highlights | <season> <GP>' do feed Atom @Formula1.
+
+    Exclui estritamente sessões Sprint, Qualifying, Shootout, Practice/FP e Testing.
+    """
+    if not xml_text or not xml_text.strip():
+        return {}
+    try:
+        root = ET.fromstring(xml_text)
+    except ET.ParseError:
+        return {}
+
+    ns = {
+        "atom": "http://www.w3.org/2005/Atom",
+        "yt": "http://www.youtube.com/xml/schemas/2015",
+    }
+    discovered: dict[str, dict] = {}
+    for entry in root.findall("atom:entry", ns):
+        title_el = entry.find("atom:title", ns)
+        vid_el = entry.find("yt:videoId", ns)
+        pub_el = entry.find("atom:published", ns)
+        if title_el is None or vid_el is None:
+            continue
+        title = (title_el.text or "").strip()
+        video_id = (vid_el.text or "").strip()
+        if not title or len(video_id) != 11:
+            continue
+        lower_title = title.lower()
+        if any(tok in lower_title for tok in _NON_MAIN_RACE_TOKENS):
+            continue
+        m = _RACE_HIGHLIGHTS_TITLE_RE.match(title)
+        if not m:
+            continue
+        year_str, gp_raw = m.group(1), m.group(2)
+        if int(year_str) != int(season):
+            continue
+        slug = _normalize_gp_slug(gp_raw)
+        if not slug or slug in discovered:
+            continue
+        base_info = VERIFIED_2026_F1_HIGHLIGHTS_BY_SLUG.get(slug, {})
+        discovered[slug] = {
+            "youtube_id": video_id,
+            "youtube_url": f"https://www.youtube.com/watch?v={video_id}",
+            "duration": base_info.get("duration"),
+            "title": title,
+            "published_at": (pub_el.text or "").strip() if pub_el is not None else None,
+        }
+    return discovered
+
+
+def _get_season_highlights_map(season: int) -> dict[str, dict]:
+    base_map: dict[str, dict] = {}
+    if int(season) == 2026:
+        for slug, info in VERIFIED_2026_F1_HIGHLIGHTS_BY_SLUG.items():
+            vid = info["youtube_id"]
+            base_map[slug] = {
+                "youtube_id": vid,
+                "youtube_url": f"https://www.youtube.com/watch?v={vid}",
+                "duration": info.get("duration"),
+            }
+
+    if current_app and current_app.config.get("TESTING"):
+        return base_map
+
+    cache_key = f"highlights:f1:{int(season)}"
+    cached = app_cache.get(cache_key)
+    if isinstance(cached, dict):
+        return {**base_map, **cached}
+
+    discovered: dict[str, dict] = {}
+    try:
+        resp = requests.get(
+            F1_YOUTUBE_RSS_URL,
+            headers={"User-Agent": "F1App/1.0"},
+            timeout=3.5,
+        )
+        if resp.ok and resp.text:
+            discovered = parse_f1_youtube_highlights_xml(resp.text, season=int(season))
+            if discovered:
+                app_cache.set(cache_key, discovered, HIGHLIGHTS_CACHE_TTL)
+    except Exception:  # noqa: BLE001
+        pass
+
+    return {**base_map, **discovered}
+
+
+def _match_highlight_for_race(race_item: dict, highlights_map: dict[str, dict]) -> dict | None:
+    if not race_item or not highlights_map:
+        return None
+    candidates = [
+        _normalize_gp_slug(race_item.get("name")),
+        _normalize_gp_slug(race_item.get("circuit_city")),
+        _normalize_gp_slug(race_item.get("circuit_country")),
+    ]
+    for cand in candidates:
+        if not cand:
+            continue
+        if cand in highlights_map:
+            return highlights_map[cand]
+        for slug, info in highlights_map.items():
+            if slug and (slug in cand or cand in slug):
+                return info
+    return None
+
+
+def _enrich_races_payload(payload: dict, season: int | None, series: str) -> None:
+    items = payload.get("data") if isinstance(payload, dict) else None
+    if not items:
+        return
+    race_ids = [item["id"] for item in items if isinstance(item, dict) and item.get("id") is not None]
+    completed_ids = set()
+    if race_ids:
+        rows = (
+            db.session.query(RaceResult.race_id)
+            .filter(RaceResult.race_id.in_(race_ids))
+            .distinct()
+            .all()
+        )
+        completed_ids = {r[0] for r in rows}
+
+    highlights_map = (
+        _get_season_highlights_map(season)
+        if series == "f1" and season is not None
+        else {}
+    )
+
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        has_res = item.get("id") in completed_ids
+        item["has_results"] = bool(has_res)
+        item["is_completed"] = bool(has_res)
+        if has_res and highlights_map:
+            matched_video = _match_highlight_for_race(item, highlights_map)
+            if matched_video:
+                item["highlight_video"] = matched_video
+                item["youtube_id"] = matched_video.get("youtube_id")
+                item["duration"] = matched_video.get("duration")
 
 
 @bp.get("/races/<int:race_id>")

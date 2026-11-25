@@ -4,6 +4,7 @@ from sqlalchemy import case, func, or_
 
 from ..extensions import db
 from ..models import Driver, Race, RaceResult, Team
+from .admin import admin_required
 from .helpers import (
     ApiError,
     commit_unique,
@@ -12,6 +13,7 @@ from .helpers import (
     pagination_args,
     parse_int,
     parse_json_body,
+    parse_season_arg,
     validate_fields,
 )
 
@@ -120,7 +122,7 @@ def list_drivers():
 
     series_param = request.args.get("series")
     series = series_param.lower() if series_param else None
-    season = parse_int(request.args.get("season"), "season")
+    season = parse_season_arg()
     team_id = parse_int(request.args.get("team_id"), "team_id")
 
     if series in ("f2", "f3"):
@@ -154,7 +156,7 @@ def list_drivers():
     if series:
         query = query.filter_by(series=series)
     team_id = parse_int(request.args.get("team_id"), "team_id")
-    season = parse_int(request.args.get("season"), "season")
+    season = parse_season_arg()
 
     if season:
         if series == "f1" and season == 2026:
@@ -225,6 +227,7 @@ def list_drivers():
 
 
 @bp.post("/drivers")
+@admin_required
 def create_driver():
     """
     Cria piloto
@@ -340,6 +343,7 @@ def get_driver(driver_id):
 
 
 @bp.put("/drivers/<int:driver_id>")
+@admin_required
 def update_driver(driver_id):
     """
     Atualiza piloto
@@ -405,6 +409,7 @@ def update_driver(driver_id):
 
 
 @bp.delete("/drivers/<int:driver_id>")
+@admin_required
 def delete_driver(driver_id):
     """
     Remove piloto

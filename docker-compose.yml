@@ -2,8 +2,12 @@ services:
   f1-api:
     build: ./f1-api
     container_name: f1-api
+    restart: unless-stopped
     ports:
       - "5000:5000"
+    env_file:
+      - path: ./.env
+        required: false
     environment:
       PORT: "5000"
       # definidos em .env (Supabase Postgres / Vercel Redis / Vercel Blob);
@@ -14,6 +18,8 @@ services:
     volumes:
       - ./f1-api/app:/app/app
       - ./f1-api/run.py:/app/run.py
+      - ./f1-api/migrations:/app/migrations
+      - ./f1-api/tests:/app/tests
       - ./f1-api/instance:/app/instance
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/api/v1/health')"]
@@ -25,13 +31,21 @@ services:
   f1-app:
     build: ./f1-app
     container_name: f1-app
+    restart: unless-stopped
     depends_on:
       f1-api:
         condition: service_healthy
     ports:
       - "5173:5173"
+    env_file:
+      - path: ./.env
+        required: false
     environment:
-      VITE_API_URL: http://f1-api:5000
+      # Mantemos VITE_API_URL vazio para o browser usar /api via proxy do Vite;
+      # API_PROXY_TARGET aponta o proxy interno do Vite para o container f1-api.
+      VITE_API_URL: ""
+      API_PROXY_TARGET: http://f1-api:5000
+      CHOKIDAR_USEPOLLING: "true"
     volumes:
       - ./f1-app:/app
       - f1-app-node-modules:/app/node_modules

@@ -58,6 +58,17 @@ def parse_int(value, field):
         raise ApiError(f"Campo '{field}' deve ser um inteiro")
 
 
+def parse_season_arg():
+    """Le temporada com 'season' canonico e 'year' como fallback compativel."""
+    raw_season = request.args.get("season")
+    if raw_season not in (None, ""):
+        return parse_int(raw_season, "season")
+    raw_year = request.args.get("year")
+    if raw_year not in (None, ""):
+        return parse_int(raw_year, "year")
+    return None
+
+
 def pagination_args():
     try:
         page = int(request.args.get("page", 1))

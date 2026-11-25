@@ -19,9 +19,11 @@ type Row = QualifyingRow & { rowKey: string }
 
 function driverCell(row: Row, season: number) {
   return (
-    <div className="flex flex-col py-2">
-      <span className="font-semibold">{row.driver_name ?? "—"}</span>
-      <div className="scale-90 origin-left text-muted-foreground mt-0.5">
+    <div className="flex min-w-0 w-full flex-col gap-1 py-2">
+      <span className="font-semibold break-words leading-tight">
+        {row.driver_name ?? "—"}
+      </span>
+      <div className="min-w-0 max-w-full text-xs text-muted-foreground">
         <TeamInline name={row.team_name} season={season} />
       </div>
     </div>
@@ -64,6 +66,9 @@ export function QualyResults({
       },
       {
         name: "Piloto",
+        minWidth: "240px",
+        grow: 1.5,
+        wrap: true,
         cell: (row) => driverCell(row, season),
         sortable: true,
         sortFunction: (a, b) =>
@@ -75,7 +80,14 @@ export function QualyResults({
       ...base,
       ...timeColumns(info).map<TableColumn<Row>>((col) => ({
         name: col.label,
+        minWidth: "110px",
+        right: true,
         selector: (row) => row[col.key] || "—",
+        cell: (row) => (
+          <span className="font-mono text-sm tabular-nums">
+            {row[col.key] || "—"}
+          </span>
+        ),
         sortable: true,
       })),
     ]
@@ -124,7 +136,7 @@ export function QualyResults({
                   {row.position ?? "—"}º
                 </span>
                 <div className="min-w-0">
-                  <div className="font-bold text-sm leading-tight truncate">
+                  <div className="font-bold text-sm leading-tight break-words">
                     {row.driver_name ?? "—"}
                   </div>
                   <div className="text-xs text-muted-foreground mt-0.5">

@@ -21,8 +21,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useApi } from "@/hooks/use-api"
-import { api, type RaceResult, type ResultsState, findRaceSession } from "@/lib/api"
+import { api, fetchAllRaceResults, type RaceResult, type ResultsState, findRaceSession } from "@/lib/api"
 import { formatDate, formatPoints, formatStatus } from "@/lib/format"
+import { formatSessionDayMonth, formatSessionTime, formatSessionWeekday } from "@/lib/datetime"
 import { QualyResults } from "@/components/qualy-results"
 import { CountryFlag } from "@/components/flag"
 import { findMeetingForRace } from "@/lib/meeting-match"
@@ -181,10 +182,13 @@ const getResultColumns = (season?: number): TableColumn<RaceResult>[] => [
   {
     name: "Piloto",
     sortable: true,
+    minWidth: "190px",
+    grow: 1.2,
+    wrap: true,
     selector: (row) => row.driver_name ?? "",
     cell: (row) => (
-      <div className="flex items-center gap-2">
-        <span className="font-medium">{row.driver_name ?? "—"}</span>
+      <div className="flex min-w-0 flex-wrap items-center gap-2 py-1">
+        <span className="font-medium break-words">{row.driver_name ?? "—"}</span>
         <CodeBadge
           code={row.driver_code}
           nationality={row.driver_nationality}
@@ -195,6 +199,9 @@ const getResultColumns = (season?: number): TableColumn<RaceResult>[] => [
   {
     name: "Equipe",
     sortable: true,
+    minWidth: "220px",
+    grow: 1.5,
+    wrap: true,
     selector: (row) => row.team_name ?? "",
     cell: (row) => <TeamInline name={row.team_name} season={season} />,
   },
@@ -215,6 +222,8 @@ const getResultColumns = (season?: number): TableColumn<RaceResult>[] => [
   },
   {
     name: "Status",
+    minWidth: "120px",
+    wrap: true,
     sortable: true,
     selector: (row) => row.status ?? "",
     cell: (row) => (
@@ -308,7 +317,7 @@ function RaceDetailPageInner() {
   const results = useApi(
     () => {
       if (!valid) return Promise.reject(new Error("Corrida inválida"))
-      return api.raceResults(id, { page: 1, per_page: 50 })
+      return fetchAllRaceResults(id)
     },
     [id],
     (data) => resultsPollInterval(data?.results_state?.state),
@@ -421,7 +430,6 @@ function RaceDetailPageInner() {
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               {meetingSessions.map((s: any) => {
-                const sDate = new Date(s.date_start)
                 const isLive = s.state === "live"
                 return (
                   <div
@@ -434,7 +442,7 @@ function RaceDetailPageInner() {
                   >
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-[11px] font-bold uppercase tracking-wider text-red-400">
-                        {sDate.toLocaleDateString("pt-BR", { weekday: "short" })} ({sDate.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })})
+                        {formatSessionWeekday(s.date_start)} ({formatSessionDayMonth(s.date_start)})
                       </span>
                       {isLive && (
                         <span className="flex h-2 w-2 relative">
@@ -451,7 +459,7 @@ function RaceDetailPageInner() {
                         <Clock className="size-3" /> Início:
                       </span>
                       <span className="font-mono font-bold text-sm text-white">
-                        {sDate.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+                        {formatSessionTime(s.date_start)}
                       </span>
                     </div>
                   </div>
@@ -566,7 +574,7 @@ function RaceDetailPageInner() {
                     <div className="flex items-center gap-3 min-w-0">
                       <PositionBadge position={row.position} />
                       <div className="min-w-0">
-                        <div className="font-bold text-sm leading-tight flex items-center gap-2 truncate">
+                        <div className="font-bold text-sm leading-tight flex flex-wrap items-center gap-2 break-words">
                           <span>{row.driver_name ?? "—"}</span>
                           {row.fastest_lap && (
                             <span title="Volta mais rápida">

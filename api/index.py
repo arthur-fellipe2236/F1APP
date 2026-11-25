@@ -5,17 +5,13 @@ DIR = os.path.dirname(os.path.abspath(__file__))
 if DIR not in sys.path:
     sys.path.insert(0, DIR)
 
-from app.serverless_db import resolve_writable_sqlite_path
+from app.serverless_db import configure_entrypoint_database_uri
 
-# Em execução serverless (Vercel `/var/task` somente leitura), copia o banco
-# empacotado atomicamente para `/tmp/f1.db` antes de inicializar o SQLAlchemy,
-# garantindo que todas as conexões do processo utilizem o mesmo caminho gravável.
-# Nota: `/tmp` na Vercel é efêmero por instância; persistência durável entre
-# instâncias/deploys requer banco externo (ex.: PostgreSQL via `F1_DATABASE_URI`)
-# ou atualização do banco base empacotado.
+# Preserva a URI PostgreSQL fornecida pelo ambiente (F1_DATABASE_URI > DATABASE_URL > POSTGRES_URL).
+# O SQLite empacotado (`instance/f1.db`) é utilizado apenas como fallback local quando nenhuma
+# conexão externa estiver configurada fora de produção.
 bundled_db_file = os.path.join(DIR, "instance", "f1.db")
-writable_db_file = resolve_writable_sqlite_path(bundled_db_file)
-os.environ["F1_DATABASE_URI"] = f"sqlite:///{writable_db_file}"
+configure_entrypoint_database_uri(bundled_db_file)
 os.environ["NO_BACKGROUND_SYNC"] = "1"
 
 from app import create_app

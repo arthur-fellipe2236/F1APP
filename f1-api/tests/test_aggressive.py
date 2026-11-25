@@ -18,8 +18,17 @@ WING_ASSETS = [
     "f1-front-wing-cadillac.png",
 ]
 
-PUBLIC_DIR = "/home/arthur/Projects/f1-app/public"
-DIST_DIR = "/home/arthur/Projects/f1-app/dist"
+_REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+PUBLIC_DIR = (
+    "/home/arthur/Projects/f1-app/public"
+    if os.path.isdir("/home/arthur/Projects/f1-app/public")
+    else os.path.join(_REPO_ROOT, "f1-app", "public")
+)
+DIST_DIR = (
+    "/home/arthur/Projects/f1-app/dist"
+    if os.path.isdir("/home/arthur/Projects/f1-app/dist")
+    else os.path.join(_REPO_ROOT, "f1-app", "dist")
+)
 
 class TestWingAssetsIntegrity:
     """Verificacao agressiva da integridade binaria e geometrica de todas as 12 texturas das asas 3D."""

@@ -140,9 +140,19 @@ export function computeSeasonProgress(
   if (reportedTotals.length > 0 && Math.max(...reportedTotals) > 0) {
     totalRaces = Math.max(...reportedTotals)
   } else if (input.racesList && input.racesList.length > 0) {
-    totalRaces = input.racesList.filter(
+    const validRaces = input.racesList.filter(
       (r) => !isTestingOrNonChampionshipRace(r),
-    ).length
+    )
+    const uniqueRounds = new Set<number | string>()
+    for (let idx = 0; idx < validRaces.length; idx += 1) {
+      const r = validRaces[idx]
+      const key =
+        typeof r.round === "number" && Number.isFinite(r.round)
+          ? r.round
+          : `name:${r.name ?? idx}`
+      uniqueRounds.add(key)
+    }
+    totalRaces = uniqueRounds.size
   } else if (season === 2026 && normSeries in CANONICAL_CHAMPIONSHIP_TOTALS_2026) {
     const rawMetaTotal = input.racesMeta?.total
     if (normSeries === "f1" && isValidNonNegativeInt(rawMetaTotal) && rawMetaTotal > 0 && rawMetaTotal <= 30) {
@@ -180,7 +190,7 @@ export function computeSeasonProgress(
 
   let completedRaces = 0
   if (reportedCompleted.length > 0) {
-    completedRaces = Math.max(...reportedCompleted, maxStandingsRaces)
+    completedRaces = Math.max(...reportedCompleted)
   } else if (maxStandingsRaces > 0) {
     completedRaces = maxStandingsRaces
   }

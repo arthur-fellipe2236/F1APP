@@ -74,6 +74,25 @@ def set(key, value, ttl):
         _memory[key] = (time.time() + ttl, value)
 
 
+def clear(prefix=None):
+    """Limpa entradas do cache em memória e (se conectado) do namespace Redis."""
+    client = _client()
+    if client is not None:
+        try:
+            pattern = _PREFIX + (prefix or "") + "*"
+            keys = list(client.scan_iter(match=pattern, count=100))
+            if keys:
+                client.delete(*keys)
+        except Exception:  # noqa: BLE001
+            pass
+    with _lock:
+        if not prefix:
+            _memory.clear()
+        else:
+            for k in [k for k in _memory if k.startswith(prefix)]:
+                _memory.pop(k, None)
+
+
 def cache_get_or_set(key, ttl, producer):
     """Retorna o valor em cache ou produz/grava (padrao cache-aside)."""
     cached = get(key)

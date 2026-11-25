@@ -5,12 +5,14 @@ from sqlalchemy import desc, func
 from ..extensions import db
 from ..models import Circuit, Driver, Race, RaceResult
 from ..results_refresh import maybe_refresh_pending_results, season_progress
+from .admin import admin_required
 from .helpers import (
     commit_unique,
     get_or_404,
     paginate,
     parse_int,
     parse_json_body,
+    parse_season_arg,
     validate_fields,
 )
 
@@ -103,7 +105,7 @@ def list_circuits():
         schema:
           type: string
     """
-    season = parse_int(request.args.get("season"), "season")
+    season = parse_season_arg()
     series = request.args.get("series", "f1")
     race_type = request.args.get("race_type", "feature")
 
@@ -237,6 +239,7 @@ def list_circuits():
     )
 
 @bp.post("/circuits")
+@admin_required
 def create_circuit():
     """
     Cria circuito
@@ -309,6 +312,7 @@ def get_circuit(circuit_id):
 
 
 @bp.put("/circuits/<int:circuit_id>")
+@admin_required
 def update_circuit(circuit_id):
     """
     Atualiza circuito
@@ -363,6 +367,7 @@ def update_circuit(circuit_id):
 
 
 @bp.delete("/circuits/<int:circuit_id>")
+@admin_required
 def delete_circuit(circuit_id):
     """
     Remove circuito

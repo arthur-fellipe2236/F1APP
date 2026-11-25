@@ -91,6 +91,12 @@ def parse_schedule(html):
 
 
 def _fetch_html(url):
+    if "/en/latest/article/" in url:
+        from .ssrf import safe_fetch_html, SSRFError, UpstreamFetchError
+        try:
+            return safe_fetch_html(url)
+        except (SSRFError, UpstreamFetchError) as exc:
+            raise F1SiteError(str(exc)) from exc
     try:
         response = requests.get(
             url, headers=HEADERS, timeout=TIMEOUT_SECONDS
@@ -209,6 +215,11 @@ def fetch_series_news(tag, limit=48, pages=3):
 
 ARTICLE_PARA_RE = re.compile(r"<p[^>]*>(.*?)</p>", re.S)
 OG_TITLE_RE = re.compile(r'<meta property="og:title" content="([^"]+)"')
+OG_DESC_RE = re.compile(
+    r'<meta\s+(?:property="og:description"|name="description")\s+content="([^"]+)"',
+    re.I,
+)
+GALLERY_PREFIX_RE = re.compile(r"^\d+\s*/\s*\d+\s+Next image\s*", re.I)
 ARTICLE_JUNK_MARKERS = (
     "(opens in a new tab)",
     "Sign In Subscribe",
@@ -221,22 +232,37 @@ ARTICLE_JUNK_MARKERS = (
     "best companion",
     "F1 TV Access",
     "Enter your email",
+    "F1 Facebook X Instagram YouTube",
+    "Formula One World Championship Limited",
 )
 
 ARTICLE_URL_PREFIX = "https://www.formula1.com/en/latest/article/"
 
 
 def fetch_article(url):
-    """Extrai titulo e paragrafos do corpo de uma materia do site oficial."""
-    if not url.startswith(ARTICLE_URL_PREFIX):
-        raise F1SiteError("URL de artigo invalida (esperada formula1.com)")
+    """Extrai titulo, paragrafos e metadados editoriais de uma materia do site oficial."""
+    from .ssrf import validate_safe_url, SSRFError
+    try:
+        validate_safe_url(url)
+    except SSRFError as exc:
+        raise F1SiteError(str(exc)) from exc
     raw = _fetch_html(url)
     title_match = OG_TITLE_RE.search(raw)
+    desc_match = OG_DESC_RE.search(raw)
+    rsc_desc_match = DESC_RE.search(raw) if not desc_match else None
+
+    meta_description = None
+    if desc_match:
+        meta_description = unescape(desc_match.group(1)).strip() or None
+    elif rsc_desc_match:
+        meta_description = _unescape(rsc_desc_match.group(1)).strip() or None
+
     paragraphs = []
     seen = set()
     for fragment in ARTICLE_PARA_RE.findall(raw):
         text = " ".join(TAG_RE.sub(" ", fragment).split())
         text = unescape(text)
+        text = GALLERY_PREFIX_RE.sub("", text).strip()
         if len(text) < 80 or text in seen:
             continue
         lowered = text.lower()
@@ -246,11 +272,12 @@ def fetch_article(url):
         paragraphs.append(text)
     return {
         "title": (
-            title_match.group(1)
+            unescape(title_match.group(1)).strip()
             if title_match
             else (paragraphs[0][:120] if paragraphs else None)
         ),
         "paragraphs": paragraphs,
+        "meta_description": meta_description,
     }
 
 

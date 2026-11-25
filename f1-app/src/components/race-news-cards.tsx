@@ -1,12 +1,15 @@
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useAppStore } from "@/store"
-import { Newspaper } from "lucide-react"
+import { Newspaper, ExternalLink, Calendar, Sparkles } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -18,6 +21,7 @@ import { api, type NewsItem } from "@/lib/api"
 import { mediaUrl } from "@/lib/media"
 
 const newsDate = new Intl.DateTimeFormat("pt-BR", {
+  timeZone: "America/Sao_Paulo",
   day: "2-digit",
   month: "short",
   hour: "2-digit",
@@ -40,14 +44,32 @@ function CardImage({ item, className }: { item: NewsItem; className: string }) {
     )
   }
   return (
-    <div className={`${className} flex items-center justify-center bg-muted`}>
-      <Newspaper className="size-6 text-muted-foreground" />
+    <div className={`${className} flex items-center justify-center bg-muted/60`}>
+      <Newspaper className="size-6 text-muted-foreground/60" />
     </div>
   )
 }
 
-function ArticleSummary({ url, fallbackText }: { url: string; fallbackText?: string }) {
-  const query = useApi(() => api.newsArticle(url), [url])
+function ArticleSummary({
+  url,
+  title,
+  fallbackText,
+  articleType,
+}: {
+  url: string
+  title?: string
+  fallbackText?: string
+  articleType?: string
+}) {
+  const query = useApi(
+    () =>
+      api.newsArticle(url, {
+        title,
+        meta_description: fallbackText,
+        article_type: articleType,
+      }),
+    [url, title, fallbackText, articleType],
+  )
 
   if (query.loading) {
     return (
@@ -63,28 +85,59 @@ function ArticleSummary({ url, fallbackText }: { url: string; fallbackText?: str
   }
 
   if (query.error || !query.data) {
-    if (fallbackText) {
-      return <p className="text-sm leading-relaxed text-card-foreground">{fallbackText}</p>
+    const fallbackBullets = [fallbackText, title].filter(
+      (v, idx, arr): v is string => Boolean(v && v.trim()) && arr.indexOf(v) === idx,
+    )
+    if (fallbackBullets.length > 0) {
+      return (
+        <div className="space-y-3">
+          <ul className="sm:max-h-64 space-y-2.5 sm:overflow-y-auto pr-1">
+            {fallbackBullets.map((line, index) => (
+              <li
+                key={index}
+                className="flex gap-2.5 text-sm leading-relaxed text-card-foreground"
+              >
+                <span className="mt-2 size-1.5 shrink-0 rounded-full bg-red-500" />
+                <span>{line}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs leading-relaxed text-amber-300">
+            Resumo gerado a partir dos metadados editoriais disponíveis (conteúdo sem parágrafos convencionais ou temporariamente indisponível para extração completa). Utilize &ldquo;Ler na íntegra&rdquo; para abrir a matéria original.
+          </p>
+        </div>
+      )
     }
     return (
       <p className="text-xs text-muted-foreground">
-        Não foi possível carregar o resumo da matéria.
+        Não foi possível carregar o resumo da matéria. Utilize &ldquo;Ler na íntegra&rdquo; para abrir a fonte original.
       </p>
     )
   }
 
+  const isMetadataSummary =
+    query.data.summary_source === "metadata" || Boolean(query.data.limitation_note)
+
   return (
-    <ul className="max-h-64 space-y-2 overflow-y-auto pr-1">
-      {query.data.summary.map((line, index) => (
-        <li
-          key={index}
-          className="flex gap-2 text-sm leading-relaxed text-card-foreground"
-        >
-          <span className="mt-2 size-1 shrink-0 rounded-full bg-muted-foreground/60" />
-          <span>{line}</span>
-        </li>
-      ))}
-    </ul>
+    <div className="space-y-3">
+      <ul className="sm:max-h-64 space-y-2.5 sm:overflow-y-auto pr-1">
+        {query.data.summary.map((line, index) => (
+          <li
+            key={index}
+            className="flex gap-2.5 text-sm leading-relaxed text-card-foreground"
+          >
+            <span className="mt-2 size-1.5 shrink-0 rounded-full bg-red-500" />
+            <span>{line}</span>
+          </li>
+        ))}
+      </ul>
+      {isMetadataSummary ? (
+        <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs leading-relaxed text-amber-300">
+          {query.data.limitation_note ??
+            "Resumo gerado a partir dos metadados editoriais disponíveis, pois o conteúdo original não possui parágrafos convencionais no corpo da matéria."}
+        </p>
+      ) : null}
+    </div>
   )
 }
 
@@ -95,72 +148,171 @@ export function NewsCard({
   item: NewsItem
   badgeLabel?: string
 }) {
+  const [open, setOpen] = useState(false)
+  const pushedHistoryRef = useRef(false)
+  const modalKey = `f1-news-${item.id}`
+
+  const handleOpenChange = useCallback(
+    (nextOpen: boolean) => {
+      setOpen(nextOpen)
+      if (typeof window === "undefined") return
+      if (nextOpen) {
+        if (!pushedHistoryRef.current) {
+          window.history.pushState(
+            { ...(window.history.state ?? {}), f1NewsModal: modalKey },
+            "",
+          )
+          pushedHistoryRef.current = true
+        }
+      } else if (pushedHistoryRef.current) {
+        pushedHistoryRef.current = false
+        if (window.history.state?.f1NewsModal === modalKey) {
+          window.history.back()
+        }
+      }
+    },
+    [modalKey],
+  )
+
+  useEffect(() => {
+    if (!open || typeof window === "undefined") return
+
+    const handlePopState = () => {
+      if (pushedHistoryRef.current) {
+        pushedHistoryRef.current = false
+        setOpen(false)
+      }
+    }
+
+    window.addEventListener("popstate", handlePopState)
+    return () => {
+      window.removeEventListener("popstate", handlePopState)
+    }
+  }, [open])
+
+  const isFavorite = badgeLabel?.includes("Favorito")
+  const isWeekendGP = item.matched || badgeLabel?.includes("fim de semana")
+
+  /* <Dialog> controlado com sincronizacao de historico mobile */
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <button type="button" className="block w-full text-left outline-none">
+        <button type="button" className="group block w-full text-left outline-none">
           <Card
             size="sm"
-            className="h-full overflow-hidden transition hover:-translate-y-0.5 hover:shadow-md"
+            className="h-full overflow-hidden rounded-xl border border-border/50 bg-card/85 backdrop-blur-md transition-all duration-300 hover:border-red-600/40 hover:shadow-xl hover:shadow-red-950/10 flex flex-col justify-between"
           >
-            <CardImage item={item} className="h-28 w-full object-cover" />
-            <div className="flex flex-col gap-2 px-3 pb-3">
-              <div className="flex items-center gap-2">
+            <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted/80">
+              <CardImage
+                item={item}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              
+              <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
                 <Badge
-                  variant={badgeLabel || item.matched ? "default" : "secondary"}
+                  variant={isFavorite ? "default" : isWeekendGP ? "destructive" : "secondary"}
+                  className="text-[10px] font-bold tracking-wider px-2 py-0.5 shadow-sm uppercase font-mono"
                 >
-                  {badgeLabel ||
-                    (item.matched ? "GP do fim de semana" : item.article_type)}
+                  {isFavorite && <Sparkles className="size-2.5 mr-1 inline" />}
+                  {badgeLabel || (item.matched ? "GP do fim de semana" : item.article_type)}
                 </Badge>
-                <span className="text-xs text-muted-foreground">
-                  {newsDate.format(new Date(item.updated_at))}
-                </span>
               </div>
-              <h3 className="line-clamp-2 text-sm font-medium leading-snug">
-                {item.title}
-              </h3>
-              {item.meta_description ? (
-                <p className="line-clamp-2 text-xs text-muted-foreground">
-                  {item.meta_description}
-                </p>
-              ) : null}
+
+              <div className="absolute bottom-2 left-2.5 flex items-center gap-1 text-[10px] text-white/80 font-mono">
+                <Calendar className="size-3 text-red-400" />
+                <span>{newsDate.format(new Date(item.updated_at))}</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1.5 p-3.5 flex-1 justify-between">
+              <div>
+                <h3 className="line-clamp-2 text-sm font-bold leading-snug group-hover:text-red-500 transition-colors">
+                  {item.title}
+                </h3>
+                {item.meta_description ? (
+                  <p className="line-clamp-2 text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                    {item.meta_description}
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="pt-2 mt-auto border-t border-border/30 flex items-center justify-between text-[11px] text-muted-foreground font-medium">
+                <span className="group-hover:text-foreground transition-colors">Ver resumo da matéria</span>
+                <span className="text-red-500">→</span>
+              </div>
             </div>
           </Card>
         </button>
       </DialogTrigger>
-      <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-xl">
-        <CardImage item={item} className="h-56 w-full shrink-0 object-cover" />
-        <div className="flex flex-col gap-4 p-6">
-          <DialogHeader className="gap-2 text-left">
-            <div className="flex items-center gap-2">
-              <Badge variant={item.matched ? "default" : "secondary"}>
+      <DialogContent className="flex flex-col gap-0 overflow-hidden p-0 sm:max-w-xl max-h-[calc(100dvh-2rem-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px))] rounded-2xl border-border/60 bg-card/95 backdrop-blur-xl">
+        <div className="relative h-44 sm:h-60 w-full shrink-0 overflow-hidden bg-muted">
+          <CardImage item={item} className="h-full w-full object-cover" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        </div>
+        <div
+          data-slot="dialog-body"
+          className="flex flex-1 min-h-0 flex-col gap-4 overflow-y-auto overscroll-contain p-4 sm:p-6"
+        >
+          <DialogHeader className="gap-2.5 text-left">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant={isFavorite ? "default" : isWeekendGP ? "destructive" : "secondary"}>
+                {isFavorite && <Sparkles className="size-3 mr-1 inline" />}
                 {item.matched ? "GP do fim de semana" : item.article_type}
               </Badge>
-              <span className="text-xs text-muted-foreground">
-                {newsDate.format(new Date(item.updated_at))}
+              <span className="text-xs text-muted-foreground font-mono flex items-center gap-1">
+                <Calendar className="size-3 text-red-500" />
+                {newsDate.format(new Date(item.updated_at))} (Brasília)
               </span>
             </div>
-            <DialogTitle className="text-lg leading-snug">
+            <DialogTitle className="text-base sm:text-lg font-bold leading-snug text-foreground">
               {item.title}
             </DialogTitle>
-            <ArticleSummary url={item.url} fallbackText={item.meta_description ?? undefined} />
+            <DialogDescription className="sr-only">
+              Resumo editorial em português da matéria: {item.title}
+            </DialogDescription>
+            <ArticleSummary
+              url={item.url}
+              title={item.title}
+              fallbackText={item.meta_description ?? undefined}
+              articleType={item.article_type}
+            />
             {item.title_en && item.title_en !== item.title ? (
-              <p className="text-xs text-muted-foreground/80 italic">
-                Original: {item.title_en}
+              <p className="text-xs text-muted-foreground/80 italic pt-1 border-t border-border/40">
+                Original em inglês: {item.title_en}
               </p>
             ) : null}
           </DialogHeader>
-          <DialogFooter className="sm:justify-between">
-            <span className="text-xs text-muted-foreground">
-              Tradução automática para pt-BR
-            </span>
-            <Button asChild size="sm" variant="outline">
+        </div>
+        <DialogFooter className="m-0 shrink-0 flex-row items-center justify-between gap-2 border-t border-border/40 bg-muted/40 px-4 py-3 sm:px-6 sm:py-3.5">
+          <span className="hidden sm:inline text-xs text-muted-foreground">
+            Tradução e síntese editorial em pt-BR
+          </span>
+          <div className="flex w-full sm:w-auto items-center justify-end gap-2">
+            <DialogClose asChild>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                data-testid="news-modal-footer-close"
+                className="min-h-10 sm:min-h-8 px-4 font-semibold"
+              >
+                Fechar
+              </Button>
+            </DialogClose>
+            <Button
+              asChild
+              size="sm"
+              variant="default"
+              className="min-h-10 sm:min-h-8 bg-red-600 hover:bg-red-700 text-white gap-1.5 font-semibold"
+            >
               <a href={item.url} target="_blank" rel="noopener noreferrer">
-                Ler matéria completa
+                <span>Ler na íntegra</span>
+                <ExternalLink className="size-3.5" />
               </a>
             </Button>
-          </DialogFooter>
-        </div>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
@@ -173,20 +325,23 @@ export function RaceNewsCards({ series }: { series?: string }) {
   if (query.error) return null
 
   return (
-    <section className="space-y-3">
+    <section className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-        <Newspaper className="size-4" />
-        Últimas notícias
-      </h2>
+        <div className="flex items-center gap-2">
+          <div className="h-4 w-1 rounded-full bg-red-600" />
+          <h2 className="flex items-center gap-2 text-base font-bold tracking-tight text-foreground uppercase">
+            <Newspaper className="size-4 text-red-500" />
+            Últimas Notícias da Pista
+          </h2>
+        </div>
       </div>
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         {query.loading || !query.data
           ? [0, 1, 2].map((i) => (
-              <Card key={i} size="sm" className="overflow-hidden">
-                <Skeleton className="h-28 w-full rounded-none" />
-                <div className="space-y-2 px-3 pb-3 pt-2">
-                  <Skeleton className="h-4 w-24" />
+              <Card key={i} size="sm" className="overflow-hidden rounded-xl border border-border/40">
+                <Skeleton className="aspect-[16/10] w-full rounded-none" />
+                <div className="space-y-2 p-3.5">
+                  <Skeleton className="h-4 w-28" />
                   <Skeleton className="h-4 w-full" />
                   <Skeleton className="h-4 w-2/3" />
                 </div>
