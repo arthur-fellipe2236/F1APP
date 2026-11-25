@@ -6,6 +6,7 @@ from ..extensions import db
 from ..models import Race, Driver, User, RaceResult
 from ..models.fantasy import Prediction
 from ..models.league import League
+from .admin import admin_required
 from .auth import token_required
 
 bp = Blueprint("fantasy", __name__)
@@ -85,6 +86,7 @@ def get_leaderboard(season):
     return jsonify(leaderboard)
 
 @bp.post("/fantasy/calculate")
+@admin_required
 def calculate_points():
     """Motor de Resolução: Calculate fantasy points based on actual race results"""
     # Em um ambiente real, esta rota seria restrita (ex: API key interna)

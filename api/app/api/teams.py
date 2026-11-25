@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, request
 from ..extensions import db
 from ..models import Race, RaceResult, Team
 from ..sync import TEAM_ENGINES_BY_SEASON
+from .admin import admin_required
 from .helpers import (
     ApiError,
     commit_unique,
@@ -144,6 +145,7 @@ def list_teams():
 
 
 @bp.post("/teams")
+@admin_required
 def create_team():
     """
     Cria equipe
@@ -237,6 +239,7 @@ def get_team(team_id):
 
 
 @bp.put("/teams/<int:team_id>")
+@admin_required
 def update_team(team_id):
     """
     Atualiza equipe
@@ -296,6 +299,7 @@ def update_team(team_id):
 
 
 @bp.delete("/teams/<int:team_id>")
+@admin_required
 def delete_team(team_id):
     """
     Remove equipe

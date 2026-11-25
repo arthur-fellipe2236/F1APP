@@ -4,6 +4,7 @@ from sqlalchemy import case, func, or_
 
 from ..extensions import db
 from ..models import Driver, Race, RaceResult, Team
+from .admin import admin_required
 from .helpers import (
     ApiError,
     commit_unique,
@@ -226,6 +227,7 @@ def list_drivers():
 
 
 @bp.post("/drivers")
+@admin_required
 def create_driver():
     """
     Cria piloto
@@ -341,6 +343,7 @@ def get_driver(driver_id):
 
 
 @bp.put("/drivers/<int:driver_id>")
+@admin_required
 def update_driver(driver_id):
     """
     Atualiza piloto
@@ -406,6 +409,7 @@ def update_driver(driver_id):
 
 
 @bp.delete("/drivers/<int:driver_id>")
+@admin_required
 def delete_driver(driver_id):
     """
     Remove piloto

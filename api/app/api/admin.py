@@ -1,5 +1,6 @@
-from flask import Blueprint, request, jsonify
+import inspect
 from functools import wraps
+from flask import Blueprint, request, jsonify
 from ..extensions import db
 from ..models import Race, RaceResult, Driver
 from .auth import token_required
@@ -12,7 +13,10 @@ def admin_required(f):
     def decorated(current_user, *args, **kwargs):
         if not current_user.is_admin:
             return jsonify({'message': 'Admin access required'}), 403
-        return f(current_user, *args, **kwargs)
+        sig = inspect.signature(f)
+        if 'current_user' in sig.parameters and 'current_user' not in kwargs:
+            kwargs['current_user'] = current_user
+        return f(*args, **kwargs)
     return decorated
 
 @bp.post('/admin/results')

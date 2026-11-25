@@ -8,8 +8,36 @@ def _expected_race_total():
     return len(RACES) * (1 + len(GENERATED_SEASONS))
 
 
-def _create(client, path, payload):
-    return client.post(path, json=payload)
+def _admin_token(client):
+    import datetime
+    import jwt
+    from app.models.user import User
+    from app.extensions import db
+    app = client.application
+    with app.app_context():
+        user = User.query.filter_by(username="admin_test_fixture").first()
+        if not user:
+            user = User(username="admin_test_fixture", is_admin=True)
+            user.set_password("AdminPass123!")
+            db.session.add(user)
+            db.session.commit()
+        now = datetime.datetime.now(datetime.timezone.utc)
+        return jwt.encode(
+            {"user_id": user.id, "iat": now, "exp": now + datetime.timedelta(days=1)},
+            app.config["SECRET_KEY"],
+            algorithm="HS256",
+        )
+
+
+def _auth_headers(client):
+    return {"Authorization": f"Bearer {_admin_token(client)}"}
+
+
+def _create(client, path, payload, headers=None):
+    h = _auth_headers(client)
+    if headers:
+        h.update(headers)
+    return client.post(path, json=payload, headers=h)
 
 
 class TestHealth:
@@ -80,7 +108,7 @@ class TestDrivers:
 
         ver = next(d for d in data if d["code"] == "VER")
         assert client.put(
-            f"/api/v1/drivers/{ver['id']}", json={"team_id": 2}
+            f"/api/v1/drivers/{ver['id']}", json={"team_id": 2}, headers=_auth_headers(client)
         ).status_code == 200
 
         after = client.get(
@@ -121,11 +149,12 @@ class TestDrivers:
         updated = client.put(
             f"/api/v1/drivers/{driver_id}",
             json={"nationality": "brasileiro"},
+            headers=_auth_headers(client),
         )
         assert updated.status_code == 200
         assert updated.get_json()["nationality"] == "brasileiro"
 
-        deleted = client.delete(f"/api/v1/drivers/{driver_id}")
+        deleted = client.delete(f"/api/v1/drivers/{driver_id}", headers=_auth_headers(client))
         assert deleted.status_code == 204
         assert client.get(f"/api/v1/drivers/{driver_id}").status_code == 404
 
@@ -182,11 +211,11 @@ class TestTeams:
         assert dup.status_code == 409
 
         updated = client.put(
-            f"/api/v1/teams/{team_id}", json={"founded_year": 2026}
+            f"/api/v1/teams/{team_id}", json={"founded_year": 2026}, headers=_auth_headers(client)
         )
         assert updated.get_json()["founded_year"] == 2026
 
-        assert client.delete(f"/api/v1/teams/{team_id}").status_code == 204
+        assert client.delete(f"/api/v1/teams/{team_id}", headers=_auth_headers(client)).status_code == 204
         assert client.get(f"/api/v1/teams/{team_id}").status_code == 404
 
 
@@ -200,10 +229,10 @@ class TestCircuits:
         assert created.status_code == 201
         cid = created.get_json()["id"]
 
-        updated = client.put(f"/api/v1/circuits/{cid}", json={"laps": 61})
+        updated = client.put(f"/api/v1/circuits/{cid}", json={"laps": 61}, headers=_auth_headers(client))
         assert updated.get_json()["laps"] == 61
 
-        assert client.delete(f"/api/v1/circuits/{cid}").status_code == 204
+        assert client.delete(f"/api/v1/circuits/{cid}", headers=_auth_headers(client)).status_code == 204
 
     def test_list_by_season_ordered_by_round(self, client):
         body = client.get(
@@ -1158,13 +1187,13 @@ class TestSyncErgast:
 
 class TestSync:
     def test_invalid_season(self, client):
-        assert client.post("/api/v1/sync?season=abc").status_code == 400
+        assert client.post("/api/v1/sync?season=abc", headers=_auth_headers(client)).status_code == 400
 
     def test_already_running_409(self, client, monkeypatch):
         from app import sync as sync_module
 
         monkeypatch.setitem(sync_module.SYNC_STATE, "running", True)
-        assert client.post("/api/v1/sync?season=2023").status_code == 409
+        assert client.post("/api/v1/sync?season=2023", headers=_auth_headers(client)).status_code == 409
 
     def test_sync_status(self, client):
         resp = client.get("/api/v1/sync/status")

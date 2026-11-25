@@ -404,12 +404,14 @@ def article_summary():
               $ref: '#/components/schemas/Error'
     """
     url = request.args.get("url") or ""
-    is_motorsport = "motorsport.uol.com.br" in url
-    if not url.startswith(f1site.ARTICLE_URL_PREFIX) and not is_motorsport:
-        raise ApiError(
-            "Parametro 'url' deve apontar para formula1.com ou motorsport.com",
-            400,
-        )
+    from ..ssrf import validate_safe_url, safe_fetch_html, SSRFError, UpstreamFetchError
+
+    try:
+        parsed_url, _ = validate_safe_url(url)
+    except SSRFError as exc:
+        raise ApiError(str(exc), 400)
+
+    is_motorsport = parsed_url.hostname in ("motorsport.uol.com.br", "br.motorsport.com")
     count = parse_int(request.args.get("sentences"), "sentences") or 10
     count = max(3, min(count, 15))
     lang = (request.args.get("lang") or "").lower()
@@ -437,21 +439,10 @@ def article_summary():
             conn = None
 
     if is_motorsport:
-        import requests
         from bs4 import BeautifulSoup
         try:
-            res = requests.get(
-                url,
-                headers={
-                    "User-Agent": (
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                        "AppleWebKit/537.36 (KHTML, like Gecko) "
-                        "Chrome/117.0.0.0 Safari/537.36"
-                    )
-                },
-                timeout=10,
-            )
-            soup = BeautifulSoup(res.text, "html.parser")
+            html = safe_fetch_html(url)
+            soup = BeautifulSoup(html, "html.parser")
             paragraphs = [
                 p.get_text(strip=True)
                 for p in soup.find_all("p")
@@ -474,7 +465,7 @@ def article_summary():
                 "paragraphs": paragraphs,
                 "meta_description": meta_desc or fallback_desc,
             }
-        except Exception as exc:
+        except (SSRFError, UpstreamFetchError) as exc:
             if fallback_title or fallback_desc:
                 article = {
                     "title": fallback_title,
@@ -487,7 +478,23 @@ def article_summary():
                         conn.close()
                     except Exception:
                         pass
-                raise ApiError(str(exc), 503)
+                if isinstance(exc, SSRFError):
+                    raise ApiError(str(exc), 400)
+                raise ApiError("Site de noticias indisponivel", 503)
+        except Exception:
+            if fallback_title or fallback_desc:
+                article = {
+                    "title": fallback_title,
+                    "paragraphs": [],
+                    "meta_description": fallback_desc,
+                }
+            else:
+                if conn is not None:
+                    try:
+                        conn.close()
+                    except Exception:
+                        pass
+                raise ApiError("Site de noticias indisponivel", 503)
     else:
         try:
             article = f1site.fetch_article(url)
@@ -504,7 +511,7 @@ def article_summary():
                         conn.close()
                     except Exception:
                         pass
-                raise ApiError(str(exc), 503)
+                raise ApiError("Site oficial da Formula 1 indisponivel", 503)
 
     raw_paragraphs = [
         p.strip() for p in (article.get("paragraphs") or []) if p and p.strip()

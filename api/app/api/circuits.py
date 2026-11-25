@@ -5,6 +5,7 @@ from sqlalchemy import desc, func
 from ..extensions import db
 from ..models import Circuit, Driver, Race, RaceResult
 from ..results_refresh import maybe_refresh_pending_results, season_progress
+from .admin import admin_required
 from .helpers import (
     commit_unique,
     get_or_404,
@@ -238,6 +239,7 @@ def list_circuits():
     )
 
 @bp.post("/circuits")
+@admin_required
 def create_circuit():
     """
     Cria circuito
@@ -310,6 +312,7 @@ def get_circuit(circuit_id):
 
 
 @bp.put("/circuits/<int:circuit_id>")
+@admin_required
 def update_circuit(circuit_id):
     """
     Atualiza circuito
@@ -364,6 +367,7 @@ def update_circuit(circuit_id):
 
 
 @bp.delete("/circuits/<int:circuit_id>")
+@admin_required
 def delete_circuit(circuit_id):
     """
     Remove circuito

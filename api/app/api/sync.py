@@ -1,12 +1,14 @@
 from flask import Blueprint, current_app, jsonify, request
 
 from ..sync import SYNC_STATE, request_sync
+from .admin import admin_required
 from .helpers import parse_int
 
 bp = Blueprint("sync", __name__)
 
 
 @bp.post("/sync")
+@admin_required
 def trigger_sync():
     """
     Dispara sincronizacao com a OpenF1

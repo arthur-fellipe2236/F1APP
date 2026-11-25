@@ -91,6 +91,12 @@ def parse_schedule(html):
 
 
 def _fetch_html(url):
+    if "/en/latest/article/" in url:
+        from .ssrf import safe_fetch_html, SSRFError, UpstreamFetchError
+        try:
+            return safe_fetch_html(url)
+        except (SSRFError, UpstreamFetchError) as exc:
+            raise F1SiteError(str(exc)) from exc
     try:
         response = requests.get(
             url, headers=HEADERS, timeout=TIMEOUT_SECONDS
@@ -235,8 +241,11 @@ ARTICLE_URL_PREFIX = "https://www.formula1.com/en/latest/article/"
 
 def fetch_article(url):
     """Extrai titulo, paragrafos e metadados editoriais de uma materia do site oficial."""
-    if not url.startswith(ARTICLE_URL_PREFIX):
-        raise F1SiteError("URL de artigo invalida (esperada formula1.com)")
+    from .ssrf import validate_safe_url, SSRFError
+    try:
+        validate_safe_url(url)
+    except SSRFError as exc:
+        raise F1SiteError(str(exc)) from exc
     raw = _fetch_html(url)
     title_match = OG_TITLE_RE.search(raw)
     desc_match = OG_DESC_RE.search(raw)
