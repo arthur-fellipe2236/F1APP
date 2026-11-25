@@ -167,12 +167,16 @@ export function DriversPage() {
       {
         name: "Piloto",
         sortable: true,
+        minWidth: "200px",
+        grow: 1.2,
+        wrap: true,
         selector: (row) => row.name,
-        cell: (row) => <span className="font-medium">{row.name}</span>,
+        cell: (row) => <span className="font-medium break-words">{row.name}</span>,
       },
       {
         name: "Nacionalidade",
         sortable: true,
+        minWidth: "160px",
         selector: (row) => row.nationality ?? "",
         cell: (row) => (
           <Flag
@@ -184,6 +188,9 @@ export function DriversPage() {
       {
         name: "Equipe",
         sortable: true,
+        minWidth: "220px",
+        grow: 1.5,
+        wrap: true,
         selector: (row) =>
           row.team_name ??
           (row.team_id ? (teamNames.get(row.team_id) ?? "") : ""),
@@ -198,7 +205,7 @@ export function DriversPage() {
         ),
       },
     ],
-    [teamNames],
+    [teamNames, seasonParam],
   )
 
   return (

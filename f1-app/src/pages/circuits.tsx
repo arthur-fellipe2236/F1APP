@@ -68,18 +68,24 @@ const columns: TableColumn<Circuit>[] = [
   {
     name: "Circuito",
     sortable: true,
+    minWidth: "220px",
+    grow: 1.2,
+    wrap: true,
     selector: (row) => row.name,
-    cell: (row) => <span className="font-medium">{row.name}</span>,
+    cell: (row) => <span className="font-medium break-words">{row.name}</span>,
   },
   {
     name: "Vencedor",
     sortable: true,
+    minWidth: "200px",
+    grow: 1.2,
+    wrap: true,
     selector: (row) => row.winner?.name ?? "",
     cell: (row) =>
       row.winner ? (
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
           <WinnerAvatar name={row.winner.name} headshotUrl={row.winner.headshot_url} />
-          <span>{row.winner.name}</span>
+          <span className="break-words">{row.winner.name}</span>
         </div>
       ) : (
         <span className="text-muted-foreground">—</span>
@@ -88,6 +94,7 @@ const columns: TableColumn<Circuit>[] = [
   {
     name: "País",
     sortable: true,
+    minWidth: "140px",
     selector: (row) => row.country ?? "",
     cell: (row) => (
       <Flag src={flagFromCountry(row.country)} label={row.country} />
