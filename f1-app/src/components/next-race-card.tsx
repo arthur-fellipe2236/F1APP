@@ -1,15 +1,98 @@
 import { useEffect, useState } from "react"
-import { CalendarDays, Timer, CalendarOff, Radio } from "lucide-react"
+import { CalendarDays, Timer, CalendarOff, Radio, Trophy } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useApi } from "@/hooks/use-api"
-import { api, type LiveSessionEntry } from "@/lib/api"
+import { api, type LiveSessionEntry, type NextRace, type DriverStanding } from "@/lib/api"
 import { flagFromCountry } from "@/lib/assets"
 import { mediaUrl } from "@/lib/media"
 import { cn } from "@/lib/utils"
 import { formatSessionDateTime, formatSessionTime, instantMs } from "@/lib/datetime"
 import { NEXT_RACE_POLL_MS } from "@/lib/request-gate"
+
+export interface NextEventResolution {
+  type: "race" | "test" | "top5" | "empty"
+  race?: NextRace | null
+  standings?: DriverStanding[]
+  season?: number
+  isTest?: boolean
+}
+
+/**
+ * Seleciona os até 5 melhores pilotos da classificação oficial, preservando
+ * a ordem de desempate e critérios oficiais providos pelo backend.
+ */
+export function selectTop5Drivers(standings: DriverStanding[] | null | undefined): DriverStanding[] {
+  if (!standings || !Array.isArray(standings)) return []
+  return [...standings]
+    .sort((a, b) => {
+      const posA = a.position ?? 999
+      const posB = b.position ?? 999
+      if (posA !== posB) return posA - posB
+      return (b.points ?? 0) - (a.points ?? 0)
+    })
+    .slice(0, 5)
+}
+
+/**
+ * Avalia a prioridade funcional mandatória (OP-06.54):
+ * 1. Se houver corridas futuras, mostrar a próxima corrida.
+ * 2. Se não houver corridas futuras, mas houver testes futuros, mostrar o próximo teste.
+ * 3. Se não houver corridas nem testes futuros, mostrar o TOP 5 de pilotos da temporada encerrada.
+ */
+export function resolveNextRaceCardState(params: {
+  nextRaceData?: NextRace | null
+  driverStandings?: DriverStanding[] | null
+  isError?: boolean
+  referenceDate?: Date
+}): NextEventResolution {
+  const { nextRaceData, driverStandings, isError } = params
+
+  if (isError && (!driverStandings || driverStandings.length === 0)) {
+    return { type: "empty" }
+  }
+
+  // 1 e 2: Evento futuro retornado (corrida ou teste)
+  if (nextRaceData && !nextRaceData.offseason) {
+    const isTest = Boolean(
+      nextRaceData.is_testing ||
+      nextRaceData.event_type === "test" ||
+      (nextRaceData.name && /testing|testes|pre-season|pós-temporada/i.test(nextRaceData.name))
+    )
+
+    if (isTest) {
+      return {
+        type: "test",
+        race: nextRaceData,
+        season: nextRaceData.season ?? undefined,
+        isTest: true,
+      }
+    }
+
+    return {
+      type: "race",
+      race: nextRaceData,
+      season: nextRaceData.season ?? undefined,
+      isTest: false,
+    }
+  }
+
+  // 3: Temporada encerrada / sem eventos futuros -> Top 5 oficial
+  const top5 = selectTop5Drivers(driverStandings)
+  if (top5.length > 0) {
+    return {
+      type: "top5",
+      standings: top5,
+      season: nextRaceData?.season,
+    }
+  }
+
+  return {
+    type: "empty",
+    season: nextRaceData?.season,
+  }
+}
 
 const SESSION_SHORT: Record<string, string> = {
   // Canônicos em inglês (OpenF1)
@@ -230,9 +313,132 @@ export function NextRaceCard({
   }[series]
 
   const data: any = query.data
-  if (query.error || !data) return null
+  const isOffseason = Boolean(data?.offseason || (query.error && !query.loading))
+  const targetSeason = data?.season ?? new Date().getFullYear()
 
-  if (data.offseason) {
+  // Consulta classificação oficial de pilotos quando não há corridas futuras (OP-06.54)
+  const standingsQuery = useApi(
+    () => {
+      if (!isOffseason) return Promise.resolve({ data: [] as DriverStanding[] })
+      return api.driverStandings(targetSeason, series)
+    },
+    [isOffseason, targetSeason, series],
+  )
+
+  const resolution = resolveNextRaceCardState({
+    nextRaceData: data,
+    driverStandings: standingsQuery.data?.data,
+    isError: Boolean(query.error),
+  })
+
+  if (query.loading && !data) {
+    return (
+      <Card className="rounded-xl border border-border/50 bg-card/85 backdrop-blur-xl h-full flex flex-col p-6 animate-pulse">
+        <div className="h-4 bg-muted/50 rounded w-1/3 mb-4" />
+        <div className="h-8 bg-muted/40 rounded w-2/3 mb-2" />
+        <div className="h-4 bg-muted/30 rounded w-1/2 mt-auto" />
+      </Card>
+    )
+  }
+
+  if (resolution.type === "empty" && !data) return null
+
+  // Prioridade 3: Se não houver corridas nem testes futuros, exibe Top 5 oficial de pilotos da temporada
+  if (resolution.type === "top5") {
+    const top5 = resolution.standings ?? []
+    const seasonLabel = resolution.season ?? targetSeason
+
+    return (
+      <Card className={cn(
+        "group relative overflow-hidden rounded-xl border border-border/50 bg-card/85 backdrop-blur-xl text-card-foreground shadow-md h-full flex flex-col transition-all duration-300 hover:shadow-xl",
+        seriesMeta.hoverBorder
+      )}>
+        <div className={cn("absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r z-20 opacity-80 group-hover:opacity-100 transition-opacity", seriesMeta.topGradient)} />
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.02] dark:opacity-[0.04] transition-transform duration-700 group-hover:scale-110">
+          <Trophy className="size-56" />
+        </div>
+
+        <CardHeader className="relative z-10 pb-2">
+          <CardTitle className="flex items-center justify-between text-xs font-semibold tracking-wider uppercase text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <img
+                loading="lazy"
+                src={`/logos/${series}-logo.png`}
+                alt={`${series.toUpperCase()} Logo`}
+                className="h-4.5 w-auto object-contain rounded-xs"
+              />
+              <span className={cn("font-bold", seriesMeta.accent)}>{seriesMeta.name}</span>
+            </div>
+            <Badge variant="outline" className="text-[10px] font-mono border-white/10 bg-black/30">
+              Temporada {seasonLabel}
+            </Badge>
+          </CardTitle>
+        </CardHeader>
+
+        <CardContent className="relative z-10 flex flex-col justify-between flex-1 gap-3 pt-1">
+          <div>
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-sm font-bold tracking-tight text-foreground flex items-center gap-1.5">
+                <Trophy className={cn("size-4", seriesMeta.accent)} />
+                <span>Top 5 Pilotos · Final</span>
+              </div>
+              <Badge variant="outline" className={cn("text-[9px] uppercase tracking-wider font-semibold border-white/10", seriesMeta.badgeBorder)}>
+                Encerrada
+              </Badge>
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              Classificação oficial de pilotos da temporada
+            </p>
+
+            <div className="mt-2.5 space-y-1.5">
+              {top5.map((driver) => (
+                <div
+                  key={driver.driver_id ?? `${driver.position}-${driver.driver_name}`}
+                  className="flex items-center justify-between py-1 px-2 rounded-md bg-secondary/40 border border-white/5 hover:border-white/15 transition-colors"
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span
+                      className={cn(
+                        "font-mono font-bold text-[10px] size-4.5 rounded flex items-center justify-center shrink-0",
+                        driver.position === 1
+                          ? "bg-amber-500/25 text-amber-300 border border-amber-500/50 shadow-xs"
+                          : driver.position === 2
+                          ? "bg-slate-300/20 text-slate-200 border border-slate-300/40"
+                          : driver.position === 3
+                          ? "bg-amber-700/25 text-amber-400 border border-amber-700/40"
+                          : "bg-background/80 text-muted-foreground border border-white/5",
+                      )}
+                    >
+                      {driver.position}
+                    </span>
+                    <span className="truncate text-xs font-semibold text-foreground">
+                      {driver.driver_name}
+                      {driver.team_name ? (
+                        <span className="text-[10px] text-muted-foreground ml-1.5 font-normal opacity-80">
+                          {driver.team_name}
+                        </span>
+                      ) : null}
+                    </span>
+                  </div>
+                  <span className="font-mono text-xs font-bold text-foreground tabular-nums shrink-0 ml-2">
+                    {driver.points}{" "}
+                    <span className="text-[9px] text-muted-foreground font-normal">pts</span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-2 border-t border-border/30 text-[10px] text-muted-foreground">
+            <span>Classificação oficial de pilotos</span>
+            <span className="font-mono text-[9px] opacity-75">FIA {series.toUpperCase()}</span>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  if (resolution.type === "empty") {
     return (
       <Card className={cn(
         "group relative overflow-hidden rounded-xl border border-border/50 bg-card/80 backdrop-blur-xl text-card-foreground shadow-md h-full flex flex-col transition-all duration-300 hover:shadow-xl",
@@ -254,7 +460,7 @@ export function NextRaceCard({
               <span className={cn("font-bold", seriesMeta.accent)}>{seriesMeta.name}</span>
             </div>
             <Badge variant="outline" className="text-[10px] font-mono border-white/10 bg-black/30">
-              Temporada {data.season}
+              Temporada {data?.season ?? targetSeason}
             </Badge>
           </CardTitle>
         </CardHeader>
@@ -263,7 +469,7 @@ export function NextRaceCard({
             <CalendarOff className="size-6 text-muted-foreground group-hover:text-foreground transition-colors" />
           </div>
           <p className="text-xs sm:text-sm font-medium text-muted-foreground leading-relaxed max-w-[88%]">
-            {data.message || `Aguardando homologação do calendário oficial de ${data.season} pela FIA.`}
+            {data?.message || `Aguardando homologação do calendário oficial de ${data?.season ?? targetSeason} pela FIA.`}
           </p>
         </CardContent>
       </Card>
@@ -326,9 +532,14 @@ export function NextRaceCard({
                 AO VIVO
               </Badge>
             ) : null}
-            {data.round ? (
+            {data.round && !resolution.isTest ? (
               <Badge variant="outline" className="font-mono uppercase tracking-wider text-[10px] border-white/15 bg-black/40 backdrop-blur-xs px-2 py-0.5">
                 Etapa {data.round}
+              </Badge>
+            ) : null}
+            {resolution.isTest ? (
+              <Badge variant="outline" className="font-mono uppercase tracking-wider text-[10px] border-amber-500/30 text-amber-300 bg-amber-950/30 px-2 py-0.5">
+                Testes Oficiais
               </Badge>
             ) : null}
           </div>
@@ -381,11 +592,11 @@ export function NextRaceCard({
           <div className="flex flex-col items-end justify-end mt-auto pt-2 gap-1 border-t border-border/30">
             <span className="flex items-center gap-1 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-semibold">
               <Timer className={cn("size-3", seriesMeta.accent, "animate-pulse")} />
-              {targetIsRace ? "Largada em" : "Próxima sessão em"}
+              {resolution.isTest ? "Início dos testes em" : targetIsRace ? "Largada em" : "Próxima sessão em"}
             </span>
             <Countdown
               target={target}
-              doneLabel={targetIsRace ? "Semáforo verde!" : "Sessão começou!"}
+              doneLabel={resolution.isTest ? "Testes iniciados!" : targetIsRace ? "Semáforo verde!" : "Sessão começou!"}
               accentColor={seriesMeta.accent}
             />
           </div>
