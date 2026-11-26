@@ -4,8 +4,8 @@ import { CalendarDays, Timer, CalendarOff, Radio, Trophy } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useApi } from "@/hooks/use-api"
-import { api, type LiveSessionEntry, type NextRace, type DriverStanding } from "@/lib/api"
-import { flagFromCountry } from "@/lib/assets"
+import { api, type LiveSessionEntry, type NextRace, type DriverStanding, type TeamStanding } from "@/lib/api"
+import { flagFromCountry, driverPhoto, teamLogo } from "@/lib/assets"
 import { mediaUrl } from "@/lib/media"
 import { cn } from "@/lib/utils"
 import { formatSessionDateTime, formatSessionTime, instantMs } from "@/lib/datetime"
@@ -15,6 +15,7 @@ export interface NextEventResolution {
   type: "race" | "test" | "top5" | "empty"
   race?: NextRace | null
   standings?: DriverStanding[]
+  teamStandings?: TeamStanding[]
   season?: number
   isTest?: boolean
 }
@@ -36,6 +37,22 @@ export function selectTop5Drivers(standings: DriverStanding[] | null | undefined
 }
 
 /**
+ * Seleciona os até 5 melhores construtores da classificação oficial, preservando
+ * a ordem de desempate e pontuação oficial providos pelo backend.
+ */
+export function selectTop5Teams(standings: TeamStanding[] | null | undefined): TeamStanding[] {
+  if (!standings || !Array.isArray(standings)) return []
+  return [...standings]
+    .sort((a, b) => {
+      const posA = a.position ?? 999
+      const posB = b.position ?? 999
+      if (posA !== posB) return posA - posB
+      return (b.points ?? 0) - (a.points ?? 0)
+    })
+    .slice(0, 5)
+}
+
+/**
  * Avalia a prioridade funcional mandatória (OP-06.54):
  * 1. Se houver corridas futuras, mostrar a próxima corrida.
  * 2. Se não houver corridas futuras, mas houver testes futuros, mostrar o próximo teste.
@@ -44,10 +61,11 @@ export function selectTop5Drivers(standings: DriverStanding[] | null | undefined
 export function resolveNextRaceCardState(params: {
   nextRaceData?: NextRace | null
   driverStandings?: DriverStanding[] | null
+  teamStandings?: TeamStanding[] | null
   isError?: boolean
   referenceDate?: Date
 }): NextEventResolution {
-  const { nextRaceData, driverStandings, isError } = params
+  const { nextRaceData, driverStandings, teamStandings, isError } = params
 
   if (isError && (!driverStandings || driverStandings.length === 0)) {
     return { type: "empty" }
@@ -80,10 +98,12 @@ export function resolveNextRaceCardState(params: {
 
   // 3: Temporada encerrada / sem eventos futuros -> Top 5 oficial
   const top5 = selectTop5Drivers(driverStandings)
-  if (top5.length > 0) {
+  const top5Teams = selectTop5Teams(teamStandings)
+  if (top5.length > 0 || top5Teams.length > 0) {
     return {
       type: "top5",
       standings: top5,
+      teamStandings: top5Teams,
       season: nextRaceData?.season,
     }
   }
@@ -316,6 +336,8 @@ export function NextRaceCard({
   const isOffseason = Boolean(data?.offseason || (query.error && !query.loading))
   const targetSeason = data?.season ?? new Date().getFullYear()
 
+  const [top5Tab, setTop5Tab] = useState<"drivers" | "teams">("drivers")
+
   // Consulta classificação oficial de pilotos quando não há corridas futuras (OP-06.54)
   const standingsQuery = useApi(
     () => {
@@ -325,9 +347,19 @@ export function NextRaceCard({
     [isOffseason, targetSeason, series],
   )
 
+  // Consulta classificação oficial de construtores da temporada (Frente 7)
+  const teamStandingsQuery = useApi(
+    () => {
+      if (!isOffseason) return Promise.resolve({ data: [] as TeamStanding[] })
+      return api.teamStandings(targetSeason, series)
+    },
+    [isOffseason, targetSeason, series],
+  )
+
   const resolution = resolveNextRaceCardState({
     nextRaceData: data,
     driverStandings: standingsQuery.data?.data,
+    teamStandings: teamStandingsQuery.data?.data,
     isError: Boolean(query.error),
   })
 
@@ -343,10 +375,12 @@ export function NextRaceCard({
 
   if (resolution.type === "empty" && !data) return null
 
-  // Prioridade 3: Se não houver corridas nem testes futuros, exibe Top 5 oficial de pilotos da temporada
+  // Prioridade 3: Se não houver corridas nem testes futuros, exibe Top 5 oficial de pilotos e construtores da temporada
   if (resolution.type === "top5") {
     const top5 = resolution.standings ?? []
+    const top5Teams = resolution.teamStandings ?? []
     const seasonLabel = resolution.season ?? targetSeason
+    const maxTeamPoints = top5Teams[0]?.points || 1
 
     return (
       <Card className={cn(
@@ -380,57 +414,174 @@ export function NextRaceCard({
             <div className="flex items-center justify-between gap-2">
               <div className="text-sm font-bold tracking-tight text-foreground flex items-center gap-1.5">
                 <Trophy className={cn("size-4", seriesMeta.accent)} />
-                <span>Top 5 Pilotos · Final</span>
+                <span>Top 5 {top5Tab === "drivers" ? "Pilotos" : "Construtores"} · Final</span>
               </div>
-              <Badge variant="outline" className={cn("text-[9px] uppercase tracking-wider font-semibold border-white/10", seriesMeta.badgeBorder)}>
-                Encerrada
-              </Badge>
-            </div>
-            <p className="text-[11px] text-muted-foreground mt-0.5">
-              Classificação oficial de pilotos da temporada
-            </p>
-
-            <div className="mt-2.5 space-y-1.5">
-              {top5.map((driver) => (
-                <div
-                  key={driver.driver_id ?? `${driver.position}-${driver.driver_name}`}
-                  className="flex items-center justify-between py-1 px-2 rounded-md bg-secondary/40 border border-white/5 hover:border-white/15 transition-colors"
-                >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span
+              <div className="flex items-center gap-1.5">
+                {top5Teams.length > 0 && (
+                  <div className="flex items-center bg-muted/60 p-0.5 rounded-md border border-white/5 text-[10px] font-bold">
+                    <button
+                      type="button"
+                      onClick={() => setTop5Tab("drivers")}
                       className={cn(
-                        "font-mono font-bold text-[10px] size-4.5 rounded flex items-center justify-center shrink-0",
-                        driver.position === 1
-                          ? "bg-amber-500/25 text-amber-300 border border-amber-500/50 shadow-xs"
-                          : driver.position === 2
-                          ? "bg-slate-300/20 text-slate-200 border border-slate-300/40"
-                          : driver.position === 3
-                          ? "bg-amber-700/25 text-amber-400 border border-amber-700/40"
-                          : "bg-background/80 text-muted-foreground border border-white/5",
+                        "px-2 py-0.5 rounded transition-all cursor-pointer",
+                        top5Tab === "drivers"
+                          ? "bg-primary text-primary-foreground shadow-xs font-extrabold"
+                          : "text-muted-foreground hover:text-foreground"
                       )}
                     >
-                      {driver.position}
-                    </span>
-                    <span className="truncate text-xs font-semibold text-foreground">
-                      {driver.driver_name}
-                      {driver.team_name ? (
-                        <span className="text-[10px] text-muted-foreground ml-1.5 font-normal opacity-80">
-                          {driver.team_name}
-                        </span>
-                      ) : null}
-                    </span>
+                      Pilotos
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTop5Tab("teams")}
+                      className={cn(
+                        "px-2 py-0.5 rounded transition-all cursor-pointer",
+                        top5Tab === "teams"
+                          ? "bg-primary text-primary-foreground shadow-xs font-extrabold"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      Equipes
+                    </button>
                   </div>
-                  <span className="font-mono text-xs font-bold text-foreground tabular-nums shrink-0 ml-2">
-                    {driver.points}{" "}
-                    <span className="text-[9px] text-muted-foreground font-normal">pts</span>
-                  </span>
-                </div>
-              ))}
+                )}
+                <Badge variant="outline" className={cn("text-[9px] uppercase tracking-wider font-semibold border-white/10", seriesMeta.badgeBorder)}>
+                  Encerrada
+                </Badge>
+              </div>
             </div>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              Classificação oficial de {top5Tab === "drivers" ? "pilotos" : "construtores"} homologada pela FIA
+            </p>
+
+            {/* TAB PILOTOS */}
+            {top5Tab === "drivers" ? (
+              <div className="mt-2.5 space-y-1.5">
+                {top5.map((driver) => {
+                  const photoUrl = driverPhoto(driver.driver_name, seasonLabel)
+                  const logoAsset = driver.team_name ? teamLogo(driver.team_name, seasonLabel) : null
+                  return (
+                    <div
+                      key={driver.driver_id ?? `${driver.position}-${driver.driver_name}`}
+                      className="flex items-center justify-between py-1 px-2 rounded-md bg-secondary/40 border border-white/5 hover:border-white/15 transition-colors gap-2"
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span
+                          className={cn(
+                            "font-mono font-bold text-[10px] size-4.5 rounded flex items-center justify-center shrink-0",
+                            driver.position === 1
+                              ? "bg-amber-500/25 text-amber-800 dark:text-amber-300 border border-amber-500/50 shadow-xs"
+                              : driver.position === 2
+                              ? "bg-slate-300/20 text-zinc-700 dark:text-slate-200 border border-slate-300/40"
+                              : driver.position === 3
+                              ? "bg-amber-700/25 text-amber-900 dark:text-amber-400 border border-amber-700/40"
+                              : "bg-background/80 text-muted-foreground border border-white/5",
+                          )}
+                        >
+                          {driver.position}
+                        </span>
+
+                        {photoUrl && (
+                          <img
+                            src={photoUrl}
+                            alt=""
+                            className="size-6 rounded-full object-cover border border-white/10 shrink-0 bg-muted/40"
+                            onError={(e) => (e.currentTarget.style.display = "none")}
+                          />
+                        )}
+
+                        <span className="truncate text-xs font-semibold text-foreground flex items-center gap-1.5">
+                          {driver.driver_name}
+                          {driver.team_name ? (
+                            <span className="text-[10px] text-muted-foreground ml-1 font-normal opacity-80 truncate hidden sm:inline">
+                              · {driver.team_name}
+                            </span>
+                          ) : null}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0 ml-auto">
+                        {logoAsset?.url && (
+                          <img
+                            src={logoAsset.url}
+                            alt=""
+                            className="h-3.5 max-w-[36px] object-contain shrink-0 opacity-80 hidden xs:inline"
+                            onError={(e) => (e.currentTarget.style.display = "none")}
+                          />
+                        )}
+                        <span className="font-mono text-xs font-bold text-foreground tabular-nums">
+                          {driver.points}{" "}
+                          <span className="text-[9px] text-muted-foreground font-normal">pts</span>
+                        </span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              /* TAB CONSTRUTORES (Barras de dominância e logos oficiais) */
+              <div className="mt-2.5 space-y-2">
+                {top5Teams.map((team) => {
+                  const logoAsset = team.team_name ? teamLogo(team.team_name, seasonLabel) : null
+                  const dominancePct = Math.max(8, Math.min(100, Math.round((team.points / maxTeamPoints) * 100)))
+                  return (
+                    <div
+                      key={team.team_id ?? `${team.position}-${team.team_name}`}
+                      className="py-1 px-2 rounded-md bg-secondary/40 border border-white/5 hover:border-white/15 transition-colors flex flex-col gap-1"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span
+                            className={cn(
+                              "font-mono font-bold text-[10px] size-4.5 rounded flex items-center justify-center shrink-0",
+                              team.position === 1
+                                ? "bg-amber-500/25 text-amber-800 dark:text-amber-300 border border-amber-500/50 shadow-xs"
+                                : team.position === 2
+                                ? "bg-slate-300/20 text-zinc-700 dark:text-slate-200 border border-slate-300/40"
+                                : team.position === 3
+                                ? "bg-amber-700/25 text-amber-900 dark:text-amber-400 border border-amber-700/40"
+                                : "bg-background/80 text-muted-foreground border border-white/5",
+                            )}
+                          >
+                            {team.position}
+                          </span>
+
+                          {logoAsset?.url && (
+                            <img
+                              src={logoAsset.url}
+                              alt=""
+                              className="h-3.5 max-w-[36px] object-contain shrink-0"
+                              onError={(e) => (e.currentTarget.style.display = "none")}
+                            />
+                          )}
+
+                          <span className="truncate text-xs font-bold text-foreground">
+                            {team.team_name}
+                          </span>
+                        </div>
+
+                        <span className="font-mono text-xs font-bold text-foreground tabular-nums shrink-0">
+                          {team.points}{" "}
+                          <span className="text-[9px] text-muted-foreground font-normal">pts</span>
+                        </span>
+                      </div>
+
+                      {/* Barra de dominância relativa */}
+                      <div className="w-full h-1.5 rounded-full bg-muted/60 overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-red-600 via-amber-500 to-yellow-400 transition-all duration-500"
+                          style={{ width: `${dominancePct}%` }}
+                        />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-between pt-2 border-t border-border/30 text-[10px] text-muted-foreground">
-            <span>Classificação oficial de pilotos</span>
+            <span>Classificação oficial de {top5Tab === "drivers" ? "pilotos" : "construtores"}</span>
             <span className="font-mono text-[9px] opacity-75">FIA {series.toUpperCase()}</span>
           </div>
         </CardContent>

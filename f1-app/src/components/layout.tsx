@@ -25,6 +25,7 @@ import { TeamWing } from "@/components/team-wing"
 import { Tabs as TabsPrimitive } from "radix-ui"
 import { useAppStore } from "@/store"
 import { RadioPlayer } from "@/components/radio-player"
+import { AlemDaPistaLogo } from "@/components/alem-da-pista-logo"
 
 const navItems = [
   { to: "/pilotos", label: "Pilotos", icon: Users },
@@ -229,18 +230,14 @@ export function Layout() {
       >
         {/* DESKTOP HEADER (MD+) — EDITORIAL SLIM */}
         <div className="mx-auto hidden md:flex items-center justify-between h-16 max-w-7xl px-4 lg:px-6 relative z-10 w-full gap-4">
-          {/* LOGO MULTI-SERIES CIRCULAR CENTRALIZADO E NOME OFICIAL */}
+          {/* LOGO OFICIAL APEX MASTER E NOME OFICIAL */}
           <Link to="/" className="flex items-center gap-3 hover:opacity-95 transition-opacity shrink-0 group select-none" title="Além da Pista - Início">
-            <img
-              src="/multi-series-logo.png"
-              alt="Além da Pista Logo"
-              className="h-10 w-10 object-contain drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)] rounded-full border border-white/20 shrink-0 group-hover:border-white/40 transition-colors"
-            />
+            <AlemDaPistaLogo className="h-10 w-10 shrink-0 transition-transform group-hover:scale-105" />
             <div className="flex flex-col text-left">
               <span className="font-f1 text-base lg:text-lg font-black tracking-wider text-white leading-none">
                 ALÉM DA PISTA
               </span>
-              <span className="text-[9px] uppercase tracking-[0.16em] text-white/70 font-sans font-medium mt-0.5">
+              <span className="text-[9px] uppercase tracking-[0.18em] text-white/70 font-sans font-medium mt-0.5">
                 O esporte não termina na linha de chegada
               </span>
             </div>
@@ -302,14 +299,10 @@ export function Layout() {
         <div className="mx-auto flex md:hidden h-14 w-full items-center justify-between px-3.5 relative z-10">
           <Link 
             to="/" 
-            className="flex items-center gap-2 shrink-0"
+            className="flex items-center gap-2.5 shrink-0"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            <img
-              src="/multi-series-logo.png"
-              alt="Além da Pista Logo"
-              className="h-10 w-auto object-contain drop-shadow-md rounded-full shrink-0"
-            />
+            <AlemDaPistaLogo className="h-9 w-9 shrink-0" />
             <span className="font-f1 text-base font-black tracking-wider text-white">
               ALÉM DA PISTA
             </span>

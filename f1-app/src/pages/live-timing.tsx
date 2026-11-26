@@ -28,6 +28,7 @@ import {
 import { useAppStore } from "@/store"
 import { SeriesSelector, type SeriesCategory } from "@/components/series-selector"
 import { SERIES_NAMES, isEstimatedSessionTime } from "@/lib/series"
+import { cn } from "@/lib/utils"
 
 export interface LiveData {
   session?: {
@@ -129,6 +130,7 @@ export function LiveTimingPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [pollIntervalMs, setPollIntervalMs] = useState<number>(LIVE_POLL_INTERVAL_MS)
+  const [viewMode, setViewMode] = useState<"table" | "cards">("table")
 
   const isMountedRef = useRef(true)
   const requestIdRef = useRef(0)
@@ -1038,96 +1040,182 @@ export function LiveTimingPage() {
         (liveData.drivers && liveData.drivers.length > 0 ? (
           <div className="mx-auto w-full max-w-6xl mt-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
             <Card className="border-border/50 bg-card/40 backdrop-blur-md shadow-2xl overflow-hidden">
-              <div className="bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900 p-3 text-center text-sm font-bold border-b border-border/50 tracking-widest text-zinc-300">
-                TORRE DE TEMPOS OFICIAL ({currentSeriesLabel.toUpperCase()})
+              <div className="bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900 p-3 flex items-center justify-between border-b border-border/50">
+                <span className="text-xs sm:text-sm font-bold tracking-widest text-zinc-300 uppercase">
+                  TORRE DE TEMPOS OFICIAL ({currentSeriesLabel.toUpperCase()})
+                </span>
+                <div className="flex items-center gap-1.5 bg-black/40 p-1 rounded-md border border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("table")}
+                    className={cn(
+                      "px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer",
+                      viewMode === "table"
+                        ? "bg-[#E10600] text-white shadow-xs"
+                        : "text-zinc-400 hover:text-white"
+                    )}
+                  >
+                    📊 Tabela
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("cards")}
+                    className={cn(
+                      "px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer",
+                      viewMode === "cards"
+                        ? "bg-[#E10600] text-white shadow-xs"
+                        : "text-zinc-400 hover:text-white"
+                    )}
+                  >
+                    📱 Cards
+                  </button>
+                </div>
               </div>
-              <div className="w-full overflow-x-auto scrollbar-thin">
-                <table className="w-full text-sm text-left whitespace-nowrap">
-                  <thead className="text-xs uppercase bg-white/5 text-muted-foreground">
-                    <tr>
-                      <th className="px-3 sm:px-4 py-3 font-semibold w-12 text-center sticky left-0 z-20 bg-muted/95 backdrop-blur-xs border-r border-border/40">
-                        Pos
-                      </th>
-                      <th className="px-3 sm:px-4 py-3 font-semibold sticky left-12 z-20 bg-muted/95 backdrop-blur-xs border-r border-border/40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.15)]">
-                        Piloto
-                      </th>
-                      <th className="px-4 py-3 font-semibold text-center">Pneu</th>
-                      <th className="px-4 py-3 font-semibold text-right">Gap</th>
-                      <th className="px-4 py-3 font-semibold text-right">Intervalo</th>
-                      <th className="px-4 py-3 font-semibold text-center w-16">Volta</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border/30">
-                    {liveData.drivers.map((driver) => (
-                      <tr
-                        key={driver.driver_number}
-                        className="hover:bg-muted/40 transition-colors group"
-                      >
-                        <td className="px-3 sm:px-4 py-2 text-center font-bold sticky left-0 z-10 bg-card group-hover:bg-muted border-r border-border/40 transition-colors">
-                          {driver.position || "-"}
-                        </td>
-                        <td className="px-3 sm:px-4 py-2 font-medium flex items-center gap-2 sm:gap-3 sticky left-12 z-10 bg-card group-hover:bg-muted border-r border-border/40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.15)] transition-colors">
-                          <span
-                            className="w-1 h-4 rounded-full shrink-0"
-                            style={{
-                              backgroundColor: driver.team_colour
-                                ? `#${driver.team_colour}`
-                                : "#888888",
-                            }}
-                          />
-                          <span className="w-5 sm:w-6 text-muted-foreground font-mono text-xs sm:text-sm shrink-0">
-                            {driver.driver_number}
-                          </span>
-                          <span className="font-bold flex items-center gap-1.5 truncate max-w-[130px] sm:max-w-none">
-                            {driver.name}
-                            {driver.in_pit && (
-                              <span
-                                className="bg-white text-black px-1 rounded-sm text-[9px] font-black tracking-widest leading-none py-0.5"
-                                title="No Pitlane"
-                              >
-                                P
-                              </span>
-                            )}
-                          </span>
-                          <span className="text-[11px] sm:text-xs text-muted-foreground uppercase hidden sm:inline">
-                            {driver.team}
-                          </span>
-                        </td>
-                        <td className="px-4 py-2 text-center">
-                          {driver.compound ? (
-                            <span
-                              className={`px-2 py-0.5 rounded-sm text-[10px] font-black tracking-widest uppercase ${
-                                COMPOUND_COLORS[driver.compound] || "bg-zinc-700 text-white"
-                              }`}
-                            >
-                              {driver.compound}
-                            </span>
-                          ) : (
-                            <span className="text-muted-foreground">-</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-2 text-right font-mono tabular-nums">
-                          {driver.gap_to_leader !== null && driver.gap_to_leader !== undefined
-                            ? typeof driver.gap_to_leader === "number"
-                              ? `+${driver.gap_to_leader.toFixed(3)}s`
-                              : String(driver.gap_to_leader)
-                            : "PIT"}
-                        </td>
-                        <td className="px-4 py-2 text-right font-mono tabular-nums text-muted-foreground">
-                          {driver.interval !== null && driver.interval !== undefined
-                            ? typeof driver.interval === "number"
-                              ? `+${driver.interval.toFixed(3)}s`
-                              : String(driver.interval)
-                            : "-"}
-                        </td>
-                        <td className="px-4 py-2 text-center font-mono tabular-nums">
-                          {driver.lap_number || "-"}
-                        </td>
+
+              {viewMode === "table" ? (
+                <div className="w-full overflow-x-auto scrollbar-thin">
+                  <table className="w-full text-sm text-left whitespace-nowrap">
+                    <thead className="text-xs uppercase bg-white/5 text-muted-foreground">
+                      <tr>
+                        <th className="px-3 sm:px-4 py-3 font-semibold w-12 text-center sticky left-0 z-20 bg-muted/95 backdrop-blur-xs border-r border-border/40">
+                          Pos
+                        </th>
+                        <th className="px-3 sm:px-4 py-3 font-semibold sticky left-12 z-20 bg-muted/95 backdrop-blur-xs border-r border-border/40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.15)]">
+                          Piloto
+                        </th>
+                        <th className="px-4 py-3 font-semibold text-center">Pneu</th>
+                        <th className="px-4 py-3 font-semibold text-right">Gap</th>
+                        <th className="px-4 py-3 font-semibold text-right">Intervalo</th>
+                        <th className="px-4 py-3 font-semibold text-center w-16">Volta</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody className="divide-y divide-border/30">
+                      {liveData.drivers.map((driver) => (
+                        <tr
+                          key={driver.driver_number}
+                          className="hover:bg-muted/40 transition-colors group"
+                        >
+                          <td className="px-3 sm:px-4 py-2 text-center font-bold sticky left-0 z-10 bg-card group-hover:bg-muted border-r border-border/40 transition-colors">
+                            {driver.position || "-"}
+                          </td>
+                          <td className="px-3 sm:px-4 py-2 font-medium flex items-center gap-2 sm:gap-3 sticky left-12 z-10 bg-card group-hover:bg-muted border-r border-border/40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.15)] transition-colors">
+                            <span
+                              className="w-1 h-4 rounded-full shrink-0"
+                              style={{
+                                backgroundColor: driver.team_colour
+                                  ? `#${driver.team_colour}`
+                                  : "#888888",
+                              }}
+                            />
+                            <span className="w-5 sm:w-6 text-muted-foreground font-mono text-xs sm:text-sm shrink-0">
+                              {driver.driver_number}
+                            </span>
+                            <span className="font-bold flex items-center gap-1.5 truncate max-w-[130px] sm:max-w-none">
+                              {driver.name}
+                              {driver.in_pit && (
+                                <span
+                                  className="bg-white text-black px-1 rounded-sm text-[9px] font-black tracking-widest leading-none py-0.5"
+                                  title="No Pitlane"
+                                >
+                                  P
+                                </span>
+                              )}
+                            </span>
+                            <span className="text-[11px] sm:text-xs text-muted-foreground uppercase hidden sm:inline">
+                              {driver.team}
+                            </span>
+                          </td>
+                          <td className="px-4 py-2 text-center">
+                            {driver.compound ? (
+                              <span
+                                className={`px-2 py-0.5 rounded-sm text-[10px] font-black tracking-widest uppercase ${
+                                  COMPOUND_COLORS[driver.compound] || "bg-zinc-700 text-white"
+                                }`}
+                              >
+                                {driver.compound}
+                              </span>
+                            ) : (
+                              <span className="text-muted-foreground">-</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-2 text-right font-mono tabular-nums">
+                            {driver.gap_to_leader !== null && driver.gap_to_leader !== undefined
+                              ? typeof driver.gap_to_leader === "number"
+                                ? `+${driver.gap_to_leader.toFixed(3)}s`
+                                : String(driver.gap_to_leader)
+                              : "PIT"}
+                          </td>
+                          <td className="px-4 py-2 text-right font-mono tabular-nums text-muted-foreground">
+                            {driver.interval !== null && driver.interval !== undefined
+                              ? typeof driver.interval === "number"
+                                ? `+${driver.interval.toFixed(3)}s`
+                                : String(driver.interval)
+                              : "-"}
+                          </td>
+                          <td className="px-4 py-2 text-center font-mono tabular-nums">
+                            {driver.lap_number || "-"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                /* CARDS MOBILE VIEW: Ergonomia total para telas pequenas */
+                <div className="p-3 grid gap-2.5 sm:grid-cols-2">
+                  {liveData.drivers.map((driver) => (
+                    <div
+                      key={driver.driver_number}
+                      className="p-3 rounded-lg bg-card/80 border border-border/40 hover:border-border transition-all flex flex-col gap-2"
+                      style={{
+                        borderLeftWidth: "4px",
+                        borderLeftColor: driver.team_colour ? `#${driver.team_colour}` : "#888888",
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-black font-mono px-1.5 py-0.5 rounded bg-muted">
+                            P{driver.position || "-"}
+                          </span>
+                          <span className="text-xs font-mono text-muted-foreground">
+                            #{driver.driver_number}
+                          </span>
+                          <span className="font-bold text-sm text-foreground truncate max-w-[140px]">
+                            {driver.name}
+                          </span>
+                        </div>
+                        {driver.compound ? (
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] font-black tracking-widest uppercase ${
+                              COMPOUND_COLORS[driver.compound] || "bg-zinc-700 text-white"
+                            }`}
+                          >
+                            {driver.compound}
+                          </span>
+                        ) : null}
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs font-mono text-muted-foreground border-t border-border/20 pt-2">
+                        <span className="truncate max-w-[120px] text-[11px] uppercase">
+                          {driver.team || "-"}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-foreground font-semibold">
+                            {driver.gap_to_leader !== null && driver.gap_to_leader !== undefined
+                              ? typeof driver.gap_to_leader === "number"
+                                ? `+${driver.gap_to_leader.toFixed(3)}s`
+                                : String(driver.gap_to_leader)
+                              : "PIT"}
+                          </span>
+                          <span className="text-[10px] opacity-75">
+                            L{driver.lap_number || "-"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </Card>
           </div>
         ) : (

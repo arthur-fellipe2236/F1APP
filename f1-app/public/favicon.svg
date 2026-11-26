@@ -1,0 +1,16 @@
+<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="carbonBase" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#181c2e" />
+      <stop offset="100%" stop-color="#0a0c14" />
+    </linearGradient>
+    <linearGradient id="redApex" x1="0" y1="0" x2="100" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E10600" />
+      <stop offset="100%" stop-color="#FF3B30" />
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="20" fill="url(#carbonBase)" />
+  <path d="M18 78L45 16H55L82 78H67L50 36L33 78H18Z" fill="#FFFFFF" />
+  <path d="M34 60L76 60L68 72L26 72Z" fill="url(#redApex)" />
+  <circle cx="78" cy="22" r="9" fill="#FFD700" />
+</svg>

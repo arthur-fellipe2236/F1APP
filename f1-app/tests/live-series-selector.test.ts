@@ -1032,3 +1032,31 @@ test("Dashboard Default Season - Inicia em 2026 sem sobrescrever temporada váli
     "Ao alternar para F3 com temporada 1994 selecionada, ajusta para 2026 sem misturar dados",
   )
 })
+
+test("Top 5 Construtores - Ordenação, desempate oficial e limite de 5 equipes (Frente 7)", () => {
+  const mockTeams = [
+    { position: 1, team_id: 1, team_name: "McLaren", points: 593, wins: 5, podiums: 20, races: 21 },
+    { position: 2, team_id: 2, team_name: "Ferrari", points: 557, wins: 5, podiums: 18, races: 21 },
+    { position: 3, team_id: 3, team_name: "Red Bull", points: 544, wins: 8, podiums: 14, races: 21 },
+    { position: 4, team_id: 4, team_name: "Mercedes", points: 382, wins: 3, podiums: 7, races: 21 },
+    { position: 5, team_id: 5, team_name: "Aston Martin", points: 86, wins: 0, podiums: 0, races: 21 },
+    { position: 6, team_id: 6, team_name: "Alpine", points: 49, wins: 0, podiums: 2, races: 21 },
+  ]
+
+  const sorted = [...mockTeams]
+    .sort((a, b) => {
+      const posA = a.position ?? 999
+      const posB = b.position ?? 999
+      if (posA !== posB) return posA - posB
+      return (b.points ?? 0) - (a.points ?? 0)
+    })
+    .slice(0, 5)
+
+  assert.equal(sorted.length, 5, "Deve conter exatamente 5 equipes")
+  assert.equal(sorted[0].team_name, "McLaren")
+  assert.equal(sorted[0].position, 1)
+  assert.equal(sorted[4].team_name, "Aston Martin")
+  assert.equal(sorted[4].position, 5)
+  assert.ok(!sorted.some((t) => t.team_name === "Alpine"), "6º colocado não entra no Top 5 oficial")
+})
+

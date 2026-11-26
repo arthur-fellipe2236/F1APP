@@ -14,6 +14,7 @@ import { RaceHighlightsCards } from "@/components/race-highlights-cards"
 import { PageHeader } from "@/components/page-header"
 import { PositionBadge } from "@/components/position-badge"
 import { RaceNewsCards } from "@/components/race-news-cards"
+import { BrazilNewsRow } from "@/components/brazil-news-cards"
 import { TeamInline, TeamName } from "@/components/team-name"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -658,9 +659,10 @@ export function DashboardPage() {
         <RaceHighlightsCards />
       </div>
 
-      {/* Seção de Notícias */}
-      <div id="noticias" className="scroll-mt-24 space-y-4">
+      {/* Seção de Notícias e Caderno Brasil */}
+      <div id="noticias" className="scroll-mt-24 space-y-6">
         <RaceNewsCards series={series} />
+        <BrazilNewsRow />
       </div>
 
       {/* 6. Classificação da Temporada */}

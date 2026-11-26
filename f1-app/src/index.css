@@ -349,4 +349,22 @@ html.theme-active [data-theme-accent] {
   }
 }
 
+/* === CORREÇÃO DE CONTRASTE E PADRONIZAÇÃO VISUAL (FRENTE 3) === */
+:root:not(.dark) .text-amber-300,
+:root:not(.dark) .text-amber-400 {
+  color: #b45309 !important; /* amber-700 para alto contraste no modo claro */
+}
+:root:not(.dark) .text-amber-500 {
+  color: #92400e !important; /* amber-800 */
+}
+:root:not(.dark) .text-yellow-300,
+:root:not(.dark) .text-yellow-400 {
+  color: #a16207 !important; /* yellow-700 */
+}
+:root:not(.dark) .text-orange-300,
+:root:not(.dark) .text-orange-400 {
+  color: #c2410c !important; /* orange-700 */
+}
+
+
 
