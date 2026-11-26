@@ -2157,8 +2157,72 @@ const TEAM_ALIASES: Record<string, string> = {
   "vanwall": "Vanwall",
 }
 
+/**
+ * Emblemas Históricos Homologados com Alfa Real — Exclusivo Temporada 1950 (14 Construtores)
+ * Fonte primária: Acervo histórico autenticado e homologado da galeria Além da Pista.
+ * Respeita a identidade de época sem anacronismo e sem fundos opacos artificiais.
+ */
+export const HISTORICAL_HOMOLOGATED_LOGOS: Record<number, Record<string, TeamLogoAsset>> = {
+  1950: {
+    "alfa romeo": { url: "/teams/historical/1950_alfa_romeo.png", color: "#990000", className: "object-contain p-0.5 filter-none" },
+    "alfa romeo s.p.a.": { url: "/teams/historical/1950_alfa_romeo.png", color: "#990000", className: "object-contain p-0.5 filter-none" },
+    "alfa": { url: "/teams/historical/1950_alfa_romeo.png", color: "#990000", className: "object-contain p-0.5 filter-none" },
+    "ferrari": { url: "/teams/historical/1950_ferrari.png", color: "#CE2B37", className: "object-contain p-0.5 filter-none" },
+    "scuderia ferrari": { url: "/teams/historical/1950_ferrari.png", color: "#CE2B37", className: "object-contain p-0.5 filter-none" },
+    "maserati": { url: "/teams/historical/1950_maserati.png", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
+    "officine alfieri maserati": { url: "/teams/historical/1950_maserati.png", color: "#0C2340", className: "object-contain p-0.5 filter-none" },
+    "talbot-lago": { url: "/teams/historical/1950_talbot_lago.png", color: "#4A708B", className: "object-contain p-0.5 filter-none" },
+    "talbot lago": { url: "/teams/historical/1950_talbot_lago.png", color: "#4A708B", className: "object-contain p-0.5 filter-none" },
+    "talbot": { url: "/teams/historical/1950_talbot_lago.png", color: "#4A708B", className: "object-contain p-0.5 filter-none" },
+    "cooper": { url: "/teams/historical/1950_cooper.png", color: "#004225", className: "object-contain p-0.5 filter-none" },
+    "cooper car company": { url: "/teams/historical/1950_cooper.png", color: "#004225", className: "object-contain p-0.5 filter-none" },
+    "simca-gordini": { url: "/teams/historical/1950_simca_gordini.png", color: "#002B7F", className: "object-contain p-0.5 filter-none" },
+    "simca gordini": { url: "/teams/historical/1950_simca_gordini.png", color: "#002B7F", className: "object-contain p-0.5 filter-none" },
+    "equipe gordini": { url: "/teams/historical/1950_simca_gordini.png", color: "#002B7F", className: "object-contain p-0.5 filter-none" },
+    "gordini": { url: "/teams/historical/1950_simca_gordini.png", color: "#002B7F", className: "object-contain p-0.5 filter-none" },
+    "simca": { url: "/teams/historical/1950_simca_gordini.png", color: "#002B7F", className: "object-contain p-0.5 filter-none" },
+    "era": { url: "/teams/historical/1950_era.png", color: "#003366", className: "object-contain p-0.5 filter-none" },
+    "english racing automobiles": { url: "/teams/historical/1950_era.png", color: "#003366", className: "object-contain p-0.5 filter-none" },
+    "alta": { url: "/teams/historical/1950_alta.png", color: "#1B4D3E", className: "object-contain p-0.5 filter-none" },
+    "alta car and engineering company": { url: "/teams/historical/1950_alta.png", color: "#1B4D3E", className: "object-contain p-0.5 filter-none" },
+    "milano": { url: "/teams/historical/1950_milano.png", color: "#7A0019", className: "object-contain p-0.5 filter-none" },
+    "scuderia milano": { url: "/teams/historical/1950_milano.png", color: "#7A0019", className: "object-contain p-0.5 filter-none" },
+    "scuderia ambrosiana": { url: "/teams/historical/1950_scuderia_ambrosiana.png", color: "#003366", className: "object-contain p-0.5 filter-none" },
+    "ambrosiana": { url: "/teams/historical/1950_scuderia_ambrosiana.png", color: "#003366", className: "object-contain p-0.5 filter-none" },
+    "écurie belge": { url: "/teams/historical/1950_ecurie_belge.png", color: "#E5B200", className: "object-contain p-0.5 filter-none" },
+    "ecurie belge": { url: "/teams/historical/1950_ecurie_belge.png", color: "#E5B200", className: "object-contain p-0.5 filter-none" },
+    "écurie rosier": { url: "/teams/historical/1950_ecurie_rosier.png", color: "#4A708B", className: "object-contain p-0.5 filter-none" },
+    "ecurie rosier": { url: "/teams/historical/1950_ecurie_rosier.png", color: "#4A708B", className: "object-contain p-0.5 filter-none" },
+    "écurie lutetia": { url: "/teams/historical/1950_ecurie_lutetia.png", color: "#1C3F6E", className: "object-contain p-0.5 filter-none" },
+    "ecurie lutetia": { url: "/teams/historical/1950_ecurie_lutetia.png", color: "#1C3F6E", className: "object-contain p-0.5 filter-none" },
+    "scuderia achille varzi": { url: "/teams/historical/1950_scuderia_achille_varzi.png", color: "#0A2540", className: "object-contain p-0.5 filter-none" },
+    "achille varzi": { url: "/teams/historical/1950_scuderia_achille_varzi.png", color: "#0A2540", className: "object-contain p-0.5 filter-none" },
+  }
+}
+
+export function getHistoricalSeasonLogo(name: string, season: number): TeamLogoAsset | null {
+  const seasonMap = HISTORICAL_HOMOLOGATED_LOGOS[season]
+  if (!seasonMap) return null
+  const key = name.trim().toLowerCase()
+  if (seasonMap[key]) return seasonMap[key]
+  for (const [pattern, asset] of Object.entries(seasonMap)) {
+    if (key === pattern || key.includes(pattern) || pattern.includes(key)) {
+      return asset
+    }
+  }
+  return null
+}
+
 export function teamLogo(name: string, season?: number): TeamLogoAsset | null {
   if (!name) return null
+
+  // Homologação dos 14 emblemas históricos autênticos exclusivamente para a temporada 1950
+  if (season !== undefined && season !== null && season === 1950) {
+    const historical = getHistoricalSeasonLogo(name, 1950)
+    if (historical) {
+      return historical
+    }
+  }
 
   // OP-08.04: Resolução histórica assistida para contextos com temporada confiável
   if (season !== undefined && season !== null && !isNaN(season)) {

@@ -112,25 +112,25 @@ test("OP-08.08H-R3.3 — Testes de Resolução de Logos Históricas (Marchese, W
   await t.test("D.1 Alfa Romeo 1950: Deve resolver para logo histórica", () => {
     const logo = teamLogo("Alfa Romeo", 1950)
     assert.ok(logo)
-    assert.equal(logo.url, "/teams/alfa_romeo_1950.svg")
+    assert.equal(logo.url, "/teams/historical/1950_alfa_romeo.png")
   })
 
   await t.test("D.2 Ferrari 1950: Deve resolver para logo clássica de 1950", () => {
     const logo = teamLogo("Ferrari", 1950)
     assert.ok(logo)
-    assert.equal(logo.url, "/teams/ferrari_1950.svg")
+    assert.equal(logo.url, "/teams/historical/1950_ferrari.png")
   })
 
-  await t.test("D.3 Maserati 1950: Deve resolver para /classic/maserati.svg", () => {
+  await t.test("D.3 Maserati 1950: Deve resolver para /teams/historical/1950_maserati.png", () => {
     const logo = teamLogo("Maserati", 1950)
     assert.ok(logo)
-    assert.equal(logo.url, "/classic/maserati.svg")
+    assert.equal(logo.url, "/teams/historical/1950_maserati.png")
   })
 
-  await t.test("D.4 Cooper 1950: Deve resolver para /classic/cooper.svg", () => {
+  await t.test("D.4 Cooper 1950: Deve resolver para /teams/historical/1950_cooper.png", () => {
     const logo = teamLogo("Cooper", 1950)
     assert.ok(logo)
-    assert.equal(logo.url, "/classic/cooper.svg")
+    assert.equal(logo.url, "/teams/historical/1950_cooper.png")
   })
 
   await t.test("D.5 Mercedes 1954: Deve resolver para Mercedes clássica", () => {

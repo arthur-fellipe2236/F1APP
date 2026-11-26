@@ -7,7 +7,7 @@ test('1. Contextos Históricos Canônicos no teamLogo()', (t) => {
   // Ferrari 1950, 2004, 2024
   const f1950 = teamLogo('Ferrari', 1950);
   assert.ok(f1950);
-  assert.equal(f1950?.url, '/teams/ferrari_1950.svg');
+  assert.equal(f1950?.url, '/teams/historical/1950_ferrari.png');
 
   const f2004 = teamLogo('Scuderia Ferrari', 2004);
   assert.ok(f2004);
@@ -74,7 +74,7 @@ test('2. Discriminação de Homônimos Críticos', (t) => {
   const alfa2019 = teamLogo('Alfa Romeo Racing', 2019);
   assert.ok(alfa1950);
   assert.ok(alfa2019);
-  assert.equal(alfa1950?.url, '/teams/alfa_romeo_1950.svg');
+  assert.equal(alfa1950?.url, '/teams/historical/1950_alfa_romeo.png');
   assert.equal(alfa2019?.url, '/teams/alfaromeo.svg');
 
   // Linhagem Brackley: Tyrrell 1971 vs Mercedes 2014
