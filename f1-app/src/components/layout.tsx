@@ -296,16 +296,21 @@ export function Layout() {
         </div>
 
         {/* MOBILE HEADER BAR (< MD) */}
-        <div className="mx-auto flex md:hidden h-14 w-full items-center justify-between px-3.5 relative z-10">
+        <div className="mx-auto flex md:hidden h-14 w-full items-center justify-between px-3 relative z-10">
           <Link 
             to="/" 
-            className="flex items-center gap-2.5 shrink-0"
+            className="flex items-center gap-2 shrink-0 min-w-0"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            <AlemDaPistaLogo className="h-9 w-9 shrink-0" />
-            <span className="font-f1 text-base font-black tracking-wider text-white">
-              ALÉM DA PISTA
-            </span>
+            <AlemDaPistaLogo className="h-8.5 w-8.5 shrink-0" />
+            <div className="flex flex-col text-left min-w-0">
+              <span className="font-f1 text-sm font-black tracking-wider text-white leading-none">
+                ALÉM DA PISTA
+              </span>
+              <span className="text-[6.5px] xs:text-[7.5px] uppercase tracking-[0.08em] text-white/75 font-sans font-medium mt-0.5 truncate max-w-[185px] xs:max-w-none">
+                O esporte não termina na linha de chegada
+              </span>
+            </div>
           </Link>
 
           <div className="flex items-center gap-1.5 shrink-0">

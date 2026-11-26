@@ -15,6 +15,7 @@ import { PageHeader } from "@/components/page-header"
 import { PositionBadge } from "@/components/position-badge"
 import { RaceNewsCards } from "@/components/race-news-cards"
 import { BrazilNewsRow } from "@/components/brazil-news-cards"
+import { Top5Standings } from "@/components/top5-standings"
 import { TeamInline, TeamName } from "@/components/team-name"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -654,15 +655,24 @@ export function DashboardPage() {
         </div>
       </section>
 
-      {/* 4. Três cards de melhores momentos oficiais da Fórmula 1 */}
+      {/* 4. Caderno Brasil no Grid Mundial — Área Nobre de Destaque Nacional */}
+      <section aria-labelledby="caderno-brasil-heading" className="scroll-mt-24 space-y-4">
+        <BrazilNewsRow />
+      </section>
+
+      {/* 5. Top 5 Oficial do Campeonato — Seção Permanente com Abas Pilotos e Equipes */}
+      <section aria-labelledby="top5-heading" className="scroll-mt-24 space-y-4">
+        <Top5Standings series={series} season={effectiveSeason} />
+      </section>
+
+      {/* 6. Melhores Momentos oficiais das corridas */}
       <div id="highlights-heading" className="scroll-mt-24">
         <RaceHighlightsCards />
       </div>
 
-      {/* Seção de Notícias e Caderno Brasil */}
-      <div id="noticias" className="scroll-mt-24 space-y-6">
+      {/* 7. Notícias Gerais */}
+      <div id="noticias" className="scroll-mt-24 space-y-4">
         <RaceNewsCards series={series} />
-        <BrazilNewsRow />
       </div>
 
       {/* 6. Classificação da Temporada */}

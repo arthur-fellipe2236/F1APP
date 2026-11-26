@@ -1035,271 +1035,333 @@ export function LiveTimingPage() {
         </div>
       )}
 
-      {/* TIMING TOWER / STANDBY BANNER */}
-      {liveData &&
-        (liveData.drivers && liveData.drivers.length > 0 ? (
-          <div className="mx-auto w-full max-w-6xl mt-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <Card className="border-border/50 bg-card/40 backdrop-blur-md shadow-2xl overflow-hidden">
-              <div className="bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900 p-3 flex items-center justify-between border-b border-border/50">
-                <span className="text-xs sm:text-sm font-bold tracking-widest text-zinc-300 uppercase">
-                  TORRE DE TEMPOS OFICIAL ({currentSeriesLabel.toUpperCase()})
-                </span>
-                <div className="flex items-center gap-1.5 bg-black/40 p-1 rounded-md border border-white/10">
-                  <button
-                    type="button"
-                    onClick={() => setViewMode("table")}
-                    className={cn(
-                      "px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer",
-                      viewMode === "table"
-                        ? "bg-[#E10600] text-white shadow-xs"
-                        : "text-zinc-400 hover:text-white"
-                    )}
-                  >
-                    📊 Tabela
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setViewMode("cards")}
-                    className={cn(
-                      "px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer",
-                      viewMode === "cards"
-                        ? "bg-[#E10600] text-white shadow-xs"
-                        : "text-zinc-400 hover:text-white"
-                    )}
-                  >
-                    📱 Cards
-                  </button>
-                </div>
-              </div>
+      {/* TIMING TOWER OFICIAL COM ALTERNADOR TABELA / CARDS PERMANENTE */}
+      <div className="mx-auto w-full max-w-6xl mt-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <Card className="border-border/50 bg-card/40 backdrop-blur-md shadow-2xl overflow-hidden">
+          <div className="bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900 p-3 flex items-center justify-between border-b border-border/50">
+            <span className="text-xs sm:text-sm font-bold tracking-widest text-zinc-300 uppercase flex items-center gap-2">
+              <span className={cn(
+                "inline-block size-2 rounded-full",
+                liveData?.drivers && liveData.drivers.length > 0 ? "bg-emerald-500 animate-pulse" : "bg-amber-400/80"
+              )} />
+              TORRE DE TEMPOS OFICIAL ({currentSeriesLabel.toUpperCase()})
+            </span>
+            <div className="flex items-center gap-1.5 bg-black/40 p-1 rounded-md border border-white/10">
+              <button
+                type="button"
+                onClick={() => setViewMode("table")}
+                className={cn(
+                  "px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer",
+                  viewMode === "table"
+                    ? "bg-[#E10600] text-white shadow-xs"
+                    : "text-zinc-400 hover:text-white"
+                )}
+              >
+                📊 Tabela
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("cards")}
+                className={cn(
+                  "px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer",
+                  viewMode === "cards"
+                    ? "bg-[#E10600] text-white shadow-xs"
+                    : "text-zinc-400 hover:text-white"
+                )}
+              >
+                📱 Cards
+              </button>
+            </div>
+          </div>
 
-              {viewMode === "table" ? (
-                <div className="w-full overflow-x-auto scrollbar-thin">
-                  <table className="w-full text-sm text-left whitespace-nowrap">
-                    <thead className="text-xs uppercase bg-white/5 text-muted-foreground">
-                      <tr>
-                        <th className="px-3 sm:px-4 py-3 font-semibold w-12 text-center sticky left-0 z-20 bg-muted/95 backdrop-blur-xs border-r border-border/40">
-                          Pos
-                        </th>
-                        <th className="px-3 sm:px-4 py-3 font-semibold sticky left-12 z-20 bg-muted/95 backdrop-blur-xs border-r border-border/40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.15)]">
-                          Piloto
-                        </th>
-                        <th className="px-4 py-3 font-semibold text-center">Pneu</th>
-                        <th className="px-4 py-3 font-semibold text-right">Gap</th>
-                        <th className="px-4 py-3 font-semibold text-right">Intervalo</th>
-                        <th className="px-4 py-3 font-semibold text-center w-16">Volta</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border/30">
-                      {liveData.drivers.map((driver) => (
-                        <tr
-                          key={driver.driver_number}
-                          className="hover:bg-muted/40 transition-colors group"
-                        >
-                          <td className="px-3 sm:px-4 py-2 text-center font-bold sticky left-0 z-10 bg-card group-hover:bg-muted border-r border-border/40 transition-colors">
-                            {driver.position || "-"}
-                          </td>
-                          <td className="px-3 sm:px-4 py-2 font-medium flex items-center gap-2 sm:gap-3 sticky left-12 z-10 bg-card group-hover:bg-muted border-r border-border/40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.15)] transition-colors">
-                            <span
-                              className="w-1 h-4 rounded-full shrink-0"
-                              style={{
-                                backgroundColor: driver.team_colour
-                                  ? `#${driver.team_colour}`
-                                  : "#888888",
-                              }}
-                            />
-                            <span className="w-5 sm:w-6 text-muted-foreground font-mono text-xs sm:text-sm shrink-0">
-                              {driver.driver_number}
-                            </span>
-                            <span className="font-bold flex items-center gap-1.5 truncate max-w-[130px] sm:max-w-none">
-                              {driver.name}
-                              {driver.in_pit && (
-                                <span
-                                  className="bg-white text-black px-1 rounded-sm text-[9px] font-black tracking-widest leading-none py-0.5"
-                                  title="No Pitlane"
-                                >
-                                  P
-                                </span>
-                              )}
-                            </span>
-                            <span className="text-[11px] sm:text-xs text-muted-foreground uppercase hidden sm:inline">
-                              {driver.team}
-                            </span>
-                          </td>
-                          <td className="px-4 py-2 text-center">
-                            {driver.compound ? (
-                              <span
-                                className={`px-2 py-0.5 rounded-sm text-[10px] font-black tracking-widest uppercase ${
-                                  COMPOUND_COLORS[driver.compound] || "bg-zinc-700 text-white"
-                                }`}
-                              >
-                                {driver.compound}
-                              </span>
-                            ) : (
-                              <span className="text-muted-foreground">-</span>
-                            )}
-                          </td>
-                          <td className="px-4 py-2 text-right font-mono tabular-nums">
-                            {driver.gap_to_leader !== null && driver.gap_to_leader !== undefined
-                              ? typeof driver.gap_to_leader === "number"
-                                ? `+${driver.gap_to_leader.toFixed(3)}s`
-                                : String(driver.gap_to_leader)
-                              : "PIT"}
-                          </td>
-                          <td className="px-4 py-2 text-right font-mono tabular-nums text-muted-foreground">
-                            {driver.interval !== null && driver.interval !== undefined
-                              ? typeof driver.interval === "number"
-                                ? `+${driver.interval.toFixed(3)}s`
-                                : String(driver.interval)
-                              : "-"}
-                          </td>
-                          <td className="px-4 py-2 text-center font-mono tabular-nums">
-                            {driver.lap_number || "-"}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                /* CARDS MOBILE VIEW: Ergonomia total para telas pequenas */
-                <div className="p-3 grid gap-2.5 sm:grid-cols-2">
-                  {liveData.drivers.map((driver) => (
-                    <div
-                      key={driver.driver_number}
-                      className="p-3 rounded-lg bg-card/80 border border-border/40 hover:border-border transition-all flex flex-col gap-2"
-                      style={{
-                        borderLeftWidth: "4px",
-                        borderLeftColor: driver.team_colour ? `#${driver.team_colour}` : "#888888",
-                      }}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-black font-mono px-1.5 py-0.5 rounded bg-muted">
-                            P{driver.position || "-"}
-                          </span>
-                          <span className="text-xs font-mono text-muted-foreground">
-                            #{driver.driver_number}
-                          </span>
-                          <span className="font-bold text-sm text-foreground truncate max-w-[140px]">
-                            {driver.name}
-                          </span>
-                        </div>
-                        {driver.compound ? (
+          {liveData?.drivers && liveData.drivers.length > 0 ? (
+            viewMode === "table" ? (
+              <div className="w-full overflow-x-auto scrollbar-thin">
+                <table className="w-full text-sm text-left whitespace-nowrap">
+                  <thead className="text-xs uppercase bg-white/5 text-muted-foreground">
+                    <tr>
+                      <th className="px-3 sm:px-4 py-3 font-semibold w-12 text-center sticky left-0 z-20 bg-muted/95 backdrop-blur-xs border-r border-border/40">
+                        Pos
+                      </th>
+                      <th className="px-3 sm:px-4 py-3 font-semibold sticky left-12 z-20 bg-muted/95 backdrop-blur-xs border-r border-border/40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.15)]">
+                        Piloto
+                      </th>
+                      <th className="px-4 py-3 font-semibold text-center">Pneu</th>
+                      <th className="px-4 py-3 font-semibold text-right">Gap</th>
+                      <th className="px-4 py-3 font-semibold text-right">Intervalo</th>
+                      <th className="px-4 py-3 font-semibold text-center w-16">Volta</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/30">
+                    {liveData.drivers.map((driver) => (
+                      <tr
+                        key={driver.driver_number}
+                        className="hover:bg-muted/40 transition-colors group"
+                      >
+                        <td className="px-3 sm:px-4 py-2 text-center font-bold sticky left-0 z-10 bg-card group-hover:bg-muted border-r border-border/40 transition-colors">
+                          {driver.position || "-"}
+                        </td>
+                        <td className="px-3 sm:px-4 py-2 font-medium flex items-center gap-2 sm:gap-3 sticky left-12 z-10 bg-card group-hover:bg-muted border-r border-border/40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.15)] transition-colors">
                           <span
-                            className={`px-2 py-0.5 rounded text-[10px] font-black tracking-widest uppercase ${
-                              COMPOUND_COLORS[driver.compound] || "bg-zinc-700 text-white"
-                            }`}
-                          >
-                            {driver.compound}
+                            className="w-1 h-4 rounded-full shrink-0"
+                            style={{
+                              backgroundColor: driver.team_colour
+                                ? `#${driver.team_colour}`
+                                : "#888888",
+                            }}
+                          />
+                          <span className="w-5 sm:w-6 text-muted-foreground font-mono text-xs sm:text-sm shrink-0">
+                            {driver.driver_number}
                           </span>
-                        ) : null}
-                      </div>
-
-                      <div className="flex items-center justify-between text-xs font-mono text-muted-foreground border-t border-border/20 pt-2">
-                        <span className="truncate max-w-[120px] text-[11px] uppercase">
-                          {driver.team || "-"}
+                          <span className="font-bold flex items-center gap-1.5 truncate max-w-[130px] sm:max-w-none">
+                            {driver.name}
+                            {driver.in_pit && (
+                              <span
+                                className="bg-white text-black px-1 rounded-sm text-[9px] font-black tracking-widest leading-none py-0.5"
+                                title="No Pitlane"
+                              >
+                                P
+                              </span>
+                            )}
+                          </span>
+                          <span className="text-[11px] sm:text-xs text-muted-foreground uppercase hidden sm:inline">
+                            {driver.team}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2 text-center">
+                          {driver.compound ? (
+                            <span
+                              className={`px-2 py-0.5 rounded-sm text-[10px] font-black tracking-widest uppercase ${
+                                COMPOUND_COLORS[driver.compound] || "bg-zinc-700 text-white"
+                              }`}
+                            >
+                              {driver.compound}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">-</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-2 text-right font-mono tabular-nums">
+                          {driver.gap_to_leader !== null && driver.gap_to_leader !== undefined
+                            ? typeof driver.gap_to_leader === "number"
+                              ? `+${driver.gap_to_leader.toFixed(3)}s`
+                              : String(driver.gap_to_leader)
+                            : "PIT"}
+                        </td>
+                        <td className="px-4 py-2 text-right font-mono tabular-nums text-muted-foreground">
+                          {driver.interval !== null && driver.interval !== undefined
+                            ? typeof driver.interval === "number"
+                              ? `+${driver.interval.toFixed(3)}s`
+                              : String(driver.interval)
+                            : "-"}
+                        </td>
+                        <td className="px-4 py-2 text-center font-mono tabular-nums">
+                          {driver.lap_number || "-"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              /* CARDS MOBILE VIEW */
+              <div className="p-3 grid gap-2.5 sm:grid-cols-2">
+                {liveData.drivers.map((driver) => (
+                  <div
+                    key={driver.driver_number}
+                    className="p-3 rounded-lg bg-card/80 border border-border/40 hover:border-border transition-all flex flex-col gap-2"
+                    style={{
+                      borderLeftWidth: "4px",
+                      borderLeftColor: driver.team_colour ? `#${driver.team_colour}` : "#888888",
+                    }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-black font-mono px-1.5 py-0.5 rounded bg-muted">
+                          P{driver.position || "-"}
                         </span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-foreground font-semibold">
-                            {driver.gap_to_leader !== null && driver.gap_to_leader !== undefined
-                              ? typeof driver.gap_to_leader === "number"
-                                ? `+${driver.gap_to_leader.toFixed(3)}s`
-                                : String(driver.gap_to_leader)
-                              : "PIT"}
-                          </span>
-                          <span className="text-[10px] opacity-75">
-                            L{driver.lap_number || "-"}
-                          </span>
-                        </div>
+                        <span className="text-xs font-mono text-muted-foreground">
+                          #{driver.driver_number}
+                        </span>
+                        <span className="font-bold text-sm text-foreground truncate max-w-[140px]">
+                          {driver.name}
+                        </span>
+                      </div>
+                      {driver.compound ? (
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-black tracking-widest uppercase ${
+                            COMPOUND_COLORS[driver.compound] || "bg-zinc-700 text-white"
+                          }`}
+                        >
+                          {driver.compound}
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs font-mono text-muted-foreground border-t border-border/20 pt-2">
+                      <span className="truncate max-w-[120px] text-[11px] uppercase">
+                        {driver.team || "-"}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-foreground font-semibold">
+                          {driver.gap_to_leader !== null && driver.gap_to_leader !== undefined
+                            ? typeof driver.gap_to_leader === "number"
+                              ? `+${driver.gap_to_leader.toFixed(3)}s`
+                              : String(driver.gap_to_leader)
+                            : "PIT"}
+                        </span>
+                        <span className="text-[10px] opacity-75">
+                          L{driver.lap_number || "-"}
+                        </span>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </Card>
-          </div>
-        ) : (
-          /* When session is active/scheduled or finished but has 0 drivers or timing feed unavailable */
-          liveData.session && (
-            <div className="mx-auto w-full max-w-6xl mt-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
-              <Card className="border-border/50 bg-card/40 backdrop-blur-md p-8 text-center shadow-xl">
-                <div className="flex flex-col items-center justify-center gap-2">
-                  {isStale ? (
+                  </div>
+                ))}
+              </div>
+            )
+          ) : (
+            /* ESTADO STANDBY / SEM SESSÃO ATIVA — ESTRUTURA VISÍVEL COM INFORMAÇÃO REAL */
+            viewMode === "table" ? (
+              <div className="w-full overflow-x-auto scrollbar-thin">
+                <table className="w-full text-sm text-left whitespace-nowrap">
+                  <thead className="text-xs uppercase bg-white/5 text-muted-foreground">
+                    <tr>
+                      <th className="px-3 sm:px-4 py-3 font-semibold w-12 text-center sticky left-0 z-20 bg-muted/95 backdrop-blur-xs border-r border-border/40">
+                        Pos
+                      </th>
+                      <th className="px-3 sm:px-4 py-3 font-semibold sticky left-12 z-20 bg-muted/95 backdrop-blur-xs border-r border-border/40">
+                        Piloto
+                      </th>
+                      <th className="px-4 py-3 font-semibold text-center">Pneu</th>
+                      <th className="px-4 py-3 font-semibold text-right">Gap</th>
+                      <th className="px-4 py-3 font-semibold text-right">Intervalo</th>
+                      <th className="px-4 py-3 font-semibold text-center w-16">Volta</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td colSpan={6} className="px-6 py-12 text-center">
+                        <div className="flex flex-col items-center justify-center gap-2 max-w-lg mx-auto">
+                          {isStale ? (
+                            <>
+                              <AlertTriangle className="size-8 text-amber-400 opacity-90 mb-1 animate-pulse" />
+                              <div className="text-base font-semibold text-amber-200">
+                                Modo de contingência — dados em cache
+                              </div>
+                              <p className="text-sm text-zinc-400">
+                                {liveData?.source_status?.message ||
+                                  "A fonte de telemetria externa está temporariamente indisponível. Exibindo última leitura válida em cache."}
+                              </p>
+                            </>
+                          ) : isUnavailable ||
+                            (liveData?.source_status && !liveData.source_status.available) ? (
+                            <>
+                              <AlertTriangle className="size-8 text-amber-400 opacity-90 mb-1" />
+                              <div className="text-base font-semibold text-amber-200">
+                                Telemetria em tempo real não disponível para esta sessão
+                              </div>
+                              <p className="text-sm text-zinc-400">
+                                {liveData?.source_status?.message ||
+                                  `O feed de telemetria em tempo real não está habilitado para ${currentSeriesLabel}. Posições e voltas não são inventadas.`}
+                              </p>
+                            </>
+                          ) : isLive ? (
+                            <>
+                              <MonitorPlay className="size-8 text-emerald-400 opacity-90 mb-1 animate-pulse" />
+                              <div className="text-base font-semibold text-zinc-100">
+                                Sessão em andamento — aguardando voltas registradas
+                              </div>
+                              <p className="text-sm text-zinc-400">
+                                A sessão está em curso. Os dados da torre de tempos serão exibidos automaticamente assim que a telemetria registrar os primeiros tempos de volta.
+                              </p>
+                            </>
+                          ) : isFinished ? (
+                            <>
+                              <Flag className="size-8 text-zinc-400 opacity-80 mb-1" />
+                              <div className="text-base font-semibold text-zinc-200">
+                                Sessão encerrada
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                As atividades de pista desta sessão foram finalizadas conforme o calendário oficial FIA.
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <CalendarClock className="size-8 text-blue-400 opacity-80 mb-1" />
+                              <div className="text-base font-semibold text-zinc-200">
+                                {liveData?.session?.name
+                                  ? `Sessão agendada: ${liveData.session.name}`
+                                  : "Aguardando início das atividades de pista"}
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                {(() => {
+                                  const formattedDate = formatSessionDate(liveData?.session?.date_start)
+                                  if (formattedDate === "Horário a confirmar") {
+                                    return "Aguardando confirmação do horário de início das atividades oficiais da sessão."
+                                  }
+                                  return `A torre de tempos será sincronizada ao vivo assim que os carros entrarem na pista em ${
+                                    liveData?.session?.meeting_name || "Lusail"
+                                  }.`
+                                })()}
+                              </p>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              /* ESTADO STANDBY NO MODO CARDS */
+              <div className="p-8 text-center">
+                <div className="p-6 rounded-xl border border-dashed border-border/60 bg-muted/20 max-w-lg mx-auto flex flex-col items-center justify-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#E10600] text-white">
+                      MODO CARDS
+                    </span>
+                    <span className="text-xs text-muted-foreground font-mono">
+                      OTIMIZADO PARA MOBILE
+                    </span>
+                  </div>
+
+                  {isLive ? (
                     <>
-                      <AlertTriangle className="size-8 text-amber-400 opacity-90 mb-1 animate-pulse" />
-                      <div className="text-base font-semibold text-amber-200">
-                        Modo de contingência — dados em cache
+                      <MonitorPlay className="size-7 text-emerald-400 animate-pulse" />
+                      <div className="text-sm font-semibold text-foreground">
+                        Sessão em andamento — Conectando feed de tempos
                       </div>
-                      <p className="text-sm text-zinc-400 max-w-lg">
-                        {liveData?.source_status?.message ||
-                          "A fonte de telemetria externa está temporariamente indisponível. Exibindo última leitura válida em cache."}
-                      </p>
-                    </>
-                  ) : isUnavailable ||
-                    (liveData?.source_status && !liveData.source_status.available) ? (
-                    <>
-                      <AlertTriangle className="size-8 text-amber-400 opacity-90 mb-1" />
-                      <div className="text-base font-semibold text-amber-200">
-                        Telemetria em tempo real não disponível para esta sessão
-                      </div>
-                      <p className="text-sm text-zinc-400 max-w-lg">
-                        {liveData?.source_status?.message ||
-                          `O feed de telemetria em tempo real não está habilitado para ${currentSeriesLabel}. Posições e voltas não são inventadas.`}
-                      </p>
-                      {isFinished && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Sessão oficial finalizada conforme o calendário esportivo da FIA.
-                        </p>
-                      )}
-                    </>
-                  ) : isLive ? (
-                    <>
-                      <MonitorPlay className="size-8 text-emerald-400 opacity-90 mb-1 animate-pulse" />
-                      <div className="text-base font-semibold text-zinc-100">
-                        Sessão no período oficial — aguardando voltas registradas na telemetria
-                      </div>
-                      <p className="text-sm text-zinc-400 max-w-lg">
-                        A sessão encontra-se no período oficial programado. A torre de tempos será atualizada assim que os tempos de volta forem registrados na telemetria.
+                      <p className="text-xs text-muted-foreground max-w-sm">
+                        Os cards individuais de cada piloto serão populados em tempo real com posição, composto de pneu, gap e voltas.
                       </p>
                     </>
                   ) : isFinished ? (
                     <>
-                      <Flag className="size-8 text-zinc-400 opacity-80 mb-1" />
-                      <div className="text-base font-semibold text-zinc-200">
-                        Sessão encerrada
+                      <Flag className="size-7 text-zinc-400" />
+                      <div className="text-sm font-semibold text-foreground">
+                        Sessão finalizada
                       </div>
-                      <p className="text-sm text-muted-foreground max-w-lg">
-                        As atividades de pista desta sessão foram finalizadas.
+                      <p className="text-xs text-muted-foreground max-w-sm">
+                        As atividades desta etapa foram concluídas. Os cards ao vivo estarão disponíveis na próxima sessão.
                       </p>
                     </>
                   ) : (
                     <>
-                      <CalendarClock className="size-8 text-blue-400 opacity-80 mb-1" />
-                      <div className="text-base font-semibold text-zinc-200">
-                        {liveData?.session?.name
-                          ? `Sessão agendada: ${liveData.session.name}`
-                          : "Sessão agendada"}
+                      <CalendarClock className="size-7 text-blue-400" />
+                      <div className="text-sm font-semibold text-foreground">
+                        {liveData?.session?.name ? `Aguardando ${liveData.session.name}` : "Aguardando próxima sessão"}
                       </div>
-                      <p className="text-sm text-muted-foreground max-w-lg">
-                        {(() => {
-                          const formattedDate = formatSessionDate(liveData?.session?.date_start)
-                          if (formattedDate === "Horário a confirmar") {
-                            return "Aguardando confirmação do horário de início das atividades oficiais da sessão."
-                          }
-                          return `As atividades de pista para o ${
-                            liveData?.session?.meeting_name || "evento"
-                          }${
-                            liveData?.session?.circuit ? ` no circuito ${liveData.session.circuit}` : ""
-                          } estão programadas para iniciar em ${formattedDate}.`
-                        })()}
+                      <p className="text-xs text-muted-foreground max-w-sm">
+                        Nenhuma telemetria ao vivo ativa neste instante. Durante a sessão, você poderá alternar livremente entre a Tabela clássica e os Cards ergonômicos.
                       </p>
                     </>
                   )}
                 </div>
-              </Card>
-            </div>
-          )
-        ))}
+              </div>
+            )
+          )}
+        </Card>
+      </div>
       </section>
     </div>
   )

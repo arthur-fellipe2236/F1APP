@@ -48,19 +48,29 @@ export function BrazilNewsRow() {
   const data = query.data
 
   return (
-    <section className="space-y-3">
-      <h2 className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-        <Newspaper className="size-4" />
-        {flag ? (
-          <img
-            src={flag}
-            alt="Brasil"
-            loading="lazy"
-            className="h-3.5 w-5 rounded-[2px] object-cover"
-          />
-        ) : null}
-        Pilotos brasileiros — F1, F2 e F3
-      </h2>
+    <section className="space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-card/70 backdrop-blur-md border border-border/40 shadow-xs">
+        <div className="flex items-center gap-2.5">
+          {flag ? (
+            <img
+              src={flag}
+              alt="Brasil"
+              loading="lazy"
+              className="h-4.5 w-6.5 rounded-[3px] object-cover shadow-xs border border-white/20 shrink-0"
+            />
+          ) : (
+            <Newspaper className="size-5 text-emerald-500 shrink-0" />
+          )}
+          <div>
+            <h2 className="text-base font-bold font-f1 tracking-wider text-foreground">
+              CADERNO BRASIL NO GRID MUNDIAL
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Cobertura especial dos talentos brasileiros: Gabriel Bortoleto (F1), Enzo Fittipaldi (F2) e Rafael Câmara (F3)
+            </p>
+          </div>
+        </div>
+      </div>
       <div className="grid gap-4 sm:grid-cols-3">
         {!data
           ? SLOTS.map((slot) => (
