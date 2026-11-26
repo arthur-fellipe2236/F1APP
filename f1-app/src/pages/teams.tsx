@@ -21,7 +21,7 @@ const getColumns = (seasonParam?: number): TableColumn<Team>[] => [
     name: "Equipe",
     sortable: true,
     selector: (row) => row.name,
-    minWidth: "220px",
+    minWidth: seasonParam === 1950 ? "300px" : "220px",
     cell: (row) => <TeamName name={row.name} season={seasonParam} />,
   },
   {

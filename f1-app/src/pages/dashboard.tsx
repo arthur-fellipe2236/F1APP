@@ -276,6 +276,27 @@ function TeamBadge({ name, season }: { name: string; season?: number }) {
     )
   }
   
+  const is1950Historical = (season === 1950) || (logo.url && logo.url.includes("/teams/historical/1950_"))
+  if (is1950Historical) {
+    return (
+      <div className="relative shrink-0">
+        <span className="flex h-[54px] w-[115px] sm:h-[70px] sm:w-[150px] md:h-[76px] md:w-[160px] shrink-0 items-center justify-center p-1 bg-transparent border-0 shadow-none ring-0">
+          <img
+            src={logo.url}
+            alt=""
+            aria-hidden
+            loading="lazy"
+            onError={() => setBroken(true)}
+            className="h-full w-full object-contain filter-none"
+          />
+        </span>
+        <div className="absolute -bottom-1 -right-1 flex items-center justify-center rounded-full bg-blue-500 text-white font-extrabold text-[10px] md:text-xs px-1.5 py-0.5 shadow-md border-2 border-background ring-1 ring-blue-500/30">
+          1º
+        </div>
+      </div>
+    )
+  }
+
   const isWhiteMonoLogo = logo.url.includes("logowhite.svg") || logo.className?.includes("make-black")
   const isLightBg = isWhiteMonoLogo && logo.color && !logo.className?.includes("filter-none") ? getBadgeLuminance(logo.color) >= 155 : false
   const isDarkBg = logo.color ? getBadgeLuminance(logo.color) <= 40 : false

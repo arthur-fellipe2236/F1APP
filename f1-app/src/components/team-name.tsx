@@ -45,7 +45,26 @@ export function TeamInline({ name, season }: { name: string | null; season?: num
     )
   }
 
-  // Only monochrome white SVG logos should be tinted black on light backgrounds
+  // Identificação exclusiva dos emblemas históricos homologados de 1950
+  const is1950Historical = season === 1950 || (logo.url && logo.url.includes("/teams/historical/1950_"))
+  if (is1950Historical) {
+    return (
+      <span className="flex min-w-0 max-w-full items-center gap-2.5 py-1">
+        <span className="flex h-[54px] w-[115px] sm:h-[76px] sm:w-[160px] shrink-0 items-center justify-center bg-transparent border-0 shadow-none ring-0 p-0">
+          <img
+            src={logo.url}
+            alt=""
+            aria-hidden
+            loading="lazy"
+            onError={() => setBroken(true)}
+            className="h-full w-full object-contain filter-none"
+          />
+        </span>
+        <span className="min-w-0 whitespace-normal break-words leading-tight">{displayTeamName(name, season)}</span>
+      </span>
+    )
+  }
+
   const isWhiteMonoLogo = logo.url.includes("logowhite.svg") || logo.className?.includes("make-black")
   const isLightBg = isWhiteMonoLogo && logo.color && !logo.className?.includes("filter-none") ? getLuminance(logo.color) >= 155 : false
   const isDarkBg = logo.color ? getLuminance(logo.color) <= 40 : false
@@ -96,6 +115,27 @@ export function TeamName({ name, season }: { name: string; season?: number }) {
           {initials(name)}
         </span>
         <span className="min-w-0 whitespace-normal break-words leading-tight font-medium text-foreground">{displayTeamName(name, season)}</span>
+      </span>
+    )
+  }
+
+  const is1950Historical = season === 1950 || (logo.url && logo.url.includes("/teams/historical/1950_"))
+  if (is1950Historical) {
+    return (
+      <span className="flex min-w-0 max-w-full items-center gap-3.5 min-h-[76px] py-1.5 group">
+        <span className="flex h-[54px] w-[115px] sm:h-[76px] sm:w-[160px] shrink-0 items-center justify-center bg-transparent border-0 shadow-none ring-0 p-0 transition-transform duration-300 group-hover:scale-105">
+          <img
+            src={logo.url}
+            alt=""
+            aria-hidden
+            loading="lazy"
+            onError={() => setBroken(true)}
+            className="h-full w-full object-contain filter-none"
+          />
+        </span>
+        <span className="min-w-0 whitespace-normal break-words leading-tight font-medium text-foreground">
+          {displayTeamName(name, season)}
+        </span>
       </span>
     )
   }
