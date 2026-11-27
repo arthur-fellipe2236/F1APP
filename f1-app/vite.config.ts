@@ -10,9 +10,15 @@ export default defineConfig({
       "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
+  preview: {
+    host: true,
+    port: 4173,
+    allowedHosts: true,
+  },
   server: {
     host: true,
     port: 5173,
+    allowedHosts: true,
     watch: {
       usePolling: process.env.CHOKIDAR_USEPOLLING === "true",
       interval: 300,

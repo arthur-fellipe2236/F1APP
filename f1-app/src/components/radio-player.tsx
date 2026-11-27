@@ -141,6 +141,26 @@ export function RadioPlayer() {
     }
     return false
   })
+
+  // Integração com Cockpit Live Ticker (Broadcast Master)
+  useEffect(() => {
+    const handleToggle = () => setIsMinimized((prev) => !prev)
+    const handleOpen = () => setIsMinimized(false)
+    window.addEventListener("f1app:toggle-radio", handleToggle)
+    window.addEventListener("f1app:open-radio", handleOpen)
+    return () => {
+      window.removeEventListener("f1app:toggle-radio", handleToggle)
+      window.removeEventListener("f1app:open-radio", handleOpen)
+    }
+  }, [])
+
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent("f1app:radio-state", {
+        detail: { isPlaying, isLoading, isMinimized },
+      })
+    )
+  }, [isPlaying, isLoading, isMinimized])
   const [bgMusicEnabled, setBgMusicEnabled] = useState(true)
   const [bgMusicVolume, setBgMusicVolume] = useState(0.035)
 

@@ -8,14 +8,13 @@ import { CodeBadge } from "@/components/driver-code"
 import { F1DataTable } from "@/components/data-table"
 import { VirtualDataTable } from "@/components/virtual-table"
 import { ErrorState } from "@/components/error-state"
-import { NextRaceCard } from "@/components/next-race-card"
 import { LiveContextBanner } from "@/components/live-context-banner"
+import { BroadcastHero } from "@/components/broadcast-hero"
 import { RaceHighlightsCards } from "@/components/race-highlights-cards"
 import { PageHeader } from "@/components/page-header"
 import { PositionBadge } from "@/components/position-badge"
 import { RaceNewsCards } from "@/components/race-news-cards"
-import { BrazilNewsRow } from "@/components/brazil-news-cards"
-import { Top5Standings } from "@/components/top5-standings"
+import { WorldStandingsEnriched } from "@/components/world-standings-enriched"
 import { TeamInline, TeamName } from "@/components/team-name"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -465,7 +464,7 @@ const F1_2021_TEAMS = [
 
 
 export function DashboardPage() {
-  const { series, season, setSeason } = useAppStore()
+  const { series, setSeries, season, setSeason } = useAppStore()
   const seasons = useSeasons(series)
 
   const effectiveSeason = useMemo(
@@ -479,6 +478,15 @@ export function DashboardPage() {
       setSeason(effectiveSeason)
     }
   }, [season, effectiveSeason, setSeason])
+
+  // Suporte a link direto por categoria (ex: /?series=f2 ou /?series=f3)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const urlSeries = params.get("series")?.toLowerCase()
+    if (urlSeries === "f1" || urlSeries === "f2" || urlSeries === "f3") {
+      setSeries(urlSeries)
+    }
+  }, [setSeries])
 
   // Enquanto houver corrida encerrada sem resultados na fonte (pending_results),
   // reconsulta a cada 60s; na temporada corrente em andamento mantém verificação
@@ -639,40 +647,28 @@ export function DashboardPage() {
       {/* 1. Banner contextual AO VIVO (renderizado somente quando houver sessão confirmada) */}
       <LiveContextBanner series={series} />
 
-      {/* 3. Seção de Próximas Corridas */}
-      <section aria-labelledby="next-races-heading" className="space-y-4">
-        <div id="next-races-heading" className="scroll-mt-24">
-          <PageHeader
-            title="Próximas Corridas"
-            description="Acompanhe o calendário oficial e a contagem regressiva para os próximos GPs"
-          />
+      {/* 2. HERO CINEMATOGRÁFICO BROADCAST MASTER (PROPOSTA A+) */}
+      <BroadcastHero series={series} />
+
+      {/* 3. GRID PRINCIPAL A+ BROADCAST (2/3 CONTEÚDO + 1/3 CLASSIFICAÇÃO ENRIQUECIDA) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* COLUNA ESQUERDA — 2/3 (8 colunas) */}
+        <div className="lg:col-span-8 space-y-8 min-w-0">
+          {/* 1. Últimas Notícias e Análises do Paddock */}
+          <section id="noticias" className="scroll-mt-24 space-y-4">
+            <RaceNewsCards series={series} />
+          </section>
+
+          {/* 2. Destaques em Vídeo e Melhores Momentos */}
+          <section id="highlights-heading" className="scroll-mt-24 space-y-4">
+            <RaceHighlightsCards />
+          </section>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <NextRaceCard series="f1" />
-          <NextRaceCard series="f2" />
-          <NextRaceCard series="f3" />
+        {/* COLUNA DIREITA — 1/3 (4 colunas, sticky no desktop) */}
+        <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 min-w-0">
+          <WorldStandingsEnriched series={series} season={effectiveSeason} />
         </div>
-      </section>
-
-      {/* 4. Caderno Brasil no Grid Mundial — Área Nobre de Destaque Nacional */}
-      <section aria-labelledby="caderno-brasil-heading" className="scroll-mt-24 space-y-4">
-        <BrazilNewsRow />
-      </section>
-
-      {/* 5. Top 5 Oficial do Campeonato — Seção Permanente com Abas Pilotos e Equipes */}
-      <section aria-labelledby="top5-heading" className="scroll-mt-24 space-y-4">
-        <Top5Standings series={series} season={effectiveSeason} />
-      </section>
-
-      {/* 6. Melhores Momentos oficiais das corridas */}
-      <div id="highlights-heading" className="scroll-mt-24">
-        <RaceHighlightsCards />
-      </div>
-
-      {/* 7. Notícias Gerais */}
-      <div id="noticias" className="scroll-mt-24 space-y-4">
-        <RaceNewsCards series={series} />
       </div>
 
       {/* 6. Classificação da Temporada */}
